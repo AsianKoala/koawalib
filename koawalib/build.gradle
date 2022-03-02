@@ -3,8 +3,6 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 
-apply plugin: 'maven-publish'
-
 android {
     compileSdk 31
 
@@ -33,47 +31,43 @@ android {
     }
 }
 
-dependencies {
+configurations {
+    ktlint
+}
 
+dependencies {
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.3.0'
     implementation 'com.google.android.material:material:1.4.0'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-}
 
-def githubProperties = new Properties()
-githubProperties.load(new FileInputStream(rootProject.file("github.properties")))
-def getVersionName = { ->
-    return "1.0.0"  // Replace with version Name
-}
-def getArtificatId = { ->
-    return "koawalib" // Replace with library name ID
-}
-publishing {
-    publications {
-        bar(MavenPublication) {
-            groupId 'com.asiankoala.koawalib' // Replace with group ID
-            artifactId getArtificatId()
-            version getVersionName()
-            artifact("$buildDir/outputs/aar/${getArtificatId()}-release.aar")
-        }
-    }
-
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            /** Configure path of your package repository on Github
-             *  Replace GITHUB_USERID with your/organisation Github userID and REPOSITORY with the repository name on GitHub
-             */
-            url = uri("https://maven.pkg.github.com/45741682/koawalib")
-
-            credentials {
-                /**Create github.properties in root project folder file with gpr.usr=GITHUB_USER_ID  & gpr.key=PERSONAL_ACCESS_TOKEN**/
-                username = githubProperties['gpr.usr'] ?: System.getenv("GPR_USER")
-                password = githubProperties['gpr.key'] ?: System.getenv("GPR_API_KEY")
-            }
+    ktlint("com.pinterest:ktlint:0.42.1") {
+        attributes {
+            attribute(Bundling.BUNDLING_ATTRIBUTE, getObjects().named(Bundling, Bundling.EXTERNAL))
         }
     }
 }
+
+task ktlint(type: JavaExec, group: "verification") {
+    description = "Check Kotlin code style."
+    classpath = configurations.ktlint
+    main = "com.pinterest.ktlint.Main"
+    args "src/**/*.kt"
+    // to generate report in checkstyle format prepend following args:
+    // "--reporter=plain", "--reporter=checkstyle,output=${buildDir}/ktlint.xml"
+    // to add a baseline to check against prepend following args:
+    // "--baseline=ktlint-baseline.xml"
+    // see https://github.com/pinterest/ktlint#usage for more
+}
+
+task ktlintFormat(type: JavaExec, group: "formatting") {
+    description = "Fix Kotlin code style deviations."
+    classpath = configurations.ktlint
+    main = "com.pinterest.ktlint.Main"
+    args "-F", "**/*.kt"
+}
+
+
+apply from: '../build.dependencies.gradle'
