@@ -1,5 +1,5 @@
 ## koawalib
-FTC library written by Neil Mehra, member of team 14607 and alumentor of team 15167. 
+koawalib is an FTC library written by Neil Mehra, member of team 14607 and alumentor of team 15167. 
 The goal of this library is to enable teams of all levels to perform at a sufficient degree without 
 programming knowledge/experience being a limiting factor. Shoutout to [wpilib](https://github.com/wpilibsuite/allwpilib)
 and [technolib](https://github.com/technototes/TechnoLib) for inspiration.
