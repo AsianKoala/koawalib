@@ -1,14 +1,16 @@
 plugins {
-    id 'com.android.application'
+    id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id 'maven-publish'
 }
+
+group = 'com.github.asiankoala'
 
 android {
     compileSdk 31
 
     defaultConfig {
-        applicationId "com.asiankoala.koawalib"
-        minSdk 21
+        minSdk 23
         targetSdk 31
         versionCode 1
         versionName "1.0"
@@ -31,9 +33,25 @@ android {
     }
 }
 
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+                groupId = 'com.github.asiankoala'
+                artifactId = 'koawalib'
+                version = '0.0.4'
+            }
+        }
+    }
+}
+
+
+
 configurations {
     ktlint
 }
+
 
 dependencies {
     implementation 'androidx.core:core-ktx:1.7.0'

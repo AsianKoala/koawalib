@@ -10,7 +10,7 @@ import kotlin.collections.ArrayList
 import kotlin.collections.LinkedHashMap
 
 object CommandScheduler {
-    val mScheduledCommands: MutableList<Command> = ArrayList()
+    private val mScheduledCommands: MutableList<Command> = ArrayList()
     private val mRequirements: MutableMap<Subsystem, Command> = LinkedHashMap()
     private val mSubsystems: MutableMap<Subsystem, Command?> = LinkedHashMap()
 
