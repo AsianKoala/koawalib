@@ -1,5 +1,5 @@
 ## koawalib
-koawalib is an FTC library written by Neil Mehra, member of team 14607. 
+koawalib is a Kotlin FTC library written by Neil Mehra, member of team 14607. 
 The goal of this library is to enable teams of all levels to perform at a sufficient degree without 
 programming knowledge/experience being a limiting factor. Shoutout to [wpilib](https://github.com/wpilibsuite/allwpilib)
 and [technolib](https://github.com/technototes/TechnoLib) for inspiration.
@@ -22,7 +22,7 @@ dependencies {
 ```
 - If you wish to have the most up to date version, instead add this line
 ```
-implementation 'com.github.AsianKoala:koawalib:-SNAPSHOT'
+implementation 'com.github.AsianKoala:koawalib:master-SNAPSHOT'
 ```
 
 ## Example usage
