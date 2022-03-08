@@ -1,13 +1,9 @@
 package com.asiankoala.koawalib.gamepad
 
-import com.asiankoala.koawalib.gamepad.functionality.Input
+import com.asiankoala.koawalib.gamepad.functionality.CommandButton
 
-class GamepadButton(private val button: () -> Boolean) : ButtonBase(), Input<GamepadButton> {
-    override fun instance(): GamepadButton {
-        return this
-    }
-
+class GamepadButton(private val buttonState: () -> Boolean) : CommandButton() {
     override fun invokeBoolean(): Boolean {
-        return button.invoke()
+        return buttonState.invoke()
     }
 }

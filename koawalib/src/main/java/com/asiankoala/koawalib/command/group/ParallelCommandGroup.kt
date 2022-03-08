@@ -5,7 +5,6 @@ import java.util.*
 
 open class ParallelCommandGroup(vararg commands: Command) : CommandGroupBase() {
     private val mCommands = HashMap<Command, Boolean>()
-    private var mRunsWhenDisabled = false
 
     override fun addCommands(vararg commands: Command) {
         requireUngrouped(*commands)
@@ -23,7 +22,6 @@ open class ParallelCommandGroup(vararg commands: Command) : CommandGroupBase() {
 
             mCommands[it] = false
             mRequirements.addAll(it.getRequirements())
-            mRunsWhenDisabled = mRunsWhenDisabled && it.runsWhenDisabled
         }
     }
 
@@ -58,7 +56,6 @@ open class ParallelCommandGroup(vararg commands: Command) : CommandGroupBase() {
     }
 
     override val isFinished: Boolean get() = !mCommands.values.contains(true)
-    override val runsWhenDisabled: Boolean get() = mRunsWhenDisabled
 
     init {
         addCommands(*commands)

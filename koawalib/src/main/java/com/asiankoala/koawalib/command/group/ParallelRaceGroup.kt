@@ -25,7 +25,7 @@ class ParallelRaceGroup(vararg commands: Command) : CommandGroupBase() {
 
             this.commands.add(it)
             mRequirements.addAll(it.getRequirements())
-            mRunsWhenDisabled = mRunsWhenDisabled && it.runsWhenDisabled
+            mRunsWhenDisabled = mRunsWhenDisabled
         }
     }
 
@@ -53,8 +53,6 @@ class ParallelRaceGroup(vararg commands: Command) : CommandGroupBase() {
     }
 
     override val isFinished: Boolean get() = finished
-
-    override val runsWhenDisabled: Boolean get() = mRunsWhenDisabled
 
     init {
         addCommands(*commands)

@@ -94,7 +94,5 @@ fun interface Command {
 
     val isScheduled: Boolean get() = CommandScheduler.isScheduled(this)
 
-    val runsWhenDisabled: Boolean get() = false
-
     val name: String get() = this.javaClass.simpleName
 }

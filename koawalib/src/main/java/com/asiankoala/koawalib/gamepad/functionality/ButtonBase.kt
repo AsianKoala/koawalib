@@ -1,6 +1,4 @@
-package com.asiankoala.koawalib.gamepad
-
-import com.asiankoala.koawalib.gamepad.functionality.Button
+package com.asiankoala.koawalib.gamepad.functionality
 
 abstract class ButtonBase : Button {
     private var _isPressed = false
@@ -26,7 +24,6 @@ abstract class ButtonBase : Button {
         _pastState = currentState
         _isPressed = currentState
 
-        // TODO CHECK IF WORKS
         if (recentAction && pastState) {
             _isToggled = !_isToggled
         }

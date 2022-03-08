@@ -31,8 +31,6 @@ class ConditionalCommand(onTrue: Command, onFalse: Command, condition: () -> Boo
     override val isFinished: Boolean
         get() = m_selectedCommand.isFinished
 
-    override val runsWhenDisabled: Boolean get() = mOnTrue.runsWhenDisabled && mOnFalse.runsWhenDisabled
-
     /**
      * Creates a new ConditionalCommand.
      *

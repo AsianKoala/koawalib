@@ -4,6 +4,7 @@ import com.asiankoala.koawalib.hardware.HardwareDevice
 import com.asiankoala.koawalib.util.KBoolean
 import com.qualcomm.robotcore.hardware.DigitalChannel
 
+@Suppress("unused")
 class KLimitSwitch : HardwareDevice<DigitalChannel>, KBoolean {
     constructor(device: DigitalChannel) : super(device)
     constructor(name: String) : super(name)

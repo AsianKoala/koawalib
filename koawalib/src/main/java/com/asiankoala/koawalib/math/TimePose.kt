@@ -1,4 +1,4 @@
-package com.asiankoala.koawalib.subsystem.odometry
+package com.asiankoala.koawalib.math
 
 import com.asiankoala.koawalib.math.Pose
 

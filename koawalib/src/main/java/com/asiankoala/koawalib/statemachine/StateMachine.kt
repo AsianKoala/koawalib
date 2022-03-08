@@ -2,7 +2,7 @@ package com.asiankoala.koawalib.statemachine
 
 import com.asiankoala.koawalib.statemachine.transition.TimedTransition
 
-class StateMachine<StateEnum>(private val stateList: List<State<StateEnum>>, private val universals: List<Action>) {
+class StateMachine<StateEnum>(private val stateList: List<State<StateEnum>>, private val universals: List<() -> Unit>) {
     var running = false
         private set
 
@@ -14,7 +14,7 @@ class StateMachine<StateEnum>(private val stateList: List<State<StateEnum>>, pri
         if (currentState.transitionCondition is TimedTransition)
             (currentState.transitionCondition as TimedTransition).startTimer()
 
-        currentState.enterActions.forEach(Action::run)
+        currentState.enterActions.forEach { it.invoke() }
     }
 
     fun stop() {
@@ -28,17 +28,17 @@ class StateMachine<StateEnum>(private val stateList: List<State<StateEnum>>, pri
     val state: StateEnum get() = currentState.state
 
     fun update() {
-        if (currentState.transitionCondition?.shouldTransition() == true)
+        if (currentState.transitionCondition.invoke())
             transition()
 
         if (!running) return
 
-        currentState.loopActions.forEach(Action::run)
-        universals.forEach(Action::run)
+        currentState.loopActions.forEach { it.invoke() }
+        universals.forEach { it.invoke() }
     }
 
     private fun transition() {
-        currentState.exitActions.forEach(Action::run)
+        currentState.exitActions.forEach { it.invoke() }
 
         if (stateList.last() == currentState) {
             running = false
@@ -46,20 +46,9 @@ class StateMachine<StateEnum>(private val stateList: List<State<StateEnum>>, pri
             currentState = stateList[stateList.indexOf(currentState) + 1]
         }
 
-        currentState.enterActions.forEach(Action::run)
+        currentState.enterActions.forEach { it.invoke() }
 
         if (currentState.transitionCondition is TimedTransition)
             (currentState.transitionCondition as TimedTransition).startTimer()
-    }
-
-    fun smartRun(shouldStart: Boolean) {
-        if (shouldStart) {
-            reset()
-            start()
-        }
-
-        if (running) {
-            update()
-        }
     }
 }

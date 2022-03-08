@@ -1,23 +1,21 @@
 package com.asiankoala.koawalib.statemachine
 
 import com.asiankoala.koawalib.statemachine.transition.TimedTransition
-import com.asiankoala.koawalib.statemachine.transition.TransitionCondition
 
 class StateMachineBuilder<StateEnum> {
 
     private val stateList = mutableListOf<State<StateEnum>>()
-    private val universals = mutableListOf<Action>()
+    private val universals = mutableListOf<() -> Unit>()
 
     fun state(state: StateEnum): StateMachineBuilder<StateEnum> {
         if (stateList.find { it.state == state } != null)
             throw Error("State already exists in list")
 
-        stateList.add(State(state, mutableListOf(), mutableListOf(), mutableListOf(), null))
-
+        stateList.add(State(state, mutableListOf(), mutableListOf(), mutableListOf()) { true })
         return this
     }
 
-    fun transition(transitionCondition: TransitionCondition): StateMachineBuilder<StateEnum> {
+    fun transition(transitionCondition: () -> Boolean): StateMachineBuilder<StateEnum> {
         if (stateList.isEmpty())
             throw Error("No state to transition from")
 
@@ -27,35 +25,32 @@ class StateMachineBuilder<StateEnum> {
 
     fun transitionTimed(time: Double): StateMachineBuilder<StateEnum> = transition(TimedTransition(time))
 
-    fun onEnter(callback: Action): StateMachineBuilder<StateEnum> {
+    fun onEnter(action: () -> Unit): StateMachineBuilder<StateEnum> {
         if (stateList.isEmpty())
             throw Error("No state to modify")
 
-        stateList.last().enterActions.add(callback)
-
+        stateList.last().enterActions.add(action)
         return this
     }
 
-    fun onExit(callback: Action): StateMachineBuilder<StateEnum> {
+    fun onExit(action: () -> Unit): StateMachineBuilder<StateEnum> {
         if (stateList.isEmpty())
             throw Error("No state to modify")
 
-        stateList.last().exitActions.add(callback)
-
+        stateList.last().exitActions.add(action)
         return this
     }
 
-    fun loop(callback: Action): StateMachineBuilder<StateEnum> {
+    fun loop(action: () -> Unit): StateMachineBuilder<StateEnum> {
         if (stateList.isEmpty())
             throw Error("No state to modify")
 
-        stateList.last().loopActions.add(callback)
-
+        stateList.last().loopActions.add(action)
         return this
     }
 
-    fun universal(callback: Action): StateMachineBuilder<StateEnum> {
-        universals.add(callback)
+    fun universal(action: () -> Unit): StateMachineBuilder<StateEnum> {
+        universals.add(action)
 
         return this
     }

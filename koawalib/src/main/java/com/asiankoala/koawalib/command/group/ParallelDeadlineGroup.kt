@@ -32,7 +32,7 @@ class ParallelDeadlineGroup(private var mDeadline: Command, vararg commands: Com
             }
             mCommands[command] = false
             mRequirements.addAll(command.getRequirements())
-            mRunWhenDisabled = mRunWhenDisabled and command.runsWhenDisabled
+            mRunWhenDisabled = mRunWhenDisabled
         }
     }
 
@@ -66,8 +66,6 @@ class ParallelDeadlineGroup(private var mDeadline: Command, vararg commands: Com
 
     override val isFinished: Boolean
         get() = mDeadline.isFinished
-
-    override val runsWhenDisabled: Boolean get() = mRunWhenDisabled
 
     init {
         addCommands(*commands)

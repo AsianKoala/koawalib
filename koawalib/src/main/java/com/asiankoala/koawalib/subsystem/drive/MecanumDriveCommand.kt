@@ -33,12 +33,6 @@ class MecanumDriveCommand(
         val yScaled = MathUtil.cubicScaling(yCubic, yRaw)
         val rScaled = MathUtil.cubicScaling(rCubic, rRaw)
 
-        val translation = Point(xRaw, yRaw)
-        val rotated = translation.rotate(
-            -heading.invoke() +
-                if (alliance == Alliance.BLUE) 90.0.radians else (-90.0).radians
-        )
-
         val final = if (fieldOriented) {
             val translationVector = Point(xScaled, yScaled)
             val headingInvoked = heading.invoke()
@@ -59,7 +53,6 @@ class MecanumDriveCommand(
             Pose(xScaled, yScaled, rScaled)
         }
 
-        rotated
         drive.powers = final
     }
 

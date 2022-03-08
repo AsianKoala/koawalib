@@ -11,6 +11,7 @@ import com.asiankoala.koawalib.math.Pose
 import com.qualcomm.robotcore.util.Range
 import kotlin.math.*
 
+// todo: clean up this class
 object PurePursuitController {
 
     fun goToPosition(
@@ -143,7 +144,7 @@ object PurePursuitController {
      * @return intersection point closest to endPoint
      * @see [https://mathworld.wolfram.com/Circle-LineIntersection.html](https://mathworld.wolfram.com/Circle-LineIntersection.html)
      */
-    fun lineCircleIntersection(
+    private fun lineCircleIntersection(
         center: Point,
         startPoint: Point,
         endPoint: Point,
@@ -221,7 +222,7 @@ object PurePursuitController {
         val currFollowIndex = clippedToLine.index + 1
 
         // extend circle, find intersects with segments, choose closest
-        // to last point (consider heading based instead of waypoint order based)
+        // to last point (TODO maybe heading based instead of waypoint order based ?)
         var followMe = waypoints[currFollowIndex].copy
         followMe = followMe.copy(x = clippedToLine.point.x, y = clippedToLine.point.y)
 

@@ -15,5 +15,4 @@ class Watchdog(
     }
 
     override val isFinished: Boolean = false
-    override val runsWhenDisabled: Boolean = true
 }

@@ -1,13 +1,18 @@
 package com.asiankoala.koawalib.math
 
 import com.qualcomm.robotcore.util.Range
-import kotlin.math.*
+import kotlin.math.PI
+import kotlin.math.absoluteValue
+import kotlin.math.pow
+import kotlin.math.sqrt
+import kotlin.math.sin
+import kotlin.math.cos
 
 object MathUtil {
     const val EPSILON = 1e-6
     const val TAU = 2 * PI
 
-    infix fun Double.epsilonNotEqual(other: Double) = abs(this - other) > EPSILON
+    infix fun Double.epsilonNotEqual(other: Double) = (this - other).absoluteValue > EPSILON
 
     val Double.radians get() = Math.toRadians(this)
     val Double.degrees get() = Math.toDegrees(this)

@@ -10,43 +10,40 @@ import kotlin.collections.ArrayList
 import kotlin.collections.LinkedHashMap
 
 object CommandScheduler {
-    private val mScheduledCommands: MutableList<Command> = ArrayList()
-    private val mRequirements: MutableMap<Subsystem, Command> = LinkedHashMap()
-    private val mSubsystems: MutableMap<Subsystem, Command?> = LinkedHashMap()
+    private val scheduledCommands: MutableList<Command> = ArrayList()
+    private val scheduledCommandRequirements: MutableMap<Subsystem, Command> = LinkedHashMap()
+    private val subsystems: MutableMap<Subsystem, Command?> = LinkedHashMap()
 
-    private val mInitActions: MutableList<(Command) -> Unit> = ArrayList()
-    private val mExecuteActions: MutableList<(Command) -> Unit> = ArrayList()
-    private val mInterruptActions: MutableList<(Command) -> Unit> = ArrayList()
-    private val mFinishActions: MutableList<(Command) -> Unit> = ArrayList()
+    private val initActions: MutableList<(Command) -> Unit> = ArrayList()
+    private val executeActions: MutableList<(Command) -> Unit> = ArrayList()
+    private val cancelActions: MutableList<(Command) -> Unit> = ArrayList()
+    private val finishActions: MutableList<(Command) -> Unit> = ArrayList()
 
-    private val mToSchedule: MutableList<Command> = ArrayList()
-    private val mToCancel: MutableList<Command> = ArrayList()
+    private val toSchedule: MutableList<Command> = ArrayList()
+    private val toCancel: MutableList<Command> = ArrayList()
 
-    private val allMaps = listOf(mRequirements, mSubsystems)
+    private val allMaps = listOf(scheduledCommandRequirements, subsystems)
     private val allLists = listOf(
-        mInitActions, mExecuteActions,
-        mInterruptActions, mFinishActions, mToCancel, mToSchedule
+        initActions, executeActions,
+        cancelActions, finishActions, toCancel, toSchedule
     )
 
-    private var mDisabled = false
     private var mInRunLoop = false
 
     private lateinit var mOpMode: CommandOpMode
 
-    private var runningOpMode = false
-
     val isOpModeLooping get() = mOpMode.isLooping
 
-    private fun initCommand(command: Command, requirements: Set<Subsystem>) {
+    private fun initCommand(command: Command, cRequirements: Set<Subsystem>) {
         command.init()
-        mScheduledCommands.add(command)
-        mInitActions.forEach { it.invoke(command) }
-        requirements.forEach { mRequirements[it] = command }
+        scheduledCommands.add(command)
+        initActions.forEach { it.invoke(command) }
+        cRequirements.forEach { scheduledCommandRequirements[it] = command }
     }
 
     private fun schedule(command: Command) {
         if (mInRunLoop) {
-            mToSchedule
+            toSchedule
             return
         }
 
@@ -54,22 +51,14 @@ object CommandScheduler {
             throw IllegalArgumentException("A command that is part of a command group cannot be independently scheduled")
         }
 
-        if (runningOpMode && (
-            mDisabled || (!command.runsWhenDisabled && mOpMode.disabled) ||
-                mScheduledCommands.contains(command)
-            )
-        ) {
-            return
-        }
-
         val requirements = command.getRequirements()
 
-        if (Collections.disjoint(mRequirements.keys, requirements)) {
+        if (Collections.disjoint(scheduledCommandRequirements.keys, requirements)) {
             initCommand(command, requirements)
         } else {
             requirements.forEach {
-                if (mRequirements.containsKey(it)) {
-                    mRequirements[it]!!.cancel()
+                if (scheduledCommandRequirements.containsKey(it)) {
+                    scheduledCommandRequirements[it]!!.cancel()
                 }
             }
 
@@ -80,18 +69,17 @@ object CommandScheduler {
     fun resetScheduler() {
         allMaps.forEach(MutableMap<*, *>::clear)
         allLists.forEach(MutableList<*>::clear)
-        mDisabled = false
         mInRunLoop = false
     }
 
     fun printTelemetry() {
         println()
         println()
-        println("scheduled command size ${mScheduledCommands.size}")
-        println("requirements size ${mRequirements.size}")
-        println("subsystems size ${mSubsystems.size}")
-        println("to schedule size ${mToSchedule.size} ")
-        println("to cancel size ${mToCancel.size}")
+        println("scheduled command size ${scheduledCommands.size}")
+        println("requirements size ${scheduledCommandRequirements.size}")
+        println("subsystems size ${subsystems.size}")
+        println("to schedule size ${toSchedule.size} ")
+        println("to cancel size ${toCancel.size}")
     }
 
     fun setOpMode(opMode: CommandOpMode) {
@@ -107,65 +95,45 @@ object CommandScheduler {
     }
 
     fun run() {
-        if (mDisabled) {
-            return
-        }
-
-        mSubsystems.keys.forEach(Subsystem::periodic)
+        subsystems.keys.forEach(Subsystem::periodic)
 
         mInRunLoop = true
-        val iterator = mScheduledCommands.iterator()
+        val iterator = scheduledCommands.iterator()
         while (iterator.hasNext()) {
             val command = iterator.next()
 
-            if (runningOpMode) {
-                if (!command.runsWhenDisabled && mOpMode.disabled) {
-                    command.end(true)
-                    mInterruptActions.forEach { it.invoke(command) }
-                    mRequirements.keys.removeAll(command.getRequirements())
-                    iterator.remove()
-                    return
-                }
-
-                if (!command.runsWhenDisabled && mOpMode.disabled) {
-                    command.cancel()
-                    iterator.remove()
-                    return
-                }
-            }
-
             command.execute()
-            mExecuteActions.forEach { it.invoke(command) }
+            executeActions.forEach { it.invoke(command) }
 
             if (command.isFinished) {
                 command.end(false)
-                mFinishActions.forEach { it.invoke(command) }
+                finishActions.forEach { it.invoke(command) }
                 iterator.remove()
-                mRequirements.keys.removeAll(command.getRequirements())
+                scheduledCommandRequirements.keys.removeAll(command.getRequirements())
             }
         }
 
         mInRunLoop = false
 
-        mToSchedule.forEach(Command::schedule)
-        mToCancel.forEach(Command::cancel)
+        toSchedule.forEach(Command::schedule)
+        toCancel.forEach(Command::cancel)
 
-        mToSchedule.clear()
-        mToCancel.clear()
+        toSchedule.clear()
+        toCancel.clear()
 
-        mSubsystems.forEach { (k, v) ->
-            if (!mRequirements.containsKey(k) && v != null) {
+        subsystems.forEach { (k, v) ->
+            if (!scheduledCommandRequirements.containsKey(k) && v != null) {
                 schedule(v)
             }
         }
     }
 
     fun registerSubsystem(vararg subsystems: Subsystem) {
-        subsystems.forEach { mSubsystems[it] = null }
+        subsystems.forEach { this.subsystems[it] = null }
     }
 
     fun unregisterSubsystem(vararg subsystems: Subsystem) {
-        mSubsystems.keys.removeAll(subsystems)
+        this.subsystems.keys.removeAll(subsystems)
     }
 
     fun setDefaultCommand(subsystem: Subsystem, command: Command) {
@@ -177,49 +145,41 @@ object CommandScheduler {
             throw java.lang.IllegalArgumentException("Default commands should not end")
         }
 
-        mSubsystems[subsystem] = command
+        subsystems[subsystem] = command
     }
 
     fun getDefaultCommand(subsystem: Subsystem): Command {
-        return mSubsystems[subsystem]!!
+        return subsystems[subsystem]!!
     }
 
     fun cancel(vararg commands: Command) {
         if (mInRunLoop) {
-            mToCancel.addAll(commands)
+            toCancel.addAll(commands)
             return
         }
 
         commands.forEach {
-            if (!mScheduledCommands.contains(it)) {
+            if (!scheduledCommands.contains(it)) {
                 return@forEach
             }
 
             it.end(true)
-            mInterruptActions.forEach { action -> action.invoke(it) }
-            mScheduledCommands.remove(it)
-            mRequirements.keys.removeAll(it.getRequirements())
+            cancelActions.forEach { action -> action.invoke(it) }
+            scheduledCommands.remove(it)
+            scheduledCommandRequirements.keys.removeAll(it.getRequirements())
         }
     }
 
     fun cancelAll() {
-        mScheduledCommands.forEach(Command::cancel)
+        scheduledCommands.forEach(Command::cancel)
     }
 
     fun isScheduled(vararg commands: Command): Boolean {
-        return mScheduledCommands.containsAll(commands.toList())
+        return scheduledCommands.containsAll(commands.toList())
     }
 
     fun requiring(subsystem: Subsystem): Command {
-        return mRequirements[subsystem]!!
-    }
-
-    fun disable() {
-        mDisabled = true
-    }
-
-    fun enable() {
-        mDisabled = false
+        return scheduledCommandRequirements[subsystem]!!
     }
 
     fun addPeriodic(action: () -> Unit) {
@@ -228,21 +188,5 @@ object CommandScheduler {
 
     fun scheduleWatchdog(condition: () -> Boolean, command: Command) {
         schedule(Watchdog(condition, command))
-    }
-
-    fun onCommandInit(action: (Command) -> Unit) {
-        mInitActions.add(action)
-    }
-
-    fun onCommandExecute(action: (Command) -> Unit) {
-        mExecuteActions.add(action)
-    }
-
-    fun onCommandInterrupt(action: (Command) -> Unit) {
-        mInterruptActions.add(action)
-    }
-
-    fun onCommandFinish(action: (Command) -> Unit) {
-        mFinishActions.add(action)
     }
 }

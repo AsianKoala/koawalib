@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.canvas.Canvas
 import org.firstinspires.ftc.robotcore.external.Telemetry
 
+// todo
 object KoawaDashboard {
     private var dashboardAdapter = TelemetryAdapter()
     private lateinit var telemetryImpl: Telemetry

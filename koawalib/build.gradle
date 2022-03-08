@@ -40,18 +40,19 @@ afterEvaluate {
                 from components.release
                 groupId = 'com.github.asiankoala'
                 artifactId = 'koawalib'
-                version = '0.0.4'
+                version = '0.0.5'
             }
         }
     }
+    generateReleaseBuildConfig.enabled = false
+    generateDebugBuildConfig.enabled = false
+    generateReleaseResValues.enabled = false
+    generateDebugResValues.enabled = false
 }
-
-
 
 configurations {
     ktlint
 }
-
 
 dependencies {
     implementation 'androidx.core:core-ktx:1.7.0'

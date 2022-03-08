@@ -5,6 +5,7 @@ import com.asiankoala.koawalib.math.MathUtil.sin
 import com.asiankoala.koawalib.math.MathUtil.wrap
 import com.asiankoala.koawalib.math.Point
 import com.asiankoala.koawalib.math.Pose
+import com.asiankoala.koawalib.math.TimePose
 import com.asiankoala.koawalib.subsystem.DeviceSubsystem
 import kotlin.math.absoluteValue
 import kotlin.math.max

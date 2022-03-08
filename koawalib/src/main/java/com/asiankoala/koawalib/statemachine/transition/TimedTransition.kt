@@ -1,13 +1,13 @@
 package com.asiankoala.koawalib.statemachine.transition
 
-class TimedTransition(val time: Double) : TransitionCondition {
+class TimedTransition(val time: Double) : () -> Boolean {
     private var startTime = 0L
 
     fun startTimer() {
         startTime = System.nanoTime()
     }
 
-    override fun shouldTransition(): Boolean {
+    override fun invoke(): Boolean {
         return (System.nanoTime() - startTime) / 1e9 > time
     }
 }

@@ -18,5 +18,4 @@ open class WaitCommand(private val seconds: Double) : CommandBase() {
     }
 
     override val isFinished: Boolean get() = timer.seconds() > seconds
-    override val runsWhenDisabled: Boolean = false
 }

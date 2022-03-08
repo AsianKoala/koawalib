@@ -3,19 +3,19 @@ package com.asiankoala.koawalib.gamepad
 import com.asiankoala.koawalib.gamepad.functionality.Stick
 
 class GamepadStick(
-    private val xGamepadAxis: GamepadAxis,
-    private val yGamepadAxis: GamepadAxis,
+    private val stickXAxis: GamepadAxis,
+    private val stickYAxis: GamepadAxis,
     private val stickButton: GamepadButton
 ) : Stick {
     override fun periodic() {
-        xGamepadAxis.periodic()
-        yGamepadAxis.periodic()
+        stickXAxis.periodic()
+        stickYAxis.periodic()
         stickButton.periodic()
     }
 
     override val xAxis
-        get() = xGamepadAxis.invokeDouble()
+        get() = stickXAxis.invokeDouble()
 
     override val yAxis
-        get() = yGamepadAxis.invokeDouble()
+        get() = stickYAxis.invokeDouble()
 }

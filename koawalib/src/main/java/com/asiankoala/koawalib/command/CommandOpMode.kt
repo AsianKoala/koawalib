@@ -16,7 +16,6 @@ open class CommandOpMode : LinearOpMode() {
     private var opModeTimer = ElapsedTime()
     private lateinit var hubs: List<LynxModule>
 
-    var disabled = false
     val isLooping get() = mainStateMachine.state == OpModeState.LOOP
 
     private fun setup() {
@@ -47,6 +46,7 @@ open class CommandOpMode : LinearOpMode() {
 
     private val mainStateMachine = StateMachineBuilder<OpModeState>()
         .universal(CommandScheduler::run)
+        .universal(::mUniversal)
         .state(OpModeState.INIT)
         .onEnter(::setup)
         .onEnter(::schedulePeriodics)
@@ -54,7 +54,6 @@ open class CommandOpMode : LinearOpMode() {
         .transition { true }
         .state(OpModeState.INIT_LOOP)
         .loop(::mInitLoop)
-        .loop(::mUniversal)
         .transition(::isStarted)
         .state(OpModeState.START)
         .onEnter(::mStart)
@@ -62,7 +61,6 @@ open class CommandOpMode : LinearOpMode() {
         .transition { true }
         .state(OpModeState.LOOP)
         .loop(::mLoop)
-        .loop(::mUniversal)
         .loop(::handleLoopMsTelemetry)
         .transition(::isStopRequested)
         .state(OpModeState.STOP)

@@ -14,7 +14,7 @@ open class SequentialCommandGroup(vararg commands: Command) : CommandGroupBase()
         for (command in commands) {
             mCommands.add(command)
             mRequirements.addAll(command.getRequirements())
-            mRunWhenDisabled = mRunWhenDisabled and command.runsWhenDisabled
+            mRunWhenDisabled = mRunWhenDisabled
         }
     }
 
@@ -49,9 +49,6 @@ open class SequentialCommandGroup(vararg commands: Command) : CommandGroupBase()
 
     override val isFinished: Boolean
         get() = mCurrentCommandIndex == mCommands.size
-
-    override val runsWhenDisabled: Boolean
-        get() = mRunWhenDisabled
 
     init {
         addCommands(*commands)

@@ -3,6 +3,7 @@ package com.asiankoala.koawalib.hardware
 import com.asiankoala.koawalib.math.MathUtil.epsilonNotEqual
 import com.qualcomm.robotcore.hardware.Servo
 
+@Suppress("unused")
 class KServo : HardwareDevice<Servo> {
     constructor(device: Servo) : super(device)
     constructor(name: String) : super(name)
