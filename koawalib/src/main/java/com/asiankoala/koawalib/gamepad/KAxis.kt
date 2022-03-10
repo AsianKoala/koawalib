@@ -5,12 +5,13 @@ import com.asiankoala.koawalib.util.KDouble
 import com.asiankoala.koawalib.util.Periodic
 import kotlin.math.absoluteValue
 
-class GamepadAxis(
+@Suppress("unused")
+class KAxis(
     private val axis: () -> Double,
 ) : CommandButton(), KDouble, Periodic {
     private var triggerThreshold = DEFAULT_TRIGGER_THRESHOLD
 
-    fun setTriggerThreshold(threshold: Double): GamepadAxis {
+    fun setTriggerThreshold(threshold: Double): KAxis {
         triggerThreshold = threshold
         return this
     }

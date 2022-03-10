@@ -3,6 +3,7 @@ package com.asiankoala.koawalib.subsystem.intake
 import com.asiankoala.koawalib.hardware.motor.KMotor
 import com.asiankoala.koawalib.hardware.sensor.KDistanceSensor
 
+@Suppress("unused")
 open class KDistanceSensorIntake(
     motor: KMotor,
     private val distanceSensor: KDistanceSensor,

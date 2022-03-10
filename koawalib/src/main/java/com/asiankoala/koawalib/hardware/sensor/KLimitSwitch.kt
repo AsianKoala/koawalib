@@ -5,9 +5,7 @@ import com.asiankoala.koawalib.util.KBoolean
 import com.qualcomm.robotcore.hardware.DigitalChannel
 
 @Suppress("unused")
-class KLimitSwitch : HardwareDevice<DigitalChannel>, KBoolean {
-    constructor(device: DigitalChannel) : super(device)
-    constructor(name: String) : super(name)
+class KLimitSwitch(name: String) : HardwareDevice<DigitalChannel>(name), KBoolean {
 
     override fun invokeBoolean(): Boolean {
         return device.state

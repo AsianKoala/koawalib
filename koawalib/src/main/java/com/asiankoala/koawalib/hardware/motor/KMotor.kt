@@ -9,9 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.util.Range
 import kotlin.math.absoluteValue
 
-open class KMotor : HardwareDevice<DcMotorEx>, KDouble {
-    constructor(device: DcMotorEx) : super(device)
-    constructor(name: String) : super(name)
+open class KMotor(name: String) : HardwareDevice<DcMotorEx>(name), KDouble {
 
     private var offset = 0.0
     private var encoderMultiplier = 1.0
@@ -34,7 +32,7 @@ open class KMotor : HardwareDevice<DcMotorEx>, KDouble {
             }
         }
 
-    var zeroPowerBehavior: DcMotor.ZeroPowerBehavior
+    var zeroPowerBehavior: DcMotor.ZeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
         set(value) {
             if (device.zeroPowerBehavior != value) {
                 device.zeroPowerBehavior = value
@@ -42,7 +40,7 @@ open class KMotor : HardwareDevice<DcMotorEx>, KDouble {
             }
         }
 
-    var direction: DcMotorSimple.Direction
+    var direction: DcMotorSimple.Direction = DcMotorSimple.Direction.FORWARD
         set(value) {
             if (device.direction != value) {
                 device.direction = value
@@ -96,7 +94,7 @@ open class KMotor : HardwareDevice<DcMotorEx>, KDouble {
 
     init {
         device.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
-        zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
-        direction = DcMotorSimple.Direction.FORWARD
+        device.zeroPowerBehavior = zeroPowerBehavior
+        device.direction = direction
     }
 }

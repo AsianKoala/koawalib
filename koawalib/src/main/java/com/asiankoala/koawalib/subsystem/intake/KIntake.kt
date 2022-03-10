@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config
 import com.asiankoala.koawalib.hardware.motor.KMotor
 import com.asiankoala.koawalib.subsystem.DeviceSubsystem
 
+@Suppress("unused")
 open class KIntake(private val motor: KMotor, private val config: IntakeConfig): DeviceSubsystem() {
 
     fun turnOn() {

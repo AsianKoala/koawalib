@@ -7,35 +7,36 @@ import com.asiankoala.koawalib.math.MathUtil.d
 import com.asiankoala.koawalib.util.Periodic
 import com.qualcomm.robotcore.hardware.Gamepad
 
+@Suppress("unused")
 class KGamepad(private val gamepad: Gamepad) : Periodic {
-    val a = GamepadButton { gamepad.a }
-    val b = GamepadButton { gamepad.b }
-    val x = GamepadButton { gamepad.x }
-    val y = GamepadButton { gamepad.y }
+    val a = KButton { gamepad.a }
+    val b = KButton { gamepad.b }
+    val x = KButton { gamepad.x }
+    val y = KButton { gamepad.y }
 
-    val start = GamepadButton { gamepad.start }
-    val back = GamepadButton { gamepad.back }
+    val start = KButton { gamepad.start }
+    val back = KButton { gamepad.back }
 
-    val leftBumper = GamepadButton { gamepad.left_bumper }
-    val rightBumper = GamepadButton { gamepad.right_bumper }
+    val leftBumper = KButton { gamepad.left_bumper }
+    val rightBumper = KButton { gamepad.right_bumper }
 
-    val leftStickButton = GamepadButton { gamepad.left_stick_button }
-    val rightStickButton = GamepadButton { gamepad.right_stick_button }
+    val leftStickButton = KButton { gamepad.left_stick_button }
+    val rightStickButton = KButton { gamepad.right_stick_button }
 
-    val leftTrigger = GamepadAxis { gamepad.left_trigger.d }
-    val rightTrigger = GamepadAxis { gamepad.right_trigger.d }
-    val leftStickX = GamepadAxis { gamepad.left_stick_x.d }
-    val leftStickY = GamepadAxis { gamepad.left_stick_y.d }
-    val rightStickX = GamepadAxis { gamepad.right_stick_x.d }
-    val rightStickY = GamepadAxis { gamepad.right_stick_y.d }
+    val leftTrigger = KAxis { gamepad.left_trigger.d }
+    val rightTrigger = KAxis { gamepad.right_trigger.d }
+    val leftStickX = KAxis { gamepad.left_stick_x.d }
+    val leftStickY = KAxis { gamepad.left_stick_y.d }
+    val rightStickX = KAxis { gamepad.right_stick_x.d }
+    val rightStickY = KAxis { gamepad.right_stick_y.d }
 
-    val leftStick = GamepadStick(leftStickX, leftStickY, leftStickButton)
-    val rightStick = GamepadStick(rightStickX, rightStickY, rightStickButton)
+    val leftStick = KStick(leftStickX, leftStickY, leftStickButton)
+    val rightStick = KStick(rightStickX, rightStickY, rightStickButton)
 
-    val dpadUp = GamepadButton { gamepad.dpad_up }
-    val dpadDown = GamepadButton { gamepad.dpad_down }
-    val dpadLeft = GamepadButton { gamepad.dpad_left }
-    val dpadRight = GamepadButton { gamepad.dpad_right }
+    val dpadUp = KButton { gamepad.dpad_up }
+    val dpadDown = KButton { gamepad.dpad_down }
+    val dpadLeft = KButton { gamepad.dpad_left }
+    val dpadRight = KButton { gamepad.dpad_right }
 
     private val periodics: Array<Periodic> = arrayOf(
         a, b, x, y, start, back, leftBumper, rightBumper,

@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.util.Range
 import kotlin.math.*
 
 // todo: clean up this class
+@Suppress("unused")
 object PurePursuitController {
 
     fun goToPosition(

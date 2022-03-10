@@ -80,12 +80,8 @@ fun interface Command {
         return CancelableCommand(condition, this)
     }
 
-    fun schedule(interruptible: Boolean) {
-        CommandScheduler.schedule(interruptible, this)
-    }
-
     fun schedule() {
-        schedule(true)
+        CommandScheduler.schedule(this)
     }
 
     fun cancel() {
