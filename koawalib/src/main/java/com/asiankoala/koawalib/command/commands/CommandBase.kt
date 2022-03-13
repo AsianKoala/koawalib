@@ -12,4 +12,12 @@ abstract class CommandBase : Command {
     override fun getRequirements(): Set<Subsystem> {
         return mRequirements
     }
+
+    fun name(commandName: String): Command {
+        _name = commandName
+        return this
+    }
+
+    private var _name: String? = null
+    override val name: String get() = _name ?: this.javaClass.simpleName
 }

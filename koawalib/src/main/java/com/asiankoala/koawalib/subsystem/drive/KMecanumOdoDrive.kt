@@ -11,10 +11,10 @@ open class KMecanumOdoDrive(
     bl: KMotor,
     fr: KMotor,
     br: KMotor,
-    config: OdoConfig
+    odoConfig: OdoConfig
 ) : KMecanumDrive(fl, bl, fr, br) {
 
-    private val odometry = Odometry(config)
+    private val odometry = Odometry(odoConfig)
 
     val position get() = odometry.position
     val velocity get() = odometry.velocity

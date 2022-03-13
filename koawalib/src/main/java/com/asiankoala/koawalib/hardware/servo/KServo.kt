@@ -1,11 +1,11 @@
 package com.asiankoala.koawalib.hardware.servo
 
-import com.asiankoala.koawalib.hardware.HardwareDevice
+import com.asiankoala.koawalib.hardware.KDevice
 import com.asiankoala.koawalib.math.MathUtil.epsilonNotEqual
 import com.qualcomm.robotcore.hardware.Servo
 
 @Suppress("unused")
-class KServo(name: String) : HardwareDevice<Servo>(name) {
+class KServo(name: String) : KDevice<Servo>(name) {
 
     var position: Double = -1.0
         set(value) {

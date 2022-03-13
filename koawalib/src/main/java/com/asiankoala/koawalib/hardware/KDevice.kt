@@ -2,8 +2,10 @@ package com.asiankoala.koawalib.hardware
 
 import com.qualcomm.robotcore.hardware.HardwareDevice
 import com.qualcomm.robotcore.hardware.HardwareMap
+import kotlin.reflect.KClass
 
-abstract class HardwareDevice<T : HardwareDevice>(private val name: String) {
+@Suppress("UNCHECKED_CAST")
+abstract class KDevice<T : HardwareDevice>(name: String) {
     protected val device: T = hardwareMap[HardwareDevice::class.java as Class<T>, name]
 
     companion object {

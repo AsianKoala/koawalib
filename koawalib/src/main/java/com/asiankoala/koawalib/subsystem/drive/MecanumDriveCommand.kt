@@ -57,7 +57,7 @@ class MecanumDriveCommand(
     }
 
     override val isFinished: Boolean
-        get() = false
+        get() = true
 
     init {
         addRequirements(drive)

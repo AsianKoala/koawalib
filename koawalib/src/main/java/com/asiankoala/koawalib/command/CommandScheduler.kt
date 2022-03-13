@@ -1,32 +1,31 @@
 package com.asiankoala.koawalib.command
 
-import android.util.Log
-import com.asiankoala.koawalib.command.commands.Command
-import com.asiankoala.koawalib.command.commands.InfiniteCommand
-import com.asiankoala.koawalib.command.commands.LogCommand
-import com.asiankoala.koawalib.command.commands.Watchdog
+import com.asiankoala.koawalib.command.commands.*
 import com.asiankoala.koawalib.command.group.CommandGroupBase
 import com.asiankoala.koawalib.subsystem.Subsystem
+import com.asiankoala.koawalib.util.Loggable
 import java.util.Collections
 import kotlin.collections.ArrayList
 import kotlin.collections.LinkedHashMap
 
-object CommandScheduler {
-    private val scheduledCommands: MutableList<Command> = ArrayList()
+@Suppress("unused")
+object CommandScheduler : Loggable {
+    val scheduledCommands: MutableList<Command> = ArrayList()
     private val scheduledCommandRequirements: MutableMap<Subsystem, Command> = LinkedHashMap()
     private val subsystems: MutableMap<Subsystem, Command?> = LinkedHashMap()
 
     private val toSchedule: MutableList<Command> = ArrayDeque()
     private val toCancel: MutableList<Command> = ArrayDeque()
-    private val toLog: MutableList<LogCommand> = ArrayDeque()
 
     private val allMaps = listOf(scheduledCommandRequirements, subsystems)
-    private val allLists = listOf(scheduledCommands, toCancel, toSchedule, toLog)
+    private val allLists = listOf(scheduledCommands, toCancel, toSchedule)
 
-    private var isLogging = true
-    private lateinit var mOpMode: CommandOpMode
+    override var logCount: Int = 0
+    override var isLogging = false
+    override var isPrinting = true
 
-    val isOpModeLooping get() = mOpMode.isLooping
+    var isOpModeLooping = false
+        private set
 
     private fun initCommand(command: Command, cRequirements: Set<Subsystem>) {
         command.init()
@@ -35,33 +34,31 @@ object CommandScheduler {
         cRequirements.forEach { scheduledCommandRequirements[it] = command }
     }
 
-    private fun schedule(command: Command) {
-        toSchedule.add(command)
-        logDebug("added ${command.name} to toSchedule array")
-    }
-
     private fun Command.scheduleThis() {
         if (CommandGroupBase.getGroupedCommands().contains(this)) {
-            logError("Commands in command groups cannot be independently scheduled")
-            throw IllegalArgumentException("Commands in command groups cannot be independently scheduled")
+            logError("command ${this.name}: Command in command groups cannot be independently scheduled")
+//            throw Exception("Commands in command groups cannot be independently scheduled")
+        } else {
+            logDebug("command ${this.name}: Command not in any command groups")
         }
 
         val requirements = this.getRequirements()
 
+
         if (Collections.disjoint(scheduledCommandRequirements.keys, requirements)) {
             initCommand(this, requirements)
-            logDebug("command ${this.name} disjoint with scheduledRequirementKeys")
+            logDebug("command ${this.name}: Command disjoint with scheduledRequirementKeys")
         } else {
             requirements.forEach {
                 if (scheduledCommandRequirements.containsKey(it)) {
                     val scheduled = scheduledCommandRequirements[it]!!
                     scheduled.cancel()
-                    logWarning("command ${this.name} caused command ${scheduled.name} to cancel")
+                    logWarning("command ${this.name}: Command caused command ${scheduled.name} to cancel")
                 }
             }
 
             initCommand(this, requirements)
-            logDebug("initialized command ${this.name} following cancellation of commands with overlapping requirements")
+            logDebug("command ${this.name}: Command initialized following cancellation of commands with overlapping requirements")
         }
     }
 
@@ -77,9 +74,14 @@ object CommandScheduler {
     }
 
     fun run() {
-        if(isLogging) {
-            runLogCommands()
-        }
+        logDebug("CommandScheduler entered run()")
+        logDebug("amount of scheduled commands before run(): ${scheduledCommands.size + toSchedule.size}")
+
+        toSchedule.forEach { it.scheduleThis() }
+        toCancel.forEach { it.cancelThis() }
+
+        toSchedule.clear()
+        toCancel.clear()
 
         subsystems.keys.forEach(Subsystem::periodic)
 
@@ -98,32 +100,21 @@ object CommandScheduler {
             }
         }
 
-        toSchedule.forEach { it.scheduleThis() }
-        toCancel.forEach { it.cancelThis() }
-
-        toSchedule.clear()
-        toCancel.clear()
-
         subsystems.forEach { (k, v) ->
             if (!scheduledCommandRequirements.containsKey(k) && v != null) {
                 schedule(v)
             }
         }
-    }
 
-    fun runLogCommands() {
-        val logIterator = toLog.iterator()
-        while(logIterator.hasNext()) {
-            val logCommand = logIterator.next()
-            logCommand.init()
-            logCommand.execute()
-            logCommand.end(false)
-        }
-        toLog.clear()
+        logDebug("amount of scheduled commands after run(): ${scheduledCommands.size}")
+        logDebug("CommandScheduler exited run()")
     }
 
     fun schedule(vararg commands: Command) {
-        schedule(*commands)
+        commands.forEach {
+            toSchedule.add(it)
+            logDebug("added ${it.name} to toSchedule array")
+        }
     }
 
     fun cancel(vararg commands: Command) {
@@ -133,11 +124,11 @@ object CommandScheduler {
     fun resetScheduler() {
         allMaps.forEach(MutableMap<*, *>::clear)
         allLists.forEach(MutableList<*>::clear)
+        isOpModeLooping = false
     }
 
-    fun setOpMode(opMode: CommandOpMode) {
-        mOpMode = opMode
-        logDebug("set command scheduler op mode")
+    fun startOpModeLooping() {
+        isOpModeLooping = true
     }
 
     fun registerSubsystem(vararg requestedSubsystems: Subsystem) {
@@ -151,12 +142,13 @@ object CommandScheduler {
 
     fun setDefaultCommand(subsystem: Subsystem, command: Command) {
         if (!command.getRequirements().contains(subsystem)) {
-            throw IllegalArgumentException("Default commands must require subsystem")
+            logError("command ${command.name}: default commands must require subsystem")
+            throw Exception("Default commands must require subsystem")
         }
 
         if (command.isFinished) {
-            logError("tried to set command ${command.name} to default for $subsystem")
-            throw java.lang.IllegalArgumentException("Default commands should not end")
+            logError("command ${command.name}: default commands must not end")
+            throw Exception("Default commands should not end")
         }
 
         logInfo("set default command of ${subsystem.name} to ${command.name}")
@@ -167,29 +159,6 @@ object CommandScheduler {
         return subsystems[subsystem]!!
     }
 
-    fun log(message: String, priority: Int) {
-        toLog.add(LogCommand(message, priority))
-    }
-
-    fun logDebug(message: String) {
-        log(message, Log.DEBUG)
-    }
-
-    fun logInfo(message: String) {
-        log(message, Log.INFO)
-    }
-
-    fun logWarning(message: String) {
-        log(message, Log.WARN)
-    }
-
-    fun logError(message: String) {
-        log(message, Log.ERROR)
-    }
-
-    fun logWTF(message: String) {
-        log(message, Log.ASSERT)
-    }
 
     fun cancelAll() {
         scheduledCommands.forEach(Command::cancel)

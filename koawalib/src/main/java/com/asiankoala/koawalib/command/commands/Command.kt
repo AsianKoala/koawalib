@@ -90,5 +90,5 @@ fun interface Command {
 
     val isScheduled: Boolean get() = CommandScheduler.isScheduled(this)
 
-    val name: String get() = this.javaClass.simpleName
+    val name: String get() = ""
 }

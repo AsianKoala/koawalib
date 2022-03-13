@@ -1,6 +1,6 @@
 package com.asiankoala.koawalib.hardware.motor
 
-import com.asiankoala.koawalib.hardware.HardwareDevice
+import com.asiankoala.koawalib.hardware.KDevice
 import com.asiankoala.koawalib.math.MathUtil.epsilonNotEqual
 import com.asiankoala.koawalib.util.KDouble
 import com.qualcomm.robotcore.hardware.DcMotor
@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.util.Range
 import kotlin.math.absoluteValue
 
-open class KMotor(name: String) : HardwareDevice<DcMotorEx>(name), KDouble {
+open class KMotor(name: String) : KDevice<DcMotorEx>(name), KDouble {
 
     private var offset = 0.0
     private var encoderMultiplier = 1.0

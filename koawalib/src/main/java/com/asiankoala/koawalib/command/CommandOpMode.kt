@@ -1,6 +1,5 @@
 package com.asiankoala.koawalib.command
 
-import com.asiankoala.koawalib.dashboard.KoawaDashboard
 import com.asiankoala.koawalib.gamepad.KGamepad
 import com.asiankoala.koawalib.statemachine.StateMachineBuilder
 import com.asiankoala.koawalib.util.OpModeState
@@ -8,6 +7,7 @@ import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.util.ElapsedTime
 
+@Suppress("unused")
 open class CommandOpMode : LinearOpMode() {
     protected lateinit var driver: KGamepad
     protected lateinit var gunner: KGamepad
@@ -20,8 +20,6 @@ open class CommandOpMode : LinearOpMode() {
 
     private fun setup() {
         CommandScheduler.resetScheduler()
-        CommandScheduler.setOpMode(this)
-        KoawaDashboard.init(telemetry, false)
 
         hubs = hardwareMap.getAll(LynxModule::class.java)
         hubs.forEach { it.bulkCachingMode = LynxModule.BulkCachingMode.MANUAL }
@@ -36,7 +34,6 @@ open class CommandOpMode : LinearOpMode() {
         CommandScheduler.addPeriodic(driver::periodic)
         CommandScheduler.addPeriodic(gunner::periodic)
         CommandScheduler.addPeriodic { hubs.forEach(LynxModule::clearBulkCache) }
-        CommandScheduler.addPeriodic(KoawaDashboard::update)
     }
 
     private fun handleLoopMsTelemetry() {
@@ -58,6 +55,7 @@ open class CommandOpMode : LinearOpMode() {
         .state(OpModeState.START)
         .onEnter(::mStart)
         .onEnter(opModeTimer::reset)
+        .onEnter(CommandScheduler::startOpModeLooping)
         .transition { true }
         .state(OpModeState.LOOP)
         .loop(::mLoop)
