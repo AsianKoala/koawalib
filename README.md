@@ -10,14 +10,14 @@ repositories {
   maven { url = 'https://jitpack.io' }
 }
 ```
-- Then add this line to your ```dependencies``` block, where "0.0.5" is the newest release version number
+- Then add this line to your ```dependencies``` block, where "0.0.6" is the newest release tag
 ```
-implementation 'com.github.AsianKoala:koawalib:0.0.5'
+implementation 'com.github.AsianKoala:koawalib:0.0.6'
 ```
 
 - ### Snapshot
   - If you wish to have the most recent commit of the repository rather than a release, consider using a snapshot.
-     Snapshots are not guaranteed to work or even be stable, but they are guaranteed to be the most up to date.
+     Snapshots are not guaranteed to work or even be stable, but they will be the most up to date.
   - To use the snapshot version, first add this code block. This changes the default gradle caching time settings.
     ```
     configurations.all {
@@ -37,7 +37,4 @@ implementation 'com.github.AsianKoala:koawalib:0.0.5'
 
 ## Example usage
 koawalib-quickstart is coming (eventually)
-In the mean time here is how I used it in my [codebase](https://github.com/14607/FF-Private/tree/master/TeamCode/src/main/java/asiankoala/ftc21/v3)
-
-## Documentation
-documentation is also coming (eventually)
+In the mean time here is how I used it in my [codebase](https://github.com/14607/FF-Private/tree/master/TeamCode/src/main/java/asiankoala/ftc2021)
