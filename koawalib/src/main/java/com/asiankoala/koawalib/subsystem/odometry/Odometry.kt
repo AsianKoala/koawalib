@@ -10,7 +10,7 @@ import com.asiankoala.koawalib.subsystem.DeviceSubsystem
 import kotlin.math.absoluteValue
 import kotlin.math.max
 
-class Odometry(@JvmField val config: OdoConfig) : DeviceSubsystem(), Localized {
+open class Odometry(@JvmField val config: OdoConfig) : DeviceSubsystem(), Localized {
     private var _position = Pose()
     override val position: Pose get() = _position
 
@@ -38,7 +38,6 @@ class Odometry(@JvmField val config: OdoConfig) : DeviceSubsystem(), Localized {
             field = value
         }
 
-    // position
     private var startL = 0.0
     private var startR = 0.0
     private var startA = 0.0
@@ -51,7 +50,8 @@ class Odometry(@JvmField val config: OdoConfig) : DeviceSubsystem(), Localized {
     private var currRightEncoder = { config.rightEncoder.position }
     private var currAuxEncoder = { config.auxEncoder.position }
 
-    // velocity
+    private var accumulatedHeading = 0.0
+
     private val prevRobotRelativePositions = ArrayList<TimePose>()
     private var robotRelativeMovement = Pose()
 
@@ -77,6 +77,8 @@ class Odometry(@JvmField val config: OdoConfig) : DeviceSubsystem(), Localized {
         val angleIncrement = (lWheelDelta - rWheelDelta) / config.TURN_SCALAR
         val auxPrediction = angleIncrement * config.AUX_TRACKER
         val rX = aWheelDelta - auxPrediction
+
+        accumulatedHeading += angleIncrement
 
         var deltaY = (lWheelDelta - rWheelDelta) / 2.0
         var deltaX = rX
