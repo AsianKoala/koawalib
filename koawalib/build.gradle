@@ -7,7 +7,7 @@ plugins {
 group = 'com.github.asiankoala'
 
 android {
-    compileSdk 31
+    compileSdk 29
 
     defaultConfig {
         minSdk 23
