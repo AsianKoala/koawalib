@@ -1,12 +1,14 @@
 package com.asiankoala.koawalib.subsystem.odometry
 
 import com.asiankoala.koawalib.math.MathUtil.cos
+import com.asiankoala.koawalib.math.MathUtil.degrees
 import com.asiankoala.koawalib.math.MathUtil.sin
 import com.asiankoala.koawalib.math.MathUtil.wrap
 import com.asiankoala.koawalib.math.Point
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.TimePose
 import com.asiankoala.koawalib.subsystem.DeviceSubsystem
+import org.firstinspires.ftc.robotcore.external.Telemetry
 import kotlin.math.absoluteValue
 import kotlin.math.max
 
@@ -38,9 +40,9 @@ open class Odometry(@JvmField val config: OdoConfig) : DeviceSubsystem(), Locali
             field = value
         }
 
-    private var startL = 0.0
-    private var startR = 0.0
-    private var startA = 0.0
+    private var leftOffset = 0.0
+    private var rightOffset = 0.0
+    private var auxOffset = 0.0
 
     private var lastLeftEncoder = 0.0
     private var lastRightEncoder = 0.0
@@ -51,18 +53,48 @@ open class Odometry(@JvmField val config: OdoConfig) : DeviceSubsystem(), Locali
     private var currAuxEncoder = { config.auxEncoder.position }
 
     private var accumulatedHeading = 0.0
+    private var accumulatedRX = 0.0
+    private var accumulatedAux = 0.0
 
     private val prevRobotRelativePositions = ArrayList<TimePose>()
     private var robotRelativeMovement = Pose()
+
+    // TODO: MAKE KoawaDashboard V2
+    fun getTelemetry(telemetry: Telemetry) {
+        telemetry.addData("left encoder", lastLeftEncoder)
+        telemetry.addData("right encoder", lastRightEncoder)
+        telemetry.addData("aux encoder", lastAuxEncoder)
+        telemetry.addData("left offset", leftOffset)
+        telemetry.addData("right offset", rightOffset)
+        telemetry.addData("aux offset", auxOffset)
+        telemetry.addData("accumulated heading", accumulatedHeading.degrees)
+        telemetry.addData("start pose", startPose.degString)
+        telemetry.addData("curr pose", position.degString)
+        telemetry.addData("corrected aux tracker", calculateAuxTracker())
+    }
+
+    // TODO: test if works
+    fun calculateAuxTracker(): Double {
+        /**
+         * assuming no translational movement and N full rotations
+         * ∫ aux - ∫ tracked = ∫ relativeX
+         * tracked = dtheta * tracker
+         * ∫ aux - ∫ dtheta * tracker = ∫ relativeX
+         * ∫ aux - tracker ∫ dtheta = ∫ relativeX
+         * ∫ aux - ∫ relativeX = tracker ∫ dtheta
+         * (∫ aux - ∫ relativeX) / (∫ dtheta) - tracker_0 = tracker
+         */
+        return (accumulatedAux - accumulatedRX) / accumulatedHeading - config.AUX_TRACKER
+    }
 
     override fun localize() {
         val currLeft = currLeftEncoder.invoke()
         val currRight = currRightEncoder.invoke()
         val currAux = currAuxEncoder.invoke()
 
-        val actualCurrLeft = config.LEFT_SCALAR * (currLeft - startL)
-        val actualCurrRight = config.RIGHT_SCALAR * (currRight - startR)
-        val actualCurrAux = config.AUX_SCALAR * (currAux - startA)
+        val actualCurrLeft = config.LEFT_SCALAR * (currLeft - leftOffset)
+        val actualCurrRight = config.RIGHT_SCALAR * (currRight - rightOffset)
+        val actualCurrAux = config.AUX_SCALAR * (currAux - auxOffset)
 
         val lWheelDelta = (actualCurrLeft - lastLeftEncoder) / config.TICKS_PER_INCH
         val rWheelDelta = (actualCurrRight - lastRightEncoder) / config.TICKS_PER_INCH
@@ -79,6 +111,8 @@ open class Odometry(@JvmField val config: OdoConfig) : DeviceSubsystem(), Locali
         val rX = aWheelDelta - auxPrediction
 
         accumulatedHeading += angleIncrement
+        accumulatedRX += rX
+        accumulatedAux += aWheelDelta
 
         var deltaY = (lWheelDelta - rWheelDelta) / 2.0
         var deltaX = rX

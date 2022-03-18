@@ -44,6 +44,7 @@ open class CommandOpMode : LinearOpMode() {
     private val mainStateMachine = StateMachineBuilder<OpModeState>()
         .universal(CommandScheduler::run)
         .universal(::mUniversal)
+        .universal(telemetry::update) // TODO :rage:
         .state(OpModeState.INIT)
         .onEnter(::setup)
         .onEnter(::schedulePeriodics)
