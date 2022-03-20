@@ -15,7 +15,7 @@ open class KMecanumDrive(
 
     var powers = Pose()
 
-    private var driveState = DriveStates.DISABLED
+    private var driveState = DriveStates.ENABLED
 
     fun disable() {
         driveState = DriveStates.DISABLED

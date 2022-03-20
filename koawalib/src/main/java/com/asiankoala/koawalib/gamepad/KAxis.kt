@@ -24,6 +24,9 @@ class KAxis(
         return axis.invoke().absoluteValue > triggerThreshold
     }
 
+    val inverted
+        get() = KAxis { -axis.invoke() }
+
     companion object {
         const val DEFAULT_TRIGGER_THRESHOLD = 0.3
     }
