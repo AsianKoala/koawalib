@@ -1,6 +1,7 @@
 package com.asiankoala.koawalib.subsystem.odometry
 
 import com.asiankoala.koawalib.command.CommandOpMode
+import com.asiankoala.koawalib.command.CommandOpMode.Companion.logger
 import com.asiankoala.koawalib.math.MathUtil.cos
 import com.asiankoala.koawalib.math.MathUtil.degrees
 import com.asiankoala.koawalib.math.MathUtil.sin
@@ -61,16 +62,17 @@ open class Odometry(@JvmField val config: OdoConfig) : DeviceSubsystem(), Locali
 
     // TODO: MAKE KoawaDashboard V2
     fun updateTelemetry() {
-        CommandOpMode.kTelemetry.addData("left encoder", lastLeftEncoder)
-        CommandOpMode.kTelemetry.addData("right encoder", lastRightEncoder)
-        CommandOpMode.kTelemetry.addData("aux encoder", lastAuxEncoder)
-        CommandOpMode.kTelemetry.addData("left offset", leftOffset)
-        CommandOpMode.kTelemetry.addData("right offset", rightOffset)
-        CommandOpMode.kTelemetry.addData("aux offset", auxOffset)
-        CommandOpMode.kTelemetry.addData("accumulated heading", accumulatedHeading.degrees)
-        CommandOpMode.kTelemetry.addData("start pose", startPose.degString)
-        CommandOpMode.kTelemetry.addData("curr pose", position.degString)
-        CommandOpMode.kTelemetry.addData("corrected aux tracker", calculateAuxTracker())
+        
+        logger.addTelemetryData("left encoder", lastLeftEncoder)
+        logger.addTelemetryData("right encoder", lastRightEncoder)
+        logger.addTelemetryData("aux encoder", lastAuxEncoder)
+        logger.addTelemetryData("left offset", leftOffset)
+        logger.addTelemetryData("right offset", rightOffset)
+        logger.addTelemetryData("aux offset", auxOffset)
+        logger.addTelemetryData("accumulated heading", accumulatedHeading.degrees)
+        logger.addTelemetryData("start pose", startPose.degString)
+        logger.addTelemetryData("curr pose", position.degString)
+        logger.addTelemetryData("corrected aux tracker", calculateAuxTracker())
     }
 
     // TODO: test if works
