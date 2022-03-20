@@ -7,6 +7,7 @@ import java.util.Collections
 import kotlin.collections.ArrayList
 import kotlin.collections.LinkedHashMap
 
+// TODO: INTERNAL SHIT INSTEAD OF MAKING THEM PUBLIC :RAGE:
 @Suppress("unused")
 object CommandScheduler {
     private val scheduledCommands: MutableList<Command> = ArrayList()

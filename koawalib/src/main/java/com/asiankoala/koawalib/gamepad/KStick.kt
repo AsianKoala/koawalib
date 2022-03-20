@@ -18,4 +18,10 @@ class KStick(
 
     override val yAxis
         get() = stickYAxis.invokeDouble()
+
+    val xInverted
+        get() = KStick(stickXAxis.inverted, stickYAxis, stickButton)
+
+    val yInverted
+        get() = KStick(stickXAxis, stickYAxis.inverted, stickButton)
 }

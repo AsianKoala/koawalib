@@ -11,7 +11,8 @@ open class KMecanumOdoDrive(
     bl: KMotor,
     fr: KMotor,
     br: KMotor,
-    odoConfig: OdoConfig
+    odoConfig: OdoConfig,
+    private val shouldTelemetryOdo: Boolean
 ) : KMecanumDrive(fl, bl, fr, br) {
 
     private val odometry = Odometry(odoConfig)
@@ -22,5 +23,9 @@ open class KMecanumOdoDrive(
     override fun periodic() {
         super.periodic()
         odometry.localize()
+
+        if(shouldTelemetryOdo) {
+            odometry.updateTelemetry()
+        }
     }
 }

@@ -8,6 +8,7 @@ import com.asiankoala.koawalib.util.OpModeState
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.util.ElapsedTime
+import org.firstinspires.ftc.robotcore.external.Telemetry
 
 @Suppress("unused")
 open class CommandOpMode : LinearOpMode() {
