@@ -1,6 +1,7 @@
 package com.asiankoala.koawalib.command
 
 import com.asiankoala.koawalib.gamepad.KGamepad
+import com.asiankoala.koawalib.hardware.KDevice
 import com.asiankoala.koawalib.statemachine.StateMachineBuilder
 import com.asiankoala.koawalib.util.OpModeState
 import com.qualcomm.hardware.lynx.LynxModule
@@ -21,6 +22,7 @@ open class CommandOpMode : LinearOpMode() {
     private fun setup() {
         CommandScheduler.resetScheduler()
 
+        KDevice.hardwareMap = hardwareMap
         hubs = hardwareMap.getAll(LynxModule::class.java)
         hubs.forEach { it.bulkCachingMode = LynxModule.BulkCachingMode.MANUAL }
 
