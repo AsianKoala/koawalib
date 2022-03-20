@@ -4,7 +4,7 @@ import com.asiankoala.koawalib.hardware.motor.KMotor
 
 data class OdoConfig(
     val TICKS_PER_INCH: Double,
-    var TURN_SCALAR: Double,
+    var TRACK_WIDTH: Double,
     var AUX_TRACKER: Double,
     val leftEncoder: KMotor,
     val rightEncoder: KMotor,

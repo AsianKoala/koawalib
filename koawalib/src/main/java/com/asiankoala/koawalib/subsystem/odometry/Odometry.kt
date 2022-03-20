@@ -48,6 +48,10 @@ open class Odometry(@JvmField val config: OdoConfig) : DeviceSubsystem(), Locali
     private var lastRightEncoder = 0.0
     private var lastAuxEncoder = 0.0
 
+    private var lastLeftDelta = 0.0
+    private var lastRightDelta = 0.0
+    private var lastAuxDelta = 0.0
+
     private var currLeftEncoder = { config.leftEncoder.position }
     private var currRightEncoder = { config.rightEncoder.position }
     private var currAuxEncoder = { config.auxEncoder.position }
@@ -59,11 +63,13 @@ open class Odometry(@JvmField val config: OdoConfig) : DeviceSubsystem(), Locali
     private val prevRobotRelativePositions = ArrayList<TimePose>()
     private var robotRelativeMovement = Pose()
 
-    // TODO: MAKE KoawaDashboard V2
     internal fun updateTelemetry() {
         logger.addTelemetryData("left encoder", lastLeftEncoder)
         logger.addTelemetryData("right encoder", lastRightEncoder)
         logger.addTelemetryData("aux encoder", lastAuxEncoder)
+        logger.addTelemetryData("left delta", lastLeftDelta)
+        logger.addTelemetryData("right delta", lastRightDelta)
+        logger.addTelemetryData("aux delta", lastAuxDelta)
         logger.addTelemetryData("left offset", leftOffset)
         logger.addTelemetryData("right offset", rightOffset)
         logger.addTelemetryData("aux offset", auxOffset)
@@ -73,7 +79,6 @@ open class Odometry(@JvmField val config: OdoConfig) : DeviceSubsystem(), Locali
         logger.addTelemetryData("corrected aux tracker", calculateAuxTracker())
     }
 
-    // TODO: test if works
     private fun calculateAuxTracker(): Double {
         /**
          * assuming no translational movement and N full rotations
@@ -104,9 +109,9 @@ open class Odometry(@JvmField val config: OdoConfig) : DeviceSubsystem(), Locali
         val rightTotal = actualCurrRight / config.TICKS_PER_INCH
 
         val lastAngle = _position.heading
-        val newAngle = (((leftTotal - rightTotal) / config.TURN_SCALAR) + startPose.heading).wrap
+        val newAngle = (((leftTotal - rightTotal) / config.TRACK_WIDTH) + startPose.heading).wrap
 
-        val angleIncrement = (lWheelDelta - rWheelDelta) / config.TURN_SCALAR
+        val angleIncrement = (lWheelDelta - rWheelDelta) / config.TRACK_WIDTH
         val auxPrediction = angleIncrement * config.AUX_TRACKER
         val rX = aWheelDelta - auxPrediction
 

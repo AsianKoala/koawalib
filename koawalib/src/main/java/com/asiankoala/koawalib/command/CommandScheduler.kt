@@ -18,10 +18,16 @@ object CommandScheduler {
     private val toCancel: MutableList<Command> = ArrayDeque()
 
     private val allMaps = listOf(scheduledCommandRequirements, subsystems)
-    private val allLists = listOf(scheduledCommands, toCancel, toSchedule)
+    private val allLists = listOf(scheduledCommands, toCancel, toSchedule, toCancel)
 
     internal var isOpModeLooping = false
         private set
+
+    internal fun resetScheduler() {
+        allMaps.forEach(MutableMap<*, *>::clear)
+        allLists.forEach(MutableList<*>::clear)
+        isOpModeLooping = false
+    }
 
     private fun initCommand(command: Command, cRequirements: Set<Subsystem>) {
         command.init()
@@ -113,12 +119,6 @@ object CommandScheduler {
 
     fun cancel(vararg commands: Command) {
         toCancel.addAll(commands)
-    }
-
-    internal fun resetScheduler() {
-        allMaps.forEach(MutableMap<*, *>::clear)
-        allLists.forEach(MutableList<*>::clear)
-        isOpModeLooping = false
     }
 
     fun startOpModeLooping() {
