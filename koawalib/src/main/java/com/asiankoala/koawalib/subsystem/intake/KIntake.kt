@@ -8,15 +8,15 @@ import com.asiankoala.koawalib.subsystem.DeviceSubsystem
 open class KIntake(private val motor: KMotor, private val config: IntakeConfig): DeviceSubsystem() {
 
     fun turnOn() {
-        motor.setSpeed(config.ON_POWER)
+        motor.setSpeed(config.MAX_POWER)
     }
 
     fun turnReverse() {
-        motor.setSpeed(config.REVERSE_POWER)
+        motor.setSpeed(-config.MAX_POWER)
     }
 
     fun turnOff() {
-        motor.setSpeed(config.OFF_POWER)
+        motor.setSpeed(0.0)
     }
 
     fun setIntakeSpeed(speed: Double) {
