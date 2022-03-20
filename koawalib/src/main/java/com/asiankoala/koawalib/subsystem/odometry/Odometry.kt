@@ -1,5 +1,6 @@
 package com.asiankoala.koawalib.subsystem.odometry
 
+import com.asiankoala.koawalib.command.CommandOpMode
 import com.asiankoala.koawalib.math.MathUtil.cos
 import com.asiankoala.koawalib.math.MathUtil.degrees
 import com.asiankoala.koawalib.math.MathUtil.sin
@@ -8,7 +9,6 @@ import com.asiankoala.koawalib.math.Point
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.TimePose
 import com.asiankoala.koawalib.subsystem.DeviceSubsystem
-import org.firstinspires.ftc.robotcore.external.Telemetry
 import kotlin.math.absoluteValue
 import kotlin.math.max
 
@@ -60,17 +60,17 @@ open class Odometry(@JvmField val config: OdoConfig) : DeviceSubsystem(), Locali
     private var robotRelativeMovement = Pose()
 
     // TODO: MAKE KoawaDashboard V2
-    fun getTelemetry(telemetry: Telemetry) {
-        telemetry.addData("left encoder", lastLeftEncoder)
-        telemetry.addData("right encoder", lastRightEncoder)
-        telemetry.addData("aux encoder", lastAuxEncoder)
-        telemetry.addData("left offset", leftOffset)
-        telemetry.addData("right offset", rightOffset)
-        telemetry.addData("aux offset", auxOffset)
-        telemetry.addData("accumulated heading", accumulatedHeading.degrees)
-        telemetry.addData("start pose", startPose.degString)
-        telemetry.addData("curr pose", position.degString)
-        telemetry.addData("corrected aux tracker", calculateAuxTracker())
+    fun updateTelemetry() {
+        CommandOpMode.kTelemetry.addData("left encoder", lastLeftEncoder)
+        CommandOpMode.kTelemetry.addData("right encoder", lastRightEncoder)
+        CommandOpMode.kTelemetry.addData("aux encoder", lastAuxEncoder)
+        CommandOpMode.kTelemetry.addData("left offset", leftOffset)
+        CommandOpMode.kTelemetry.addData("right offset", rightOffset)
+        CommandOpMode.kTelemetry.addData("aux offset", auxOffset)
+        CommandOpMode.kTelemetry.addData("accumulated heading", accumulatedHeading.degrees)
+        CommandOpMode.kTelemetry.addData("start pose", startPose.degString)
+        CommandOpMode.kTelemetry.addData("curr pose", position.degString)
+        CommandOpMode.kTelemetry.addData("corrected aux tracker", calculateAuxTracker())
     }
 
     // TODO: test if works

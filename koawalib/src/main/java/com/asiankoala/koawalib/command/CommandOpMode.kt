@@ -7,6 +7,7 @@ import com.asiankoala.koawalib.util.OpModeState
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.util.ElapsedTime
+import org.firstinspires.ftc.robotcore.external.Telemetry
 
 @Suppress("unused")
 open class CommandOpMode : LinearOpMode() {
@@ -22,6 +23,7 @@ open class CommandOpMode : LinearOpMode() {
     private fun setup() {
         CommandScheduler.resetScheduler()
 
+        kTelemetry = telemetry
         KDevice.hardwareMap = hardwareMap
         hubs = hardwareMap.getAll(LynxModule::class.java)
         hubs.forEach { it.bulkCachingMode = LynxModule.BulkCachingMode.MANUAL }
@@ -86,4 +88,8 @@ open class CommandOpMode : LinearOpMode() {
     open fun mLoop() {}
     open fun mStop() {}
     open fun mUniversal() {}
+
+    companion object {
+        lateinit var kTelemetry: Telemetry
+    }
 }
