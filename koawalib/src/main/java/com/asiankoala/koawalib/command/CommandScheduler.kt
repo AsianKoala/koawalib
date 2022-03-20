@@ -164,14 +164,6 @@ object CommandScheduler {
         return scheduledCommandRequirements[subsystem]!!
     }
 
-    /**
-     * internal because command scheduler uses this
-     */
-    internal fun addPeriodic(action: () -> Unit) {
-        InfiniteCommand(action).schedule()
-        CommandOpMode.logger.logInfo("added periodic")
-    }
-
     fun scheduleWatchdog(condition: () -> Boolean, command: Command) {
         schedule(Watchdog(condition, command))
         CommandOpMode.logger.logInfo("added watchdog ${command.name}")

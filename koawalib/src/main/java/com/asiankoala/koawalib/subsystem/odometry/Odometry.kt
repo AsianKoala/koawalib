@@ -1,6 +1,5 @@
 package com.asiankoala.koawalib.subsystem.odometry
 
-import com.asiankoala.koawalib.command.CommandOpMode
 import com.asiankoala.koawalib.command.CommandOpMode.Companion.logger
 import com.asiankoala.koawalib.math.MathUtil.cos
 import com.asiankoala.koawalib.math.MathUtil.degrees
@@ -35,7 +34,7 @@ open class Odometry(@JvmField val config: OdoConfig) : DeviceSubsystem(), Locali
             return Pose(dirVel, angularVel.wrap)
         }
 
-    var startPose = Pose()
+    internal var startPose = Pose()
         set(value) {
             _position = value
             field = value
@@ -61,8 +60,7 @@ open class Odometry(@JvmField val config: OdoConfig) : DeviceSubsystem(), Locali
     private var robotRelativeMovement = Pose()
 
     // TODO: MAKE KoawaDashboard V2
-    fun updateTelemetry() {
-        
+    internal fun updateTelemetry() {
         logger.addTelemetryData("left encoder", lastLeftEncoder)
         logger.addTelemetryData("right encoder", lastRightEncoder)
         logger.addTelemetryData("aux encoder", lastAuxEncoder)
@@ -76,7 +74,7 @@ open class Odometry(@JvmField val config: OdoConfig) : DeviceSubsystem(), Locali
     }
 
     // TODO: test if works
-    fun calculateAuxTracker(): Double {
+    private fun calculateAuxTracker(): Double {
         /**
          * assuming no translational movement and N full rotations
          * ∫ aux - ∫ tracked = ∫ relativeX

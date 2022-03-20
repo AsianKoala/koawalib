@@ -1,5 +1,6 @@
 package com.asiankoala.koawalib.command
 
+import com.asiankoala.koawalib.command.commands.InfiniteCommand
 import com.asiankoala.koawalib.gamepad.KGamepad
 import com.asiankoala.koawalib.hardware.KDevice
 import com.asiankoala.koawalib.statemachine.StateMachineBuilder
@@ -36,10 +37,10 @@ open class CommandOpMode : LinearOpMode() {
     }
 
     private fun schedulePeriodics() {
-        CommandScheduler.addPeriodic { prevLoopTime = System.currentTimeMillis() }
-        CommandScheduler.addPeriodic(driver::periodic)
-        CommandScheduler.addPeriodic(gunner::periodic)
-        CommandScheduler.addPeriodic { hubs.forEach(LynxModule::clearBulkCache) }
+        InfiniteCommand(driver::periodic).withName("driver gamepad periodic").schedule()
+        InfiniteCommand(gunner::periodic).withName("gunner gamepad periodic").schedule()
+        InfiniteCommand({ hubs.forEach(LynxModule::clearBulkCache) }).withName("clear bulk data periodic").schedule()
+        InfiniteCommand(::handleLoopMsTelemetry).withName("loop ms telemetry periodic").schedule()
     }
 
     private fun handleLoopMsTelemetry() {
@@ -66,7 +67,6 @@ open class CommandOpMode : LinearOpMode() {
         .transition { true }
         .state(OpModeState.LOOP)
         .loop(::mLoop)
-        .loop(::handleLoopMsTelemetry)
         .transition(::isStopRequested)
         .state(OpModeState.STOP)
         .onEnter(::mStop)
@@ -81,6 +81,7 @@ open class CommandOpMode : LinearOpMode() {
 
         while (mainStateMachine.running) {
             mainStateMachine.update()
+            prevLoopTime = System.currentTimeMillis()
         }
     }
 

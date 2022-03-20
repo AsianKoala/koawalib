@@ -4,7 +4,7 @@ import android.util.Log
 import org.firstinspires.ftc.robotcore.external.Telemetry
 
 @Suppress("unused")
-class LogManager(private var isLogging: Boolean, private var isPrinting: Boolean) {
+open class LogManager(private var isLogging: Boolean, private var isPrinting: Boolean) {
     private var logCount = 0
     internal var telemetry: Telemetry? = null
 
@@ -30,8 +30,18 @@ class LogManager(private var isLogging: Boolean, private var isPrinting: Boolean
     }
 
     fun addTelemetryLine(message: String) {
-        telemetry?.addLine(message) ?: logError("LogManager telemetry is null")
-        logInfo(message)
+        if(telemetry == null) {
+            val nullStr = "LogManager telemetry is null"
+            if(isPrinting) {
+                logWarning(nullStr)
+                logInfo(message)
+            } else {
+                logError(nullStr)
+            }
+        } else {
+            telemetry!!.addLine(message)
+            logInfo(message)
+        }
     }
 
     fun addTelemetryData(message: String, data: Any?) {

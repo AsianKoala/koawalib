@@ -13,7 +13,7 @@ abstract class CommandBase : Command {
         return mRequirements
     }
 
-    fun name(commandName: String): Command {
+    fun withName(commandName: String): Command {
         _name = commandName
         return this
     }
