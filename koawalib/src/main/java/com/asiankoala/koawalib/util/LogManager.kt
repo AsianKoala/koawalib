@@ -1,19 +1,18 @@
 package com.asiankoala.koawalib.util
 
 import android.util.Log
-import com.asiankoala.koawalib.command.commands.LogCommand
-import com.asiankoala.koawalib.command.commands.PrintCommand
+import org.firstinspires.ftc.robotcore.external.Telemetry
 
 @Suppress("unused")
-interface Loggable {
-    var logCount: Int
-    var isLogging: Boolean
-    var isPrinting: Boolean
+class LogManager(private var isLogging: Boolean, private var isPrinting: Boolean) {
+    private var logCount = 0
+    internal var telemetry: Telemetry? = null
 
-    fun log(message: String, priority: Int) {
+    private fun log(message: String, priority: Int) {
         logCount++
+        val tag = "KOAWALIB"
         val formattedMessage = "%-10s %s".format(logCount, message)
-        val printMessage = "${PrintCommand.priorityList[priority]} \t $formattedMessage"
+        val printMessage = "${priorityList[priority]} \t $formattedMessage"
 
         val color = when(priority) {
             Log.DEBUG -> ANSI_CYAN
@@ -21,8 +20,22 @@ interface Loggable {
             else -> ANSI_PURPLE
         }
 
-        if(isLogging) LogCommand(formattedMessage.withColor(color), priority).execute()
-        if(isPrinting) PrintCommand(printMessage.withColor(color)).execute()
+        if(isLogging) {
+            Log.println(priority, tag, formattedMessage)
+        }
+
+        if(isPrinting) {
+            println(printMessage.withColor(color))
+        }
+    }
+
+    fun addTelemetryLine(message: String) {
+        telemetry?.addLine(message) ?: logError("LogManager telemetry is null")
+        logInfo(message)
+    }
+
+    fun addTelemetryData(message: String, data: Any?) {
+        addTelemetryLine("$message : $data")
     }
 
     fun logDebug(message: String) {
@@ -39,6 +52,7 @@ interface Loggable {
 
     fun logError(message: String) {
         log(message, Log.ERROR)
+        throw Exception()
     }
 
     fun logWTF(message: String) {
@@ -61,7 +75,11 @@ interface Loggable {
         isPrinting = false
     }
 
-    fun String.withColor(color: String): String {
+    fun reset() {
+        logCount = 0
+    }
+
+    private fun String.withColor(color: String): String {
         return "$color$this$ANSI_RESET"
     }
 
@@ -88,5 +106,7 @@ interface Loggable {
         const val ANSI_UNDERLINE = "\u001B[4m"
         const val ANSI_STOP_UNDERLINE = "\u001B[24m"
         const val ANSI_BLINK = "\u001B[5m"
+
+        val priorityList = listOf("NONE", "NONE", "VERBOSE", "DEBUG", "INFO", "WARN", "ERROR", "WTF")
     }
 }

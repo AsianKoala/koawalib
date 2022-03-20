@@ -1,7 +1,9 @@
 package com.asiankoala.koawalib.command
 
 import com.asiankoala.koawalib.gamepad.KGamepad
+import com.asiankoala.koawalib.hardware.KDevice
 import com.asiankoala.koawalib.statemachine.StateMachineBuilder
+import com.asiankoala.koawalib.util.LogManager
 import com.asiankoala.koawalib.util.OpModeState
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
@@ -16,11 +18,14 @@ open class CommandOpMode : LinearOpMode() {
     private var opModeTimer = ElapsedTime()
     private lateinit var hubs: List<LynxModule>
 
-    val isLooping get() = mainStateMachine.state == OpModeState.LOOP
+    internal val isLooping get() = mainStateMachine.state == OpModeState.LOOP
 
     private fun setup() {
+        logger.reset()
+        logger.telemetry = telemetry
         CommandScheduler.resetScheduler()
 
+        KDevice.hardwareMap = hardwareMap
         hubs = hardwareMap.getAll(LynxModule::class.java)
         hubs.forEach { it.bulkCachingMode = LynxModule.BulkCachingMode.MANUAL }
 
@@ -44,7 +49,7 @@ open class CommandOpMode : LinearOpMode() {
     private val mainStateMachine = StateMachineBuilder<OpModeState>()
         .universal(CommandScheduler::run)
         .universal(::mUniversal)
-        .universal(telemetry::update) // TODO :rage:
+        .universal(telemetry::update)
         .state(OpModeState.INIT)
         .onEnter(::setup)
         .onEnter(::schedulePeriodics)
@@ -84,4 +89,8 @@ open class CommandOpMode : LinearOpMode() {
     open fun mLoop() {}
     open fun mStop() {}
     open fun mUniversal() {}
+
+    companion object {
+        val logger = LogManager(isLogging = true, isPrinting = false)
+    }
 }

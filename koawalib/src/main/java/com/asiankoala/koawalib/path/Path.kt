@@ -1,5 +1,6 @@
 package com.asiankoala.koawalib.path
 
+import com.asiankoala.koawalib.command.CommandOpMode.Companion.logger
 import com.asiankoala.koawalib.command.commands.PathCommand
 import com.asiankoala.koawalib.math.MathUtil
 import com.asiankoala.koawalib.math.MathUtil.degrees
@@ -32,8 +33,12 @@ class Path(private val waypoints: List<Waypoint>, private val followAngle: Doubl
         // meaning, if the robot hasn't passed a waypoint, even if following that next waypoint's segment
         // the robot will not run the next waypoint command until after it has passed it (reflected by currFollowIndex)
         for (waypoint in waypoints.subList(0, currFollowIndex)) {
+            logger.logDebug("attempting to run waypoint commands in interval [0,$currFollowIndex]")
             if (waypoint.command != null) {
-                if (!waypoint.command.isFinished && !waypoint.command.isScheduled) {
+                // TODO: WAS PREIVOUSLY !waypoint.command.isFinished && !waypoint.command.isScheduled
+                // TODO: CHECK IF NEW WORKS
+                if (!waypoint.command.isScheduled) {
+                    logger.logDebug("scheduled waypoint $waypoint command ${waypoint.command}")
                     waypoint.command.schedule()
                 }
             }
@@ -78,7 +83,8 @@ class Path(private val waypoints: List<Waypoint>, private val followAngle: Doubl
             movementLookahead.headingLockAngle,
             movementLookahead.slowDownTurnRadians,
             movementLookahead.lowestSlowDownFromTurnError,
-            true
+            noTurn = true,
+            shouldTelemetry = false
         ).point
 
         val currFollowAngle = if (waypoints[currFollowIndex].isHeadingLocked) {
@@ -88,14 +94,14 @@ class Path(private val waypoints: List<Waypoint>, private val followAngle: Doubl
             (absoluteAngle + followAngle - 90.0.radians).wrap
         }
 
-        val result = PurePursuitController.pointTo(
+        val turnResult = PurePursuitController.pointTo(
             pose.heading,
             currFollowAngle,
             waypoints[currFollowIndex].maxTurnSpeed,
             45.0.radians
         )
-        val finalTurnPower = result.first
-        val realRelativeAngle = result.second
+        val finalTurnPower = turnResult.first
+        val realRelativeAngle = turnResult.second
 
         val errorTurnSoScaleMovement = MathUtil.clamp(1.0 - (realRelativeAngle / movementLookahead.slowDownTurnRadians).absoluteValue, movementLookahead.lowestSlowDownFromTurnError, 1.0)
 
@@ -105,17 +111,19 @@ class Path(private val waypoints: List<Waypoint>, private val followAngle: Doubl
         if (clippedDistanceToEnd < 1.0) {
             isFinished = true
         }
-
-        println("pose: $pose")
-        println("curr follow index: $currFollowIndex")
-        println("curr follow angle: ${currFollowAngle.degrees}")
-        println("move lookahead: $movementLookahead")
-        println("turn lookahead: $turnLookahead")
-        println("clipped distance: $clippedDistanceToEnd")
-        println("relative angle: ${realRelativeAngle.degrees}")
-        println("x power: $finalXPower")
-        println("y power: $finalYPower")
-        println("turn power: $finalTurnPower")
+        
+        logger.logDebug("pure pursuit debug started")
+        logger.logDebug("pose: $pose")
+        logger.logDebug("curr follow index: $currFollowIndex")
+        logger.logDebug("curr follow angle: ${currFollowAngle.degrees}")
+        logger.logDebug("move lookahead: $movementLookahead")
+        logger.logDebug("turn lookahead: $turnLookahead")
+        logger.logDebug("clipped distance: $clippedDistanceToEnd")
+        logger.logDebug("relative angle: ${realRelativeAngle.degrees}")
+        logger.logDebug("x power: $finalXPower")
+        logger.logDebug("y power: $finalYPower")
+        logger.logDebug("turn power: $finalTurnPower")
+        logger.logDebug("pure pursuit debug ended")
         return Pose(finalXPower, finalYPower, finalTurnPower)
     }
 
@@ -139,6 +147,6 @@ class Path(private val waypoints: List<Waypoint>, private val followAngle: Doubl
 
     // integration with command scheduler
     fun schedule(drive: KMecanumOdoDrive) {
-        PathCommand(drive, this)
+        PathCommand(drive, this).schedule()
     }
 }

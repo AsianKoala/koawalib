@@ -1,6 +1,5 @@
 package com.asiankoala.koawalib.subsystem.intake
 
-import com.acmerobotics.dashboard.config.Config
 import com.asiankoala.koawalib.hardware.motor.KMotor
 import com.asiankoala.koawalib.subsystem.DeviceSubsystem
 

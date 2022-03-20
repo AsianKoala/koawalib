@@ -1,5 +1,6 @@
 package com.asiankoala.koawalib.path
 
+import com.asiankoala.koawalib.command.CommandOpMode.Companion.logger
 import com.asiankoala.koawalib.math.IndexPoint
 import com.asiankoala.koawalib.math.MathUtil
 import com.asiankoala.koawalib.math.MathUtil.cos
@@ -26,9 +27,9 @@ object PurePursuitController {
         headingLockAngle: Double = 0.0,
         slowDownTurnRadians: Double = 60.0.radians,
         lowestSlowDownFromTurnError: Double = 0.4,
-        noTurn: Boolean = false
+        noTurn: Boolean = false,
+        shouldTelemetry: Boolean = true
     ): Pose {
-
         val absoluteDelta = targetPosition - currPose.point
         val distanceToPoint = absoluteDelta.hypot
 
@@ -42,14 +43,11 @@ object PurePursuitController {
         var xPower = relativeXToPosition / relativeAbsMagnitude
         var yPower = relativeYToPosition / relativeAbsMagnitude
 
-        println("raw x power $xPower")
-        println("raw y power $yPower")
-
         if (stop) {
             xPower *= relativeXToPosition.absoluteValue / 12.0
             yPower *= relativeYToPosition.absoluteValue / 12.0
         } else {
-            println("FULL SPEED")
+            logger.addTelemetryLine("FULL SPEED")
         }
 
         xPower = MathUtil.clamp(xPower, -maxMoveSpeed, maxMoveSpeed)
@@ -78,11 +76,6 @@ object PurePursuitController {
 
         turnPower *= Range.clip(relativePointAngle.absoluteValue / 3.0.radians, 0.0, 1.0)
 
-        println("close scalar Y ${Range.clip(relativeYToPosition.absoluteValue / 2.5, 0.0, 1.0)}")
-
-        println("pre turn xPower $xPower")
-        println("pre turn ypower $yPower")
-
         if (noTurn) {
             return Pose(xPower, yPower, 0.0)
         }
@@ -94,16 +87,23 @@ object PurePursuitController {
             errorTurnSoScaleMovement = 1.0
         }
 
-        println("error turn movment scale $errorTurnSoScaleMovement")
-
         xPower *= errorTurnSoScaleMovement
         yPower *= errorTurnSoScaleMovement
 
-        println("relative X $relativeXToPosition")
-        println("relative Y $relativeYToPosition")
+        if(shouldTelemetry) {
+            logger.addTelemetryLine("raw x power $xPower")
+            logger.addTelemetryLine("raw y power $yPower")
+            logger.addTelemetryLine("close scalar Y ${Range.clip(relativeYToPosition.absoluteValue / 2.5, 0.0, 1.0)}")
+            logger.addTelemetryLine("pre turn xPower $xPower")
+            logger.addTelemetryLine("pre turn ypower $yPower")
+            logger.addTelemetryLine("error turn movment scale $errorTurnSoScaleMovement")
 
-        println("final x power goTopos $xPower")
-        println("final y power goToPos $yPower")
+            logger.addTelemetryLine("relative X $relativeXToPosition")
+            logger.addTelemetryLine("relative Y $relativeYToPosition")
+            logger.addTelemetryLine("final x power goTopos $xPower")
+            logger.addTelemetryLine("final y power goToPos $yPower")
+        }
+
 
         return Pose(xPower, yPower, turnPower)
     }
