@@ -8,6 +8,7 @@ import kotlin.collections.ArrayList
 import kotlin.collections.LinkedHashMap
 
 // TODO: INTERNAL SHIT INSTEAD OF MAKING THEM PUBLIC :RAGE:
+// TODO: ASSERT NOT CHANGING PER LOOP OR SOMETHING? SOUNDS COOL
 @Suppress("unused")
 object CommandScheduler {
     private val scheduledCommands: MutableList<Command> = ArrayList()

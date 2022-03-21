@@ -62,7 +62,7 @@ open class LogManager(private var isLogging: Boolean, private var isPrinting: Bo
 
     fun logError(message: String) {
         log(message, Log.ERROR)
-        throw Exception()
+        throw Exception(message)
     }
 
     fun logWTF(message: String) {
