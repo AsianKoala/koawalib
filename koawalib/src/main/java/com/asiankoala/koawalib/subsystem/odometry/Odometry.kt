@@ -70,7 +70,7 @@ open class Odometry(@JvmField val config: OdoConfig) : DeviceSubsystem(), Locali
         logger.addTelemetryData("accumulated heading", accumulatedHeading.degrees)
 
         val accumAuxScale = lastAuxEncoder / config.TICKS_PER_INCH
-        val auxTrackDiff = lastAuxEncoder - accumulatedAuxPrediction
+        val auxTrackDiff = accumAuxScale - accumulatedAuxPrediction
         logger.addTelemetryData("accumulated aux", accumAuxScale)
         logger.addTelemetryData("accumulated aux prediction", accumulatedAuxPrediction)
         logger.addTelemetryData("accum aux - tracker", auxTrackDiff)
