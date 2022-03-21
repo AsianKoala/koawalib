@@ -48,48 +48,31 @@ open class Odometry(@JvmField val config: OdoConfig) : DeviceSubsystem(), Locali
     private var lastRightEncoder = 0.0
     private var lastAuxEncoder = 0.0
 
-    private var lastLeftDelta = 0.0
-    private var lastRightDelta = 0.0
-    private var lastAuxDelta = 0.0
-
     private var currLeftEncoder = { config.leftEncoder.position }
     private var currRightEncoder = { config.rightEncoder.position }
     private var currAuxEncoder = { config.auxEncoder.position }
 
     private var accumulatedHeading = 0.0
-    private var accumulatedRX = 0.0
-    private var accumulatedAux = 0.0
+    private var accumulatedAuxPrediction = 0.0
 
     private val prevRobotRelativePositions = ArrayList<TimePose>()
     private var robotRelativeMovement = Pose()
 
     internal fun updateTelemetry() {
+        logger.addTelemetryData("start pose", startPose.degString)
+        logger.addTelemetryData("curr pose", position.degString)
         logger.addTelemetryData("left encoder", lastLeftEncoder)
         logger.addTelemetryData("right encoder", lastRightEncoder)
         logger.addTelemetryData("aux encoder", lastAuxEncoder)
-        logger.addTelemetryData("left delta", lastLeftDelta)
-        logger.addTelemetryData("right delta", lastRightDelta)
-        logger.addTelemetryData("aux delta", lastAuxDelta)
         logger.addTelemetryData("left offset", leftOffset)
         logger.addTelemetryData("right offset", rightOffset)
         logger.addTelemetryData("aux offset", auxOffset)
         logger.addTelemetryData("accumulated heading", accumulatedHeading.degrees)
-        logger.addTelemetryData("start pose", startPose.degString)
-        logger.addTelemetryData("curr pose", position.degString)
-        logger.addTelemetryData("corrected aux tracker", calculateAuxTracker())
-    }
-
-    private fun calculateAuxTracker(): Double {
-        /**
-         * assuming no translational movement and N full rotations
-         * ∫ aux - ∫ tracked = ∫ relativeX
-         * tracked = dtheta * tracker
-         * ∫ aux - ∫ dtheta * tracker = ∫ relativeX
-         * ∫ aux - tracker ∫ dtheta = ∫ relativeX
-         * ∫ aux - ∫ relativeX = tracker ∫ dtheta
-         * (∫ aux - ∫ relativeX) / (∫ dtheta) - tracker_0 = tracker
-         */
-        return (accumulatedAux - accumulatedRX) / accumulatedHeading - config.AUX_TRACKER
+        logger.addTelemetryData("accumulated aux", lastAuxEncoder)
+        logger.addTelemetryData("accumulated aux prediction", accumulatedAuxPrediction)
+        val auxTrackDiff = lastAuxEncoder - accumulatedAuxPrediction
+        logger.addTelemetryData("accum aux - tracker", auxTrackDiff)
+        logger.addTelemetryData("should increase aux tracker", auxTrackDiff > 0)
     }
 
     override fun localize() {
@@ -116,8 +99,7 @@ open class Odometry(@JvmField val config: OdoConfig) : DeviceSubsystem(), Locali
         val rX = aWheelDelta - auxPrediction
 
         accumulatedHeading += angleIncrement
-        accumulatedRX += rX
-        accumulatedAux += aWheelDelta
+        accumulatedAuxPrediction += rX
 
         var deltaY = (lWheelDelta - rWheelDelta) / 2.0
         var deltaX = rX
