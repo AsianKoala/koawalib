@@ -68,9 +68,11 @@ open class Odometry(@JvmField val config: OdoConfig) : DeviceSubsystem(), Locali
         logger.addTelemetryData("right offset", rightOffset)
         logger.addTelemetryData("aux offset", auxOffset)
         logger.addTelemetryData("accumulated heading", accumulatedHeading.degrees)
-        logger.addTelemetryData("accumulated aux", lastAuxEncoder)
-        logger.addTelemetryData("accumulated aux prediction", accumulatedAuxPrediction)
+
+        val accumAuxScale = lastAuxEncoder / config.TICKS_PER_INCH
         val auxTrackDiff = lastAuxEncoder - accumulatedAuxPrediction
+        logger.addTelemetryData("accumulated aux", accumAuxScale)
+        logger.addTelemetryData("accumulated aux prediction", accumulatedAuxPrediction)
         logger.addTelemetryData("accum aux - tracker", auxTrackDiff)
         logger.addTelemetryData("should increase aux tracker", auxTrackDiff > 0)
     }
@@ -99,7 +101,7 @@ open class Odometry(@JvmField val config: OdoConfig) : DeviceSubsystem(), Locali
         val rX = aWheelDelta - auxPrediction
 
         accumulatedHeading += angleIncrement
-        accumulatedAuxPrediction += rX
+        accumulatedAuxPrediction += auxPrediction
 
         var deltaY = (lWheelDelta - rWheelDelta) / 2.0
         var deltaX = rX
