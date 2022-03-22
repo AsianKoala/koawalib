@@ -18,8 +18,10 @@ object CommandScheduler {
     private val toSchedule: MutableList<Command> = ArrayDeque()
     private val toCancel: MutableList<Command> = ArrayDeque()
 
-    private val allMaps = listOf(scheduledCommandRequirements, subsystems)
-    private val allLists = listOf(scheduledCommands, toCancel, toSchedule, toCancel)
+    private val loopAssertionMap: MutableMap<Any, Int> = HashMap()
+
+    private val allMaps = listOf<MutableMap<*,*>>(scheduledCommandRequirements, subsystems)
+    private val allLists = listOf<MutableList<*>>(scheduledCommands, toCancel, toSchedule, toCancel)
 
     internal var isOpModeLooping = false
         private set
@@ -77,6 +79,12 @@ object CommandScheduler {
     internal fun run() {
         CommandOpMode.logger.logDebug("CommandScheduler entered run()")
         CommandOpMode.logger.logDebug("amount of scheduled commands before run(): ${scheduledCommands.size + toSchedule.size}")
+
+        loopAssertionMap.forEach { (k, v) ->
+            if(v > 1) {
+//                CommandOpMode.logger.logWarning(TODO())
+            }
+        }
 
         toSchedule.forEach { it.scheduleThis() }
         toCancel.forEach { it.cancelThis() }
@@ -168,5 +176,13 @@ object CommandScheduler {
     fun scheduleWatchdog(condition: () -> Boolean, command: Command) {
         schedule(Watchdog(condition, command))
         CommandOpMode.logger.logInfo("added watchdog ${command.name}")
+    }
+
+    fun assertUniqueLoop(thing: Any) {
+        if(thing in loopAssertionMap.keys) {
+            loopAssertionMap[thing] = loopAssertionMap[thing]!! + 1
+        } else {
+            loopAssertionMap[thing] = 0
+        }
     }
 }
