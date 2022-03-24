@@ -52,6 +52,9 @@ class KIMU(name: String, axesOrder: AxesOrder, axesSigns: AxesSigns) : KDevice<B
     fun periodic() {
         isReadFresh = true
         lastAngularOrientation = device.angularOrientation
+        Logger.addTelemetryData("last imu read", lastAngularOrientation.firstAngle)
+        Logger.addTelemetryData("last imu read 2", lastAngularOrientation.secondAngle)
+        Logger.addTelemetryData("last imu read 3", lastAngularOrientation.thirdAngle)
     }
 
     init {

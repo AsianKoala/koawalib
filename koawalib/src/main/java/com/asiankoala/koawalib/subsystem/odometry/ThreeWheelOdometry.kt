@@ -48,8 +48,4 @@ class ThreeWheelOdometry(config: OdoConfig) : Odometry(config) {
 
         _position = Pose(_position.point + pointIncrement, newAngle)
     }
-
-    init {
-
-    }
 }
