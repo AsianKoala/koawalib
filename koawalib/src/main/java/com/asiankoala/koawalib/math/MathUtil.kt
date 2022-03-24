@@ -1,12 +1,7 @@
 package com.asiankoala.koawalib.math
 
 import com.qualcomm.robotcore.util.Range
-import kotlin.math.PI
-import kotlin.math.absoluteValue
-import kotlin.math.pow
-import kotlin.math.sqrt
-import kotlin.math.sin
-import kotlin.math.cos
+import kotlin.math.*
 
 object MathUtil {
     const val EPSILON = 1e-6

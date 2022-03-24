@@ -1,15 +1,9 @@
 package com.asiankoala.koawalib.subsystem.odometry
 
-import com.asiankoala.koawalib.command.CommandOpMode.Companion.logger
-import com.asiankoala.koawalib.math.MathUtil.cos
-import com.asiankoala.koawalib.math.MathUtil.degrees
-import com.asiankoala.koawalib.math.MathUtil.sin
 import com.asiankoala.koawalib.math.MathUtil.wrap
-import com.asiankoala.koawalib.math.Point
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.TimePose
 import com.asiankoala.koawalib.subsystem.DeviceSubsystem
-import kotlin.math.absoluteValue
 import kotlin.math.max
 
 abstract class Odometry(protected val config: OdoConfig) : DeviceSubsystem(), Localized {

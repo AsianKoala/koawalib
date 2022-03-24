@@ -2,7 +2,6 @@ package com.asiankoala.koawalib.hardware
 
 import com.qualcomm.robotcore.hardware.HardwareDevice
 import com.qualcomm.robotcore.hardware.HardwareMap
-import kotlin.reflect.KClass
 
 @Suppress("UNCHECKED_CAST")
 abstract class KDevice<T : HardwareDevice>(name: String) {

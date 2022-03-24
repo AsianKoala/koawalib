@@ -1,9 +1,9 @@
 package com.asiankoala.koawalib.hardware.sensor
 
-import com.asiankoala.koawalib.command.CommandOpMode
 import com.asiankoala.koawalib.hardware.KDevice
 import com.asiankoala.koawalib.hardware.sensor.IMUUtil.remapAxes
 import com.asiankoala.koawalib.math.MathUtil.d
+import com.asiankoala.koawalib.util.Logger
 import com.qualcomm.hardware.bosch.BNO055IMU
 import com.qualcomm.hardware.bosch.BNO055IMUImpl
 import com.qualcomm.robotcore.util.ElapsedTime
@@ -33,12 +33,12 @@ class KIMU(name: String, axesOrder: AxesOrder, axesSigns: AxesSigns) : KDevice<B
                     cancelTimer.reset()
                 }
 
-                CommandOpMode.logger.logWarning("IMU not reading fresh updates")
-                CommandOpMode.logger.logWarning("IMU not reading fresh updates")
-                CommandOpMode.logger.logWarning("IMU not reading fresh updates")
+                Logger.logWarning("IMU not reading fresh updates")
+                Logger.logWarning("IMU not reading fresh updates")
+                Logger.logWarning("IMU not reading fresh updates")
 
                 if(cancelTimer.seconds() > 30) {
-                    CommandOpMode.logger.logError("IMU failed")
+                    Logger.logError("IMU failed")
                 }
             }
             isReadFresh = false

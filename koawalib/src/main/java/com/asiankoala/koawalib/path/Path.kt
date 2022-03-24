@@ -1,6 +1,5 @@
 package com.asiankoala.koawalib.path
 
-import com.asiankoala.koawalib.command.CommandOpMode.Companion.logger
 import com.asiankoala.koawalib.command.commands.PathCommand
 import com.asiankoala.koawalib.math.MathUtil
 import com.asiankoala.koawalib.math.MathUtil.degrees
@@ -8,6 +7,7 @@ import com.asiankoala.koawalib.math.MathUtil.radians
 import com.asiankoala.koawalib.math.MathUtil.wrap
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.subsystem.drive.KMecanumOdoDrive
+import com.asiankoala.koawalib.util.Logger
 import kotlin.math.absoluteValue
 
 /**
@@ -33,12 +33,12 @@ class Path(private val waypoints: List<Waypoint>, private val followAngle: Doubl
         // meaning, if the robot hasn't passed a waypoint, even if following that next waypoint's segment
         // the robot will not run the next waypoint command until after it has passed it (reflected by currFollowIndex)
         for (waypoint in waypoints.subList(0, currFollowIndex)) {
-            logger.logDebug("attempting to run waypoint commands in interval [0,$currFollowIndex]")
+            Logger.logDebug("attempting to run waypoint commands in interval [0,$currFollowIndex]")
             if (waypoint.command != null) {
                 // TODO: WAS PREIVOUSLY !waypoint.command.isFinished && !waypoint.command.isScheduled
                 // TODO: CHECK IF NEW WORKS
                 if (!waypoint.command.isScheduled) {
-                    logger.logDebug("scheduled waypoint $waypoint command ${waypoint.command}")
+                    Logger.logDebug("scheduled waypoint $waypoint command ${waypoint.command}")
                     waypoint.command.schedule()
                 }
             }
@@ -112,18 +112,18 @@ class Path(private val waypoints: List<Waypoint>, private val followAngle: Doubl
             isFinished = true
         }
         
-        logger.logDebug("pure pursuit debug started")
-        logger.logDebug("pose: $pose")
-        logger.logDebug("curr follow index: $currFollowIndex")
-        logger.logDebug("curr follow angle: ${currFollowAngle.degrees}")
-        logger.logDebug("move lookahead: $movementLookahead")
-        logger.logDebug("turn lookahead: $turnLookahead")
-        logger.logDebug("clipped distance: $clippedDistanceToEnd")
-        logger.logDebug("relative angle: ${realRelativeAngle.degrees}")
-        logger.logDebug("x power: $finalXPower")
-        logger.logDebug("y power: $finalYPower")
-        logger.logDebug("turn power: $finalTurnPower")
-        logger.logDebug("pure pursuit debug ended")
+        Logger.logDebug("pure pursuit debug started")
+        Logger.logDebug("pose: $pose")
+        Logger.logDebug("curr follow index: $currFollowIndex")
+        Logger.logDebug("curr follow angle: ${currFollowAngle.degrees}")
+        Logger.logDebug("move lookahead: $movementLookahead")
+        Logger.logDebug("turn lookahead: $turnLookahead")
+        Logger.logDebug("clipped distance: $clippedDistanceToEnd")
+        Logger.logDebug("relative angle: ${realRelativeAngle.degrees}")
+        Logger.logDebug("x power: $finalXPower")
+        Logger.logDebug("y power: $finalYPower")
+        Logger.logDebug("turn power: $finalTurnPower")
+        Logger.logDebug("pure pursuit debug ended")
         return Pose(finalXPower, finalYPower, finalTurnPower)
     }
 

@@ -2,7 +2,6 @@ package com.asiankoala.koawalib.command.group
 
 import com.asiankoala.koawalib.command.commands.Command
 import java.util.*
-import kotlin.collections.HashSet
 
 class ParallelRaceGroup(vararg commands: Command) : CommandGroupBase() {
     private val commands: MutableSet<Command> = HashSet()

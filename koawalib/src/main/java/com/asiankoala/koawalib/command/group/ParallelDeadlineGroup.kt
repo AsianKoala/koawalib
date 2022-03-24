@@ -2,7 +2,6 @@ package com.asiankoala.koawalib.command.group
 
 import com.asiankoala.koawalib.command.commands.Command
 import java.util.*
-import kotlin.collections.HashMap
 
 class ParallelDeadlineGroup(private var mDeadline: Command, vararg commands: Command) : CommandGroupBase() {
     // maps commands in this group to whether they are still running

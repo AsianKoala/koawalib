@@ -1,6 +1,5 @@
 package com.asiankoala.koawalib.path
 
-import com.asiankoala.koawalib.command.CommandOpMode.Companion.logger
 import com.asiankoala.koawalib.math.IndexPoint
 import com.asiankoala.koawalib.math.MathUtil
 import com.asiankoala.koawalib.math.MathUtil.cos
@@ -9,8 +8,12 @@ import com.asiankoala.koawalib.math.MathUtil.sin
 import com.asiankoala.koawalib.math.MathUtil.wrap
 import com.asiankoala.koawalib.math.Point
 import com.asiankoala.koawalib.math.Pose
+import com.asiankoala.koawalib.util.Logger
 import com.qualcomm.robotcore.util.Range
-import kotlin.math.*
+import kotlin.math.absoluteValue
+import kotlin.math.hypot
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 // todo: clean up this class
 @Suppress("unused")
@@ -47,7 +50,7 @@ object PurePursuitController {
             xPower *= relativeXToPosition.absoluteValue / 12.0
             yPower *= relativeYToPosition.absoluteValue / 12.0
         } else {
-            logger.addTelemetryLine("FULL SPEED")
+            Logger.addTelemetryLine("FULL SPEED")
         }
 
         xPower = MathUtil.clamp(xPower, -maxMoveSpeed, maxMoveSpeed)
@@ -91,17 +94,17 @@ object PurePursuitController {
         yPower *= errorTurnSoScaleMovement
 
         if(shouldTelemetry) {
-            logger.addTelemetryLine("raw x power $xPower")
-            logger.addTelemetryLine("raw y power $yPower")
-            logger.addTelemetryLine("close scalar Y ${Range.clip(relativeYToPosition.absoluteValue / 2.5, 0.0, 1.0)}")
-            logger.addTelemetryLine("pre turn xPower $xPower")
-            logger.addTelemetryLine("pre turn ypower $yPower")
-            logger.addTelemetryLine("error turn movment scale $errorTurnSoScaleMovement")
+            Logger.addTelemetryLine("raw x power $xPower")
+            Logger.addTelemetryLine("raw y power $yPower")
+            Logger.addTelemetryLine("close scalar Y ${Range.clip(relativeYToPosition.absoluteValue / 2.5, 0.0, 1.0)}")
+            Logger.addTelemetryLine("pre turn xPower $xPower")
+            Logger.addTelemetryLine("pre turn ypower $yPower")
+            Logger.addTelemetryLine("error turn movment scale $errorTurnSoScaleMovement")
 
-            logger.addTelemetryLine("relative X $relativeXToPosition")
-            logger.addTelemetryLine("relative Y $relativeYToPosition")
-            logger.addTelemetryLine("final x power goTopos $xPower")
-            logger.addTelemetryLine("final y power goToPos $yPower")
+            Logger.addTelemetryLine("relative X $relativeXToPosition")
+            Logger.addTelemetryLine("relative Y $relativeYToPosition")
+            Logger.addTelemetryLine("final x power goTopos $xPower")
+            Logger.addTelemetryLine("final y power goToPos $yPower")
         }
 
 

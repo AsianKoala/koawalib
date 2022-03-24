@@ -1,10 +1,10 @@
 package com.asiankoala.koawalib.subsystem.odometry
 
-import com.asiankoala.koawalib.command.CommandOpMode
 import com.asiankoala.koawalib.hardware.sensor.KIMU
 import com.asiankoala.koawalib.math.MathUtil.degrees
 import com.asiankoala.koawalib.math.MathUtil.wrap
 import com.asiankoala.koawalib.math.Pose
+import com.asiankoala.koawalib.util.Logger
 
 class TwoWheelOdometry(config: OdoConfig, private val imu: KIMU) : Odometry(config) {
     private var leftEncoder = Encoder(config.leftEncoder, config.TICKS_PER_INCH)
@@ -16,20 +16,20 @@ class TwoWheelOdometry(config: OdoConfig, private val imu: KIMU) : Odometry(conf
     private var lastAngle = Double.NaN
 
     override fun updateTelemetry() {
-        CommandOpMode.logger.addTelemetryData("start pose", startPose.degString)
-        CommandOpMode.logger.addTelemetryData("curr pose", position.degString)
-        CommandOpMode.logger.addTelemetryData("left encoder", leftEncoder.currRead)
-        CommandOpMode.logger.addTelemetryData("aux encoder", auxEncoder.currRead)
-        CommandOpMode.logger.addTelemetryData("left offset", leftEncoder.offset)
-        CommandOpMode.logger.addTelemetryData("aux offset", auxEncoder.offset)
-        CommandOpMode.logger.addTelemetryData("accumulated heading", accumulatedHeading.degrees)
+        Logger.addTelemetryData("start pose", startPose.degString)
+        Logger.addTelemetryData("curr pose", position.degString)
+        Logger.addTelemetryData("left encoder", leftEncoder.currRead)
+        Logger.addTelemetryData("aux encoder", auxEncoder.currRead)
+        Logger.addTelemetryData("left offset", leftEncoder.offset)
+        Logger.addTelemetryData("aux offset", auxEncoder.offset)
+        Logger.addTelemetryData("accumulated heading", accumulatedHeading.degrees)
 
         val accumAuxScale = auxEncoder.currRead / config.TICKS_PER_INCH
         val auxTrackDiff = accumAuxScale - accumulatedAuxPrediction
-        CommandOpMode.logger.addTelemetryData("accumulated aux", accumAuxScale)
-        CommandOpMode.logger.addTelemetryData("accumulated aux prediction", accumulatedAuxPrediction)
-        CommandOpMode.logger.addTelemetryData("accum aux - tracker", auxTrackDiff)
-        CommandOpMode.logger.addTelemetryData("should increase aux tracker", auxTrackDiff > 0)
+        Logger.addTelemetryData("accumulated aux", accumAuxScale)
+        Logger.addTelemetryData("accumulated aux prediction", accumulatedAuxPrediction)
+        Logger.addTelemetryData("accum aux - tracker", auxTrackDiff)
+        Logger.addTelemetryData("should increase aux tracker", auxTrackDiff > 0)
     }
 
     override fun localize() {

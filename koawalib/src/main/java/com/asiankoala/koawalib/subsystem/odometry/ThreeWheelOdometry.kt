@@ -1,9 +1,9 @@
 package com.asiankoala.koawalib.subsystem.odometry
 
-import com.asiankoala.koawalib.command.CommandOpMode
 import com.asiankoala.koawalib.math.MathUtil.degrees
 import com.asiankoala.koawalib.math.MathUtil.wrap
 import com.asiankoala.koawalib.math.Pose
+import com.asiankoala.koawalib.util.Logger
 
 class ThreeWheelOdometry(config: OdoConfig) : Odometry(config) {
     private var leftEncoder = Encoder(config.leftEncoder, config.TICKS_PER_INCH)
@@ -14,21 +14,21 @@ class ThreeWheelOdometry(config: OdoConfig) : Odometry(config) {
     private var accumulatedAuxPrediction = 0.0
 
     override fun updateTelemetry() {
-        CommandOpMode.logger.addTelemetryData("start pose", startPose.degString)
-        CommandOpMode.logger.addTelemetryData("curr pose", position.degString)
-        CommandOpMode.logger.addTelemetryData("left encoder", leftEncoder.read())
-        CommandOpMode.logger.addTelemetryData("right encoder", rightEncoder.read())
-        CommandOpMode.logger.addTelemetryData("aux encoder", auxEncoder.read())
-        CommandOpMode.logger.addTelemetryData("left offset", leftEncoder.offset)
-        CommandOpMode.logger.addTelemetryData("right offset", rightEncoder.offset)
-        CommandOpMode.logger.addTelemetryData("aux offset", auxEncoder.offset)
-        CommandOpMode.logger.addTelemetryData("accumulated heading", accumulatedHeading.degrees)
+        Logger.addTelemetryData("start pose", startPose.degString)
+        Logger.addTelemetryData("curr pose", position.degString)
+        Logger.addTelemetryData("left encoder", leftEncoder.currRead)
+        Logger.addTelemetryData("right encoder", rightEncoder.currRead)
+        Logger.addTelemetryData("aux encoder", auxEncoder.currRead)
+        Logger.addTelemetryData("left offset", leftEncoder.offset)
+        Logger.addTelemetryData("right offset", rightEncoder.offset)
+        Logger.addTelemetryData("aux offset", auxEncoder.offset)
+        Logger.addTelemetryData("accumulated heading", accumulatedHeading.degrees)
         val accumAuxScale = auxEncoder.currRead / config.TICKS_PER_INCH
         val auxTrackDiff = accumAuxScale - accumulatedAuxPrediction
-        CommandOpMode.logger.addTelemetryData("accumulated aux", accumAuxScale)
-        CommandOpMode.logger.addTelemetryData("accumulated aux prediction", accumulatedAuxPrediction)
-        CommandOpMode.logger.addTelemetryData("accum aux - tracker", auxTrackDiff)
-        CommandOpMode.logger.addTelemetryData("should increase aux tracker", auxTrackDiff > 0)
+        Logger.addTelemetryData("accumulated aux", accumAuxScale)
+        Logger.addTelemetryData("accumulated aux prediction", accumulatedAuxPrediction)
+        Logger.addTelemetryData("accum aux - tracker", auxTrackDiff)
+        Logger.addTelemetryData("should increase aux tracker", auxTrackDiff > 0)
     }
 
     override fun localize() {
@@ -47,5 +47,9 @@ class ThreeWheelOdometry(config: OdoConfig) : Odometry(config) {
         val pointIncrement = poseExponential(_position, leftEncoder.delta, rightEncoder.delta, rX, deltaY, angleIncrement)
 
         _position = Pose(_position.point + pointIncrement, newAngle)
+    }
+
+    init {
+
     }
 }

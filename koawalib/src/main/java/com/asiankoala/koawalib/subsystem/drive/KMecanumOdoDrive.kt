@@ -3,7 +3,6 @@ package com.asiankoala.koawalib.subsystem.drive
 import com.acmerobotics.dashboard.config.Config
 import com.asiankoala.koawalib.hardware.motor.KMotor
 import com.asiankoala.koawalib.math.Pose
-import com.asiankoala.koawalib.subsystem.odometry.OdoConfig
 import com.asiankoala.koawalib.subsystem.odometry.Odometry
 
 @Config

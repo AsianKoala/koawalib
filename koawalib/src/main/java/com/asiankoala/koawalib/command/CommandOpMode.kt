@@ -4,12 +4,11 @@ import com.asiankoala.koawalib.command.commands.InfiniteCommand
 import com.asiankoala.koawalib.gamepad.KGamepad
 import com.asiankoala.koawalib.hardware.KDevice
 import com.asiankoala.koawalib.statemachine.StateMachineBuilder
-import com.asiankoala.koawalib.util.LogManager
+import com.asiankoala.koawalib.util.Logger
 import com.asiankoala.koawalib.util.OpModeState
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.util.ElapsedTime
-import org.firstinspires.ftc.robotcore.external.Telemetry
 
 @Suppress("unused")
 open class CommandOpMode : LinearOpMode() {
@@ -23,8 +22,8 @@ open class CommandOpMode : LinearOpMode() {
     internal val isLooping get() = mainStateMachine.state == OpModeState.LOOP
 
     private fun setup() {
-        logger.reset()
-        logger.telemetry = telemetry
+        Logger.reset()
+        Logger.telemetry = telemetry
         CommandScheduler.resetScheduler()
 
         KDevice.hardwareMap = hardwareMap
@@ -91,8 +90,4 @@ open class CommandOpMode : LinearOpMode() {
     open fun mLoop() {}
     open fun mStop() {}
     open fun mUniversal() {}
-
-    companion object {
-        val logger = LogManager(isLogging = true, isPrinting = false)
-    }
 }
