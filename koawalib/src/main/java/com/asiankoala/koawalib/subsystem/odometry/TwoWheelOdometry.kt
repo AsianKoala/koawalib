@@ -37,6 +37,7 @@ class TwoWheelOdometry(config: OdoConfig, private val imu: KIMU) : Odometry(conf
             lastAngle = imu.heading
             return
         }
+
         leftEncoder.read()
         auxEncoder.read()
 
@@ -53,5 +54,6 @@ class TwoWheelOdometry(config: OdoConfig, private val imu: KIMU) : Odometry(conf
         val pointIncrement = poseExponential(_position, leftEncoder.delta, rWheelDelta, rX, deltaY, angleIncrement)
 
         _position = Pose(_position.point + pointIncrement, newAngle)
+        lastAngle = newAngle
     }
 }

@@ -34,12 +34,12 @@ class KIMU(name: String, axesOrder: AxesOrder, axesSigns: AxesSigns) : KDevice<B
                 }
 
                 Logger.logWarning("IMU not reading fresh updates")
-                Logger.logWarning("IMU not reading fresh updates")
-                Logger.logWarning("IMU not reading fresh updates")
+//                Logger.logWarning("IMU not reading fresh updates")
+//                Logger.logWarning("IMU not reading fresh updates")
 
-                if(cancelTimer.seconds() > 30) {
-                    Logger.logError("IMU failed")
-                }
+//                if(cancelTimer.seconds() > 30) {
+//                    Logger.logError("IMU failed")
+//                }
             }
             isReadFresh = false
             return field
