@@ -1,40 +1,62 @@
 package com.asiankoala.koawalib.util
 
 import android.util.Log
+import com.asiankoala.koawalib.command.commands.InfiniteCommand
+import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.robotcore.external.Telemetry
 
 @Suppress("unused")
 object Logger {
+    internal var telemetry: Telemetry? = null
+
+    private const val maxErrorCount = 100
+    private const val refreshRate = 20
+
+    private val priorityList = listOf("NONE", "NONE", "VERBOSE", "DEBUG", "INFO", "WARN", "ERROR", "WTF")
+
     private var logCount = 0
     private var isLogging: Boolean = true
     private var isPrinting: Boolean = false
-    internal var telemetry: Telemetry? = null
+    private var shouldLogTelemetry: Boolean = false
+    private var messageCache = ArrayDeque<Pair<Int, String>>()
+    private var internalTimer = ElapsedTime()
+    private var forceUpdate = false
+    private var errors = 0
+
+    fun periodic() {
+        if (internalTimer.milliseconds() > 1000 / refreshRate || forceUpdate) {
+            val tag = "KOAWALIB"
+            messageCache.forEach {
+                logCount++
+                if (isLogging) {
+                    Log.println(it.first, tag, it.second)
+                }
+
+                if (isPrinting) {
+                    val color = when (it.first) {
+                        Log.DEBUG -> Colors.ANSI_CYAN
+                        Log.INFO -> Colors.ANSI_GREEN
+                        else -> Colors.ANSI_PURPLE
+                    }
+
+                    val printMessage = "${priorityList[it.first]} \t ${it.second}"
+                    println(printMessage.withColor(color))
+                }
+            }
+        }
+        forceUpdate = false
+    }
 
     private fun log(message: String, priority: Int) {
         logCount++
-        val tag = "KOAWALIB"
         val formattedMessage = "%-10s %s".format(logCount, message)
-        val printMessage = "${priorityList[priority]} \t $formattedMessage"
-
-        val color = when(priority) {
-            Log.DEBUG -> ANSI_CYAN
-            Log.INFO -> ANSI_GREEN
-            else -> ANSI_PURPLE
-        }
-
-        if(isLogging) {
-            Log.println(priority, tag, formattedMessage)
-        }
-
-        if(isPrinting) {
-            println(printMessage.withColor(color))
-        }
+        messageCache.add(Pair(priority, formattedMessage))
     }
 
     fun addTelemetryLine(message: String) {
-        if(telemetry == null) {
+        if (telemetry == null) {
             val nullStr = "LogManager telemetry is null"
-            if(isPrinting) {
+            if (isPrinting) {
                 logWarning(nullStr)
                 logInfo(message)
             } else {
@@ -42,7 +64,9 @@ object Logger {
             }
         } else {
             telemetry!!.addLine(message)
-            logInfo(message)
+            if (shouldLogTelemetry) {
+                logInfo(message)
+            }
         }
     }
 
@@ -63,12 +87,13 @@ object Logger {
     }
 
     fun logError(message: String) {
+        errors++
         log(message, Log.ERROR)
-        throw Exception(message)
     }
 
     fun logWTF(message: String) {
         log(message, Log.ASSERT)
+        throw Exception(message)
     }
 
     fun startLogging() {
@@ -91,32 +116,16 @@ object Logger {
         logCount = 0
     }
 
-    private fun String.withColor(color: String): String {
-        return "$color$this$ANSI_RESET"
+    fun addErrorCommand() {
+        InfiniteCommand({ addTelemetryData("error count", errors) }).schedule()
     }
 
-    const val ANSI_RESET = "\u001B[0m"
-    const val ANSI_BLACK = "\u001B[30m"
-    const val ANSI_RED = "\u001B[31m"
-    const val ANSI_GREEN = "\u001B[32m"
-    const val ANSI_YELLOW = "\u001B[33m"
-    const val ANSI_BLUE = "\u001B[34m"
-    const val ANSI_PURPLE = "\u001B[35m"
-    const val ANSI_CYAN = "\u001B[36m"
-    const val ANSI_WHITE = "\u001B[37m"
-    const val ANSI_BLACK_BACKGROUND = "\u001B[40m"
-    const val ANSI_RED_BACKGROUND = "\u001B[41m"
-    const val ANSI_GREEN_BACKGROUND = "\u001B[42m"
-    const val ANSI_YELLOW_BACKGROUND = "\u001B[43m"
-    const val ANSI_BLUE_BACKGROUND = "\u001B[44m"
-    const val ANSI_PURPLE_BACKGROUND = "\u001B[45m"
-    const val ANSI_CYAN_BACKGROUND = "\u001B[46m"
-    const val ANSI_WHITE_BACKGROUND = "\u001B[47m"
-    const val ANSI_BOLD = "\u001B[1m"
-    const val ANSI_UNBOLD = "\u001B[21m"
-    const val ANSI_UNDERLINE = "\u001B[4m"
-    const val ANSI_STOP_UNDERLINE = "\u001B[24m"
-    const val ANSI_BLINK = "\u001B[5m"
+    fun forceLoggerUpdate() {
+        forceUpdate = true
+    }
 
-    val priorityList = listOf("NONE", "NONE", "VERBOSE", "DEBUG", "INFO", "WARN", "ERROR", "WTF")
+    private fun String.withColor(color: String): String {
+        return "$color$this$Colors.ANSI_RESET"
+    }
+
 }

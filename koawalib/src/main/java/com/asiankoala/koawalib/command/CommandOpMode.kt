@@ -40,6 +40,7 @@ open class CommandOpMode : LinearOpMode() {
         InfiniteCommand(gunner::periodic).withName("gunner gamepad periodic").schedule()
         InfiniteCommand({ hubs.forEach(LynxModule::clearBulkCache) }).withName("clear bulk data periodic").schedule()
         InfiniteCommand(::handleLoopMsTelemetry).withName("loop ms telemetry periodic").schedule()
+        InfiniteCommand(Logger::periodic).withName("logger periodic").schedule()
     }
 
     private fun handleLoopMsTelemetry() {
