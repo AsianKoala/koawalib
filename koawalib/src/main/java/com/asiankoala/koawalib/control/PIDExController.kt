@@ -43,12 +43,13 @@ open class PIDExController(private val config: PIDFConfig) : Controller() {
     }
 
     fun setControllerTargets(targetP: Double, targetV: Double = 0.0, targetA: Double = 0.0) {
+        reset()
         targetPosition = targetP
         targetVelocity = targetV
         targetAcceleration = targetA
     }
 
-    override fun process(): Double {
+    override fun update(): Double {
         return if (isHomed) {
             0.0
         } else {
@@ -69,8 +70,6 @@ open class PIDExController(private val config: PIDFConfig) : Controller() {
                 lastError = error
                 lastUpdateTimestamp = currentTimestamp
 
-                // note: we'd like to refactor this with Kinematics.calculateMotorFeedforward() but kF complicates the
-                // determination of the sign of kStatic
                 val pidOutput = config.kP * error + config.kI * errorSum + config.kD * (currentVelocity?.let { targetVelocity - it } ?: errorDeriv)
                 val ffOutput = config.feedforward.getFeedforward(targetPosition, targetVelocity, targetAcceleration)
                 val baseOutput = pidOutput + ffOutput

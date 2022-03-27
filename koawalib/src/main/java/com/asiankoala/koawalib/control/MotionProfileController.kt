@@ -4,7 +4,6 @@ import com.acmerobotics.roadrunner.profile.MotionProfile
 import com.acmerobotics.roadrunner.profile.MotionProfileGenerator
 import com.acmerobotics.roadrunner.profile.MotionState
 import com.qualcomm.robotcore.util.ElapsedTime
-import java.lang.Exception
 
 class MotionProfileController(private val config: MotionProfileConfig) : PIDExController(config.pidConfig) {
     private var motionTimer = ElapsedTime()
@@ -22,7 +21,7 @@ class MotionProfileController(private val config: MotionProfileConfig) : PIDExCo
             endState,
             config.maxVelocity,
             config.maxAcceleration,
-            config.maxJerk
+            0.0
         )
 
         hasFinishedProfile = false
@@ -30,7 +29,7 @@ class MotionProfileController(private val config: MotionProfileConfig) : PIDExCo
         motionTimer.reset()
     }
 
-    override fun process(): Double {
+    override fun update(): Double {
         when {
             currentMotionProfile == null -> throw Exception("MUST BE FOLLOWING MOTION PROFILE")
 
@@ -50,6 +49,6 @@ class MotionProfileController(private val config: MotionProfileConfig) : PIDExCo
             }
         }
 
-        return super.process()
+        return super.update()
     }
 }

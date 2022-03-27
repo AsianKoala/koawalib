@@ -10,8 +10,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
  */
 @Suppress("unused")
 class KDistanceSensor(name: String) : KDevice<DistanceSensor>(name), KDouble {
-
+    private var _lastRead = Double.POSITIVE_INFINITY
+    val lastRead get() = _lastRead
     override fun invokeDouble(): Double {
-        return device.getDistance(DistanceUnit.MM)
+        _lastRead = device.getDistance(DistanceUnit.MM)
+        return lastRead
     }
 }

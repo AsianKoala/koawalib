@@ -1,14 +1,17 @@
 package com.asiankoala.koawalib.hardware.motor
 
+import com.acmerobotics.roadrunner.util.epsilonEquals
 import com.asiankoala.koawalib.control.Controller
 import com.asiankoala.koawalib.control.MotionProfileController
 import com.asiankoala.koawalib.control.OpenLoopController
 import com.asiankoala.koawalib.control.PIDExController
+import com.asiankoala.koawalib.util.Logger
 
 /**
  * Extended KMotor implementation
  * @see KMotor
  */
+@Suppress("unused")
 class KMotorEx(
     name: String,
     private val controller: Controller
@@ -16,7 +19,7 @@ class KMotorEx(
 
     override fun setSpeed(speed: Double) {
         if (controller is OpenLoopController) {
-            controller.setDirectOutput(power)
+            controller.output = speed
         } else {
             throw IllegalArgumentException("MOTOR IS NOT OPEN LOOP")
         }
@@ -40,8 +43,17 @@ class KMotorEx(
 
     private var disabled: Boolean = false
 
+    private fun checkIsUpdating() {
+        if(device.power epsilonEquals 0.0) {
+            Logger.logWarning("motor $name may not be updating")
+        }
+    }
+
     fun enable() {
         disabled = false
+        if(controller is PIDExController) {
+            controller.reset()
+        }
     }
 
     fun disable() {
@@ -57,15 +69,18 @@ class KMotorEx(
     }
 
     fun update() {
-        if (disabled) {
-            super.setSpeed(0.0)
+        val output = if (disabled) {
+            Logger.logDebug("motor $name disabled")
+            0.0
         } else {
             if (controller is PIDExController) {
                 controller.measure(position, velocity)
-                controller.update()
+                controller.output = controller.update()
             }
 
-            super.setSpeed(controller.output)
+            controller.output
         }
+
+        super.device.power = output
     }
 }

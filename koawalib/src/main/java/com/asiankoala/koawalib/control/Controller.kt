@@ -1,12 +1,7 @@
 package com.asiankoala.koawalib.control
 
 abstract class Controller {
-    protected abstract fun process(): Double
+    internal var output = 0.0
 
-    var output = 0.0
-        protected set
-
-    fun update() {
-        output = process()
-    }
+    abstract fun update(): Double
 }

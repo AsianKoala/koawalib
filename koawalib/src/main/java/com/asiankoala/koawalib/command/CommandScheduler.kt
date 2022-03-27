@@ -6,20 +6,9 @@ import com.asiankoala.koawalib.subsystem.Subsystem
 import com.asiankoala.koawalib.util.Logger
 import java.util.*
 import kotlin.collections.ArrayDeque
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
-import kotlin.collections.LinkedHashMap
-import kotlin.collections.MutableList
-import kotlin.collections.MutableMap
-import kotlin.collections.Set
-import kotlin.collections.addAll
 import kotlin.collections.component1
 import kotlin.collections.component2
-import kotlin.collections.forEach
-import kotlin.collections.listOf
-import kotlin.collections.removeAll
 import kotlin.collections.set
-import kotlin.collections.toList
 
 // TODO: INTERNAL SHIT INSTEAD OF MAKING THEM PUBLIC :RAGE:
 // TODO: ASSERT NOT CHANGING PER LOOP OR SOMETHING? SOUNDS COOL
