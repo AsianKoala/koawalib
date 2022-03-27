@@ -1,63 +1,58 @@
 package com.asiankoala.koawalib.control.motion
 
 import kotlin.math.absoluteValue
-import kotlin.math.pow
+import kotlin.math.max
 import kotlin.math.sqrt
 
-private class MotionProfile(private val target: Double, private val constraints: ProfileConstraints) {
+class MotionProfile(
+    startState: MotionState,
+    private val endState: MotionState,
+    constraints: MotionConstraints
+) {
+
     private var accelTime: Double
     private var cruiseTime: Double
     private var deccelTime: Double
-    private val totalTime: Double
+    private var accelState: MotionState
+    private var cruiseState: MotionState
+    private var deccelState: MotionState
 
-    operator fun get(time: Double): ProfileState {
+    private val profileDuration: Double
+    private val totalIntegral: Double
+
+    operator fun get(time: Double): MotionState {
         return when {
-            time <= accelTime -> {
-                val a = constraints.maxAcceleration.absoluteValue
-                val v = time * a
-                val x = 0.5 * a * time * time
-                ProfileState(x, v, a)
-            }
-
-            time <= accelTime + cruiseTime -> {
-                val a = 0.0
-                val v = get(accelTime).v
-                val x = get(accelTime).x + constraints.maxVelocity * (time - accelTime)
-                ProfileState(x, v, a)
-            }
-
-            time <= totalTime -> {
-                var a = constraints.maxDeceleration.absoluteValue
-                val coastV = get(accelTime).v
-                val v = coastV- (time - (accelTime + cruiseTime)) * a
-                val endOfCruise = accelTime + cruiseTime
-                val endOfCruisePos = get(endOfCruise).x
-                val x = endOfCruisePos + coastV * (time - endOfCruise) - 0.5 * a * (time - endOfCruise).pow(2)
-                a *= -1
-                ProfileState(x, v, a)
-            }
-            else -> ProfileState(target, 0.0, 0.0)
+            time <= accelTime -> accelState.calculate(time)
+            time <= accelTime + cruiseTime -> cruiseState.calculate(time - accelTime)
+            time <= profileDuration -> deccelState.calculate(time - accelTime - cruiseTime)
+            else -> endState
         }
     }
 
     init {
-        accelTime = (constraints.maxVelocity / constraints.maxAcceleration).absoluteValue
-        deccelTime = (constraints.maxVelocity / constraints.maxDeceleration).absoluteValue
-        val avgAccelTime = (accelTime + deccelTime) / 2
-        cruiseTime = target.absoluteValue / constraints.maxVelocity - avgAccelTime
+        accelTime = ((constraints.vMax - startState.v) / constraints.aMax).absoluteValue
+        deccelTime = ((endState.v - constraints.vMax) / constraints.dMax).absoluteValue
+        accelState = MotionState(startState.x, startState.v, constraints.aMax)
+        deccelState = MotionState(endState.x, endState.v, -constraints.dMax)
 
-        if(cruiseTime < 0) {
+        val accelEndState = accelState.calculate(accelTime)
+        cruiseState = MotionState(accelEndState.x, accelEndState.v, 0.0)
+        val deltaX = endState.x - startState.x
+        cruiseTime =
+            (deltaX - accelState.integrate(accelTime) - deccelState.integrate(deccelTime)) / constraints.vMax
 
-            cruiseTime = 0.0
-            if(constraints.maxAcceleration.absoluteValue > constraints.maxDeceleration.absoluteValue) {
-                constraints.maxAcceleration = constraints.maxDeceleration.absoluteValue
-            } else {
-                constraints.maxDeceleration = constraints.maxAcceleration.absoluteValue
-            }
-
-            accelTime = sqrt((target / constraints.maxAcceleration).absoluteValue)
-            deccelTime = sqrt((target / constraints.maxDeceleration).absoluteValue)
+        if (cruiseTime < constraints.minCruiseTime) {
+            cruiseTime = constraints.minCruiseTime
+            constraints.aMax = max(constraints.aMax, constraints.dMax)
+            constraints.dMax = constraints.aMax
+            accelTime = sqrt(endState.x.absoluteValue / constraints.aMax.absoluteValue)
+            deccelTime = sqrt(endState.x.absoluteValue / constraints.dMax.absoluteValue)
+            val newAccelEndState = accelState.calculate(accelTime)
+            deccelState = MotionState(newAccelEndState.x, newAccelEndState.v, -constraints.dMax)
         }
-        totalTime = accelTime + cruiseTime + deccelTime
+
+        profileDuration = accelTime + cruiseTime + deccelTime
+        totalIntegral = accelState.integrate(accelTime) + cruiseState.integrate(cruiseTime) +
+                deccelState.integrate(deccelTime)
     }
 }
