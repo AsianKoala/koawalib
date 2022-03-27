@@ -1,6 +1,5 @@
 ## koawalib
-koawalib is a general purpose FTC library written in Kotlin. Shoutout to [wpilib](https://github.com/wpilibsuite/allwpilib)
-and [technolib](https://github.com/technototes/TechnoLib) for inspiration.
+koawalib is a general purpose FTC library written in Kotlin. Shoutout to [wpilib](https://github.com/wpilibsuite/allwpilib) for inspiration.
 
 ## Installation
 - Add the following lines before the ```dependencies``` block in ```/TeamCode/build.gradle```
@@ -36,5 +35,6 @@ implementation 'com.github.AsianKoala:koawalib:0.0.6'
 
 
 ## Example usage
-koawalib-quickstart is coming (eventually)
-In the mean time here is how I used it in my [codebase](https://github.com/14607/FF-Private/tree/master/TeamCode/src/main/java/asiankoala/ftc2021)
+[koawalib-quickstart](https://github.com/AsianKoala/koawalib_quickstart)
+[docs](https://neil-mehra.gitbook.io/koawalib/)
+[implementation in my repo]((https://github.com/14607/FF-Private/tree/master/TeamCode/src/main/java/asiankoala/ftc2021))
