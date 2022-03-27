@@ -25,6 +25,7 @@ open class CommandOpMode : LinearOpMode() {
         Logger.reset()
         Logger.telemetry = telemetry
         CommandScheduler.resetScheduler()
+        Logger.addErrorCommand()
 
         KDevice.hardwareMap = hardwareMap
         hubs = hardwareMap.getAll(LynxModule::class.java)

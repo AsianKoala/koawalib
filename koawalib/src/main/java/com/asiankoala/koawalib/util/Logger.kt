@@ -10,7 +10,7 @@ object Logger {
     internal var telemetry: Telemetry? = null
 
     private const val maxErrorCount = 100
-    private const val refreshRate = 20
+    private const val refreshRate = 5 // refreshes per second
 
     private val priorityList = listOf("NONE", "NONE", "VERBOSE", "DEBUG", "INFO", "WARN", "ERROR", "WTF")
 
@@ -24,7 +24,7 @@ object Logger {
     private var errors = 0
 
     fun periodic() {
-        if (internalTimer.milliseconds() > 1000 / refreshRate || forceUpdate) {
+        if (internalTimer.seconds() > 1 / refreshRate || forceUpdate) {
             val tag = "KOAWALIB"
             messageCache.forEach {
                 logCount++

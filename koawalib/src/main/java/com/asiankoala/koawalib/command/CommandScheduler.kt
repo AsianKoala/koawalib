@@ -34,7 +34,7 @@ object CommandScheduler {
 
     private val loopAssertionMap: MutableMap<Any, Int> = HashMap()
 
-    private val allMaps = listOf<MutableMap<*,*>>(scheduledCommandRequirements, subsystems)
+    private val allMaps = listOf<MutableMap<*, *>>(scheduledCommandRequirements, subsystems)
     private val allLists = listOf<MutableList<*>>(scheduledCommands, toCancel, toSchedule, toCancel)
 
     internal var isOpModeLooping = false
@@ -66,21 +66,23 @@ object CommandScheduler {
             initCommand(this, requirements)
             Logger.logDebug("command ${this.name}: Command disjoint with scheduledRequirementKeys")
         } else {
+            Logger.logWarning("command ${this.name}: Command overlap scheduledRequirementKeys")
+
             requirements.forEach {
                 if (scheduledCommandRequirements.containsKey(it)) {
-                    val scheduled = scheduledCommandRequirements[it]!!
-                    scheduled.cancel()
-                    Logger.logWarning("command ${this.name}: Command caused command ${scheduled.name} to cancel")
+                    val toCancelScheduled = scheduledCommandRequirements[it]!!
+                    toCancelScheduled.cancel()
+                    Logger.logWarning("command ${this.name}: Command caused command ${toCancelScheduled.name} to cancel")
                 }
             }
 
             initCommand(this, requirements)
-            Logger.logDebug("command ${this.name}: Command initialized following cancellation of commands with overlapping requirements")
+            Logger.logWarning("command ${this.name}: Command initialized following cancellation of commands with overlapping requirements")
         }
     }
 
     private fun Command.cancelThis() {
-        if(!scheduledCommands.contains(this)) {
+        if (!scheduledCommands.contains(this)) {
             return
         }
 
@@ -95,7 +97,7 @@ object CommandScheduler {
         Logger.logDebug("amount of scheduled commands before run(): ${scheduledCommands.size + toSchedule.size}")
 
         loopAssertionMap.forEach { (k, v) ->
-            if(v > 1) {
+            if (v > 1) {
                 Logger.logWarning("$k repeated $v times")
             }
             loopAssertionMap[k] = 0
@@ -104,10 +106,24 @@ object CommandScheduler {
         toSchedule.forEach { it.scheduleThis() }
         toCancel.forEach { it.cancelThis() }
 
+        subsystems.forEach { (k, v) ->
+            if (!scheduledCommandRequirements.containsKey(k) && v != null && Collections.disjoint(
+                    scheduledCommandRequirements.keys, v.getRequirements())
+            ) {
+                Logger.logDebug("default command ${v.name} scheduled")
+                initCommand(v, v.getRequirements())
+            }
+        }
+
         toSchedule.clear()
         toCancel.clear()
 
         subsystems.keys.forEach(Subsystem::periodic)
+
+        Logger.logDebug("required subsystems before running commands:")
+        scheduledCommandRequirements.keys.forEachIndexed { i, subsystem ->
+            Logger.logDebug("${i}: ${subsystem.name}")
+        }
 
         val iterator = scheduledCommands.iterator()
         while (iterator.hasNext()) {
@@ -121,12 +137,6 @@ object CommandScheduler {
                 Logger.logInfo("command ${command.name} finished")
                 iterator.remove()
                 scheduledCommandRequirements.keys.removeAll(command.getRequirements())
-            }
-        }
-
-        subsystems.forEach { (k, v) ->
-            if (!scheduledCommandRequirements.containsKey(k) && v != null) {
-                schedule(v)
             }
         }
 
@@ -163,6 +173,10 @@ object CommandScheduler {
             Logger.logError("command ${command.name}: default commands must require subsystem")
         }
 
+        if (command.getRequirements().size != 1) {
+            Logger.logError("command ${command.name}: default commands must only require one subsystem")
+        }
+
         if (command.isFinished) {
             Logger.logError("command ${command.name}: default commands must not end")
         }
@@ -194,7 +208,7 @@ object CommandScheduler {
     }
 
     fun assertUniqueLoop(thing: Any) {
-        if(thing in loopAssertionMap.keys) {
+        if (thing in loopAssertionMap.keys) {
             loopAssertionMap[thing] = loopAssertionMap[thing]!! + 1
         } else {
             loopAssertionMap[thing] = 0
