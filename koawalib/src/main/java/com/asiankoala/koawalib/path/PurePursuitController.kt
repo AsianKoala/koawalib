@@ -1,15 +1,13 @@
 package com.asiankoala.koawalib.path
 
+import com.acmerobotics.roadrunner.util.epsilonEquals
 import com.asiankoala.koawalib.math.*
 import com.asiankoala.koawalib.math.IndexPoint
 import com.asiankoala.koawalib.math.Point
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.util.Logger
 import com.qualcomm.robotcore.util.Range
-import kotlin.math.absoluteValue
-import kotlin.math.hypot
-import kotlin.math.pow
-import kotlin.math.sqrt
+import kotlin.math.*
 
 // todo: clean up this class
 @Suppress("unused")
@@ -68,6 +66,19 @@ object PurePursuitController {
 
         if (distanceToPoint < 4.0) {
             turnPower = 0.0
+        }
+
+
+        if(max(xPower, yPower) epsilonEquals xPower) {
+            if(max(xPower, turnPower) epsilonEquals xPower) {
+                xPower = 0.1 * xPower.sign
+            } else {
+                turnPower = 0.1 * turnPower.sign
+            }
+        } else if(max(yPower, turnPower) epsilonEquals yPower) {
+            yPower = 0.1 * yPower.sign
+        } else {
+            turnPower = 0.1 * turnPower.sign
         }
 
         xPower *= Range.clip(relativeXToPosition.absoluteValue / 2.5, 0.0, 1.0)
@@ -217,17 +228,22 @@ object PurePursuitController {
     }
 
     fun pointTo(
+        targetAngle: Double,
         heading: Double,
-        angle: Double,
         speed: Double,
         deccelAngle: Double
     ): Pair<Double, Double> {
-        val relativePointAngle = (angle - heading).wrap
+        val relativePointAngle = (targetAngle - heading).wrap
 
         var turnSpeed = (relativePointAngle / deccelAngle) * speed
         turnSpeed = clamp(turnSpeed, -speed, speed)
 
+        if(turnSpeed.absoluteValue < 0.1) {
+            turnSpeed = 0.1 * turnSpeed.sign
+        }
+
         turnSpeed *= clamp(relativePointAngle.absoluteValue / 3.0.radians, 0.0, 1.0)
+
         return Pair(turnSpeed, relativePointAngle)
     }
 
