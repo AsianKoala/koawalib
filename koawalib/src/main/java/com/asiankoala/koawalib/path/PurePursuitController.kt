@@ -40,6 +40,9 @@ object PurePursuitController {
         var xPower = relativeXToPosition / relativeAbsMagnitude
         var yPower = relativeYToPosition / relativeAbsMagnitude
 
+        Logger.addTelemetryData("real raw xpower", xPower)
+        Logger.addTelemetryData("real raw ypower", yPower)
+
         if (stop) {
             xPower *= relativeXToPosition.absoluteValue / 12.0
             yPower *= relativeYToPosition.absoluteValue / 12.0

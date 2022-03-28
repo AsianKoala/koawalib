@@ -19,7 +19,7 @@ class KMotorEx(
 
     override fun setSpeed(speed: Double) {
         if (controller is OpenLoopController) {
-            controller.output = speed
+            controller.output = speed * powerMultiplier
         } else {
             throw IllegalArgumentException("MOTOR IS NOT OPEN LOOP")
         }

@@ -12,6 +12,7 @@ import kotlin.math.absoluteValue
 open class KMotor(name: String) : KDevice<DcMotorEx>(name), KDouble {
 
     private var offset = 0.0
+    protected var powerMultiplier = 1.0
     private var encoderMultiplier = 1.0
 
     fun zero(newPosition: Double = 0.0): KMotor {
@@ -20,7 +21,7 @@ open class KMotor(name: String) : KDevice<DcMotorEx>(name), KDouble {
     }
 
     open fun setSpeed(speed: Double) {
-        power = speed
+        power = speed * powerMultiplier
     }
 
     var power: Double = 0.0
@@ -42,10 +43,12 @@ open class KMotor(name: String) : KDevice<DcMotorEx>(name), KDouble {
 
     var direction: DcMotorSimple.Direction = DcMotorSimple.Direction.FORWARD
         set(value) {
-            if (device.direction != value) {
-                device.direction = value
-                field = value
+            powerMultiplier = if(value == DcMotorSimple.Direction.FORWARD) {
+                1.0
+            } else {
+                -1.0
             }
+            field = value
         }
 
     val position get() = encoderMultiplier * (device.currentPosition + offset)
