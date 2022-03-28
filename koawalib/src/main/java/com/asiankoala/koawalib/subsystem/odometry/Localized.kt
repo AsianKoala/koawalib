@@ -1,7 +1,6 @@
 package com.asiankoala.koawalib.subsystem.odometry
 
-import com.asiankoala.koawalib.math.MathUtil.cos
-import com.asiankoala.koawalib.math.MathUtil.sin
+import com.asiankoala.koawalib.math.*
 import com.asiankoala.koawalib.math.Point
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.TimePose
@@ -28,7 +27,7 @@ interface Localized {
         }
 
         val robotDeltaRelativeMovement = Pose(deltaX, deltaY, angleIncrement)
-        robotRelativeMovement += robotDeltaRelativeMovement
+        robotRelativeMovement = robotRelativeMovement.plusWrap(robotDeltaRelativeMovement)
 
         prevRobotRelativePositions.add(TimePose(robotRelativeMovement))
 

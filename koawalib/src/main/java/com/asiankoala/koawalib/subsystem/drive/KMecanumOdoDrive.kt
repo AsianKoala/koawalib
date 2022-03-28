@@ -26,7 +26,7 @@ open class KMecanumOdoDrive(
         super.periodic()
         odometry.localize()
 
-        if(shouldTelemetryOdo) {
+        if (shouldTelemetryOdo) {
             odometry.updateTelemetry()
         }
     }

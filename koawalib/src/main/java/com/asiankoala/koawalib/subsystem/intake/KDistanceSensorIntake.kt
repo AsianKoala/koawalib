@@ -25,7 +25,7 @@ open class KDistanceSensorIntake(
     }
 
     override fun periodic() {
-        if(reading) {
+        if (reading) {
             lastRead = distanceSensor.invokeDouble()
             isMineralIn = lastRead < distanceSensorThreshold
         }

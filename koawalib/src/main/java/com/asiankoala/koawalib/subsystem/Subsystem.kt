@@ -7,7 +7,6 @@ import com.asiankoala.koawalib.util.Periodic
 interface Subsystem : Periodic {
 
     override fun periodic() {
-
     }
 
     fun setDefaultCommand(command: Command) {

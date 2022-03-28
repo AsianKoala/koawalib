@@ -3,7 +3,7 @@ package com.asiankoala.koawalib.gamepad
 import com.asiankoala.koawalib.command.CommandScheduler
 import com.asiankoala.koawalib.command.commands.Command
 import com.asiankoala.koawalib.gamepad.functionality.Stick
-import com.asiankoala.koawalib.math.MathUtil.d
+import com.asiankoala.koawalib.math.*
 import com.asiankoala.koawalib.util.Periodic
 import com.qualcomm.robotcore.hardware.Gamepad
 

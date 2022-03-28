@@ -1,7 +1,6 @@
 package com.asiankoala.koawalib
 
 import com.asiankoala.koawalib.command.CommandScheduler
-import com.asiankoala.koawalib.command.commands.InstantCommand
 import com.asiankoala.koawalib.command.commands.PrintCommand
 
 object What {

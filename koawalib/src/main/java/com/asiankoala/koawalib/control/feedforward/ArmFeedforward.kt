@@ -1,6 +1,6 @@
 package com.asiankoala.koawalib.control.feedforward
 
-import com.asiankoala.koawalib.math.MathUtil.cos
+import com.asiankoala.koawalib.math.cos
 
 class ArmFeedforward(
     private val kcos: Double,

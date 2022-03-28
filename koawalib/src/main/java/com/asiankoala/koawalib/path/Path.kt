@@ -1,10 +1,7 @@
 package com.asiankoala.koawalib.path
 
 import com.asiankoala.koawalib.command.commands.PathCommand
-import com.asiankoala.koawalib.math.MathUtil
-import com.asiankoala.koawalib.math.MathUtil.degrees
-import com.asiankoala.koawalib.math.MathUtil.radians
-import com.asiankoala.koawalib.math.MathUtil.wrap
+import com.asiankoala.koawalib.math.*
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.subsystem.drive.KMecanumOdoDrive
 import com.asiankoala.koawalib.util.Logger
@@ -56,7 +53,8 @@ class Path(private val waypoints: List<Waypoint>, private val followAngle: Doubl
             waypoints[waypoints.size - 1].turnLookaheadDistance * 1.5
         )
 
-        extendedPath[waypoints.size - 1] = extendedPath[waypoints.size - 1].copy(x = last.x, y = last.y)
+        extendedPath[waypoints.size - 1] =
+            extendedPath[waypoints.size - 1].copy(x = last.x, y = last.y)
 
         val turnLookahead = PurePursuitController.calcLookahead(
             extendedPath,
@@ -103,7 +101,11 @@ class Path(private val waypoints: List<Waypoint>, private val followAngle: Doubl
         val finalTurnPower = turnResult.first
         val realRelativeAngle = turnResult.second
 
-        val errorTurnSoScaleMovement = MathUtil.clamp(1.0 - (realRelativeAngle / movementLookahead.slowDownTurnRadians).absoluteValue, movementLookahead.lowestSlowDownFromTurnError, 1.0)
+        val errorTurnSoScaleMovement = clamp(
+            1.0 - (realRelativeAngle / movementLookahead.slowDownTurnRadians).absoluteValue,
+            movementLookahead.lowestSlowDownFromTurnError,
+            1.0
+        )
 
         val finalXPower = movePower.x * errorTurnSoScaleMovement
         val finalYPower = movePower.y * errorTurnSoScaleMovement
@@ -111,7 +113,7 @@ class Path(private val waypoints: List<Waypoint>, private val followAngle: Doubl
         if (clippedDistanceToEnd < 1.0) {
             isFinished = true
         }
-        
+
         Logger.logDebug("pure pursuit debug started")
         Logger.logDebug("pose: $pose")
         Logger.logDebug("curr follow index: $currFollowIndex")
@@ -131,7 +133,12 @@ class Path(private val waypoints: List<Waypoint>, private val followAngle: Doubl
         val newWaypoints = ArrayList<Waypoint>()
 
         for (waypoint in waypoints) {
-            newWaypoints.add(waypoint.copy(y = -waypoint.y, headingLockAngle = (waypoint.headingLockAngle + 180.0.radians).wrap))
+            newWaypoints.add(
+                waypoint.copy(
+                    y = -waypoint.y,
+                    headingLockAngle = (waypoint.headingLockAngle + 180.0.radians).wrap
+                )
+            )
         }
 
         val deltaFollowAngle = (90.0.radians - followAngle).wrap.absoluteValue

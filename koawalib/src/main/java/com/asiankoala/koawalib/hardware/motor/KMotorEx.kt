@@ -44,14 +44,14 @@ class KMotorEx(
     private var disabled: Boolean = false
 
     private fun checkIsUpdating() {
-        if(device.power epsilonEquals 0.0) {
+        if (device.power epsilonEquals 0.0) {
             Logger.logWarning("motor $name may not be updating")
         }
     }
 
     fun enable() {
         disabled = false
-        if(controller is PIDExController) {
+        if (controller is PIDExController) {
             controller.reset()
         }
     }

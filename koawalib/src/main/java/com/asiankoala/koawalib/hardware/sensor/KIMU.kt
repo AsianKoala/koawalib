@@ -2,7 +2,7 @@ package com.asiankoala.koawalib.hardware.sensor
 
 import com.asiankoala.koawalib.hardware.KDevice
 import com.asiankoala.koawalib.hardware.sensor.IMUUtil.remapAxes
-import com.asiankoala.koawalib.math.MathUtil.d
+import com.asiankoala.koawalib.math.*
 import com.asiankoala.koawalib.util.Logger
 import com.qualcomm.hardware.bosch.BNO055IMU
 import com.qualcomm.hardware.bosch.BNO055IMUImpl
@@ -27,8 +27,8 @@ class KIMU(name: String, axesOrder: AxesOrder, axesSigns: AxesSigns) : KDevice<B
         }
 
         get() {
-            if(!isReadFresh) {
-                if(!canceling) {
+            if (!isReadFresh) {
+                if (!canceling) {
                     canceling = true
                     cancelTimer.reset()
                 }

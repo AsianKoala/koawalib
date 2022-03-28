@@ -24,4 +24,3 @@ object Colors {
     const val ANSI_STOP_UNDERLINE = "\u001B[24m"
     const val ANSI_BLINK = "\u001B[5m"
 }
-

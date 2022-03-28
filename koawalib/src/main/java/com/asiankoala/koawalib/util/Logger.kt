@@ -127,5 +127,4 @@ object Logger {
     private fun String.withColor(color: String): String {
         return "$color$this$Colors.ANSI_RESET"
     }
-
 }

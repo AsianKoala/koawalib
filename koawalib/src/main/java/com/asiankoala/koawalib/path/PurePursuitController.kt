@@ -1,11 +1,7 @@
 package com.asiankoala.koawalib.path
 
+import com.asiankoala.koawalib.math.*
 import com.asiankoala.koawalib.math.IndexPoint
-import com.asiankoala.koawalib.math.MathUtil
-import com.asiankoala.koawalib.math.MathUtil.cos
-import com.asiankoala.koawalib.math.MathUtil.radians
-import com.asiankoala.koawalib.math.MathUtil.sin
-import com.asiankoala.koawalib.math.MathUtil.wrap
 import com.asiankoala.koawalib.math.Point
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.util.Logger
@@ -53,8 +49,8 @@ object PurePursuitController {
             Logger.addTelemetryLine("FULL SPEED")
         }
 
-        xPower = MathUtil.clamp(xPower, -maxMoveSpeed, maxMoveSpeed)
-        yPower = MathUtil.clamp(yPower, -maxMoveSpeed, maxMoveSpeed)
+        xPower = clamp(xPower, -maxMoveSpeed, maxMoveSpeed)
+        yPower = clamp(yPower, -maxMoveSpeed, maxMoveSpeed)
 
         val actualRelativePointAngle = (followAngle - 90.0.radians)
 
@@ -68,7 +64,7 @@ object PurePursuitController {
         val deccelAngle = 45.0.radians
 
         var turnPower = (relativePointAngle / deccelAngle) * maxTurnSpeed
-        turnPower = MathUtil.clamp(turnPower, -maxTurnSpeed, maxTurnSpeed)
+        turnPower = clamp(turnPower, -maxTurnSpeed, maxTurnSpeed)
 
         if (distanceToPoint < 4.0) {
             turnPower = 0.0
@@ -84,7 +80,11 @@ object PurePursuitController {
         }
 
         // slow down if angle is off
-        var errorTurnSoScaleMovement = Range.clip(1.0 - (relativePointAngle / slowDownTurnRadians).absoluteValue, lowestSlowDownFromTurnError, 1.0)
+        var errorTurnSoScaleMovement = Range.clip(
+            1.0 - (relativePointAngle / slowDownTurnRadians).absoluteValue,
+            lowestSlowDownFromTurnError,
+            1.0
+        )
 
         if (turnPower.absoluteValue < 0.00001) {
             errorTurnSoScaleMovement = 1.0
@@ -93,10 +93,18 @@ object PurePursuitController {
         xPower *= errorTurnSoScaleMovement
         yPower *= errorTurnSoScaleMovement
 
-        if(shouldTelemetry) {
+        if (shouldTelemetry) {
             Logger.addTelemetryLine("raw x power $xPower")
             Logger.addTelemetryLine("raw y power $yPower")
-            Logger.addTelemetryLine("close scalar Y ${Range.clip(relativeYToPosition.absoluteValue / 2.5, 0.0, 1.0)}")
+            Logger.addTelemetryLine(
+                "close scalar Y ${
+                Range.clip(
+                    relativeYToPosition.absoluteValue / 2.5,
+                    0.0,
+                    1.0
+                )
+                }"
+            )
             Logger.addTelemetryLine("pre turn xPower $xPower")
             Logger.addTelemetryLine("pre turn ypower $yPower")
             Logger.addTelemetryLine("error turn movment scale $errorTurnSoScaleMovement")
@@ -106,7 +114,6 @@ object PurePursuitController {
             Logger.addTelemetryLine("final x power goTopos $xPower")
             Logger.addTelemetryLine("final y power goToPos $yPower")
         }
-
 
         return Pose(xPower, yPower, turnPower)
     }
@@ -164,7 +171,7 @@ object PurePursuitController {
         val intersections = ArrayList<Point>()
         val xLeft = d * deltas.y
         val yLeft = -d * deltas.x
-        val xRight: Double = MathUtil.stupidSign(deltas.y) * deltas.x * sqrt(discriminant)
+        val xRight: Double = stupidSign(deltas.y) * deltas.x * sqrt(discriminant)
         val yRight = deltas.y.absoluteValue * sqrt(discriminant)
         val div = deltas.hypot.pow(2)
         if (discriminant == 0.0) {
@@ -209,13 +216,18 @@ object PurePursuitController {
         return IndexPoint(clippedToLine, closestClippedIndex)
     }
 
-    fun pointTo(heading: Double, angle: Double, speed: Double, deccelAngle: Double): Pair<Double, Double> {
+    fun pointTo(
+        heading: Double,
+        angle: Double,
+        speed: Double,
+        deccelAngle: Double
+    ): Pair<Double, Double> {
         val relativePointAngle = (angle - heading).wrap
 
         var turnSpeed = (relativePointAngle / deccelAngle) * speed
-        turnSpeed = MathUtil.clamp(turnSpeed, -speed, speed)
+        turnSpeed = clamp(turnSpeed, -speed, speed)
 
-        turnSpeed *= MathUtil.clamp(relativePointAngle.absoluteValue / 3.0.radians, 0.0, 1.0)
+        turnSpeed *= clamp(relativePointAngle.absoluteValue / 3.0.radians, 0.0, 1.0)
         return Pair(turnSpeed, relativePointAngle)
     }
 
@@ -234,7 +246,12 @@ object PurePursuitController {
             val startLine = waypoints[i]
             val endLine = waypoints[i + 1]
 
-            val intersections = lineCircleIntersection(currPose.point, startLine.point, endLine.point, followDistance)
+            val intersections = lineCircleIntersection(
+                currPose.point,
+                startLine.point,
+                endLine.point,
+                followDistance
+            )
 
             var closestDistance = 69420.0
             for (intersection in intersections) {

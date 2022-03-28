@@ -1,6 +1,6 @@
 package com.asiankoala.koawalib.subsystem.odometry
 
-import com.asiankoala.koawalib.math.MathUtil.wrap
+import com.asiankoala.koawalib.math.*
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.TimePose
 import com.asiankoala.koawalib.subsystem.DeviceSubsystem
@@ -22,7 +22,7 @@ abstract class Odometry(protected val config: OdoConfig) : DeviceSubsystem(), Lo
 
             val scalar = (curr.timestamp - old.timestamp).toDouble() / 1000.0
 
-            val dirVel = (curr.pose.point - old.pose.point) * (1 / scalar)
+            val dirVel = (curr.pose.point - old.pose.point).scalarDiv(scalar)
             val angularVel = (curr.pose.heading - old.pose.heading) * (1 / scalar)
 
             return Pose(dirVel, angularVel.wrap)

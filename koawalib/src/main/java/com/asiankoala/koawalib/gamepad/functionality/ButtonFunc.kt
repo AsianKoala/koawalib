@@ -24,7 +24,7 @@ abstract class ButtonFunc : Button {
         _lastState = currentState
         _isPressed = currentState
 
-        if(isJustPressed) {
+        if (isJustPressed) {
             _isToggled = !_isToggled
         }
     }

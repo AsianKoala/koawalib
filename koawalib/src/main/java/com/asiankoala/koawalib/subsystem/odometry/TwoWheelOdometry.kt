@@ -1,8 +1,7 @@
 package com.asiankoala.koawalib.subsystem.odometry
 
 import com.asiankoala.koawalib.hardware.sensor.KIMU
-import com.asiankoala.koawalib.math.MathUtil.degrees
-import com.asiankoala.koawalib.math.MathUtil.wrap
+import com.asiankoala.koawalib.math.*
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.util.Logger
 
@@ -33,7 +32,7 @@ class TwoWheelOdometry(config: OdoConfig, private val imu: KIMU) : Odometry(conf
     }
 
     override fun localize() {
-        if(lastAngle.isNaN()) {
+        if (lastAngle.isNaN()) {
             lastAngle = imu.heading
             return
         }

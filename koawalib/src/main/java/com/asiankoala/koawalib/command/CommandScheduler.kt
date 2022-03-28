@@ -97,7 +97,8 @@ object CommandScheduler {
 
         subsystems.forEach { (k, v) ->
             if (!scheduledCommandRequirements.containsKey(k) && v != null && Collections.disjoint(
-                    scheduledCommandRequirements.keys, v.getRequirements())
+                    scheduledCommandRequirements.keys, v.getRequirements()
+                )
             ) {
                 Logger.logDebug("default command ${v.name} scheduled")
                 initCommand(v, v.getRequirements())
@@ -111,7 +112,7 @@ object CommandScheduler {
 
         Logger.logDebug("required subsystems before running commands:")
         scheduledCommandRequirements.keys.forEachIndexed { i, subsystem ->
-            Logger.logDebug("${i}: ${subsystem.name}")
+            Logger.logDebug("$i: ${subsystem.name}")
         }
 
         val iterator = scheduledCommands.iterator()

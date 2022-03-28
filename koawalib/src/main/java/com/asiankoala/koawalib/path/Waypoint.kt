@@ -1,8 +1,7 @@
 package com.asiankoala.koawalib.path
 
 import com.asiankoala.koawalib.command.commands.Command
-import com.asiankoala.koawalib.math.MathUtil.d
-import com.asiankoala.koawalib.math.MathUtil.radians
+import com.asiankoala.koawalib.math.*
 import com.asiankoala.koawalib.math.Point
 
 data class Waypoint(
@@ -20,6 +19,7 @@ data class Waypoint(
     val command: Command? = null
 ) {
     constructor(x: Int, y: Int, followDistance: Int) : this(x.d, y.d, followDistance.d)
+
     val point = Point(x, y)
 
     val copy: Waypoint

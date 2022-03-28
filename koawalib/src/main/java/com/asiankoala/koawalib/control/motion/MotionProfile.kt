@@ -53,6 +53,6 @@ class MotionProfile(
 
         profileDuration = accelTime + cruiseTime + deccelTime
         totalIntegral = accelState.integrate(accelTime) + cruiseState.integrate(cruiseTime) +
-                deccelState.integrate(deccelTime)
+            deccelState.integrate(deccelTime)
     }
 }

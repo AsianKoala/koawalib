@@ -2,10 +2,7 @@ package com.asiankoala.koawalib.subsystem.drive
 
 import com.asiankoala.koawalib.command.commands.CommandBase
 import com.asiankoala.koawalib.gamepad.functionality.Stick
-import com.asiankoala.koawalib.math.MathUtil
-import com.asiankoala.koawalib.math.MathUtil.d
-import com.asiankoala.koawalib.math.MathUtil.radians
-import com.asiankoala.koawalib.math.MathUtil.wrap
+import com.asiankoala.koawalib.math.*
 import com.asiankoala.koawalib.math.Point
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.util.Alliance
@@ -29,9 +26,9 @@ class MecanumDriveCommand(
         val yRaw = -leftStick.ySupplier.invoke()
         val rRaw = rightStick.xSupplier.invoke()
 
-        val xScaled = MathUtil.cubicScaling(xCubic, xRaw)
-        val yScaled = MathUtil.cubicScaling(yCubic, yRaw)
-        val rScaled = MathUtil.cubicScaling(rCubic, rRaw)
+        val xScaled = cubicScaling(xCubic, xRaw)
+        val yScaled = cubicScaling(yCubic, yRaw)
+        val rScaled = cubicScaling(rCubic, rRaw)
 
         val final = if (fieldOriented) {
             val translationVector = Point(xScaled, yScaled)
@@ -65,7 +62,6 @@ class MecanumDriveCommand(
 
     class Test {
         fun t() {
-
         }
     }
 }
