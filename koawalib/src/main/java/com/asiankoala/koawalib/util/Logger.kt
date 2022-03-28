@@ -22,29 +22,35 @@ object Logger {
     private var internalTimer = ElapsedTime()
     private var forceUpdate = false
     private var errors = 0
+    private var onlyLoggingWarnings = true
 
     fun periodic() {
-        if (internalTimer.seconds() > 1 / refreshRate || forceUpdate) {
-            val tag = "KOAWALIB"
-            messageCache.forEach {
-                logCount++
-                if (isLogging) {
-                    Log.println(it.first, tag, it.second)
+        val tag = "KOAWALIB"
+        messageCache.forEach {
+            logCount++
+            if (isLogging) {
+                Log.println(it.first, tag, it.second)
+            }
+
+            if (isPrinting) {
+                val color = when (it.first) {
+                    Log.DEBUG -> Colors.ANSI_CYAN
+                    Log.INFO -> Colors.ANSI_GREEN
+                    else -> Colors.ANSI_PURPLE
                 }
 
-                if (isPrinting) {
-                    val color = when (it.first) {
-                        Log.DEBUG -> Colors.ANSI_CYAN
-                        Log.INFO -> Colors.ANSI_GREEN
-                        else -> Colors.ANSI_PURPLE
-                    }
-
-                    val printMessage = "${priorityList[it.first]} \t ${it.second}"
-                    println(printMessage.withColor(color))
-                }
+                val printMessage = "${priorityList[it.first]} \t ${it.second}"
+                println(printMessage.withColor(color))
             }
         }
-        forceUpdate = false
+
+        if(errors > maxErrorCount) {
+            throw Exception("error overflow")
+        }
+
+        if(internalTimer.seconds() > 1 / refreshRate) {
+            internalTimer.reset()
+        }
     }
 
     private fun log(message: String, priority: Int) {
@@ -75,11 +81,17 @@ object Logger {
     }
 
     fun logDebug(message: String) {
-        log(message, Log.DEBUG)
+        if(onlyLoggingWarnings) return
+        if(internalTimer.seconds() > 1 / refreshRate || forceUpdate) {
+            log(message, Log.DEBUG)
+        }
     }
 
     fun logInfo(message: String) {
-        log(message, Log.INFO)
+        if(onlyLoggingWarnings) return
+        if(internalTimer.seconds() > 1 / refreshRate || forceUpdate) {
+            log(message, Log.INFO)
+        }
     }
 
     fun logWarning(message: String) {

@@ -100,8 +100,9 @@ object CommandScheduler {
                     scheduledCommandRequirements.keys, v.getRequirements()
                 )
             ) {
-                Logger.logDebug("default command ${v.name} scheduled")
-                initCommand(v, v.getRequirements())
+                // cleared all conditions for scheduling, just execute right now so it isnt in
+                // scheduledCommands after this
+                v.execute()
             }
         }
 

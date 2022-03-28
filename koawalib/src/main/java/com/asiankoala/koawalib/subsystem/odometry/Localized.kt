@@ -15,7 +15,7 @@ interface Localized {
     fun localize()
     fun updateTelemetry()
 
-    fun poseExponential(currPose: Pose, lWheelDelta: Double, rWheelDelta: Double, dx: Double, dy: Double, angleIncrement: Double): Point {
+    fun updatePoseWithDeltas(currPose: Pose, lWheelDelta: Double, rWheelDelta: Double, dx: Double, dy: Double, angleIncrement: Double): Point {
         var deltaX = dx
         var deltaY = dy
         if (angleIncrement.absoluteValue > 0) {

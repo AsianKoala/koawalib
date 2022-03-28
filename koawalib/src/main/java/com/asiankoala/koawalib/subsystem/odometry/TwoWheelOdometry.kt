@@ -7,7 +7,7 @@ import com.asiankoala.koawalib.util.Logger
 
 class TwoWheelOdometry(config: OdoConfig, private val imu: KIMU) : Odometry(config) {
     private var leftEncoder = Encoder(config.leftEncoder, config.TICKS_PER_INCH)
-    private var auxEncoder = Encoder(config.auxEncoder, config.TICKS_PER_INCH)
+    private var auxEncoder = Encoder(config.perpEncoder, config.TICKS_PER_INCH)
 
     private var accumulatedHeading = 0.0
     private var accumulatedAuxPrediction = 0.0
@@ -42,7 +42,7 @@ class TwoWheelOdometry(config: OdoConfig, private val imu: KIMU) : Odometry(conf
 
         val newAngle = imu.heading
         val angleIncrement = (newAngle - lastAngle).wrap
-        val auxPrediction = angleIncrement * config.AUX_TRACKER
+        val auxPrediction = angleIncrement * config.PERP_TRACKER
         val rX = auxEncoder.delta - auxPrediction
 
         accumulatedHeading += angleIncrement
@@ -50,7 +50,7 @@ class TwoWheelOdometry(config: OdoConfig, private val imu: KIMU) : Odometry(conf
 
         val rWheelDelta = -(angleIncrement * config.TRACK_WIDTH - leftEncoder.delta)
         val deltaY = (leftEncoder.delta - rWheelDelta) / 2.0
-        val pointIncrement = poseExponential(_position, leftEncoder.delta, rWheelDelta, rX, deltaY, angleIncrement)
+        val pointIncrement = updatePoseWithDeltas(_position, leftEncoder.delta, rWheelDelta, rX, deltaY, angleIncrement)
 
         _position = Pose(_position.point + pointIncrement, newAngle)
         lastAngle = newAngle
