@@ -21,7 +21,7 @@ class MecanumDriveCommand(
     private val fieldOriented: Boolean = false,
     private val headingLock: Boolean = false,
     private val heading: () -> Double = { Double.NaN },
-    private val headingLockScalar: Double = 90.0
+    private val headingLockScalar: Double = 90.0.radians
 ) : CommandBase() {
 
     override fun execute() {
@@ -36,7 +36,7 @@ class MecanumDriveCommand(
         val final = if (fieldOriented) {
             val translationVector = Point(xScaled, yScaled)
             val headingInvoked = heading.invoke()
-            val rotatedTranslation = translationVector.rotate(heading.invoke() + alliance.decide(90, -90).d.radians)
+            val rotatedTranslation = translationVector.rotate(-heading.invoke() + if(alliance == Alliance.RED) 180.0.radians else 0.0)
 
             val turn = if (headingLock && !headingInvoked.isNaN()) {
                 val stickAtan = rightStick.angle
