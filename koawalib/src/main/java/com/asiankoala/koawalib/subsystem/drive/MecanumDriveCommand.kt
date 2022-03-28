@@ -14,6 +14,9 @@ class MecanumDriveCommand(
     private val xCubic: Double = 1.0,
     private val yCubic: Double = 1.0,
     private val rCubic: Double = 1.0,
+    private val xScalar: Double = 1.0,
+    private val yScalar: Double = 1.0,
+    private val rScalar: Double = 1.0,
     private val alliance: Alliance = Alliance.BLUE,
     private val fieldOriented: Boolean = false,
     private val headingLock: Boolean = false,
@@ -26,9 +29,9 @@ class MecanumDriveCommand(
         val yRaw = -leftStick.ySupplier.invoke()
         val rRaw = rightStick.xSupplier.invoke()
 
-        val xScaled = cubicScaling(xCubic, xRaw)
-        val yScaled = cubicScaling(yCubic, yRaw)
-        val rScaled = cubicScaling(rCubic, rRaw)
+        val xScaled = cubicScaling(xCubic, xRaw) * xScalar
+        val yScaled = cubicScaling(yCubic, yRaw) * yScalar
+        val rScaled = cubicScaling(rCubic, rRaw) * rScalar
 
         val final = if (fieldOriented) {
             val translationVector = Point(xScaled, yScaled)

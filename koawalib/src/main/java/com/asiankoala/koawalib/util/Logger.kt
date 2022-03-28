@@ -136,6 +136,18 @@ object Logger {
         forceUpdate = true
     }
 
+    fun stopForcingLoggerUpdate() {
+        forceUpdate = false
+    }
+
+    fun verboseLogging() {
+        onlyLoggingWarnings = false
+    }
+
+    fun onlyWarningLogging() {
+        onlyLoggingWarnings = true
+    }
+
     private fun String.withColor(color: String): String {
         return "$color$this$Colors.ANSI_RESET"
     }
