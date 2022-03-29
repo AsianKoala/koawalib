@@ -1,7 +1,5 @@
 package com.asiankoala.koawalib.statemachine
 
-import com.asiankoala.koawalib.statemachine.transition.TimedTransition
-
 class StateMachineBuilder<StateEnum> {
 
     private val stateList = mutableListOf<State<StateEnum>>()

@@ -30,8 +30,8 @@ open class Point(
 
     constructor(x: Int, y: Int) : this(x.d, y.d)
 
-    val hypot = hypot(x, y)
-    val atan2 = atan2(y, x)
+    val hypot get() = hypot(x, y)
+    val atan2 get() = atan2(y, x)
 
     fun dot(other: Point): Double {
         return other.x * this.x + other.y * this.y

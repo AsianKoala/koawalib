@@ -72,7 +72,7 @@ fun biarcInterpolate(p1: Pose, p2: Pose): Pair<Biarc.BiarcPart, Biarc.BiarcPart>
     return Pair(calcHalfBiarc(t1, p1, 1.0), calcHalfBiarc(t2, p2, -1.0))
 }
 
-class BiarcPath(waypoints: Array<Pose>) : GVFPath() {
+class BiarcPath(waypoints: Array<Pose>) : Path() {
     override fun length(): Double {
         return totalLen
     }

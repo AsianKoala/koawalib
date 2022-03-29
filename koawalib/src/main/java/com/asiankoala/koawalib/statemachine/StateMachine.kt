@@ -1,7 +1,5 @@
 package com.asiankoala.koawalib.statemachine
 
-import com.asiankoala.koawalib.statemachine.transition.TimedTransition
-
 class StateMachine<StateEnum>(private val stateList: List<State<StateEnum>>, private val universals: List<() -> Unit>) {
     var running = false
         private set

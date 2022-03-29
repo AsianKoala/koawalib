@@ -1,4 +1,4 @@
-package com.asiankoala.koawalib.statemachine.transition
+package com.asiankoala.koawalib.statemachine
 
 class TimedTransition(val time: Double) : () -> Boolean {
     private var startTime = 0L
