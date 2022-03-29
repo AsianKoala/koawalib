@@ -65,17 +65,13 @@ object PurePursuitController {
             turnPower = 0.0
         }
 
-        if(max(xPower, yPower) epsilonEquals xPower) {
-            if(max(xPower, turnPower) epsilonEquals xPower) {
-                xPower = 0.1 * xPower.sign
-            } else {
-                turnPower = 0.1 * turnPower.sign
-            }
-        } else if(max(yPower, turnPower) epsilonEquals yPower) {
-            yPower = 0.1 * yPower.sign
-        } else {
-            turnPower = 0.1 * turnPower.sign
-        }
+        val powers = mutableListOf(xPower, yPower, turnPower)
+        val maxIdx = powers.indices.maxByOrNull { powers[it].absoluteValue }!!
+        val highestPower = powers[maxIdx]
+        powers[maxIdx] = absMax(0.1 * highestPower.sign, highestPower)
+        xPower = powers[0]
+        yPower = powers[1]
+        turnPower = powers[2]
 
         xPower *= Range.clip(relativeXToPosition.absoluteValue / 2.5, 0.0, 1.0)
         yPower *= Range.clip(relativeYToPosition.absoluteValue / 2.5, 0.0, 1.0)
@@ -120,9 +116,7 @@ object PurePursuitController {
         var turnSpeed = (relativePointAngle / deccelAngle) * speed
         turnSpeed = clamp(turnSpeed, -speed, speed)
 
-        if(turnSpeed.absoluteValue < 0.1) {
-            turnSpeed = 0.1 * turnSpeed.sign
-        }
+        turnSpeed = absMax(0.1 * turnSpeed.sign, turnSpeed)
 
         turnSpeed *= clamp(relativePointAngle.absoluteValue / 3.0.radians, 0.0, 1.0)
 

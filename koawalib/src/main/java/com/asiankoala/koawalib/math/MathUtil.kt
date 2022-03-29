@@ -19,6 +19,10 @@ fun rotatePoint(p: Point, h: Double) = Point(
     h.sin * p.y - h.cos * p.x
 )
 
+fun absMax(a: Double, b: Double): Double {
+    return if(a.absoluteValue >= b.absoluteValue) a else b
+}
+
 fun clamp(x: Double, a: Double, b: Double): Double {
     if (x < a) {
         return a

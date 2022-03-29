@@ -2,6 +2,7 @@ package com.asiankoala.koawalib
 
 import com.asiankoala.koawalib.math.Point
 import com.asiankoala.koawalib.math.Pose
+import com.asiankoala.koawalib.math.radians
 import com.asiankoala.koawalib.path.gvf.GVFController
 import com.asiankoala.koawalib.path.gvf.SplinePath
 import com.qualcomm.robotcore.util.ElapsedTime
@@ -19,7 +20,8 @@ object SplineInterpolationTest {
             Pose(10.0, 10.0, 0.0),
             Pose(20.0, 10.0, 0.0),
             Pose(25.0, 5.0, 0.0),
-            Pose(40.0, 5.0, 0.0),
+            Pose(40.0, -20.0, 0.0.radians),
+            Pose(10.0, -20.0, 0.0.radians)
         ))
         println(path.length())
         val controller = GVFController(path, 3.0, 3.0)
