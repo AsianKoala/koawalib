@@ -77,6 +77,7 @@ class Path(private val waypoints: List<Waypoint>, private val followAngle: Doubl
             movementLookahead.stop,
             movementLookahead.maxMoveSpeed,
             movementLookahead.maxTurnSpeed,
+            movementLookahead.deccelAngle,
             movementLookahead.isHeadingLocked,
             movementLookahead.headingLockAngle,
             movementLookahead.slowDownTurnRadians,

@@ -16,10 +16,11 @@ object PurePursuitController {
     fun goToPosition(
         currPose: Pose,
         targetPosition: Point,
-        followAngle: Double = 90.0.radians,
+        followAngle: Double = 0.0,
         stop: Boolean = false,
         maxMoveSpeed: Double = 1.0,
         maxTurnSpeed: Double = 1.0,
+        deccelAngle: Double = 60.0.radians,
         isHeadingLocked: Boolean = false,
         headingLockAngle: Double = 0.0,
         slowDownTurnRadians: Double = 60.0.radians,
@@ -40,9 +41,6 @@ object PurePursuitController {
         var xPower = relativeXToPosition / relativeAbsMagnitude
         var yPower = relativeYToPosition / relativeAbsMagnitude
 
-        Logger.addTelemetryData("real raw xpower", xPower)
-        Logger.addTelemetryData("real raw ypower", yPower)
-
         if (stop) {
             xPower *= relativeXToPosition.absoluteValue / 12.0
             yPower *= relativeYToPosition.absoluteValue / 12.0
@@ -53,24 +51,19 @@ object PurePursuitController {
         xPower = clamp(xPower, -maxMoveSpeed, maxMoveSpeed)
         yPower = clamp(yPower, -maxMoveSpeed, maxMoveSpeed)
 
-        val actualRelativePointAngle = (followAngle - 90.0.radians)
-
         val absolutePointAngle = if (isHeadingLocked) {
             headingLockAngle
         } else {
-            angleToPoint + actualRelativePointAngle
+            (angleToPoint + followAngle).wrap
         }
 
-        val relativePointAngle = (absolutePointAngle - currPose.heading).wrap
-        val deccelAngle = 45.0.radians
-
-        var turnPower = (relativePointAngle / deccelAngle) * maxTurnSpeed
-        turnPower = clamp(turnPower, -maxTurnSpeed, maxTurnSpeed)
+        val pointRes = pointTo(absolutePointAngle, currPose.heading, maxTurnSpeed, deccelAngle)
+        var turnPower = pointRes.first
+        val relativePointAngle = pointRes.second
 
         if (distanceToPoint < 4.0) {
             turnPower = 0.0
         }
-
 
         if(max(xPower, yPower) epsilonEquals xPower) {
             if(max(xPower, turnPower) epsilonEquals xPower) {
@@ -108,28 +101,32 @@ object PurePursuitController {
         yPower *= errorTurnSoScaleMovement
 
         if (shouldTelemetry) {
-            Logger.addTelemetryLine("raw x power $xPower")
-            Logger.addTelemetryLine("raw y power $yPower")
-            Logger.addTelemetryLine(
-                "close scalar Y ${
-                Range.clip(
-                    relativeYToPosition.absoluteValue / 2.5,
-                    0.0,
-                    1.0
-                )
-                }"
-            )
-            Logger.addTelemetryLine("pre turn xPower $xPower")
-            Logger.addTelemetryLine("pre turn ypower $yPower")
-            Logger.addTelemetryLine("error turn movment scale $errorTurnSoScaleMovement")
-
             Logger.addTelemetryLine("relative X $relativeXToPosition")
             Logger.addTelemetryLine("relative Y $relativeYToPosition")
-            Logger.addTelemetryLine("final x power goTopos $xPower")
-            Logger.addTelemetryLine("final y power goToPos $yPower")
+            Logger.addTelemetryLine("relative Angle $relativePointAngle")
         }
 
         return Pose(xPower, yPower, turnPower)
+    }
+
+    fun pointTo(
+        targetAngle: Double,
+        heading: Double,
+        speed: Double,
+        deccelAngle: Double
+    ): Pair<Double, Double> {
+        val relativePointAngle = (targetAngle - heading).wrap
+
+        var turnSpeed = (relativePointAngle / deccelAngle) * speed
+        turnSpeed = clamp(turnSpeed, -speed, speed)
+
+        if(turnSpeed.absoluteValue < 0.1) {
+            turnSpeed = 0.1 * turnSpeed.sign
+        }
+
+        turnSpeed *= clamp(relativePointAngle.absoluteValue / 3.0.radians, 0.0, 1.0)
+
+        return Pair(turnSpeed, relativePointAngle)
     }
 
     fun clipToLine(start: Point, end: Point, robot: Point): Point {
@@ -228,26 +225,6 @@ object PurePursuitController {
         }
 
         return IndexPoint(clippedToLine, closestClippedIndex)
-    }
-
-    fun pointTo(
-        targetAngle: Double,
-        heading: Double,
-        speed: Double,
-        deccelAngle: Double
-    ): Pair<Double, Double> {
-        val relativePointAngle = (targetAngle - heading).wrap
-
-        var turnSpeed = (relativePointAngle / deccelAngle) * speed
-        turnSpeed = clamp(turnSpeed, -speed, speed)
-
-        if(turnSpeed.absoluteValue < 0.1) {
-            turnSpeed = 0.1 * turnSpeed.sign
-        }
-
-        turnSpeed *= clamp(relativePointAngle.absoluteValue / 3.0.radians, 0.0, 1.0)
-
-        return Pair(turnSpeed, relativePointAngle)
     }
 
     fun calcLookahead(waypoints: List<Waypoint>, currPose: Pose, followDistance: Double): Waypoint {

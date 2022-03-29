@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.util.Range
 import kotlin.math.absoluteValue
 
+// TODO figure out why reversing isn't working with encoder multiplier? maybe
 open class KMotor(name: String) : KDevice<DcMotorEx>(name), KDouble {
 
     private var offset = 0.0

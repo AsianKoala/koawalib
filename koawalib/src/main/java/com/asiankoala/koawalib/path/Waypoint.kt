@@ -10,6 +10,7 @@ data class Waypoint(
     val followDistance: Double = 0.0,
     val maxMoveSpeed: Double = 1.0,
     val maxTurnSpeed: Double = 1.0,
+    val deccelAngle: Double = 60.0.radians,
     val stop: Boolean = true,
     val isHeadingLocked: Boolean = false,
     val headingLockAngle: Double = 0.0,
@@ -24,7 +25,7 @@ data class Waypoint(
 
     val copy: Waypoint
         get() = Waypoint(
-            x, y, followDistance, maxMoveSpeed, maxTurnSpeed,
+            x, y, followDistance, maxMoveSpeed, maxTurnSpeed, deccelAngle,
             stop, isHeadingLocked, headingLockAngle, slowDownTurnRadians,
             lowestSlowDownFromTurnError, turnLookaheadDistance, command
         )
