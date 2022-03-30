@@ -82,8 +82,6 @@ class Path(private val waypoints: List<Waypoint>, private val followAngle: Doubl
             movementLookahead.headingLockAngle,
             movementLookahead.slowDownTurnRadians,
             movementLookahead.lowestSlowDownFromTurnError,
-            noTurn = true,
-            shouldTelemetry = false
         ).point
 
         val currFollowAngle = if (waypoints[currFollowIndex].isHeadingLocked) {

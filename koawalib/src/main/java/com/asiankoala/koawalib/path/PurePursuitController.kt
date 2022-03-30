@@ -25,7 +25,6 @@ object PurePursuitController {
         headingLockAngle: Double = 0.0,
         slowDownTurnRadians: Double = 60.0.radians,
         lowestSlowDownFromTurnError: Double = 0.4,
-        noTurn: Boolean = false,
         shouldTelemetry: Boolean = true
     ): Pose {
         val absoluteDelta = targetPosition - currPose.point
@@ -75,12 +74,6 @@ object PurePursuitController {
 
         xPower *= Range.clip(relativeXToPosition.absoluteValue / 2.5, 0.0, 1.0)
         yPower *= Range.clip(relativeYToPosition.absoluteValue / 2.5, 0.0, 1.0)
-
-        turnPower *= Range.clip(relativePointAngle.absoluteValue / 3.0.radians, 0.0, 1.0)
-
-        if (noTurn) {
-            return Pose(xPower, yPower, 0.0)
-        }
 
         // slow down if angle is off
         var errorTurnSoScaleMovement = Range.clip(

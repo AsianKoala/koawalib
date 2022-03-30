@@ -31,16 +31,20 @@ class TwoWheelOdometry(config: OdoConfig, private val imu: KIMU) : Odometry(conf
         Logger.addTelemetryData("should increase aux tracker", auxTrackDiff > 0)
     }
 
+    private fun getHeading(): Double {
+        return (imu.heading + startPose.heading).wrap
+    }
+
     override fun localize() {
         if (lastAngle.isNaN()) {
-            lastAngle = imu.heading
+            lastAngle = getHeading()
             return
         }
 
         leftEncoder.read()
         auxEncoder.read()
 
-        val newAngle = imu.heading
+        val newAngle = getHeading()
         val angleIncrement = (newAngle - lastAngle).wrap
         val auxPrediction = angleIncrement * config.PERP_TRACKER
         val rX = auxEncoder.delta - auxPrediction
