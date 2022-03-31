@@ -26,6 +26,10 @@ open class Point(
             )
             return LUDecomposition(denomMat).determinant == 0.0
         }
+
+        fun cross(a: Point, b: Point): Double {
+            return a.x * b.y - a.y * b.x
+        }
     }
 
     constructor(x: Int, y: Int) : this(x.d, y.d)
@@ -74,7 +78,7 @@ open class Point(
         return this.x * other.y - this.y * other.x
     }
 
-    fun scalarMul(d: Double): Point {
+    fun scale(d: Double): Point {
         return Point(x * d, y * d)
     }
 
@@ -96,8 +100,12 @@ open class Point(
         return sqDist(other).pow(0.5)
     }
 
+    fun extrapolate(other: Point, x: Double): Point? {
+        return Point(x * (other.x - x) + x, x * (other.y - y) + y)
+    }
+
     fun neg(): Point {
-        return this.scalarMul(-1.0)
+        return this.scale(-1.0)
     }
 
     fun divide(other: Point): Double {
@@ -106,7 +114,7 @@ open class Point(
 
     operator fun plus(point: Point) = Point(x + point.x, y + point.y)
     operator fun minus(point: Point) = Point(x - point.x, y - point.y)
-    operator fun unaryMinus() = scalarMul(-1.0)
+    operator fun unaryMinus() = scale(-1.0)
 
     override fun toString() = String.format("%.2f, %.2f", x, y)
 

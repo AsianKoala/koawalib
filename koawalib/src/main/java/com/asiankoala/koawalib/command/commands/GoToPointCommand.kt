@@ -13,7 +13,7 @@ class GoToPointCommand(
     private val distTol: Double,
     private val angleTol: Double,
     private val followAngle: Double = 0.0,
-    private val  stop: Boolean = false,
+    private val stop: Boolean = false,
     private val maxMoveSpeed: Double = 1.0,
     private val maxTurnSpeed: Double = 1.0,
     private val deccelAngle: Double = 60.0.radians,

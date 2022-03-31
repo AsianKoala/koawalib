@@ -8,7 +8,7 @@ class GVFController(val path: Path, val k_delta: Double, val k_n: Double) {
     var lastT = 0.0001
     fun vectorAt(r: Point, closestT: Double): Point {
         return path.tangentVec(closestT)
-            .minus(path.nVec(r, closestT).scalarMul(k_n * path.error(path.levelSet(r, closestT))))
+            .minus(path.nVec(r, closestT).scale(k_n * path.error(path.levelSet(r, closestT))))
     }
 
     fun headingControl(pose: Pose): Double {

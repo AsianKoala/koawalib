@@ -14,9 +14,9 @@ fun biarcInterpolate(p1: Pose, p2: Pose): Pair<Biarc.BiarcPart, Biarc.BiarcPart>
     if (t1 == t2) {
         d2 = v.dot(v) / (4 * v.dot(t2))
     } else if (denom == 0.0) {
-        val pm = p1 + v.scalarMul(0.5)
-        val c1 = p1 + v.scalarMul(0.25)
-        val c2 = p1 + v.scalarMul(0.75)
+        val pm = p1 + v.scale(0.5)
+        val c1 = p1 + v.scale(0.25)
+        val c2 = p1 + v.scale(0.75)
         val r = v.norm() / 4
         val theta1 = if (v.zProd(t2) < 0) PI else -PI
         val theta2 = if (v.zProd(t2) > 0) PI else -PI
@@ -29,7 +29,7 @@ fun biarcInterpolate(p1: Pose, p2: Pose): Pair<Biarc.BiarcPart, Biarc.BiarcPart>
     } else {
         d2 = (-(v.dot(t)) + discriminant.pow(0.5)) / denom
     }
-    val pm = (p1 + p2 + (t1 - t2).scalarMul(d2)).scalarMul(0.5)
+    val pm = (p1 + p2 + (t1 - t2).scale(d2)).scale(0.5)
 
     fun calcHalfBiarc(t: Point, p: Point, direction: Double): Biarc.BiarcPart {
         val n = t.getLeftNormal()
@@ -37,15 +37,15 @@ fun biarcInterpolate(p1: Pose, p2: Pose): Pair<Biarc.BiarcPart, Biarc.BiarcPart>
         if (pmp1.dot(n) == 0.0) {
             return if (direction > 0) Biarc.LineSegment(p, pm) else Biarc.LineSegment(pm, p)
         } else {
-            val s = (pmp1).dot(pmp1) / (n.scalarMul(2.0).dot(pmp1))
-            val c = p + n.scalarMul(s)
+            val s = (pmp1).dot(pmp1) / (n.scale(2.0).dot(pmp1))
+            val c = p + n.scale(s)
 
             if (s == 0.0) {
                 return Biarc.ArcSegment(c, s.absoluteValue, 0.0, 0.0)
             }
             val r = s.absoluteValue
-            val op = (p - c).scalarMul(1 / r)
-            val om = (pm - c).scalarMul(1 / r)
+            val op = (p - c).scale(1 / r)
+            val om = (pm - c).scale(1 / r)
             val zProd = op.zProd(om)
             val theta: Double
             if (d2 > 0 && zProd > 0) {

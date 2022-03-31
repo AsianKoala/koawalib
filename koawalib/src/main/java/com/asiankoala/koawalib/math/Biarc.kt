@@ -23,7 +23,7 @@ class Biarc {
 
         private val line = end.minus(begin)
         override fun r(t: Double): Point {
-            return begin + line.scalarMul(t)
+            return begin + line.scale(t)
         }
 
         override fun project(p: Point): Double {
@@ -95,7 +95,7 @@ class Biarc {
 
         override fun r(t: Double): Point {
             val ang = angleFromT(t)
-            return center + Point(cos(ang), sin(ang)).scalarMul(radius)
+            return center + Point(cos(ang), sin(ang)).scale(radius)
         }
 
         override fun length(): Double {
@@ -125,7 +125,7 @@ class Biarc {
         override fun tangentVec(t: Double): Point {
             val ang = angleFromT(t)
             val dir = if (startAngle < endAngle) 1.0 else -1.0
-            return Point(-sin(ang), cos(ang)).scalarMul(dir)
+            return Point(-sin(ang), cos(ang)).scale(dir)
         }
 
         operator fun contains(angle: Double): Boolean {

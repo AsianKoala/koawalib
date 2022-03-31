@@ -36,7 +36,7 @@ object SplineInterpolationTest {
         while(time.seconds() < 5.0) {
             val pose = Pose(position.x, position.y, heading.atan2)
             heading = controller.vectorControl(pose)
-            position += heading.scalarMul(dt)
+            position += heading.scale(dt)
 
             xRobot.add(position.x)
             yRobot.add(position.y)
