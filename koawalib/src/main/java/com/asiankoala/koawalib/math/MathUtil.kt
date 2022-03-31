@@ -67,7 +67,7 @@ fun clipIntersection(start: Point, end: Point, robot: Point): Point {
 
 fun extendLine(firstPoint: Point, secondPoint: Point, distance: Double): Point {
     val lineAngle = (secondPoint - firstPoint).atan2
-    val length = secondPoint.distance(firstPoint)
+    val length = secondPoint.dist(firstPoint)
     val extendedLineLength = length + distance
 
     val extendedX = lineAngle.cos * extendedLineLength + firstPoint.x
@@ -112,7 +112,7 @@ fun circleLineIntersection(
     var closest = Point(69420.0, -69420.0)
     for (p in intersections) { // add circle center offsets
         val offsetPoint = Point(p.x + center.x, p.y + center.y)
-        if (offsetPoint.distance(endPoint) < closest.distance(endPoint)) {
+        if (offsetPoint.dist(endPoint) < closest.dist(endPoint)) {
             closest = offsetPoint
         }
     }

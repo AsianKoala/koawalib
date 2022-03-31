@@ -1,11 +1,11 @@
 package com.asiankoala.koawalib.math
 
 interface ParametricFunction {
-    fun evaluate(parameter: Double): Point
-    fun getDerivative(parameter: Double): Point
-    fun getSecondDerivative(parameter: Double): Point
-    fun getCurvature(parameter: Double): Double
-    fun getDCurvature(parameter: Double): Double
+    fun evaluate(t: Double): Point
+    fun getDerivative(t: Double): Point
+    fun getSecondDerivative(t: Double): Point
+    fun getCurvature(t: Double): Double
+    fun getDCurvature(t: Double): Double
     val meanCurvature: Double
     val meanDCurvature: Double
 }

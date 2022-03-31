@@ -1,6 +1,5 @@
 package com.asiankoala.koawalib.path
 
-import com.acmerobotics.roadrunner.util.epsilonEquals
 import com.asiankoala.koawalib.math.*
 import com.asiankoala.koawalib.math.IndexPoint
 import com.asiankoala.koawalib.math.Point
@@ -137,7 +136,7 @@ object PurePursuitController {
 
     fun extendLine(firstPoint: Point, secondPoint: Point, distance: Double): Point {
         val lineAngle = (secondPoint - firstPoint).atan2
-        val length = secondPoint.distance(firstPoint)
+        val length = secondPoint.dist(firstPoint)
         val extendedLineLength = length + distance
 
         val extendedX = lineAngle.cos * extendedLineLength + firstPoint.x

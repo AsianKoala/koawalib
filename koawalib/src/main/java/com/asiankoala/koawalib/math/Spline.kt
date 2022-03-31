@@ -1,8 +1,9 @@
 package com.asiankoala.koawalib.math
 
+import kotlin.math.abs
 import kotlin.math.pow
 
-class Spline(val polynomialDegree: Int, val coeffs: DoubleArray, val inverted: Boolean) : ParametricFunction {
+class Spline(private val polynomialDegree: Int, private val coeffs: DoubleArray, private val inverted: Boolean) : ParametricFunction {
     constructor(polynomialDegree: Int, inverted: Boolean) : this(polynomialDegree, DoubleArray(2 * (polynomialDegree+1)), inverted)
     constructor(polynomialDegree: Int) : this(polynomialDegree, false)
 
@@ -11,7 +12,7 @@ class Spline(val polynomialDegree: Int, val coeffs: DoubleArray, val inverted: B
     }
 
     fun getCoefficient(order: Int, axis: Axis): Double {
-        return coeffs.get(2 * order + axis.offset)
+        return coeffs[2 * order + axis.offset]
     }
 
     private fun factorial(value: Int, result: Int): Int {
@@ -22,13 +23,13 @@ class Spline(val polynomialDegree: Int, val coeffs: DoubleArray, val inverted: B
         return if (value <= 1) 1 else factorial(value, value)
     }
 
-    override fun evaluate(parameter: Double): Point {
+    override fun evaluate(t: Double): Point {
         var vector = Point()
         for (i in 0..polynomialDegree) {
             vector = vector.plus(
                 Point(coeffs[2 * i], coeffs[2 * i + 1])
                     .scale(
-                        (if (inverted) 1 - parameter else parameter.pow(i.toDouble())) / factorial(i)
+                        (if (inverted) 1 - t else t.pow(i.toDouble())) / factorial(i)
                     )
             )
         }
@@ -36,16 +37,15 @@ class Spline(val polynomialDegree: Int, val coeffs: DoubleArray, val inverted: B
         return vector
     }
 
-    override fun getDerivative(parameter: Double): Point {
+    override fun getDerivative(t: Double): Point {
         var vector = Point()
         for (i in 1..polynomialDegree) {
             vector = vector.plus(
                 Point(coeffs[2 * i], coeffs[2 * i + 1])
                     .scale(
-                        (if (inverted) -1.0 else 1.0) * Math.pow(
-                            if (inverted) 1 - parameter else parameter,
+                        (if (inverted) -1.0 else 1.0) * (if (inverted) 1 - t else t.pow(
                             (i - 1).toDouble()
-                        ) / factorial(i - 1)
+                        )) / factorial(i - 1)
                     )
             )
         }
@@ -53,16 +53,13 @@ class Spline(val polynomialDegree: Int, val coeffs: DoubleArray, val inverted: B
         return vector
     }
 
-    override fun getSecondDerivative(parameter: Double): Point {
+    override fun getSecondDerivative(t: Double): Point {
         var vector = Point()
         for (i in 2..polynomialDegree) {
             vector = vector.plus(
                 Point(coeffs[2 * i], coeffs[2 * i + 1])
                     .scale(
-                        Math.pow(
-                            if (inverted) 1 - parameter else parameter,
-                            (i - 2).toDouble()
-                        ) / factorial(i - 2)
+                        (if (inverted) 1 - t else t.pow((i - 2).toDouble())) / factorial(i - 2)
                     )
             )
         }
@@ -71,16 +68,15 @@ class Spline(val polynomialDegree: Int, val coeffs: DoubleArray, val inverted: B
 
     }
 
-    fun getThirdDerivative(parameter: Double): Point {
+    fun getThirdDerivative(t: Double): Point {
         var vector = Point()
         for (i in 3..polynomialDegree) {
             vector = vector.plus(
                 Point(coeffs[2 * i], coeffs[2 * i + 1])
                     .scale(
-                        (if (inverted) -1.0 else 1.0) * Math.pow(
-                            if (inverted) 1 - parameter else parameter,
+                        (if (inverted) -1.0 else 1.0) * (if (inverted) 1 - t else t.pow(
                             (i - 3).toDouble()
-                        ) / factorial(i - 3)
+                        )) / factorial(i - 3)
                     )
             )
         }
@@ -88,34 +84,56 @@ class Spline(val polynomialDegree: Int, val coeffs: DoubleArray, val inverted: B
     }
 
 
-    override fun getCurvature(parameter: Double): Double {
-        val derivative = getDerivative(parameter)
-        val secondDerivative = getSecondDerivative(parameter)
-        return Math.abs(derivative.x * secondDerivative.y - secondDerivative.x * derivative.y) / Math.pow(
-            derivative.norm(),
-            3.0
-        )
+    override fun getCurvature(t: Double): Double {
+        val derivative = getDerivative(t)
+        val secondDerivative = getSecondDerivative(t)
+        return abs(derivative.x * secondDerivative.y - secondDerivative.x * derivative.y) / derivative.norm()
+            .pow(3.0)
     }
 
-    override fun getDCurvature(parameter: Double): Double {
-        val derivative = getDerivative(parameter)
-        val secondDerivative = getSecondDerivative(parameter)
-        val thirdDerivative = getThirdDerivative(parameter)
-        return Math.abs(
+    override fun getDCurvature(t: Double): Double {
+        val derivative = getDerivative(t)
+        val secondDerivative = getSecondDerivative(t)
+        val thirdDerivative = getThirdDerivative(t)
+        return abs(
             (6.0 * (derivative.y * secondDerivative.x - secondDerivative.y * derivative.x)
                     * (derivative.x * secondDerivative.x + derivative.y * secondDerivative.y)) +
                     2.0 * derivative.sqNorm() * (derivative.x * thirdDerivative.y - thirdDerivative.x * derivative.y)
-        ) / (2.0 * Math.pow(derivative.norm(), 5.0))
+        ) / (2.0 * derivative.norm().pow(5.0))
     }
 
     override val meanCurvature: Double
-        get() = TODO("Not yet implemented")
-    override val meanDCurvature: Double
-        get() = TODO("Not yet implemented")
+        get() = DoubleArray(T_STEPS) { (getCurvature(it.d / T_STEPS) + getCurvature((it.d + 1) / T_STEPS)) / (2.0 * T_STEPS)}.sum()
 
+    override val meanDCurvature: Double
+        get() = DoubleArray(T_STEPS) { (getDCurvature(it.d / T_STEPS) + getDCurvature((it.d + 1) / T_STEPS)) / (2.0 * T_STEPS)}.sum()
+
+    val arcLength: Double
+        get() = DoubleArray(T_STEPS) {
+            (getDerivative(it.d / T_STEPS).norm() +
+                    getDerivative((it.d + 1) / T_STEPS).norm()) / (2.0 * T_STEPS) }.sum()
+
+    fun getMinDistanceFromPoint(point: Point): Double {
+        return DoubleArray(T_STEPS) { evaluate(it.d / T_STEPS).dist(point) }.minOrNull()!!
+    }
+
+    fun getTAndMinDistanceFromPoint(point: Point): Pair<Double, Double> {
+        var minT = -1.0
+        var minDistance = Double.MAX_VALUE
+        for(i in 0..T_STEPS) {
+            val t = i.d / T_STEPS
+            val dist = evaluate(t).dist(point)
+
+            if(dist < minDistance) {
+                minDistance = dist
+                minT = t
+            }
+        }
+        return Pair(minT, minDistance)
+    }
 
     companion object {
-        private const val PARAMETER_STEPS = 2000
+        private const val T_STEPS = 2000
     }
 
     init {

@@ -42,7 +42,8 @@ open class Point(
     }
 
     fun norm(): Double {
-        return this.sqNorm().pow(0.5)
+        return sqNorm().pow(0.5);
+
     }
 
     fun sqNorm(): Double {
@@ -85,8 +86,6 @@ open class Point(
     fun scalarDiv(d: Double): Point {
         return scalarDiv(1 / d)
     }
-
-    fun distance(point: Point) = (this - point).hypot
 
     fun rotate(angle: Double) = Point(
         x * angle.cos - y * angle.sin,
