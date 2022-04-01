@@ -4,10 +4,13 @@ import com.asiankoala.koawalib.math.*
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.util.Logger
 
-class ThreeWheelOdometry(config: OdoConfig) : Odometry(config) {
-    private var leftEncoder = Encoder(config.leftEncoder, config.TICKS_PER_INCH)
-    private var rightEncoder = Encoder(config.rightEncoder, config.TICKS_PER_INCH)
-    private var perpEncoder = Encoder(config.perpEncoder, config.TICKS_PER_INCH)
+class ThreeWheelOdometry(
+    private val leftEncoder: Encoder,
+    private val rightEncoder: Encoder,
+    private val perpEncoder: Encoder,
+    private val TRACK_WIDTH: Double,
+    private val PERP_TRACKER: Double
+) : Odometry() {
     private var encoders = listOf(leftEncoder, rightEncoder, perpEncoder)
     private var accumulatedHeading = 0.0
     private var accumulatedPerpPrediction = 0.0
@@ -15,15 +18,12 @@ class ThreeWheelOdometry(config: OdoConfig) : Odometry(config) {
     override fun updateTelemetry() {
         Logger.addTelemetryData("start pose", startPose.degString)
         Logger.addTelemetryData("curr pose", position.degString)
-        Logger.addTelemetryData("left encoder", leftEncoder.currRead)
-        Logger.addTelemetryData("right encoder", rightEncoder.currRead)
-        Logger.addTelemetryData("perp encoder", perpEncoder.currRead)
-        Logger.addTelemetryData("left offset", leftEncoder.offset)
-        Logger.addTelemetryData("right offset", rightEncoder.offset)
-        Logger.addTelemetryData("perp offset", perpEncoder.offset)
+        Logger.addTelemetryData("left encoder", leftEncoder.position)
+        Logger.addTelemetryData("right encoder", rightEncoder.position)
+        Logger.addTelemetryData("perp encoder", perpEncoder.position)
         Logger.addTelemetryData("accumulated heading", accumulatedHeading.degrees)
 
-        val accumPerp = perpEncoder.currRead
+        val accumPerp = perpEncoder.position
         val perpPredictDelta = accumPerp - accumulatedPerpPrediction
         Logger.addTelemetryData("accumulated perp", accumPerp)
         Logger.addTelemetryData("accumulated perp prediction", accumulatedPerpPrediction)
@@ -32,12 +32,12 @@ class ThreeWheelOdometry(config: OdoConfig) : Odometry(config) {
     }
 
     override fun localize() {
-        encoders.forEach(Encoder::read)
+        encoders.forEach(Encoder::update)
 
-        val newAngle = (((leftEncoder.currRead - rightEncoder.currRead) / config.TRACK_WIDTH) + startPose.heading).wrap
+        val newAngle = (((leftEncoder.position - rightEncoder.position) / TRACK_WIDTH) + startPose.heading).wrap
 
-        val headingDelta = (leftEncoder.delta - rightEncoder.delta) / config.TRACK_WIDTH
-        val perpPredicted = headingDelta * config.PERP_TRACKER
+        val headingDelta = (leftEncoder.delta - rightEncoder.delta) / TRACK_WIDTH
+        val perpPredicted = headingDelta * PERP_TRACKER
         val perpReal = perpEncoder.delta - perpPredicted
 
         accumulatedHeading += headingDelta

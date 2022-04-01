@@ -5,6 +5,8 @@ import com.asiankoala.koawalib.control.Controller
 import com.asiankoala.koawalib.control.MotionProfileController
 import com.asiankoala.koawalib.control.OpenLoopController
 import com.asiankoala.koawalib.control.PIDExController
+import com.asiankoala.koawalib.math.d
+import com.asiankoala.koawalib.subsystem.odometry.Encoder
 import com.asiankoala.koawalib.util.Logger
 
 /**
@@ -14,23 +16,12 @@ import com.asiankoala.koawalib.util.Logger
 @Suppress("unused")
 class KMotorEx(
     name: String,
-    private val controller: Controller
+    private val controller: PIDExController,
+    private val encoder: Encoder
 ) : KMotor(name) {
 
-    override fun setSpeed(speed: Double) {
-        if (controller is OpenLoopController) {
-            controller.output = speed * powerMultiplier
-        } else {
-            throw IllegalArgumentException("MOTOR IS NOT OPEN LOOP")
-        }
-    }
-
     fun setPIDTarget(targetPosition: Double, targetVelocity: Double = 0.0, targetAcceleration: Double = 0.0) {
-        if (controller is PIDExController) {
-            controller.setControllerTargets(targetPosition, targetVelocity, targetAcceleration)
-        } else {
-            throw IllegalArgumentException("MOTOR IS NOT PID CONTROLLED")
-        }
+        controller.setControllerTargets(targetPosition, targetVelocity, targetAcceleration)
     }
 
     fun setMotionProfileTarget(targetPosition: Double) {
@@ -51,36 +42,26 @@ class KMotorEx(
 
     fun enable() {
         disabled = false
-        if (controller is PIDExController) {
-            controller.reset()
-        }
+        controller.reset()
     }
 
     fun disable() {
         disabled = true
     }
 
-    fun isAtTarget(): Boolean {
-        return if (controller is PIDExController) {
-            controller.isAtTarget
-        } else {
-            true
-        }
-    }
+    val isAtTarget get() = controller.isAtTarget
 
     fun update() {
         val output = if (disabled) {
             Logger.logDebug("motor $name disabled")
             0.0
         } else {
-            if (controller is PIDExController) {
-                controller.measure(position, velocity)
-                controller.output = controller.update()
-            }
-
+            controller.currentPosition = encoder.position
+            controller.currentVelocity = encoder.velocity
+            controller.output = controller.update()
             controller.output
         }
 
-        super.device.power = output
+        setSpeed(output)
     }
 }

@@ -6,7 +6,7 @@ import com.asiankoala.koawalib.math.TimePose
 import com.asiankoala.koawalib.subsystem.DeviceSubsystem
 import kotlin.math.max
 
-abstract class Odometry(protected val config: OdoConfig) : DeviceSubsystem(), Localized {
+abstract class Odometry : DeviceSubsystem(), Localized {
     protected var _position = Pose()
     override val position: Pose get() = _position
 
@@ -16,7 +16,7 @@ abstract class Odometry(protected val config: OdoConfig) : DeviceSubsystem(), Lo
                 return Pose()
             }
 
-            val oldIndex = max(0, prevRobotRelativePositions.size - config.VELOCITY_READ_TICKS - 1)
+            val oldIndex = max(0, prevRobotRelativePositions.size - 5 - 1)
             val old = prevRobotRelativePositions[oldIndex]
             val curr = prevRobotRelativePositions[prevRobotRelativePositions.size - 1]
 

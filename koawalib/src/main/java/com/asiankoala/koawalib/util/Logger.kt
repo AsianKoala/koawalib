@@ -9,20 +9,19 @@ import org.firstinspires.ftc.robotcore.external.Telemetry
 object Logger {
     internal var telemetry: Telemetry? = null
 
-    private const val maxErrorCount = 100
-    private const val refreshRate = 5 // refreshes per second
+    private const val maxErrorCount = 10
 
     private val priorityList = listOf("NONE", "NONE", "VERBOSE", "DEBUG", "INFO", "WARN", "ERROR", "WTF")
 
-    private var logCount = 0
-    private var isLogging: Boolean = true
-    private var isPrinting: Boolean = false
-    private var shouldLogTelemetry: Boolean = false
-    private var messageCache = ArrayDeque<Pair<Int, String>>()
-    private var internalTimer = ElapsedTime()
-    private var forceUpdate = false
+    internal var logCount = 0
     private var errors = 0
-    private var onlyLoggingWarnings = true
+    private var messageCache = ArrayDeque<Pair<Int, String>>()
+
+    var isLogging: Boolean = true
+    var isPrinting: Boolean = false
+    var isLoggingTelemetry: Boolean = false
+    var isForceUpdating = false
+    var isDebugging = true
 
     fun periodic() {
         val tag = "KOAWALIB"
@@ -47,10 +46,6 @@ object Logger {
         if(errors > maxErrorCount) {
             throw Exception("error overflow")
         }
-
-        if(internalTimer.seconds() > 1 / refreshRate) {
-            internalTimer.reset()
-        }
     }
 
     private fun log(message: String, priority: Int) {
@@ -70,7 +65,7 @@ object Logger {
             }
         } else {
             telemetry!!.addLine(message)
-            if (shouldLogTelemetry) {
+            if (isLoggingTelemetry) {
                 logInfo(message)
             }
         }
@@ -81,17 +76,13 @@ object Logger {
     }
 
     fun logDebug(message: String) {
-        if(onlyLoggingWarnings) return
-        if(internalTimer.seconds() > 1 / refreshRate || forceUpdate) {
-            log(message, Log.DEBUG)
-        }
+        if(isDebugging) return
+        log(message, Log.DEBUG)
     }
 
     fun logInfo(message: String) {
-        if(onlyLoggingWarnings) return
-        if(internalTimer.seconds() > 1 / refreshRate || forceUpdate) {
-            log(message, Log.INFO)
-        }
+        if(isDebugging) return
+        log(message, Log.INFO)
     }
 
     fun logWarning(message: String) {
@@ -108,44 +99,8 @@ object Logger {
         throw Exception(message)
     }
 
-    fun startLogging() {
-        isLogging = true
-    }
-
-    fun stopLogging() {
-        isLogging = false
-    }
-
-    fun startPrinting() {
-        isPrinting = true
-    }
-
-    fun stopPrinting() {
-        isPrinting = false
-    }
-
-    fun reset() {
-        logCount = 0
-    }
-
     fun addErrorCommand() {
         InfiniteCommand({ addTelemetryData("error count", errors) }).schedule()
-    }
-
-    fun forceLoggerUpdate() {
-        forceUpdate = true
-    }
-
-    fun stopForcingLoggerUpdate() {
-        forceUpdate = false
-    }
-
-    fun verboseLogging() {
-        onlyLoggingWarnings = false
-    }
-
-    fun onlyWarningLogging() {
-        onlyLoggingWarnings = true
     }
 
     private fun String.withColor(color: String): String {

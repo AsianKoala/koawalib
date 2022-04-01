@@ -22,8 +22,15 @@ open class CommandOpMode : LinearOpMode() {
     internal val isLooping get() = mainStateMachine.state == OpModeState.LOOP
 
     private fun setup() {
-        Logger.reset()
+        Logger.logCount = 0
         Logger.telemetry = telemetry
+        Logger.isForceUpdating = false
+        Logger.isDebugging = false
+        Logger.isLoggingTelemetry = true
+        Logger.isPrinting = false
+        Logger.isLogging = true
+
+
         CommandScheduler.resetScheduler()
         Logger.addErrorCommand()
 

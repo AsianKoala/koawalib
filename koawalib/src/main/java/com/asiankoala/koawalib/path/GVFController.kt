@@ -1,10 +1,10 @@
-package com.asiankoala.koawalib.path.gvf
+package com.asiankoala.koawalib.path
 
 import com.asiankoala.koawalib.math.*
 import com.asiankoala.koawalib.math.Point
 import com.asiankoala.koawalib.math.Pose
 
-class GVFController(val path: Path, val k_delta: Double, val k_n: Double) {
+class GVFController(val path: GVFPath, val k_delta: Double, val k_n: Double) {
     var lastT = 0.0001
     fun vectorAt(r: Point, closestT: Double): Point {
         return path.tangentVec(closestT)

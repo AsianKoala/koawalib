@@ -17,14 +17,14 @@ object CommandScheduler {
     private val scheduledCommands: MutableList<Command> = ArrayList()
     private val scheduledCommandRequirements: MutableMap<Subsystem, Command> = LinkedHashMap()
     private val subsystems: MutableMap<Subsystem, Command?> = LinkedHashMap()
-
     private val toSchedule: MutableList<Command> = ArrayDeque()
     private val toCancel: MutableList<Command> = ArrayDeque()
-
     private val loopAssertionMap: MutableMap<Any, Int> = HashMap()
 
     private val allMaps = listOf<MutableMap<*, *>>(scheduledCommandRequirements, subsystems)
     private val allLists = listOf<MutableList<*>>(scheduledCommands, toCancel, toSchedule, toCancel)
+
+    private var amountOfWatchdogs = 0
 
     internal var isOpModeLooping = false
         private set
@@ -33,12 +33,13 @@ object CommandScheduler {
         allMaps.forEach(MutableMap<*, *>::clear)
         allLists.forEach(MutableList<*>::clear)
         isOpModeLooping = false
+        amountOfWatchdogs = 0
     }
 
     private fun initCommand(command: Command, cRequirements: Set<Subsystem>) {
         command.init()
         scheduledCommands.add(command)
-        Logger.logInfo("command ${command.name} initialized")
+        Logger.logDebug("command ${command.name} initialized")
         cRequirements.forEach { scheduledCommandRequirements[it] = command }
     }
 
@@ -100,8 +101,6 @@ object CommandScheduler {
                     scheduledCommandRequirements.keys, v.getRequirements()
                 )
             ) {
-                // cleared all conditions for scheduling, just execute right now so it isnt in
-                // scheduledCommands after this
                 v.execute()
             }
         }
@@ -116,23 +115,25 @@ object CommandScheduler {
             Logger.logDebug("$i: ${subsystem.name}")
         }
 
+        Logger.logDebug("number of commands (excluding watchdog): ${scheduledCommands.size - amountOfWatchdogs}")
+
         val iterator = scheduledCommands.iterator()
         while (iterator.hasNext()) {
             val command = iterator.next()
 
             command.execute()
-            Logger.logInfo("command ${command.name} executed")
+
+            if(command !is Watchdog) {
+                Logger.logInfo("non-watchdog command ${command.name} executed")
+            }
 
             if (command.isFinished) {
                 command.end(false)
-                Logger.logInfo("command ${command.name} finished")
+                Logger.logDebug("command ${command.name} finished")
                 iterator.remove()
                 scheduledCommandRequirements.keys.removeAll(command.getRequirements())
             }
         }
-
-        Logger.logDebug("amount of scheduled commands after run(): ${scheduledCommands.size}")
-        Logger.logDebug("CommandScheduler exited run()")
     }
 
     fun schedule(vararg commands: Command) {
@@ -151,7 +152,10 @@ object CommandScheduler {
     }
 
     fun registerSubsystem(vararg requestedSubsystems: Subsystem) {
-        requestedSubsystems.forEach { this.subsystems[it] = null }
+        requestedSubsystems.forEach {
+            Logger.logInfo("registered subsystem ${it.name}")
+            this.subsystems[it] = null
+        }
     }
 
     fun unregisterSubsystem(vararg requestedSubsystems: Subsystem) {
@@ -194,8 +198,9 @@ object CommandScheduler {
     }
 
     fun scheduleWatchdog(condition: () -> Boolean, command: Command) {
-        schedule(Watchdog(condition, command))
+        schedule(Watchdog(condition, command).withName(command.name))
         Logger.logInfo("added watchdog ${command.name}")
+        amountOfWatchdogs++
     }
 
     fun assertUniqueLoop(thing: Any) {

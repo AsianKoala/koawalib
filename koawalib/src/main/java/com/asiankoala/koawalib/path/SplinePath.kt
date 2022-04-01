@@ -1,4 +1,4 @@
-package com.asiankoala.koawalib.path.gvf
+package com.asiankoala.koawalib.path
 
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.*
@@ -7,7 +7,7 @@ import org.apache.commons.math3.linear.ArrayRealVector
 import org.apache.commons.math3.linear.LUDecomposition
 import kotlin.math.*
 
-class SplinePath(waypoints: Array<Pose>): Path() {
+class SplinePath(waypoints: Array<Pose>): GVFPath() {
     override fun length(): Double {
         return length
     }

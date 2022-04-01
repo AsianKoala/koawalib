@@ -89,9 +89,12 @@ object PurePursuitController {
         yPower *= errorTurnSoScaleMovement
 
         if (shouldTelemetry) {
-            Logger.addTelemetryLine("relative X $relativeXToPosition")
-            Logger.addTelemetryLine("relative Y $relativeYToPosition")
-            Logger.addTelemetryLine("relative Angle $relativePointAngle")
+            Logger.addTelemetryData("relative X", relativeXToPosition)
+            Logger.addTelemetryData("relative Y", relativeYToPosition)
+            Logger.addTelemetryData("relative Angle", relativePointAngle)
+            Logger.addTelemetryData("xPower", xPower)
+            Logger.addTelemetryData("yPower", yPower)
+            Logger.addTelemetryData("turnPower", turnPower)
         }
 
         return Pose(xPower, yPower, turnPower)

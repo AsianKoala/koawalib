@@ -16,10 +16,8 @@ open class PIDExController(private val config: PIDFConfig) : Controller() {
     private var targetVelocity = 0.0
     private var targetAcceleration = 0.0
 
-    var currentPosition: Double = 0.0
-        private set
-    private var currentVelocity: Double? = 0.0
-        private set
+    internal var currentPosition: Double = 0.0
+    internal var currentVelocity: Double = 0.0
 
     val isAtTarget get() = (currentPosition - targetPosition).absoluteValue < config.positionEpsilon
 
@@ -37,13 +35,8 @@ open class PIDExController(private val config: PIDFConfig) : Controller() {
         lastUpdateTimestamp = Double.NaN
     }
 
-    fun measure(position: Double, velocity: Double) {
-        currentPosition = ticksToUnits(position)
-        currentVelocity = ticksToUnits(velocity)
-    }
-
     fun setControllerTargets(targetP: Double, targetV: Double = 0.0, targetA: Double = 0.0) {
-        reset()
+//        reset()
         targetPosition = targetP
         targetVelocity = targetV
         targetAcceleration = targetA

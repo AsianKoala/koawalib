@@ -132,6 +132,10 @@ class Spline(private val polynomialDegree: Int, private val coeffs: DoubleArray,
         return Pair(minT, minDistance)
     }
 
+    fun getTAtPoint(point: Point): Double {
+        return getTAndMinDistanceFromPoint(point).first
+    }
+
     companion object {
         private const val T_STEPS = 2000
     }

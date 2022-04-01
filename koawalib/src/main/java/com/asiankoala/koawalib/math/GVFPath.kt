@@ -3,7 +3,7 @@ package com.asiankoala.koawalib.math
 import kotlin.math.atan
 import kotlin.math.pow
 
-abstract class Path {
+abstract class GVFPath {
     abstract fun closestTOnPathTo(r: Point, guess: Double): Double
     abstract fun calculatePoint(t: Double): Point
     abstract fun tangentVec(t: Double): Point

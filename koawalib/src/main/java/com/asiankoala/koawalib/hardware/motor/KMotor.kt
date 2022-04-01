@@ -9,32 +9,25 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.util.Range
 import kotlin.math.absoluteValue
 
-// TODO figure out why reversing isn't working with encoder multiplier? maybe
 open class KMotor(name: String) : KDevice<DcMotorEx>(name), KDouble {
+    private var powerMultiplier = 1.0
 
-    private var offset = 0.0
-    protected var powerMultiplier = 1.0
-    private var encoderMultiplier = 1.0
-
-    fun zero(newPosition: Double = 0.0): KMotor {
-        offset = newPosition - device.currentPosition
-        return this
+    fun setSpeed(speed: Double) {
+        this.power = speed
     }
 
-    open fun setSpeed(speed: Double) {
-        power = speed * powerMultiplier
-    }
+    val getRawMotorPosition get() = device.currentPosition.d
 
-    var power: Double = 0.0
+    private var power: Double = 0.0
         private set(value) {
             val clipped = Range.clip(value, -1.0, 1.0)
             if (clipped epsilonNotEqual field && (clipped == 0.0 || clipped.absoluteValue == 1.0 || (clipped - field).absoluteValue > 0.005)) {
-                field = value
-                device.power = value
+                field = value * powerMultiplier
+                device.power = value * powerMultiplier
             }
         }
 
-    var zeroPowerBehavior: DcMotor.ZeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
+    private var zeroPowerBehavior: DcMotor.ZeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
         set(value) {
             if (device.zeroPowerBehavior != value) {
                 device.zeroPowerBehavior = value
@@ -42,7 +35,7 @@ open class KMotor(name: String) : KDevice<DcMotorEx>(name), KDouble {
             }
         }
 
-    var direction: DcMotorSimple.Direction = DcMotorSimple.Direction.FORWARD
+    private var direction: DcMotorSimple.Direction = DcMotorSimple.Direction.FORWARD
         set(value) {
             powerMultiplier = if(value == DcMotorSimple.Direction.FORWARD) {
                 1.0
@@ -51,10 +44,6 @@ open class KMotor(name: String) : KDevice<DcMotorEx>(name), KDouble {
             }
             field = value
         }
-
-    val position get() = encoderMultiplier * (device.currentPosition + offset)
-
-    val velocity get() = device.velocity
 
     val brake: KMotor
         get() {
@@ -80,18 +69,6 @@ open class KMotor(name: String) : KDevice<DcMotorEx>(name), KDouble {
             return this
         }
 
-    val resetEncoder: KMotor
-        get() {
-            zero()
-            return this
-        }
-
-    val reverseEncoder: KMotor
-        get() {
-            encoderMultiplier *= -1.0
-            return this
-        }
-
     override fun invokeDouble(): Double {
         return power
     }
@@ -99,6 +76,5 @@ open class KMotor(name: String) : KDevice<DcMotorEx>(name), KDouble {
     init {
         device.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         device.zeroPowerBehavior = zeroPowerBehavior
-        device.direction = direction
     }
 }
