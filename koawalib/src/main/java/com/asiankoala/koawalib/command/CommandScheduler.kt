@@ -10,8 +10,6 @@ import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
 
-// TODO: INTERNAL SHIT INSTEAD OF MAKING THEM PUBLIC :RAGE:
-// TODO: ASSERT NOT CHANGING PER LOOP OR SOMETHING? SOUNDS COOL
 @Suppress("unused")
 object CommandScheduler {
     private val scheduledCommands: MutableList<Command> = ArrayList()
@@ -19,7 +17,6 @@ object CommandScheduler {
     private val subsystems: MutableMap<Subsystem, Command?> = LinkedHashMap()
     private val toSchedule: MutableList<Command> = ArrayDeque()
     private val toCancel: MutableList<Command> = ArrayDeque()
-    private val loopAssertionMap: MutableMap<Any, Int> = HashMap()
 
     private val allMaps = listOf<MutableMap<*, *>>(scheduledCommandRequirements, subsystems)
     private val allLists = listOf<MutableList<*>>(scheduledCommands, toCancel, toSchedule, toCancel)
@@ -85,13 +82,6 @@ object CommandScheduler {
     internal fun run() {
         Logger.logDebug("CommandScheduler entered run()")
         Logger.logDebug("amount of scheduled commands before run(): ${scheduledCommands.size + toSchedule.size}")
-
-        loopAssertionMap.forEach { (k, v) ->
-            if (v > 1) {
-                Logger.logWarning("$k repeated $v times")
-            }
-            loopAssertionMap[k] = 0
-        }
 
         toSchedule.forEach { it.scheduleThis() }
         toCancel.forEach { it.cancelThis() }
@@ -201,13 +191,5 @@ object CommandScheduler {
         schedule(Watchdog(condition, command).withName(command.name))
         Logger.logInfo("added watchdog ${command.name}")
         amountOfWatchdogs++
-    }
-
-    fun assertUniqueLoop(thing: Any) {
-        if (thing in loopAssertionMap.keys) {
-            loopAssertionMap[thing] = loopAssertionMap[thing]!! + 1
-        } else {
-            loopAssertionMap[thing] = 0
-        }
     }
 }

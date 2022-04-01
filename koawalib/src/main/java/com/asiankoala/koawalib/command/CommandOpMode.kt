@@ -24,11 +24,10 @@ open class CommandOpMode : LinearOpMode() {
     private fun setup() {
         Logger.logCount = 0
         Logger.telemetry = telemetry
-        Logger.isForceUpdating = false
-        Logger.isDebugging = false
-        Logger.isLoggingTelemetry = true
-        Logger.isPrinting = false
-        Logger.isLogging = true
+        Logger.LoggerConfig.isDebugging = false
+        Logger.LoggerConfig.isLoggingTelemetry = true
+        Logger.LoggerConfig.isPrinting = false
+        Logger.LoggerConfig.isLogging = true
 
         CommandScheduler.resetScheduler()
         Logger.addErrorCommand()

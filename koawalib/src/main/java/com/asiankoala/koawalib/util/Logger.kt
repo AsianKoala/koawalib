@@ -2,26 +2,29 @@ package com.asiankoala.koawalib.util
 
 import android.util.Log
 import com.asiankoala.koawalib.command.commands.InfiniteCommand
-import com.qualcomm.robotcore.util.ElapsedTime
+import com.asiankoala.koawalib.util.Logger.LoggerConfig.isLogging
+import com.asiankoala.koawalib.util.Logger.LoggerConfig.isPrinting
+import com.asiankoala.koawalib.util.Logger.LoggerConfig.isLoggingTelemetry
+import com.asiankoala.koawalib.util.Logger.LoggerConfig.isDebugging
+import com.asiankoala.koawalib.util.Logger.LoggerConfig.maxErrorCount
 import org.firstinspires.ftc.robotcore.external.Telemetry
 
 @Suppress("unused")
 object Logger {
+    object LoggerConfig {
+        var isLogging = true
+        var isPrinting = false
+        var isLoggingTelemetry = false
+        var isDebugging = true
+        var maxErrorCount = 10
+    }
+
     internal var telemetry: Telemetry? = null
-
-    private const val maxErrorCount = 10
-
-    private val priorityList = listOf("NONE", "NONE", "VERBOSE", "DEBUG", "INFO", "WARN", "ERROR", "WTF")
-
     internal var logCount = 0
+    private val priorityList = listOf("NONE", "NONE", "VERBOSE", "DEBUG", "INFO", "WARN", "ERROR", "WTF")
     private var errors = 0
     private var messageCache = ArrayDeque<Pair<Int, String>>()
 
-    var isLogging: Boolean = true
-    var isPrinting: Boolean = false
-    var isLoggingTelemetry: Boolean = false
-    var isForceUpdating = false
-    var isDebugging = true
 
     fun periodic() {
         val tag = "KOAWALIB"

@@ -17,7 +17,6 @@ import com.asiankoala.koawalib.util.Logger
 class KMotorEx(
     name: String,
     private val controller: PIDExController,
-    private val encoder: Encoder
 ) : KMotor(name) {
 
     fun setPIDTarget(targetPosition: Double, targetVelocity: Double = 0.0, targetAcceleration: Double = 0.0) {
@@ -51,7 +50,7 @@ class KMotorEx(
 
     val isAtTarget get() = controller.isAtTarget
 
-    fun update() {
+    fun update(encoder: Encoder) {
         val output = if (disabled) {
             Logger.logDebug("motor $name disabled")
             0.0
