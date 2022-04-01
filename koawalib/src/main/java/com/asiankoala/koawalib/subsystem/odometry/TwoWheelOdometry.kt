@@ -20,8 +20,8 @@ class TwoWheelOdometry(
     private var lastAngle = Double.NaN
 
     override fun updateTelemetry() {
-        Logger.addTelemetryData("start pose", startPose.degString)
-        Logger.addTelemetryData("curr pose", position.degString)
+        Logger.addTelemetryData("start pose", startPose)
+        Logger.addTelemetryData("curr pose", position)
         Logger.addTelemetryData("left encoder", leftEncoder.position)
         Logger.addTelemetryData("perp encoder", perpEncoder.position)
         Logger.addTelemetryData("accumulated heading", accumulatedHeading.degrees)

@@ -21,8 +21,6 @@ class Pose(
 
     fun plusWrap(other: Pose) = Pose(x + other.x, y + other.y, (heading + other.heading).wrap)
 
-    val degString get() = "Pose(x=$x, y=$y, heading=${heading.degrees}"
-
     fun directionVector(): Point {
         return Point(cos(heading), sin(heading)).normalized()
     }
@@ -52,6 +50,6 @@ class Pose(
     }
 
     override fun toString(): String {
-        return degString
+        return String.format("%.2f, %.2f, %.2f", x, y, heading.degrees)
     }
 }
