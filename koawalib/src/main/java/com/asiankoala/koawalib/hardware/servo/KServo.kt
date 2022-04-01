@@ -19,4 +19,10 @@ class KServo(name: String) : KDevice<Servo>(name) {
         position = startPos
         return this
     }
+
+    val reverse : KServo
+    get() {
+        direction = Servo.Direction.REVERSE
+        return this
+    }
 }
