@@ -25,9 +25,9 @@ open class ParallelCommandGroup(vararg commands: Command) : CommandGroupBase() {
         }
     }
 
-    override fun init() {
+    override fun initialize() {
         for (entry in mCommands.entries) {
-            entry.key.init()
+            entry.key.initialize()
             entry.setValue(true)
         }
     }

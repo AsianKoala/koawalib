@@ -8,7 +8,7 @@ class PathCommand(
     private val path: Path
 ) : CommandBase() {
 
-    override fun init() {
+    override fun initialize() {
         drive.enable()
     }
 

@@ -1,5 +1,6 @@
 package com.asiankoala.koawalib.math
 
+import com.acmerobotics.roadrunner.geometry.Pose2d
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -10,8 +11,13 @@ class Pose(
 ) : Point(x, y) {
     constructor(x: Int, y: Int, h: Int) : this(x.d, y.d, h.d)
     constructor(p: Point, h: Double) : this(p.x, p.y, h)
+    constructor(p: Pose2d) : this(p.x, p.y, p.heading)
 
     val point = Point(x, y)
+
+    fun toPose2d(): Pose2d {
+        return Pose2d(x, y, heading)
+    }
 
     fun plusWrap(other: Pose) = Pose(x + other.x, y + other.y, (heading + other.heading).wrap)
 

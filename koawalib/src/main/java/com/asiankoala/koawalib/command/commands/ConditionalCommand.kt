@@ -10,14 +10,14 @@ class ConditionalCommand(onTrue: Command, onFalse: Command, condition: () -> Boo
     private val mCondition: () -> Boolean
     private lateinit var m_selectedCommand: Command
 
-    override fun init() {
+    override fun initialize() {
         m_selectedCommand = if (mCondition.invoke()) {
             mOnTrue
         } else {
             mOnFalse
         }
 
-        m_selectedCommand.init()
+        m_selectedCommand.initialize()
     }
 
     override fun execute() {

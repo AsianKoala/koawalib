@@ -7,6 +7,7 @@ import com.asiankoala.koawalib.util.Periodic
 interface Subsystem : Periodic {
 
     override fun periodic() {
+
     }
 
     fun setDefaultCommand(command: Command) {
@@ -23,6 +24,10 @@ interface Subsystem : Periodic {
 
     fun register() {
         CommandScheduler.registerSubsystem(this)
+    }
+
+    fun unregister() {
+        CommandScheduler.unregisterSubsystem(this)
     }
 
     val name: String get() = this.javaClass.simpleName

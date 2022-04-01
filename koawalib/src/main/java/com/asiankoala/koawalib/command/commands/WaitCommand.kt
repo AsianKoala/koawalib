@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.util.ElapsedTime
 open class WaitCommand(private val seconds: Double) : CommandBase() {
     private val timer = ElapsedTime()
 
-    override fun init() {
+    override fun initialize() {
         timer.reset()
     }
 

@@ -35,9 +35,9 @@ class ParallelDeadlineGroup(private var mDeadline: Command, vararg commands: Com
         }
     }
 
-    override fun init() {
+    override fun initialize() {
         for (commandRunning in mCommands.entries) {
-            commandRunning.key.init()
+            commandRunning.key.initialize()
             commandRunning.setValue(true)
         }
     }

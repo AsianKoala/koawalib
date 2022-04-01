@@ -28,9 +28,9 @@ class ParallelRaceGroup(vararg commands: Command) : CommandGroupBase() {
         }
     }
 
-    override fun init() {
+    override fun initialize() {
         finished = false
-        commands.forEach(Command::init)
+        commands.forEach(Command::initialize)
     }
 
     override fun execute() {

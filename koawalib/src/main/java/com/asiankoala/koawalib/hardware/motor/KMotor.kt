@@ -17,6 +17,7 @@ open class KMotor(name: String) : KDevice<DcMotorEx>(name), KDouble {
     }
 
     val getRawMotorPosition get() = device.currentPosition.d
+    val getRawMotorVelocity get() = device.velocity
 
     private var power: Double = 0.0
         private set(value) {

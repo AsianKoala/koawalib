@@ -31,7 +31,7 @@ class ThreeWheelOdometry(
         Logger.addTelemetryData("should increase perp tracker", perpPredictDelta > 0)
     }
 
-    override fun localize() {
+    override fun periodic() {
         encoders.forEach(Encoder::update)
 
         val newAngle = (((leftEncoder.position - rightEncoder.position) / TRACK_WIDTH) + startPose.heading).wrap

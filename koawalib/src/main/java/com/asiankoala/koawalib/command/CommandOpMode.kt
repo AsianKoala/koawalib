@@ -30,7 +30,6 @@ open class CommandOpMode : LinearOpMode() {
         Logger.isPrinting = false
         Logger.isLogging = true
 
-
         CommandScheduler.resetScheduler()
         Logger.addErrorCommand()
 

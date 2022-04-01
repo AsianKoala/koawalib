@@ -38,7 +38,7 @@ class TwoWheelOdometry(
         return (imu.heading + startPose.heading).wrap
     }
 
-    override fun localize() {
+    override fun periodic() {
         if (lastAngle.isNaN()) {
             lastAngle = getHeading()
             return

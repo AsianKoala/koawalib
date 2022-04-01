@@ -8,7 +8,7 @@ import com.asiankoala.koawalib.command.group.SequentialCommandGroup
 import com.asiankoala.koawalib.subsystem.Subsystem
 
 fun interface Command {
-    fun init() {}
+    fun initialize() {}
 
     fun execute()
 

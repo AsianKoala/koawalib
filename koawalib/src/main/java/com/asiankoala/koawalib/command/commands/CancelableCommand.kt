@@ -5,12 +5,12 @@ class CancelableCommand(
     private val command: Command
 ) : CommandBase() {
 
-    override fun init() {
+    override fun initialize() {
         if (condition.invoke()) {
             command.cancel()
         }
 
-        command.init()
+        command.initialize()
     }
 
     override fun execute() {

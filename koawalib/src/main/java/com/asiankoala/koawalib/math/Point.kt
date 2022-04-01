@@ -1,5 +1,6 @@
 package com.asiankoala.koawalib.math
 
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D
 import org.apache.commons.math3.linear.*
 import kotlin.math.*
 
@@ -7,32 +8,8 @@ open class Point(
     val x: Double = 0.0,
     val y: Double = 0.0
 ) {
-    companion object {
-        fun fromApacheVec(v: RealVector): Point {
-            return Point(v.getEntry(0), v.getEntry(1))
-        }
-
-        fun fromAngle(angle: Double): Point {
-            return Point(cos(angle), sin(angle))
-        }
-
-        fun arePointsCollinear(r1: Point, r2: Point, r3: Point): Boolean {
-            val denomMat = Array2DRowRealMatrix(
-                arrayOf(
-                    doubleArrayOf(r1.x, r1.y, 1.0),
-                    doubleArrayOf(r2.x, r2.y, 1.0),
-                    doubleArrayOf(r3.x, r3.y, 1.0)
-                )
-            )
-            return LUDecomposition(denomMat).determinant == 0.0
-        }
-
-        fun cross(a: Point, b: Point): Double {
-            return a.x * b.y - a.y * b.x
-        }
-    }
-
     constructor(x: Int, y: Int) : this(x.d, y.d)
+    constructor(v: Vector2D) : this(v.x, v.y)
 
     val hypot get() = hypot(x, y)
     val atan2 get() = atan2(y, x)
@@ -111,6 +88,10 @@ open class Point(
         return norm() / other.norm()
     }
 
+    fun toVector2d(): Vector2D {
+        return Vector2D(x, y)
+    }
+
     operator fun plus(point: Point) = Point(x + point.x, y + point.y)
     operator fun minus(point: Point) = Point(x - point.x, y - point.y)
     operator fun unaryMinus() = scale(-1.0)
@@ -135,5 +116,30 @@ open class Point(
         if (atan2 != other.atan2) return false
 
         return true
+    }
+
+    companion object {
+        fun fromApacheVec(v: RealVector): Point {
+            return Point(v.getEntry(0), v.getEntry(1))
+        }
+
+        fun fromAngle(angle: Double): Point {
+            return Point(cos(angle), sin(angle))
+        }
+
+        fun arePointsCollinear(r1: Point, r2: Point, r3: Point): Boolean {
+            val denomMat = Array2DRowRealMatrix(
+                arrayOf(
+                    doubleArrayOf(r1.x, r1.y, 1.0),
+                    doubleArrayOf(r2.x, r2.y, 1.0),
+                    doubleArrayOf(r3.x, r3.y, 1.0)
+                )
+            )
+            return LUDecomposition(denomMat).determinant == 0.0
+        }
+
+        fun cross(a: Point, b: Point): Double {
+            return a.x * b.y - a.y * b.x
+        }
     }
 }

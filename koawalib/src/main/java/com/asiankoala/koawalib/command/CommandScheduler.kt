@@ -37,7 +37,7 @@ object CommandScheduler {
     }
 
     private fun initCommand(command: Command, cRequirements: Set<Subsystem>) {
-        command.init()
+        command.initialize()
         scheduledCommands.add(command)
         Logger.logDebug("command ${command.name} initialized")
         cRequirements.forEach { scheduledCommandRequirements[it] = command }

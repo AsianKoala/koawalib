@@ -18,10 +18,10 @@ open class SequentialCommandGroup(vararg commands: Command) : CommandGroupBase()
         }
     }
 
-    override fun init() {
+    override fun initialize() {
         mCurrentCommandIndex = 0
         if (mCommands.isNotEmpty()) {
-            mCommands[0].init()
+            mCommands[0].initialize()
         }
     }
 
@@ -35,7 +35,7 @@ open class SequentialCommandGroup(vararg commands: Command) : CommandGroupBase()
             currentCommand.end(false)
             mCurrentCommandIndex++
             if (mCurrentCommandIndex < mCommands.size) {
-                mCommands[mCurrentCommandIndex].init()
+                mCommands[mCurrentCommandIndex].initialize()
             }
         }
     }

@@ -86,12 +86,12 @@ object Logger {
     }
 
     fun logWarning(message: String) {
-        log(message, Log.WARN)
+        log("WARNING: $message", Log.WARN)
     }
 
     fun logError(message: String) {
         errors++
-        log(message, Log.ERROR)
+        log("ERROR: $message", Log.ERROR)
     }
 
     fun logWTF(message: String) {

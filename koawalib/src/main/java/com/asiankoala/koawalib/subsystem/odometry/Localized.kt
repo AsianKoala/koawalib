@@ -12,7 +12,6 @@ interface Localized {
     val prevRobotRelativePositions: ArrayList<TimePose>
     var robotRelativeMovement: Pose
 
-    fun localize()
     fun updateTelemetry()
 
     fun updatePoseWithDeltas(currPose: Pose, lWheelDelta: Double, rWheelDelta: Double, dx: Double, dy: Double, angleIncrement: Double): Point {

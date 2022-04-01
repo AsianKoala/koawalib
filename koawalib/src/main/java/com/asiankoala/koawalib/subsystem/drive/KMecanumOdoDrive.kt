@@ -24,7 +24,9 @@ open class KMecanumOdoDrive(
 
     override fun periodic() {
         super.periodic()
-        odometry.localize()
+//        odometry.localize()
+
+        // odometry is updated by commandscheduler now
 
         if (shouldTelemetryOdo) {
             odometry.updateTelemetry()
