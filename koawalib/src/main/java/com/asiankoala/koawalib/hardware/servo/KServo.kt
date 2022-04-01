@@ -2,6 +2,7 @@ package com.asiankoala.koawalib.hardware.servo
 
 import com.asiankoala.koawalib.hardware.KDevice
 import com.asiankoala.koawalib.math.*
+import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.Servo
 
 @Suppress("unused")
@@ -20,9 +21,12 @@ class KServo(name: String) : KDevice<Servo>(name) {
         return this
     }
 
+    var direction: Servo.Direction = Servo.Direction.FORWARD
+        private set
+
     val reverse : KServo
-    get() {
-        direction = Servo.Direction.REVERSE
-        return this
-    }
+        get() {
+            direction = Servo.Direction.REVERSE
+            return this
+        }
 }
