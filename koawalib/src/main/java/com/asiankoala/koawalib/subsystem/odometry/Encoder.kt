@@ -33,6 +33,7 @@ class Encoder(
     private fun attemptVelUpdate() {
         if(prevEncoderPositions.size < 2) {
             _velocity = 0.0
+            return
         }
 
         val oldIndex = max(0, prevEncoderPositions.size - LOOK_BEHIND - 1)

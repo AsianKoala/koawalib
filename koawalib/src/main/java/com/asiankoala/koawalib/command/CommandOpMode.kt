@@ -5,6 +5,7 @@ import com.asiankoala.koawalib.gamepad.KGamepad
 import com.asiankoala.koawalib.hardware.KDevice
 import com.asiankoala.koawalib.statemachine.StateMachineBuilder
 import com.asiankoala.koawalib.util.Logger
+import com.asiankoala.koawalib.util.LoggerConfig
 import com.asiankoala.koawalib.util.OpModeState
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
@@ -24,11 +25,7 @@ open class CommandOpMode : LinearOpMode() {
     private fun setup() {
         Logger.logCount = 0
         Logger.telemetry = telemetry
-        Logger.LoggerConfig.isDebugging = false
-        Logger.LoggerConfig.isLoggingTelemetry = true
-        Logger.LoggerConfig.isPrinting = false
-        Logger.LoggerConfig.isLogging = true
-
+        Logger.config = LoggerConfig()
         CommandScheduler.resetScheduler()
         Logger.addErrorCommand()
 

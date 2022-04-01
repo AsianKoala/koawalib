@@ -125,9 +125,9 @@ open class MotorSubsystem(val config: MotorSubsystemConfig) : DeviceSubsystem() 
             } else {
                 controller.update(encoder.position)
             }
-
-            motor.setSpeed(output)
         }
+
+        motor.setSpeed(output)
     }
 
 }

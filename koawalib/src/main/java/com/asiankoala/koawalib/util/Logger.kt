@@ -2,23 +2,12 @@ package com.asiankoala.koawalib.util
 
 import android.util.Log
 import com.asiankoala.koawalib.command.commands.InfiniteCommand
-import com.asiankoala.koawalib.util.Logger.LoggerConfig.isLogging
-import com.asiankoala.koawalib.util.Logger.LoggerConfig.isPrinting
-import com.asiankoala.koawalib.util.Logger.LoggerConfig.isLoggingTelemetry
-import com.asiankoala.koawalib.util.Logger.LoggerConfig.isDebugging
-import com.asiankoala.koawalib.util.Logger.LoggerConfig.maxErrorCount
 import org.firstinspires.ftc.robotcore.external.Telemetry
 
 @Suppress("unused")
 object Logger {
-    object LoggerConfig {
-        var isLogging = true
-        var isPrinting = false
-        var isLoggingTelemetry = false
-        var isDebugging = true
-        var maxErrorCount = 10
-    }
 
+    var config = LoggerConfig()
     internal var telemetry: Telemetry? = null
     internal var logCount = 0
     private val priorityList = listOf("NONE", "NONE", "VERBOSE", "DEBUG", "INFO", "WARN", "ERROR", "WTF")
@@ -30,11 +19,11 @@ object Logger {
         val tag = "KOAWALIB"
         messageCache.forEach {
             logCount++
-            if (isLogging) {
+            if (config.isLogging) {
                 Log.println(it.first, tag, it.second)
             }
 
-            if (isPrinting) {
+            if (config.isPrinting) {
                 val color = when (it.first) {
                     Log.DEBUG -> Colors.ANSI_CYAN
                     Log.INFO -> Colors.ANSI_GREEN
@@ -46,7 +35,7 @@ object Logger {
             }
         }
 
-        if(errors > maxErrorCount) {
+        if(errors > config.maxErrorCount) {
             throw Exception("error overflow")
         }
     }
@@ -60,7 +49,7 @@ object Logger {
     fun addTelemetryLine(message: String) {
         if (telemetry == null) {
             val nullStr = "LogManager telemetry is null"
-            if (isPrinting) {
+            if (config.isPrinting) {
                 logWarning(nullStr)
                 logInfo(message)
             } else {
@@ -68,7 +57,7 @@ object Logger {
             }
         } else {
             telemetry!!.addLine(message)
-            if (isLoggingTelemetry) {
+            if (config.isLoggingTelemetry) {
                 logInfo(message)
             }
         }
@@ -79,12 +68,12 @@ object Logger {
     }
 
     fun logDebug(message: String) {
-        if(isDebugging) return
+        if(config.isDebugging) return
         log(message, Log.DEBUG)
     }
 
     fun logInfo(message: String) {
-        if(isDebugging) return
+        if(config.isDebugging) return
         log(message, Log.INFO)
     }
 
