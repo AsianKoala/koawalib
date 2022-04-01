@@ -16,7 +16,7 @@ import kotlin.math.absoluteValue
  * @see com.asiankoala.koawalib.control.MotionProfileController
  */
 @Deprecated("port of koawalib v0, do not use")
-@Suppress("unused")
+//@Suppress("unused")
 open class MotorSubsystem(val config: MotorSubsystemConfig) : DeviceSubsystem() {
     private val motor = config.motor
     private val encoder = config.encoder
