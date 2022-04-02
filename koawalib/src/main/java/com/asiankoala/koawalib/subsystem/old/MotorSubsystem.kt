@@ -35,7 +35,7 @@ open class MotorSubsystem(val config: MotorSubsystemConfig) : DeviceSubsystem() 
     private var currentMotionProfile: MotionProfile? = null
     private var currentMotionState: MotionState? = null
 
-    private var hasFinishedProfile = false
+    private var isFollowingProfile = false
 
     val isAtTarget: Boolean
         get() {
@@ -80,7 +80,7 @@ open class MotorSubsystem(val config: MotorSubsystemConfig) : DeviceSubsystem() 
             0.0
         )
 
-        hasFinishedProfile = false
+        isFollowingProfile = false
         controller.reset()
         motionTimer.reset()
     }
@@ -102,19 +102,18 @@ open class MotorSubsystem(val config: MotorSubsystemConfig) : DeviceSubsystem() 
                 throw Exception()
             }
 
-            if (config.controlType == MotorControlType.MOTION_PROFILE && !hasFinishedProfile) {
+            if (config.controlType == MotorControlType.MOTION_PROFILE && isFollowingProfile) {
                 when {
                     currentMotionProfile == null -> throw Exception("MUST BE FOLLOWING A MOTION PROFILE!!!")
 
                     motionTimer.seconds() > currentMotionProfile!!.duration() -> {
-                        hasFinishedProfile = true
+                        isFollowingProfile = false
                         currentMotionProfile = null
                         currentMotionState = null
                     }
 
                     else -> {
                         currentMotionState = currentMotionProfile!![motionTimer.seconds()]
-
                         controller.targetMotionState(currentMotionState!!)
                     }
                 }

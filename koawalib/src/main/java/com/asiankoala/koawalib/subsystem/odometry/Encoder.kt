@@ -6,6 +6,7 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.sign
 
+// TODO: rawPosition
 class Encoder(
     private val motor: KMotor,
     private val ticksPerUnit: Double,
