@@ -18,6 +18,7 @@ class Encoder(
     private var _position = 0.0
     private var _velocity = 0.0
     private val prevEncoderPositions = ArrayList<Pair<Double, Double>>()
+    private var lastPosition = 0.0
 
     val position get() = (_position + offset) / ticksPerUnit
     val velocity get() = _velocity / ticksPerUnit
@@ -54,9 +55,9 @@ class Encoder(
     }
 
     fun update() {
+        prevEncoderPositions.add(Pair(clock.seconds(), _position))
         _position = motor.getRawMotorPosition * encoderMultiplier
         attemptVelUpdate()
-        prevEncoderPositions.add(Pair(clock.seconds(), _position))
     }
 
     companion object {
