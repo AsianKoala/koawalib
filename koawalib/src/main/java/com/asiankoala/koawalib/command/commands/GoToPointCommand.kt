@@ -12,13 +12,10 @@ class GoToPointCommand(
     private val target: Pose,
     private val distTol: Double,
     private val angleTol: Double,
-    private val followAngle: Double = 0.0,
     private val stop: Boolean = false,
     private val maxMoveSpeed: Double = 1.0,
     private val maxTurnSpeed: Double = 1.0,
     private val deccelAngle: Double = 60.0.radians,
-    private val isHeadingLocked: Boolean = false,
-    private val headingLockAngle: Double = 0.0,
     private val slowDownTurnRadians: Double = 60.0.radians,
     private val lowestSlowDownFromTurnError: Double = 0.4,
     private val shouldTelemetry: Boolean = true
@@ -28,13 +25,11 @@ class GoToPointCommand(
         val ret = PurePursuitController.goToPosition(
             drive.position,
             target,
-            followAngle,
             stop,
             maxMoveSpeed,
             maxTurnSpeed,
             deccelAngle,
-            isHeadingLocked,
-            headingLockAngle,
+            target.heading,
             slowDownTurnRadians,
             lowestSlowDownFromTurnError,
             shouldTelemetry

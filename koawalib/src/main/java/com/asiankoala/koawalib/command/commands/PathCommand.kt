@@ -1,5 +1,6 @@
 package com.asiankoala.koawalib.command.commands
 
+import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.path.Path
 import com.asiankoala.koawalib.subsystem.drive.KMecanumOdoDrive
 
@@ -9,7 +10,7 @@ class PathCommand(
 ) : CommandBase() {
 
     override fun initialize() {
-        drive.enable()
+        drive.powers = Pose()
     }
 
     override fun execute() {
@@ -17,7 +18,7 @@ class PathCommand(
     }
 
     override fun end(interrupted: Boolean) {
-        drive.disable()
+        drive.powers = Pose()
     }
 
     override val isFinished: Boolean get() = path.isFinished

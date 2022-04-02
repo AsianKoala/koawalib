@@ -15,13 +15,11 @@ object PurePursuitController {
     fun goToPosition(
         currPose: Pose,
         targetPosition: Point,
-        followAngle: Double = 0.0,
         stop: Boolean = false,
         maxMoveSpeed: Double = 1.0,
         maxTurnSpeed: Double = 1.0,
         deccelAngle: Double = 60.0.radians,
-        isHeadingLocked: Boolean = false,
-        headingLockAngle: Double = 0.0,
+        lockedHeading: Double = Double.NaN,
         slowDownTurnRadians: Double = 60.0.radians,
         lowestSlowDownFromTurnError: Double = 0.4,
         shouldTelemetry: Boolean = true
@@ -49,10 +47,10 @@ object PurePursuitController {
         xPower = clamp(xPower, -maxMoveSpeed, maxMoveSpeed)
         yPower = clamp(yPower, -maxMoveSpeed, maxMoveSpeed)
 
-        val absolutePointAngle = if (isHeadingLocked) {
-            headingLockAngle
+        val absolutePointAngle = if (!lockedHeading.isNaN()) {
+            lockedHeading
         } else {
-            (angleToPoint + followAngle).wrap
+            angleToPoint
         }
 
         val pointRes = pointTo(absolutePointAngle, currPose.heading, maxTurnSpeed, deccelAngle)

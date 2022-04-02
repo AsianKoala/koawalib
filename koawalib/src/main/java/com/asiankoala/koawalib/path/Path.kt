@@ -15,7 +15,7 @@ import kotlin.math.absoluteValue
  *
  * @param followAngle - dynamic angle to follow path with. 90 degrees = forward, <90 = turning right, >90 = turning left
  */
-class Path(private val waypoints: List<Waypoint>, private val followAngle: Double = 90.0.radians) {
+class Path(private val waypoints: List<Waypoint>) {
 
     var isFinished = false
         private set
@@ -73,29 +73,26 @@ class Path(private val waypoints: List<Waypoint>, private val followAngle: Doubl
         val movePower = PurePursuitController.goToPosition(
             pose,
             movementLookahead.point,
-            followAngle,
             movementLookahead.stop,
             movementLookahead.maxMoveSpeed,
             movementLookahead.maxTurnSpeed,
             movementLookahead.deccelAngle,
-            movementLookahead.isHeadingLocked,
             movementLookahead.headingLockAngle,
             movementLookahead.slowDownTurnRadians,
             movementLookahead.lowestSlowDownFromTurnError,
         ).point
 
-        val currFollowAngle = if (waypoints[currFollowIndex].isHeadingLocked) {
+        val currFollowAngle = if (!waypoints[currFollowIndex].headingLockAngle.isNaN()) {
             waypoints[currFollowIndex].headingLockAngle
         } else {
-            val absoluteAngle = (turnLookahead.point - pose.point).atan2
-            (absoluteAngle + followAngle - 90.0.radians).wrap
+            (turnLookahead.point - pose.point).atan2
         }
 
         val turnResult = PurePursuitController.pointTo(
             pose.heading,
             currFollowAngle,
             waypoints[currFollowIndex].maxTurnSpeed,
-            45.0.radians
+            waypoints[currFollowIndex].deccelAngle
         )
         val finalTurnPower = turnResult.first
         val realRelativeAngle = turnResult.second
@@ -140,15 +137,7 @@ class Path(private val waypoints: List<Waypoint>, private val followAngle: Doubl
             )
         }
 
-        val deltaFollowAngle = (90.0.radians - followAngle).wrap.absoluteValue
-
-        val newFollowAngle = if (followAngle < 90.0.radians) {
-            (90.0 + deltaFollowAngle).wrap
-        } else {
-            (90.0 - deltaFollowAngle).wrap
-        }
-
-        return Path(newWaypoints, newFollowAngle)
+        return Path(newWaypoints)
     }
 
     // integration with command scheduler
