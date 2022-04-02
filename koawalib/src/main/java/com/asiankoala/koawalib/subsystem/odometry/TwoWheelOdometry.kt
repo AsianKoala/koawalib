@@ -14,8 +14,8 @@ class TwoWheelOdometry(
     private val PERP_TRACKER: Double,
 ) : Odometry() {
     private val encoders = listOf(leftEncoder, auxEncoder)
-    private var accumulatedHeading = 0.0
     private var accumulatedAuxPrediction = 0.0
+    private var accumRWheel = 0.0
 
     private var lastAngle = Double.NaN
 
@@ -24,7 +24,6 @@ class TwoWheelOdometry(
         Logger.addTelemetryData("curr pose", position)
         Logger.addTelemetryData("left encoder", leftEncoder.position)
         Logger.addTelemetryData("aux encoder", auxEncoder.position)
-        Logger.addTelemetryData("accumulated heading", accumulatedHeading.degrees)
 
         val accumAuxScale = auxEncoder.position
         val auxTrackDiff = accumAuxScale - accumulatedAuxPrediction
@@ -51,16 +50,15 @@ class TwoWheelOdometry(
         val auxPrediction = angleIncrement * PERP_TRACKER
         val rX = auxEncoder.delta - auxPrediction
 
-        accumulatedHeading += angleIncrement
         accumulatedAuxPrediction += auxPrediction
 
         val rWheelDelta = -(angleIncrement * TRACK_WIDTH - leftEncoder.delta)
-        val deltaY = (leftEncoder.delta - rWheelDelta) / 2.0
+        accumRWheel += rWheelDelta
+        val deltaY = (leftEncoder.delta + rWheelDelta) / 2.0
         Logger.addTelemetryData("aux encoder", auxEncoder.position)
         Logger.addTelemetryData("left encoder", leftEncoder.position)
         Logger.addTelemetryData("rx", rX)
-        Logger.addTelemetryData("rWheelDelta", rWheelDelta)
-        Logger.addTelemetryData("deltaY", deltaY)
+        Logger.addTelemetryData("left - rWheel", 100.0 * (leftEncoder.position - accumRWheel))
 
         val pointIncrement = updatePoseWithDeltas(_position, leftEncoder.delta, rWheelDelta, rX, deltaY, angleIncrement)
 
