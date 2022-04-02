@@ -43,6 +43,8 @@ class TwoWheelOdometry(
             return
         }
 
+        Logger.logInfo("before odo update $_position")
+
         encoders.forEach(Encoder::update)
 
         val newAngle = getHeading()
@@ -56,9 +58,12 @@ class TwoWheelOdometry(
         accumRWheel += rWheelDelta
         val deltaY = (leftEncoder.delta + rWheelDelta) / 2.0
         Logger.addTelemetryData("aux encoder", auxEncoder.position)
+        Logger.addTelemetryData("accum aux", accumulatedAuxPrediction)
         Logger.addTelemetryData("left encoder", leftEncoder.position)
         Logger.addTelemetryData("rx", rX)
         Logger.addTelemetryData("left - rWheel", 100.0 * (leftEncoder.position - accumRWheel))
+        Logger.addTelemetryData("deltaY", deltaY)
+        Logger.addTelemetryData("rWheelDelta", rWheelDelta)
 
         val pointIncrement = updatePoseWithDeltas(_position, leftEncoder.delta, rWheelDelta, rX, deltaY, angleIncrement)
 
