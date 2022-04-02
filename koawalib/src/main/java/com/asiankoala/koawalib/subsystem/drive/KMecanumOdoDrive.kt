@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config
 import com.asiankoala.koawalib.hardware.motor.KMotor
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.subsystem.odometry.Odometry
+import com.asiankoala.koawalib.util.Logger
 
 @Config
 open class KMecanumOdoDrive(
@@ -20,6 +21,7 @@ open class KMecanumOdoDrive(
 
     fun setStartPose(pose: Pose) {
         odometry.startPose = pose
+        Logger.logInfo("attempted to set start pose to $pose")
     }
 
     override fun periodic() {

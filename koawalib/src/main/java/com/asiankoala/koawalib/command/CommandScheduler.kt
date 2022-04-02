@@ -113,8 +113,8 @@ object CommandScheduler {
 
             command.execute()
 
-            if(command !is Watchdog) {
-                Logger.logInfo("non-watchdog command ${command.name} executed")
+            if(command !is Watchdog && command !is InfiniteCommand) {
+                Logger.logInfo("non-infinite command ${command.name} executed")
             }
 
             if (command.isFinished) {
