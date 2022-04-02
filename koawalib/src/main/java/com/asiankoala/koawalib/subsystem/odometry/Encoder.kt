@@ -48,7 +48,7 @@ class Encoder(
     }
 
     fun zero(newPosition: Double = 0.0): Encoder {
-        offset = newPosition * ticksPerUnit - motor.getRawMotorPosition
+        offset = newPosition * ticksPerUnit - motor.getRawMotorPosition * encoderMultiplier
         return this
     }
 
