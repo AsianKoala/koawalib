@@ -80,7 +80,7 @@ open class MotorSubsystem(val config: MotorSubsystemConfig) : DeviceSubsystem() 
             0.0
         )
 
-        isFollowingProfile = false
+        isFollowingProfile = true
         controller.reset()
         motionTimer.reset()
     }
