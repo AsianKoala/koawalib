@@ -3,6 +3,7 @@ package com.asiankoala.koawalib.command
 import com.asiankoala.koawalib.command.commands.InfiniteCommand
 import com.asiankoala.koawalib.gamepad.KGamepad
 import com.asiankoala.koawalib.hardware.KDevice
+import com.asiankoala.koawalib.statemachine.StateMachine
 import com.asiankoala.koawalib.statemachine.StateMachineBuilder
 import com.asiankoala.koawalib.util.Logger
 import com.asiankoala.koawalib.util.LoggerConfig
@@ -36,7 +37,7 @@ open class CommandOpMode : LinearOpMode() {
         driver = KGamepad(gamepad1)
         gunner = KGamepad(gamepad2)
         opModeTimer.reset()
-        Logger.logDebug("opmode set up")
+        Logger.logInfo("opmode set up")
     }
 
     private fun schedulePeriodics() {
@@ -51,35 +52,37 @@ open class CommandOpMode : LinearOpMode() {
         telemetry.addData("loop ms", dt)
     }
 
-    private val mainStateMachine = StateMachineBuilder<OpModeState>()
-        .universal(CommandScheduler::run)
-        .universal(::mUniversal)
-        .universal(telemetry::update)
-        .state(OpModeState.INIT)
-        .onEnter(::setup)
-        .onEnter(::schedulePeriodics)
-        .onEnter(::mInit)
-        .transition { true }
-        .state(OpModeState.INIT_LOOP)
-        .loop(::mInitLoop)
-        .transition(::isStarted)
-        .state(OpModeState.START)
-        .onEnter(::mStart)
-        .onEnter(opModeTimer::reset)
-        .onEnter(CommandScheduler::startOpModeLooping)
-        .transition { true }
-        .state(OpModeState.LOOP)
-        .loop(::mLoop)
-        .transition(::isStopRequested)
-        .state(OpModeState.STOP)
-        .onEnter(::mStop)
-        .onEnter(CommandScheduler::resetScheduler)
-        .onEnter(opModeTimer::reset)
-        .transition { true }
-        .build()
+    private lateinit var mainStateMachine: StateMachine<OpModeState>
 
     override fun runOpMode() {
-        mainStateMachine.reset()
+        mainStateMachine = StateMachineBuilder<OpModeState>()
+            .universal(CommandScheduler::run)
+            .universal(::mUniversal)
+            .universal(telemetry::update)
+            .state(OpModeState.INIT)
+            .onEnter(::setup)
+            .onEnter(::schedulePeriodics)
+            .onEnter(::mInit)
+            .transition { true }
+            .state(OpModeState.INIT_LOOP)
+            .loop(::mInitLoop)
+            .transition(::isStarted)
+            .state(OpModeState.START)
+            .onEnter(::mStart)
+            .onEnter(opModeTimer::reset)
+            .onEnter { Logger.logInfo("opmode started") }
+            .onEnter(CommandScheduler::startOpModeLooping)
+            .transition { true }
+            .state(OpModeState.LOOP)
+            .loop(::mLoop)
+            .transition(::isStopRequested)
+            .state(OpModeState.STOP)
+            .onEnter(::mStop)
+            .onEnter(CommandScheduler::resetScheduler)
+            .onEnter(opModeTimer::reset)
+            .transition { true }
+            .build()
+
         mainStateMachine.start()
 
         while (mainStateMachine.running) {
