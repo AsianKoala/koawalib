@@ -34,7 +34,6 @@ abstract class Odometry : DeviceSubsystem(), Localized {
             _position = value
             field = value
             Logger.logInfo("set start pose to $value")
-            Logger.logInfo("_position is now $_position")
         }
 
     override val prevRobotRelativePositions = ArrayList<TimePose>()

@@ -21,13 +21,11 @@ open class KMecanumOdoDrive(
 
     fun setStartPose(pose: Pose) {
         odometry.startPose = pose
-        Logger.logInfo("attempted to set start pose to $pose")
     }
 
     override fun periodic() {
         super.periodic()
 //        odometry.localize()
-
         // odometry is updated by commandscheduler now
 
         if (shouldTelemetryOdo) {

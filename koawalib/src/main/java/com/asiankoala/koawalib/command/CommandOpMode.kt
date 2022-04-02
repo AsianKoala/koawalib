@@ -52,37 +52,34 @@ open class CommandOpMode : LinearOpMode() {
         telemetry.addData("loop ms", dt)
     }
 
-    private lateinit var mainStateMachine: StateMachine<OpModeState>
+    private val mainStateMachine: StateMachine<OpModeState> = StateMachineBuilder<OpModeState>()
+        .universal(CommandScheduler::run)
+        .universal(::mUniversal)
+        .universal(telemetry::update)
+        .state(OpModeState.INIT)
+        .onEnter(::setup)
+        .onEnter(::schedulePeriodics)
+        .onEnter(::mInit)
+        .transition { true }
+        .state(OpModeState.INIT_LOOP)
+        .loop(::mInitLoop)
+        .transition(::isStarted)
+        .state(OpModeState.START)
+        .onEnter(::mStart)
+        .onEnter(opModeTimer::reset)
+        .onEnter { Logger.logInfo("opmode started") }
+        .onEnter(CommandScheduler::startOpModeLooping)
+        .transition { true }
+        .state(OpModeState.LOOP)
+        .loop(::mLoop)
+        .transition(::isStopRequested)
+        .state(OpModeState.STOP)
+        .onEnter(::mStop)
+        .onEnter(opModeTimer::reset)
+        .transition { true }
+        .build()
 
     override fun runOpMode() {
-        mainStateMachine = StateMachineBuilder<OpModeState>()
-            .universal(CommandScheduler::run)
-            .universal(::mUniversal)
-            .universal(telemetry::update)
-            .state(OpModeState.INIT)
-            .onEnter(::setup)
-            .onEnter(::schedulePeriodics)
-            .onEnter(::mInit)
-            .transition { true }
-            .state(OpModeState.INIT_LOOP)
-            .loop(::mInitLoop)
-            .transition(::isStarted)
-            .state(OpModeState.START)
-            .onEnter(::mStart)
-            .onEnter(opModeTimer::reset)
-            .onEnter { Logger.logInfo("opmode started") }
-            .onEnter(CommandScheduler::startOpModeLooping)
-            .transition { true }
-            .state(OpModeState.LOOP)
-            .loop(::mLoop)
-            .transition(::isStopRequested)
-            .state(OpModeState.STOP)
-            .onEnter(::mStop)
-            .onEnter(CommandScheduler::resetScheduler)
-            .onEnter(opModeTimer::reset)
-            .transition { true }
-            .build()
-
         mainStateMachine.start()
 
         while (mainStateMachine.running) {
