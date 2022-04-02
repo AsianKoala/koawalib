@@ -9,13 +9,13 @@ import com.asiankoala.koawalib.util.Logger
 class TwoWheelOdometry(
     private val imu: KIMU,
     private val leftEncoder: Encoder,
-    private val perpEncoder: Encoder,
+    private val auxEncoder: Encoder,
     private val TRACK_WIDTH: Double,
     private val PERP_TRACKER: Double,
 ) : Odometry() {
-    private val encoders = listOf(leftEncoder, perpEncoder)
+    private val encoders = listOf(leftEncoder, auxEncoder)
     private var accumulatedHeading = 0.0
-    private var accumulatedPerpPrediction = 0.0
+    private var accumulatedAuxPrediction = 0.0
 
     private var lastAngle = Double.NaN
 
@@ -23,15 +23,15 @@ class TwoWheelOdometry(
         Logger.addTelemetryData("start pose", startPose)
         Logger.addTelemetryData("curr pose", position)
         Logger.addTelemetryData("left encoder", leftEncoder.position)
-        Logger.addTelemetryData("perp encoder", perpEncoder.position)
+        Logger.addTelemetryData("aux encoder", auxEncoder.position)
         Logger.addTelemetryData("accumulated heading", accumulatedHeading.degrees)
 
-        val accumPerpScale = perpEncoder.position
-        val perpTrackDiff = accumPerpScale - accumulatedPerpPrediction
-        Logger.addTelemetryData("accumulated perp", accumPerpScale)
-        Logger.addTelemetryData("accumulated perp prediction", accumulatedPerpPrediction)
-        Logger.addTelemetryData("accum perp - tracker", perpTrackDiff)
-        Logger.addTelemetryData("should increase perp tracker", perpTrackDiff > 0)
+        val accumAuxScale = auxEncoder.position
+        val auxTrackDiff = accumAuxScale - accumulatedAuxPrediction
+        Logger.addTelemetryData("accumulated aux", accumAuxScale)
+        Logger.addTelemetryData("accumulated aux prediction", accumulatedAuxPrediction)
+        Logger.addTelemetryData("accum aux - tracker", auxTrackDiff)
+        Logger.addTelemetryData("should increase aux tracker", auxTrackDiff > 0)
     }
 
     private fun getHeading(): Double {
@@ -48,14 +48,19 @@ class TwoWheelOdometry(
 
         val newAngle = getHeading()
         val angleIncrement = (newAngle - lastAngle).wrap
-        val perpPrediction = angleIncrement * PERP_TRACKER
-        val rX = perpEncoder.delta - perpPrediction
+        val auxPrediction = angleIncrement * PERP_TRACKER
+        val rX = auxEncoder.delta - auxPrediction
 
         accumulatedHeading += angleIncrement
-        accumulatedPerpPrediction += perpPrediction
+        accumulatedAuxPrediction += auxPrediction
 
-        val rWheelDelta = (angleIncrement * TRACK_WIDTH - leftEncoder.delta)
-        val deltaY = (leftEncoder.delta + rWheelDelta) / 2.0
+        val rWheelDelta = -(angleIncrement * TRACK_WIDTH - leftEncoder.delta)
+        val deltaY = (leftEncoder.delta - rWheelDelta) / 2.0
+        Logger.addTelemetryData("aux encoder", auxEncoder.position)
+        Logger.addTelemetryData("left encoder", leftEncoder.position)
+        Logger.addTelemetryData("rx", rX)
+        Logger.addTelemetryData("rWheelDelta", rWheelDelta)
+        Logger.addTelemetryData("deltaY", deltaY)
 
         val pointIncrement = updatePoseWithDeltas(_position, leftEncoder.delta, rWheelDelta, rX, deltaY, angleIncrement)
 

@@ -18,12 +18,12 @@ class Encoder(
     private var _position = 0.0
     private var _velocity = 0.0
     private val prevEncoderPositions = ArrayList<Pair<Double, Double>>()
+    private var lastRead = 0.0
 
     val position get() = (_position + offset) / ticksPerUnit
     val velocity get() = _velocity / ticksPerUnit
 
-    val delta get() = (prevEncoderPositions[max(0,prevEncoderPositions.size-1)].second -
-            prevEncoderPositions[max(0,prevEncoderPositions.size-2)].second) / ticksPerUnit
+    val delta get() = (_position - lastRead) / ticksPerUnit
 
     val reversed: Encoder
         get() {
@@ -54,7 +54,7 @@ class Encoder(
     }
 
     fun update() {
-        prevEncoderPositions.add(Pair(clock.seconds(), _position))
+        lastRead = _position
         _position = motor.getRawMotorPosition * encoderMultiplier
         attemptVelUpdate()
     }
