@@ -18,7 +18,7 @@ class Encoder(
     private var _velocity = 0.0
     private val prevEncoderPositions = ArrayList<Pair<Double, Double>>()
 
-    val position get() = (_position - offset) / ticksPerUnit
+    val position get() = (_position + offset) / ticksPerUnit
     val velocity get() = _velocity / ticksPerUnit
 
     val delta get() = prevEncoderPositions[max(0,prevEncoderPositions.size-1)].second -
@@ -48,7 +48,7 @@ class Encoder(
     }
 
     fun zero(newPosition: Double = 0.0): Encoder {
-        offset = newPosition - motor.getRawMotorPosition
+        offset = newPosition * ticksPerUnit - motor.getRawMotorPosition
         return this
     }
 
