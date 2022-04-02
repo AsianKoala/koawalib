@@ -54,8 +54,9 @@ class TwoWheelOdometry(
         accumulatedHeading += angleIncrement
         accumulatedPerpPrediction += perpPrediction
 
-        val rWheelDelta = -(angleIncrement * TRACK_WIDTH - leftEncoder.delta)
-        val deltaY = (leftEncoder.delta - rWheelDelta) / 2.0
+        val rWheelDelta = (angleIncrement * TRACK_WIDTH - leftEncoder.delta)
+        val deltaY = (leftEncoder.delta + rWheelDelta) / 2.0
+
         val pointIncrement = updatePoseWithDeltas(_position, leftEncoder.delta, rWheelDelta, rX, deltaY, angleIncrement)
 
         _position = Pose(_position.point + pointIncrement, newAngle)
