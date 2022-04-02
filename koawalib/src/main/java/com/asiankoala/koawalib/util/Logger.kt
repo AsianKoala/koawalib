@@ -12,38 +12,30 @@ object Logger {
     internal var logCount = 0
     private val priorityList = listOf("NONE", "NONE", "VERBOSE", "DEBUG", "INFO", "WARN", "ERROR", "WTF")
     private var errors = 0
-    private var messageCache = ArrayDeque<Pair<Int, String>>()
 
-
-    fun periodic() {
+    private fun log(message: String, priority: Int) {
         val tag = "KOAWALIB"
-        messageCache.forEach {
-            logCount++
-            if (config.isLogging) {
-                Log.println(it.first, tag, it.second)
+        logCount++
+        val formattedMessage = "%-10s %s".format(logCount, message)
+
+        if (config.isPrinting) {
+            val color = when (priority) {
+                Log.DEBUG -> Colors.ANSI_CYAN
+                Log.INFO -> Colors.ANSI_GREEN
+                else -> Colors.ANSI_PURPLE
             }
 
-            if (config.isPrinting) {
-                val color = when (it.first) {
-                    Log.DEBUG -> Colors.ANSI_CYAN
-                    Log.INFO -> Colors.ANSI_GREEN
-                    else -> Colors.ANSI_PURPLE
-                }
+            val printMessage = "${priorityList[priority]} \t ${message}"
+            println(printMessage.withColor(color))
+        }
 
-                val printMessage = "${priorityList[it.first]} \t ${it.second}"
-                println(printMessage.withColor(color))
-            }
+        if (config.isLogging) {
+            Log.println(priority, tag, formattedMessage)
         }
 
         if(errors > config.maxErrorCount) {
             throw Exception("error overflow")
         }
-    }
-
-    private fun log(message: String, priority: Int) {
-        logCount++
-        val formattedMessage = "%-10s %s".format(logCount, message)
-        messageCache.add(Pair(priority, formattedMessage))
     }
 
     fun addTelemetryLine(message: String) {
@@ -92,7 +84,7 @@ object Logger {
     }
 
     fun addErrorCommand() {
-        InfiniteCommand({ addTelemetryData("error count", errors) }).schedule()
+        InfiniteCommand({ addTelemetryData("error count", errors) }).withName("error counter").schedule()
     }
 
     private fun String.withColor(color: String): String {

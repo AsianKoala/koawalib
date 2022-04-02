@@ -29,7 +29,7 @@ open class MotorSubsystem(val config: MotorSubsystemConfig) : DeviceSubsystem() 
         config.kF
     )
 
-    private var disabled = false
+    var disabled = true
     private var output = 0.0
     private var motionTimer = ElapsedTime()
     private var currentMotionProfile: MotionProfile? = null
