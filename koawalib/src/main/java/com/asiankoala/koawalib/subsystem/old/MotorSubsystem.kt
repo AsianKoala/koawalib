@@ -31,6 +31,7 @@ open class MotorSubsystem(val config: MotorSubsystemConfig) : DeviceSubsystem() 
 
     var disabled = true
     var output = 0.0
+    var finalTarget = 0.0
     private var motionTimer = ElapsedTime()
     private var currentMotionProfile: MotionProfile? = null
     private var currentMotionState: MotionState? = null
@@ -45,6 +46,8 @@ open class MotorSubsystem(val config: MotorSubsystemConfig) : DeviceSubsystem() 
             }
             return (encoder.position - controller.targetPosition).absoluteValue < config.positionEpsilon
         }
+
+    open fun calcArmFF(target: Double): Double { return 0.0 }
 
     /**
      * 1. is there a valid home position?
@@ -66,6 +69,7 @@ open class MotorSubsystem(val config: MotorSubsystemConfig) : DeviceSubsystem() 
     fun setPIDTarget(target: Double) {
         controller.reset()
         controller.targetPosition = target
+        finalTarget = target
     }
 
     fun generateAndFollowMotionProfile(start: Double, end: Double) {
@@ -79,6 +83,8 @@ open class MotorSubsystem(val config: MotorSubsystemConfig) : DeviceSubsystem() 
             config.maxAcceleration,
             0.0
         )
+
+        finalTarget = end
 
         isFollowingProfile = true
         controller.reset()
@@ -122,7 +128,7 @@ open class MotorSubsystem(val config: MotorSubsystemConfig) : DeviceSubsystem() 
             output = if (disabled || isHomed()) {
                 0.0
             } else {
-                controller.update(encoder.position)
+                controller.update(encoder.position) + calcArmFF(finalTarget)
             }
         }
 

@@ -4,6 +4,7 @@ import com.asiankoala.koawalib.math.*
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.TimePose
 import com.asiankoala.koawalib.subsystem.DeviceSubsystem
+import com.asiankoala.koawalib.util.Logger
 import kotlin.math.max
 
 abstract class Odometry : DeviceSubsystem(), Localized {
@@ -28,10 +29,12 @@ abstract class Odometry : DeviceSubsystem(), Localized {
             return Pose(dirVel, angularVel.wrap)
         }
 
-    internal var startPose = Pose()
+    var startPose = Pose()
         set(value) {
             _position = value
             field = value
+            Logger.logInfo("set start pose to $value")
+            Logger.logInfo("_position is now $_position")
         }
 
     override val prevRobotRelativePositions = ArrayList<TimePose>()

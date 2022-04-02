@@ -60,12 +60,11 @@ object Logger {
     }
 
     fun logDebug(message: String) {
-        if(config.isDebugging) return
+        if(!config.isDebugging) return
         log(message, Log.DEBUG)
     }
 
     fun logInfo(message: String) {
-        if(config.isDebugging) return
         log(message, Log.INFO)
     }
 

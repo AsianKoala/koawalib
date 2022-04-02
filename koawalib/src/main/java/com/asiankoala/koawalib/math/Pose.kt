@@ -13,7 +13,7 @@ class Pose(
     constructor(p: Point, h: Double) : this(p.x, p.y, h)
     constructor(p: Pose2d) : this(p.x, p.y, p.heading)
 
-    val point = Point(x, y)
+    val point get() = Point(x, y)
 
     fun toPose2d(): Pose2d {
         return Pose2d(x, y, heading)
