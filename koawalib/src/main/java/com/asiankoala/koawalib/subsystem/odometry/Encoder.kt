@@ -20,7 +20,7 @@ class Encoder(
     private var _velocity = 0.0
     private val prevEncoderPositions = ArrayList<Pair<Double, Double>>() // time, position
 
-    val position get() = (_position - offset) * encoderMultiplier / ticksPerUnit
+    val position get() = (_position + offset) * encoderMultiplier / ticksPerUnit
 
     val velocity get() = _velocity / ticksPerUnit
 
