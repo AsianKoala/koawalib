@@ -1,6 +1,6 @@
 package com.asiankoala.koawalib
 
-import com.asiankoala.koawalib.math.Spline
+import com.asiankoala.koawalib.questionmark.Spline
 import kotlin.math.pow
 
 object SplineTest {

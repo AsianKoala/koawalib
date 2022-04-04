@@ -1,4 +1,6 @@
-package com.asiankoala.koawalib.math
+package com.asiankoala.koawalib.questionmark
+
+import com.asiankoala.koawalib.math.Point
 
 interface ParametricFunction {
     fun evaluate(t: Double): Point

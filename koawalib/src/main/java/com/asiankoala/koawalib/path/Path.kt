@@ -8,12 +8,8 @@ import com.asiankoala.koawalib.util.Logger
 import kotlin.math.absoluteValue
 
 /**
- * To be as fast as possible during auto, we only want to run commands that DO NOT interrupt
- * when the next waypoint is targeted (CommandWaypoint) OR commands at the start/end of each path.
  * Path movements should be continuous and fluid, and as such commands shouldn't adapt to the path,
  * rather the path should be adapted to the commands.
- *
- * @param followAngle - dynamic angle to follow path with. 90 degrees = forward, <90 = turning right, >90 = turning left
  */
 class Path(private val waypoints: List<Waypoint>) {
 
@@ -30,11 +26,11 @@ class Path(private val waypoints: List<Waypoint>) {
         // meaning, if the robot hasn't passed a waypoint, even if following that next waypoint's segment
         // the robot will not run the next waypoint command until after it has passed it (reflected by currFollowIndex)
         for (waypoint in waypoints.subList(0, currFollowIndex)) {
-            Logger.logDebug("attempting to run waypoint commands in interval [0,$currFollowIndex]")
+            Logger.logInfo("attempting to run waypoint commands in interval [0,$currFollowIndex]")
             if (waypoint.command != null) {
                 // TODO: WAS PREIVOUSLY !waypoint.command.isFinished && !waypoint.command.isScheduled, CHECK IF WORKS
                 if (!waypoint.command.isScheduled) {
-                    Logger.logDebug("scheduled waypoint $waypoint command ${waypoint.command}")
+                    Logger.logInfo("scheduled waypoint $waypoint command ${waypoint.command}")
                     waypoint.command.schedule()
                 }
             }
@@ -109,18 +105,18 @@ class Path(private val waypoints: List<Waypoint>) {
             isFinished = true
         }
 
-        Logger.logDebug("pure pursuit debug started")
-        Logger.logDebug("pose: $pose")
-        Logger.logDebug("curr follow index: $currFollowIndex")
-        Logger.logDebug("curr follow angle: ${currFollowAngle.degrees}")
-        Logger.logDebug("move lookahead: $movementLookahead")
-        Logger.logDebug("turn lookahead: $turnLookahead")
-        Logger.logDebug("clipped distance: $clippedDistanceToEnd")
-        Logger.logDebug("relative angle: ${realRelativeAngle.degrees}")
-        Logger.logDebug("x power: $finalXPower")
-        Logger.logDebug("y power: $finalYPower")
-        Logger.logDebug("turn power: $finalTurnPower")
-        Logger.logDebug("pure pursuit debug ended")
+        Logger.logInfo("pure pursuit debug started")
+        Logger.logInfo("pose: $pose")
+        Logger.logInfo("curr follow index: $currFollowIndex")
+        Logger.logInfo("curr follow angle: ${currFollowAngle.degrees}")
+        Logger.logInfo("move lookahead: $movementLookahead")
+        Logger.logInfo("turn lookahead: $turnLookahead")
+        Logger.logInfo("clipped distance: $clippedDistanceToEnd")
+        Logger.logInfo("relative angle: ${realRelativeAngle.degrees}")
+        Logger.logInfo("x power: $finalXPower")
+        Logger.logInfo("y power: $finalYPower")
+        Logger.logInfo("turn power: $finalTurnPower")
+        Logger.logInfo("pure pursuit debug ended")
         return Pose(finalXPower, finalYPower, finalTurnPower)
     }
 
