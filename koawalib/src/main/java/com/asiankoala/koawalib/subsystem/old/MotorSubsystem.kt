@@ -37,7 +37,8 @@ open class MotorSubsystem(val config: MotorSubsystemConfig) : DeviceSubsystem() 
         c
     }
 
-    private var output = 0.0
+    var output = 0.0
+    var disabled = true
     private var motionTimer = ElapsedTime()
     private var currentMotionProfile: MotionProfile? = null
     private var currentMotionState: MotionState? = null
@@ -141,7 +142,7 @@ open class MotorSubsystem(val config: MotorSubsystemConfig) : DeviceSubsystem() 
         }
 
         Logger.addTelemetryData("$name output power", output)
-        motor.setSpeed(output)
+        if(!disabled) motor.setSpeed(output)
     }
 
 }
