@@ -28,12 +28,10 @@ open class KMotor(name: String) : KDevice<DcMotorEx>(name), KDouble {
             }
         }
 
-    private var zeroPowerBehavior: DcMotor.ZeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
+    var zeroPowerBehavior: DcMotor.ZeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
         set(value) {
-            if (device.zeroPowerBehavior != value) {
-                device.zeroPowerBehavior = value
-                field = value
-            }
+            device.zeroPowerBehavior = value
+            field = value
         }
 
     private var direction: DcMotorSimple.Direction = DcMotorSimple.Direction.FORWARD

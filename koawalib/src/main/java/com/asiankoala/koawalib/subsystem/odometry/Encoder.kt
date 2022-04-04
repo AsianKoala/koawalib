@@ -14,9 +14,9 @@ class Encoder(
     private val isRevEncoder: Boolean = false
 ) {
     private var clock = NanoClock.system()
-    private var offset = 0.0
+    var offset = 0.0
     private var encoderMultiplier = 1.0
-    private var _position = 0.0
+    var _position = 0.0
     private var _velocity = 0.0
     private val prevEncoderPositions = ArrayList<Pair<Double, Double>>() // time, position
 
@@ -55,7 +55,8 @@ class Encoder(
     }
 
     fun zero(newPosition: Double = 0.0): Encoder {
-        offset = newPosition * ticksPerUnit - _position
+        _position = motor.getRawMotorPosition
+        offset = newPosition * ticksPerUnit - _position * encoderMultiplier
         prevEncoderPositions.clear()
         prevEncoderPositions.add(Pair(clock.seconds(), _position))
         prevEncoderPositions.add(Pair(clock.seconds() - 1e6, _position))
