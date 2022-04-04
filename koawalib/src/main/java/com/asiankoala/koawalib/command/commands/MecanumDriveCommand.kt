@@ -40,7 +40,7 @@ class MecanumDriveCommand(
 
             val turn = if (headingLock && !headingInvoked.isNaN()) {
                 val stickAtan = rightStick.angle
-                val deltaAngle = (headingInvoked - stickAtan).wrap
+                val deltaAngle = (headingInvoked - stickAtan).angleWrap
                 val rLockScaled = deltaAngle / headingLockScalar
 
                 rLockScaled

@@ -2,7 +2,7 @@ package com.asiankoala.koawalib.command.commands
 
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.radians
-import com.asiankoala.koawalib.math.wrap
+import com.asiankoala.koawalib.math.angleWrap
 import com.asiankoala.koawalib.path.PurePursuitController
 import com.asiankoala.koawalib.subsystem.drive.KMecanumOdoDrive
 import kotlin.math.absoluteValue
@@ -43,7 +43,7 @@ class GoToPointCommand(
     }
 
     override val isFinished: Boolean
-        get() = drive.position.dist(target) < distTol && (target.heading - drive.position.heading).wrap.absoluteValue < angleTol
+        get() = drive.position.dist(target) < distTol && (target.heading - drive.position.heading).angleWrap.absoluteValue < angleTol
 
     init {
         addRequirements(drive)

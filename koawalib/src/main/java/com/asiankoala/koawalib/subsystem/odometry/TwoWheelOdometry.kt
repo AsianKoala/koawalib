@@ -18,7 +18,7 @@ class TwoWheelOdometry(
     private var lastAngle = Double.NaN
 
     private fun getHeading(): Double {
-        return (imu.heading + startPose.heading).wrap
+        return (imu.heading + startPose.heading).angleWrap
     }
 
     override fun reset() {
@@ -49,7 +49,7 @@ class TwoWheelOdometry(
         }
 
         val newAngle = getHeading()
-        val angleIncrement = (newAngle - lastAngle).wrap
+        val angleIncrement = (newAngle - lastAngle).angleWrap
         val auxPrediction = angleIncrement * PERP_TRACKER
         val rX = auxEncoder.delta - auxPrediction
 

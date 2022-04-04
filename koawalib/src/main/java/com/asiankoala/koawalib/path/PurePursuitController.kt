@@ -28,7 +28,7 @@ object PurePursuitController {
         val distanceToPoint = absoluteDelta.hypot
 
         val angleToPoint = absoluteDelta.atan2
-        val deltaAngleToPoint = (angleToPoint - (currPose.heading - 90.0.radians)).wrap
+        val deltaAngleToPoint = (angleToPoint - (currPose.heading - 90.0.radians)).angleWrap
 
         val relativeXToPosition = distanceToPoint * deltaAngleToPoint.cos
         val relativeYToPosition = distanceToPoint * deltaAngleToPoint.sin
@@ -104,7 +104,7 @@ object PurePursuitController {
         speed: Double,
         deccelAngle: Double
     ): Pair<Double, Double> {
-        val relativePointAngle = (targetAngle - heading).wrap
+        val relativePointAngle = (targetAngle - heading).angleWrap
 
         var turnSpeed = (relativePointAngle / deccelAngle) * speed
         turnSpeed = clamp(turnSpeed, -speed, speed)

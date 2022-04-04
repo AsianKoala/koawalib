@@ -37,7 +37,7 @@ abstract class Odometry : DeviceSubsystem() {
             val dirVel = (curr.pose.point - old.pose.point).scalarDiv(scalar)
             val angularVel = (curr.pose.heading - old.pose.heading) * (1 / scalar)
 
-            return Pose(dirVel, angularVel.wrap)
+            return Pose(dirVel, angularVel.angleWrap)
         }
 
     fun updatePoseWithDeltas(currPose: Pose, lWheelDelta: Double, rWheelDelta: Double, dx: Double, dy: Double, angleIncrement: Double): Point {

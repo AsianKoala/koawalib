@@ -127,18 +127,20 @@ val Double.cos get() = cos(this)
 val Int.d get() = this.toDouble()
 val Float.d get() = this.toDouble()
 
-val Double.wrap: Double
-    get() {
-        val mod = this % TAU
-        return (mod + TAU) % TAU
-    }
+fun wrap(lower: Double, upper: Double, n: Double): Double {
+    val range = (lower - upper).absoluteValue
+    return (n % range + range) % range + lower
+}
 
 val Double.wrapFull: Double
+    get() = (this % TAU + TAU) % TAU
+
+
+val Double.angleWrap: Double
     get() {
-        var wrapped = this.wrap
-        if(wrapped > PI) {
-            wrapped -= TAU
-        }
+        var wrapped = this
+        while(wrapped > PI) wrapped -= TAU
+        while(wrapped < -PI) wrapped += TAU
         return wrapped
     }
 

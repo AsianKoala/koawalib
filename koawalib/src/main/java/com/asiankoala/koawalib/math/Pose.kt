@@ -19,7 +19,7 @@ class Pose(
         return Pose2d(x, y, heading)
     }
 
-    fun plusWrap(other: Pose) = Pose(x + other.x, y + other.y, (heading + other.heading).wrap)
+    fun plusWrap(other: Pose) = Pose(x + other.x, y + other.y, (heading + other.heading).angleWrap)
 
     fun directionVector(): Point {
         return Point(cos(heading), sin(heading)).normalized()

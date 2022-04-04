@@ -7,8 +7,6 @@ import com.asiankoala.koawalib.math.*
 import com.asiankoala.koawalib.util.Logger
 import com.qualcomm.hardware.bosch.BNO055IMU
 import com.qualcomm.hardware.bosch.BNO055IMUImpl
-import com.qualcomm.robotcore.util.ElapsedTime
-import org.firstinspires.ftc.robotcore.external.navigation.AngularVelocity
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation
 
@@ -31,9 +29,9 @@ class KIMU(name: String, axesOrder: AxesOrder, axesSigns: AxesSigns) : KDevice<B
     private var _pitchVel = 0.0
     private var _rollVel = 0.0
 
-    val heading get() = (_heading - headingOffset).wrap
-    val pitch get() = (_pitch - pitchOffset).wrap
-    val roll get() = (_roll - rollOffset).wrap
+    val heading get() = (_heading - headingOffset).angleWrap
+    val pitch get() = (_pitch - pitchOffset).angleWrap
+    val roll get() = (_roll - rollOffset).angleWrap
     val headingVel get() = _headingVel
     val pitchVel get() = _pitchVel
     val rollVel get() = _rollVel

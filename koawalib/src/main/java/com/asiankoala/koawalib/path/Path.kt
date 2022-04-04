@@ -132,7 +132,7 @@ class Path(private val waypoints: List<Waypoint>) {
             newWaypoints.add(
                 waypoint.copy(
                     y = -waypoint.y,
-                    headingLockAngle = (waypoint.headingLockAngle + 180.0.radians).wrap
+                    headingLockAngle = (waypoint.headingLockAngle + 180.0.radians).angleWrap
                 )
             )
         }

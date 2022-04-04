@@ -3,7 +3,7 @@ package com.asiankoala.koawalib.path
 import com.asiankoala.koawalib.math.Point
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.Spline
-import com.asiankoala.koawalib.math.wrap
+import com.asiankoala.koawalib.math.angleWrap
 import kotlin.math.PI
 import kotlin.math.sign
 
@@ -30,7 +30,7 @@ class SimpleGVFController(
         vectorFieldResult = vectorFieldResult.scale(1.0 / vectorFieldResult.norm())
 
         val desiredHeading = vectorFieldResult.atan2
-        val headingError = (desiredHeading - pose.heading).wrap
+        val headingError = (desiredHeading - pose.heading).angleWrap
         val angularOutput = kOmega * headingError
 
         val distanceToPoint = spline.evaluate(1.0).dist(pose)

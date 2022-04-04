@@ -4,7 +4,7 @@ import com.acmerobotics.roadrunner.util.NanoClock
 import com.asiankoala.koawalib.hardware.sensor.KIMU
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.degrees
-import com.asiankoala.koawalib.math.wrap
+import com.asiankoala.koawalib.math.angleWrap
 import com.asiankoala.koawalib.util.Logger
 
 class ThreeWheelOdometry(
@@ -40,7 +40,7 @@ class ThreeWheelOdometry(
 
         shouldReset = ((clock.seconds() - lastResetTime) > secondsBetweenResets) || shouldReset
         if(shouldReset) {
-            val realHeading = (imu.heading + startPose.heading).wrap
+            val realHeading = (imu.heading + startPose.heading).angleWrap
             pose = Pose(pose.point, realHeading)
             encoders.forEach(Encoder::zero)
             lastResetTime = clock.seconds()
@@ -48,7 +48,7 @@ class ThreeWheelOdometry(
             return
         }
 
-        val newAngle = (((leftEncoder.position - rightEncoder.position) / TRACK_WIDTH) + startPose.heading).wrap
+        val newAngle = (((leftEncoder.position - rightEncoder.position) / TRACK_WIDTH) + startPose.heading).angleWrap
 
         val headingDelta = (leftEncoder.delta - rightEncoder.delta) / TRACK_WIDTH
         val auxPredicted = headingDelta * PERP_TRACKER
