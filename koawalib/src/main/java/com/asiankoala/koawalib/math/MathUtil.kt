@@ -127,22 +127,16 @@ val Double.cos get() = cos(this)
 val Int.d get() = this.toDouble()
 val Float.d get() = this.toDouble()
 
-fun wrap(lower: Double, upper: Double, n: Double): Double {
-    val range = (lower - upper).absoluteValue
-    return (n % range + range) % range + lower
+fun wrap(n: Double, lower: Double, upper: Double): Double {
+    return (((n - lower) % (upper - lower)) + (upper - lower)) % (upper - lower) + lower;
 }
 
 val Double.wrapFull: Double
-    get() = (this % TAU + TAU) % TAU
+    get() = wrap(this, 0.0, 360.0)
 
 
 val Double.angleWrap: Double
-    get() {
-        var wrapped = this
-        while(wrapped > PI) wrapped -= TAU
-        while(wrapped < -PI) wrapped += TAU
-        return wrapped
-    }
+    get() = wrap(this, -180.0, 180.0)
 
 val MATRIX_E = Array2DRowRealMatrix(arrayOf(doubleArrayOf(0.0, 1.0), doubleArrayOf(-1.0, 0.0)))
 val MATRIX_I2 = Array2DRowRealMatrix(arrayOf(doubleArrayOf(1.0, 0.0), doubleArrayOf(0.0, 1.0)))
