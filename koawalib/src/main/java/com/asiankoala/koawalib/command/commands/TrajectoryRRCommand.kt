@@ -1,6 +1,6 @@
-package com.asiankoala.koawalib.roadrunner.drive
+package com.asiankoala.koawalib.command.commands
 
-import com.asiankoala.koawalib.command.commands.CommandBase
+import com.asiankoala.koawalib.roadrunner.drive.KMecanumDriveRR
 import com.asiankoala.koawalib.roadrunner.trajectorysequence.TrajectorySequence
 
 class TrajectoryRRCommand(

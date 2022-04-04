@@ -1,6 +1,6 @@
-package com.asiankoala.koawalib.subsystem.old
+package com.asiankoala.koawalib.command.commands
 
-import com.asiankoala.koawalib.command.commands.InstantCommand
+import com.asiankoala.koawalib.subsystem.old.MotorSubsystem
 
 @Suppress("unused")
 class SpeedCommand(speed: Double, subsystem: MotorSubsystem)

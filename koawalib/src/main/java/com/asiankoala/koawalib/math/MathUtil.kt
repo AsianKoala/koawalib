@@ -129,10 +129,17 @@ val Float.d get() = this.toDouble()
 
 val Double.wrap: Double
     get() {
-        var angle = this
-        while (angle > PI) angle -= 2 * PI
-        while (angle < -PI) angle += 2 * PI
-        return angle
+        val mod = this % TAU
+        return (mod + TAU) % TAU
+    }
+
+val Double.wrapFull: Double
+    get() {
+        var wrapped = this.wrap
+        if(wrapped > PI) {
+            wrapped -= TAU
+        }
+        return wrapped
     }
 
 val MATRIX_E = Array2DRowRealMatrix(arrayOf(doubleArrayOf(0.0, 1.0), doubleArrayOf(-1.0, 0.0)))

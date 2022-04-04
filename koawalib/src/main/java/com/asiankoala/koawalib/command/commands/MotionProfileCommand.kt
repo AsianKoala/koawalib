@@ -1,6 +1,6 @@
-package com.asiankoala.koawalib.subsystem.old
+package com.asiankoala.koawalib.command.commands
 
-import com.asiankoala.koawalib.command.commands.CommandBase
+import com.asiankoala.koawalib.subsystem.old.MotorSubsystem
 
 class MotionProfileCommand(private val target: Double, private val subsystem: MotorSubsystem) : CommandBase() {
 

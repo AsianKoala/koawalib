@@ -21,13 +21,21 @@ open class MotorSubsystem(val config: MotorSubsystemConfig) : DeviceSubsystem() 
     private val motor = config.motor
     private val encoder = config.encoder
 
-    private val controller = PIDFController(
-        config.pid.asCoeffs,
-        config.ff.kV,
-        config.ff.kA,
-        config.ff.kStatic,
-        config.ff.kF
-    )
+    private val controller by lazy {
+        val c = PIDFController(
+            config.pid.asCoeffs,
+            config.ff.kV,
+            config.ff.kA,
+            config.ff.kStatic,
+            config.ff.kF
+        )
+
+        if(!config.lowerBound.isNaN() && !config.upperBound.isNaN()) {
+            c.setInputBounds(config.lowerBound, config.upperBound)
+        }
+
+        c
+    }
 
     var disabled = true
     var output = 0.0

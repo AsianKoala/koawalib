@@ -1,10 +1,10 @@
-package com.asiankoala.koawalib.subsystem.drive
+package com.asiankoala.koawalib.command.commands
 
-import com.asiankoala.koawalib.command.commands.CommandBase
 import com.asiankoala.koawalib.gamepad.functionality.Stick
 import com.asiankoala.koawalib.math.*
 import com.asiankoala.koawalib.math.Point
 import com.asiankoala.koawalib.math.Pose
+import com.asiankoala.koawalib.subsystem.drive.KMecanumDrive
 import com.asiankoala.koawalib.util.Alliance
 
 class MecanumDriveCommand(

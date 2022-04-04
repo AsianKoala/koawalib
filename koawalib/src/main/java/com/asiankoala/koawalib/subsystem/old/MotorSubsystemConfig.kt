@@ -14,11 +14,13 @@ data class MotorSubsystemConfig(
     val encoder: Encoder?,
     val controlType: MotorControlType,
 
-    val pid: PIDConstants,
-    val ff: FeedforwardConstants,
+    val pid: PIDConstants = PIDConstants(),
+    val ff: FeedforwardConstants = FeedforwardConstants(),
 
     val positionEpsilon: Double,
     val homePositionToDisable: Double = Double.NaN,
+    val lowerBound: Double = Double.NaN,
+    val upperBound: Double = Double.NaN,
     val maxVelocity: Double = 0.0,
     val maxAcceleration: Double = 0.0,
 )

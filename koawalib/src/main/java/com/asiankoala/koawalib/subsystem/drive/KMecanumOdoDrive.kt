@@ -16,7 +16,7 @@ open class KMecanumOdoDrive(
     private val shouldTelemetryOdo: Boolean
 ) : KMecanumDrive(fl, bl, fr, br) {
 
-    val position get() = odometry.position
+    val position get() = odometry.pose
     val velocity get() = odometry.velocity
 
     fun setStartPose(pose: Pose) {

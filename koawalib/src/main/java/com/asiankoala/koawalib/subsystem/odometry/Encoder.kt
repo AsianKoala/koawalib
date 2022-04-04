@@ -1,6 +1,7 @@
 package com.asiankoala.koawalib.subsystem.odometry
 
 import com.acmerobotics.roadrunner.util.NanoClock
+import com.acmerobotics.roadrunner.util.epsilonEquals
 import com.asiankoala.koawalib.hardware.motor.KMotor
 import kotlin.math.abs
 import kotlin.math.max
@@ -17,13 +18,14 @@ class Encoder(
     private var encoderMultiplier = 1.0
     private var _position = 0.0
     private var _velocity = 0.0
-    private val prevEncoderPositions = ArrayList<Pair<Double, Double>>()
-    private var lastRead = 0.0
+    private val prevEncoderPositions = ArrayList<Pair<Double, Double>>() // time, position
 
-    val position get() = (_position + offset) / ticksPerUnit
+    val position get() = (_position - offset) * encoderMultiplier / ticksPerUnit
+
     val velocity get() = _velocity / ticksPerUnit
 
-    val delta get() = (_position - lastRead) / ticksPerUnit
+    val delta get() = (prevEncoderPositions[prevEncoderPositions.size-1].second
+            - prevEncoderPositions[prevEncoderPositions.size-2].second) / ticksPerUnit
 
     val reversed: Encoder
         get() {
@@ -41,6 +43,10 @@ class Encoder(
         val oldPosition = prevEncoderPositions[oldIndex]
         val currPosition = prevEncoderPositions[prevEncoderPositions.size - 1]
         val scalar = (currPosition.first - oldPosition.first)
+
+        if(scalar epsilonEquals 0.0) {
+            return
+        }
         _velocity = (currPosition.second - oldPosition.second) / scalar
 
         if(isRevEncoder) {
@@ -49,13 +55,17 @@ class Encoder(
     }
 
     fun zero(newPosition: Double = 0.0): Encoder {
-        offset = newPosition * ticksPerUnit - motor.getRawMotorPosition * encoderMultiplier
+        offset = newPosition * ticksPerUnit - _position
+        prevEncoderPositions.clear()
+        prevEncoderPositions.add(Pair(clock.seconds(), _position))
+        prevEncoderPositions.add(Pair(clock.seconds() - 1e6, _position))
+        _velocity = 0.0
         return this
     }
 
     fun update() {
-        lastRead = _position
-        _position = motor.getRawMotorPosition * encoderMultiplier
+        prevEncoderPositions.add(Pair(clock.seconds(), _position))
+        _position = motor.getRawMotorPosition
         attemptVelUpdate()
     }
 

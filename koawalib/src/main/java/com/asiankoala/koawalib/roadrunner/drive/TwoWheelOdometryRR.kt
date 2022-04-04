@@ -18,7 +18,7 @@ class TwoWheelOdometryRR(
     ) : Localizer {
     private val odometry = TwoWheelOdometry(imu, leftEncoder, perpEncoder, TRACK_WIDTH, PERP_TRACKER)
     override var poseEstimate: Pose2d
-        get() = odometry.position.toPose2d()
+        get() = odometry.pose.toPose2d()
         set(value) {
             odometry.startPose = Pose(value)
         }

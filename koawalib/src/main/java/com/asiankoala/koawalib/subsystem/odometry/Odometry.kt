@@ -1,17 +1,28 @@
 package com.asiankoala.koawalib.subsystem.odometry
 
 import com.asiankoala.koawalib.math.*
-import com.asiankoala.koawalib.math.Pose
-import com.asiankoala.koawalib.math.TimePose
 import com.asiankoala.koawalib.subsystem.DeviceSubsystem
 import com.asiankoala.koawalib.util.Logger
+import kotlin.math.absoluteValue
 import kotlin.math.max
 
-abstract class Odometry : DeviceSubsystem(), Localized {
-    protected var _position = Pose()
-    override val position: Pose get() = _position
+abstract class Odometry : DeviceSubsystem() {
+    abstract fun updateTelemetry()
+    abstract fun reset()
+    private val prevRobotRelativePositions: ArrayList<TimePose> = ArrayList()
+    private var robotRelativeMovement: Pose = Pose()
+    var shouldReset = true
+    var pose = Pose()
+        protected set
 
-    override val velocity: Pose
+    var startPose: Pose = Pose()
+        set(value) {
+            pose = value
+            field = value
+            Logger.logInfo("set start pose to $value")
+        }
+
+    val velocity: Pose
         get() {
             if (prevRobotRelativePositions.size < 2) {
                 return Pose()
@@ -29,13 +40,24 @@ abstract class Odometry : DeviceSubsystem(), Localized {
             return Pose(dirVel, angularVel.wrap)
         }
 
-    var startPose = Pose()
-        set(value) {
-            _position = value
-            field = value
-            Logger.logInfo("set start pose to $value")
+    fun updatePoseWithDeltas(currPose: Pose, lWheelDelta: Double, rWheelDelta: Double, dx: Double, dy: Double, angleIncrement: Double): Point {
+        var deltaX = dx
+        var deltaY = dy
+        if (angleIncrement.absoluteValue > 0) {
+            val radiusOfMovement = (lWheelDelta + rWheelDelta) / (2 * angleIncrement)
+            val radiusOfStrafe = deltaX / angleIncrement
+
+            deltaX = (radiusOfMovement * (1 - angleIncrement.cos)) + (radiusOfStrafe * angleIncrement.sin)
+            deltaY = (radiusOfMovement * angleIncrement.sin) + (radiusOfStrafe * (1 - angleIncrement.cos))
         }
 
-    override val prevRobotRelativePositions = ArrayList<TimePose>()
-    override var robotRelativeMovement = Pose()
+        val robotDeltaRelativeMovement = Pose(deltaX, deltaY, angleIncrement)
+        robotRelativeMovement = robotRelativeMovement.plusWrap(robotDeltaRelativeMovement)
+
+        prevRobotRelativePositions.add(TimePose(robotRelativeMovement))
+
+        val incrementX = currPose.heading.cos * deltaY - currPose.heading.sin * deltaX
+        val incrementY = currPose.heading.sin * deltaY + currPose.heading.cos * deltaX
+        return Point(incrementX, incrementY)
+    }
 }

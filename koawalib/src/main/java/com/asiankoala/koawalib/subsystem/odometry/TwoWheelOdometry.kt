@@ -3,7 +3,6 @@ package com.asiankoala.koawalib.subsystem.odometry
 import com.asiankoala.koawalib.hardware.sensor.KIMU
 import com.asiankoala.koawalib.math.*
 import com.asiankoala.koawalib.math.Pose
-import com.asiankoala.koawalib.subsystem.DeviceSubsystem
 import com.asiankoala.koawalib.util.Logger
 
 class TwoWheelOdometry(
@@ -16,12 +15,21 @@ class TwoWheelOdometry(
     private val encoders = listOf(leftEncoder, auxEncoder)
     private var accumulatedAuxPrediction = 0.0
     private var accumRWheel = 0.0
-
     private var lastAngle = Double.NaN
+
+    private fun getHeading(): Double {
+        return (imu.heading + startPose.heading).wrap
+    }
+
+    override fun reset() {
+        lastAngle = getHeading()
+        encoders.forEach(Encoder::zero)
+        shouldReset = false
+    }
 
     override fun updateTelemetry() {
         Logger.addTelemetryData("start pose", startPose)
-        Logger.addTelemetryData("curr pose", position)
+        Logger.addTelemetryData("curr pose", pose)
         Logger.addTelemetryData("left encoder", leftEncoder.position)
         Logger.addTelemetryData("aux encoder", auxEncoder.position)
 
@@ -33,19 +41,12 @@ class TwoWheelOdometry(
         Logger.addTelemetryData("should increase aux tracker", auxTrackDiff > 0)
     }
 
-    private fun getHeading(): Double {
-        return (imu.heading + startPose.heading).wrap
-    }
-
     override fun periodic() {
-        if (lastAngle.isNaN()) {
-            lastAngle = getHeading()
-            return
-        }
-
-        Logger.logInfo("before odo update $_position")
-
         encoders.forEach(Encoder::update)
+
+        if(shouldReset) {
+            reset()
+        }
 
         val newAngle = getHeading()
         val angleIncrement = (newAngle - lastAngle).wrap
@@ -57,17 +58,10 @@ class TwoWheelOdometry(
         val rWheelDelta = -(angleIncrement * TRACK_WIDTH - leftEncoder.delta)
         accumRWheel += rWheelDelta
         val deltaY = (leftEncoder.delta + rWheelDelta) / 2.0
-        Logger.addTelemetryData("aux encoder", auxEncoder.position)
-        Logger.addTelemetryData("accum aux", accumulatedAuxPrediction)
-        Logger.addTelemetryData("left encoder", leftEncoder.position)
-        Logger.addTelemetryData("rx", rX)
-        Logger.addTelemetryData("left - rWheel", 100.0 * (leftEncoder.position - accumRWheel))
-        Logger.addTelemetryData("deltaY", deltaY)
-        Logger.addTelemetryData("rWheelDelta", rWheelDelta)
 
-        val pointIncrement = updatePoseWithDeltas(_position, leftEncoder.delta, rWheelDelta, rX, deltaY, angleIncrement)
+        val pointIncrement = updatePoseWithDeltas(pose, leftEncoder.delta, rWheelDelta, rX, deltaY, angleIncrement)
 
-        _position = Pose(_position.point + pointIncrement, newAngle)
+        pose = Pose(pose.point + pointIncrement, newAngle)
         lastAngle = newAngle
     }
 }
