@@ -27,7 +27,7 @@ class MecanumDriveCommand(
     override fun execute() {
         val xRaw = leftStick.xSupplier.invoke()
         val yRaw = -leftStick.ySupplier.invoke()
-        val rRaw = rightStick.xSupplier.invoke()
+        val rRaw = -rightStick.xSupplier.invoke()
 
         val xScaled = cubicScaling(xCubic, xRaw) * xScalar
         val yScaled = cubicScaling(yCubic, yRaw) * yScalar
