@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.util.NanoClock
 import com.asiankoala.koawalib.hardware.KDevice
 import com.asiankoala.koawalib.hardware.sensor.IMUUtil.remapAxes
 import com.asiankoala.koawalib.math.*
+import com.asiankoala.koawalib.subsystem.Subsystem
 import com.asiankoala.koawalib.util.Logger
 import com.qualcomm.hardware.bosch.BNO055IMU
 import com.qualcomm.hardware.bosch.BNO055IMUImpl

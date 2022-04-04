@@ -32,7 +32,7 @@ class KMotorEx(
 
     private fun checkIsUpdating() {
         if (device.power epsilonEquals 0.0) {
-            Logger.logWarning("motor $name may not be updating")
+            Logger.logWarning("motor $deviceName may not be updating")
         }
     }
 
@@ -49,7 +49,7 @@ class KMotorEx(
 
     fun update(encoder: KEncoder) {
         val output = if (disabled) {
-            Logger.logDebug("motor $name disabled")
+            Logger.logDebug("motor $deviceName disabled")
             0.0
         } else {
             controller.currentPosition = encoder.position

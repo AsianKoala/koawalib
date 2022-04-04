@@ -5,7 +5,7 @@ import com.asiankoala.koawalib.math.*
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.util.Logger
 
-class KTwoWheelOdo(
+class KTwoWheelOdometry(
     private val imu: KIMU,
     private val leftEncoder: KEncoder,
     private val auxEncoder: KEncoder,
@@ -43,6 +43,7 @@ class KTwoWheelOdo(
 
     override fun periodic() {
         encoders.forEach(KEncoder::update)
+        imu.update()
 
         if(shouldReset) {
             reset()

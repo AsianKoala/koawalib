@@ -5,9 +5,9 @@ import com.acmerobotics.roadrunner.localization.Localizer
 import com.asiankoala.koawalib.hardware.sensor.KIMU
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.subsystem.odometry.KEncoder
-import com.asiankoala.koawalib.subsystem.odometry.KThreeWheelOdo
+import com.asiankoala.koawalib.subsystem.odometry.KThreeWheelOdometry
 
-class ThreeWheelOdometryRR(
+class KThreeWheelOdometryRR(
     leftEncoder: KEncoder,
     rightEncoder: KEncoder,
     perpEncoder: KEncoder,
@@ -16,7 +16,7 @@ class ThreeWheelOdometryRR(
     imu: KIMU,
     secondsBetweenResets: Double,
 ) : Localizer {
-    private val odometry = KThreeWheelOdo(leftEncoder, rightEncoder, perpEncoder, TRACK_WIDTH, PERP_TRACKER, imu, secondsBetweenResets)
+    private val odometry = KThreeWheelOdometry(leftEncoder, rightEncoder, perpEncoder, TRACK_WIDTH, PERP_TRACKER, imu, secondsBetweenResets)
     override var poseEstimate: Pose2d
         get() = odometry.pose.toPose2d()
         set(value) {

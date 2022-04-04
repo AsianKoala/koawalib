@@ -15,18 +15,6 @@ open class KMecanumDrive(
 
     var powers = Pose()
 
-    private var driveState = DriveStates.ENABLED
-
-    fun disable() {
-        driveState = DriveStates.DISABLED
-    }
-
-    fun enable() {
-        driveState = DriveStates.ENABLED
-    }
-
-    val isEnabled get() = driveState == DriveStates.ENABLED
-
     private fun processPowers() {
         val fl = powers.y + powers.x - powers.heading
         val bl = powers.y - powers.x - powers.heading
@@ -40,15 +28,6 @@ open class KMecanumDrive(
     }
 
     override fun periodic() {
-        when (driveState) {
-            DriveStates.DISABLED -> {
-                powers = Pose()
-            }
-
-            DriveStates.ENABLED -> {
-                // expect manual powers being set externally
-            }
-        }
         processPowers()
     }
 }
