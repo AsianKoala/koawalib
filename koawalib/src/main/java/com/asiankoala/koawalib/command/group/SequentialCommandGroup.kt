@@ -9,7 +9,7 @@ open class SequentialCommandGroup(vararg commands: Command) : CommandGroupBase()
 
     final override fun addCommands(vararg commands: Command) {
         requireUngrouped(*commands)
-        check(mCurrentCommandIndex == -1) { "Commands cannot be added to a CommandGroup while the group is running" }
+        assert(mCurrentCommandIndex == -1) { "Commands cannot be added to a CommandGroup while the group is running" }
         registerGroupedCommands(*commands)
         for (command in commands) {
             mCommands.add(command)
@@ -41,7 +41,7 @@ open class SequentialCommandGroup(vararg commands: Command) : CommandGroupBase()
     }
 
     override fun end(interrupted: Boolean) {
-        if (interrupted && mCommands.isNotEmpty()) {
+        if (interrupted && mCurrentCommandIndex < mCommands.size) {
             mCommands[mCurrentCommandIndex].end(true)
         }
         mCurrentCommandIndex = -1
