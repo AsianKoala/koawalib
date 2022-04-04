@@ -7,16 +7,15 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.sign
 
-// TODO: rawPosition
-class Encoder(
+class KEncoder(
     private val motor: KMotor,
     private val ticksPerUnit: Double,
     private val isRevEncoder: Boolean = false
 ) {
     private var clock = NanoClock.system()
-    var offset = 0.0
+    private var offset = 0.0
     private var encoderMultiplier = 1.0
-    var _position = 0.0
+    private var _position = 0.0
     private var _velocity = 0.0
     private val prevEncoderPositions = ArrayList<Pair<Double, Double>>() // time, position
 
@@ -27,7 +26,7 @@ class Encoder(
     val delta get() = (prevEncoderPositions[prevEncoderPositions.size-1].second
             - prevEncoderPositions[prevEncoderPositions.size-2].second) / ticksPerUnit
 
-    val reversed: Encoder
+    val reversed: KEncoder
         get() {
             encoderMultiplier *= -1.0
             return this
@@ -54,7 +53,7 @@ class Encoder(
         }
     }
 
-    fun zero(newPosition: Double = 0.0): Encoder {
+    fun zero(newPosition: Double = 0.0): KEncoder {
         _position = motor.getRawMotorPosition
         offset = newPosition * ticksPerUnit - _position * encoderMultiplier
         prevEncoderPositions.clear()

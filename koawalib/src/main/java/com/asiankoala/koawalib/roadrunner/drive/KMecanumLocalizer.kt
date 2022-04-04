@@ -6,14 +6,14 @@ import com.acmerobotics.roadrunner.kinematics.MecanumKinematics
 import com.acmerobotics.roadrunner.localization.Localizer
 import com.acmerobotics.roadrunner.util.Angle
 import com.asiankoala.koawalib.hardware.sensor.KIMU
-import com.asiankoala.koawalib.subsystem.odometry.Encoder
+import com.asiankoala.koawalib.subsystem.odometry.KEncoder
 
 @Suppress("unused")
 class MecanumLocalizer constructor(
-    leftFrontEncoder: Encoder,
-    leftRearEncoder: Encoder,
-    rightRearEncoder: Encoder,
-    rightFrontEncoder: Encoder,
+    leftFrontEncoder: KEncoder,
+    leftRearEncoder: KEncoder,
+    rightRearEncoder: KEncoder,
+    rightFrontEncoder: KEncoder,
     private val imu: KIMU,
     private val driveConstants: DriveConstants
 ) : Localizer {
@@ -36,7 +36,7 @@ class MecanumLocalizer constructor(
         get() = encoders.map { it.velocity }
 
     override fun update() {
-        encoders.forEach(Encoder::update)
+        encoders.forEach(KEncoder::update)
 
         val wheelPositions = encoderPositions
         val extHeading = imu.heading

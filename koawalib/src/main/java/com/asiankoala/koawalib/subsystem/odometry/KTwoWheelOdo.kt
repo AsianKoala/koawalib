@@ -5,10 +5,10 @@ import com.asiankoala.koawalib.math.*
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.util.Logger
 
-class TwoWheelOdometry(
+class KTwoWheelOdo(
     private val imu: KIMU,
-    private val leftEncoder: Encoder,
-    private val auxEncoder: Encoder,
+    private val leftEncoder: KEncoder,
+    private val auxEncoder: KEncoder,
     private val TRACK_WIDTH: Double,
     private val PERP_TRACKER: Double,
 ) : Odometry() {
@@ -23,7 +23,7 @@ class TwoWheelOdometry(
 
     override fun reset() {
         lastAngle = getHeading()
-        encoders.forEach(Encoder::zero)
+        encoders.forEach(KEncoder::zero)
         shouldReset = false
     }
 
@@ -42,7 +42,7 @@ class TwoWheelOdometry(
     }
 
     override fun periodic() {
-        encoders.forEach(Encoder::update)
+        encoders.forEach(KEncoder::update)
 
         if(shouldReset) {
             reset()

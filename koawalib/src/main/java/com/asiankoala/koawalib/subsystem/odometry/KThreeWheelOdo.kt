@@ -7,10 +7,10 @@ import com.asiankoala.koawalib.math.degrees
 import com.asiankoala.koawalib.math.angleWrap
 import com.asiankoala.koawalib.util.Logger
 
-class ThreeWheelOdometry(
-    private val leftEncoder: Encoder,
-    private val rightEncoder: Encoder,
-    private val auxEncoder: Encoder,
+class KThreeWheelOdo(
+    private val leftEncoder: KEncoder,
+    private val rightEncoder: KEncoder,
+    private val auxEncoder: KEncoder,
     private val TRACK_WIDTH: Double,
     private val PERP_TRACKER: Double,
     private val imu: KIMU,
@@ -32,17 +32,18 @@ class ThreeWheelOdometry(
     }
 
     override fun reset() {
-        encoders.forEach(Encoder::zero)
+        encoders.forEach(KEncoder::zero)
     }
 
     override fun periodic() {
-        encoders.forEach(Encoder::update)
+        encoders.forEach(KEncoder::update)
 
         shouldReset = ((clock.seconds() - lastResetTime) > secondsBetweenResets) || shouldReset
         if(shouldReset) {
+            imu.update()
             val realHeading = (imu.heading + startPose.heading).angleWrap
             pose = Pose(pose.point, realHeading)
-            encoders.forEach(Encoder::zero)
+            encoders.forEach(KEncoder::zero)
             lastResetTime = clock.seconds()
             shouldReset = false
             return

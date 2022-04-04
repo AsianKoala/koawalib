@@ -8,7 +8,6 @@ import com.asiankoala.koawalib.util.Logger
 import com.qualcomm.robotcore.util.Range
 import kotlin.math.*
 
-// todo: clean up this class
 @Suppress("unused")
 object PurePursuitController {
 

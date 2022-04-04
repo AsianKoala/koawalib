@@ -66,7 +66,7 @@ class KIMU(name: String, axesOrder: AxesOrder, axesSigns: AxesSigns) : KDevice<B
         }
 
 
-    fun periodic() {
+    fun update() {
         isReadFresh = true
         lastAngularOrientation = device.angularOrientation
     }

@@ -28,7 +28,7 @@ open class KMotor(name: String) : KDevice<DcMotorEx>(name), KDouble {
             }
         }
 
-    var zeroPowerBehavior: DcMotor.ZeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
+    private var zeroPowerBehavior: DcMotor.ZeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
         set(value) {
             device.zeroPowerBehavior = value
             field = value

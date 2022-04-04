@@ -1,12 +1,9 @@
 package com.asiankoala.koawalib.hardware.motor
 
 import com.acmerobotics.roadrunner.util.epsilonEquals
-import com.asiankoala.koawalib.control.Controller
 import com.asiankoala.koawalib.control.MotionProfileController
-import com.asiankoala.koawalib.control.OpenLoopController
 import com.asiankoala.koawalib.control.PIDExController
-import com.asiankoala.koawalib.math.d
-import com.asiankoala.koawalib.subsystem.odometry.Encoder
+import com.asiankoala.koawalib.subsystem.odometry.KEncoder
 import com.asiankoala.koawalib.util.Logger
 
 /**
@@ -50,7 +47,7 @@ class KMotorEx(
 
     val isAtTarget get() = controller.isAtTarget
 
-    fun update(encoder: Encoder) {
+    fun update(encoder: KEncoder) {
         val output = if (disabled) {
             Logger.logDebug("motor $name disabled")
             0.0

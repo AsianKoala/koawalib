@@ -32,8 +32,7 @@ class Path(private val waypoints: List<Waypoint>) {
         for (waypoint in waypoints.subList(0, currFollowIndex)) {
             Logger.logDebug("attempting to run waypoint commands in interval [0,$currFollowIndex]")
             if (waypoint.command != null) {
-                // TODO: WAS PREIVOUSLY !waypoint.command.isFinished && !waypoint.command.isScheduled
-                // TODO: CHECK IF NEW WORKS
+                // TODO: WAS PREIVOUSLY !waypoint.command.isFinished && !waypoint.command.isScheduled, CHECK IF WORKS
                 if (!waypoint.command.isScheduled) {
                     Logger.logDebug("scheduled waypoint $waypoint command ${waypoint.command}")
                     waypoint.command.schedule()

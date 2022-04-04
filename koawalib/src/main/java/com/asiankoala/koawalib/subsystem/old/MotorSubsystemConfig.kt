@@ -1,7 +1,7 @@
 package com.asiankoala.koawalib.subsystem.old
 
 import com.asiankoala.koawalib.hardware.motor.KMotor
-import com.asiankoala.koawalib.subsystem.odometry.Encoder
+import com.asiankoala.koawalib.subsystem.odometry.KEncoder
 
 /**
  * @see com.asiankoala.koawalib.hardware.motor.KMotorEx
@@ -11,7 +11,7 @@ import com.asiankoala.koawalib.subsystem.odometry.Encoder
 //@Deprecated("port of koawalib v0, do not use")
 data class MotorSubsystemConfig(
     val motor: KMotor,
-    val encoder: Encoder?,
+    val encoder: KEncoder?,
     val controlType: MotorControlType,
 
     val pid: PIDConstants = PIDConstants(),
