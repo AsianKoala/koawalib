@@ -5,7 +5,13 @@ import com.asiankoala.koawalib.command.commands.Command
 open class SequentialCommandGroup(vararg commands: Command) : CommandGroupBase() {
     private val mCommands: MutableList<Command> = ArrayList()
     private var mCurrentCommandIndex = -1
-    private var mRunWhenDisabled = true
+
+    private fun initCurrentCommand() {
+        val currentCommand = mCommands[mCurrentCommandIndex]
+        currentCommand.initialize()
+        mRequirements.clear()
+        mRequirements.addAll(currentCommand.getRequirements())
+    }
 
     final override fun addCommands(vararg commands: Command) {
         requireUngrouped(*commands)
@@ -13,8 +19,7 @@ open class SequentialCommandGroup(vararg commands: Command) : CommandGroupBase()
         registerGroupedCommands(*commands)
         for (command in commands) {
             mCommands.add(command)
-            mRequirements.addAll(command.getRequirements())
-            mRunWhenDisabled = mRunWhenDisabled
+//            mRequirements.addAll(command.getRequirements())
         }
     }
 
@@ -35,7 +40,7 @@ open class SequentialCommandGroup(vararg commands: Command) : CommandGroupBase()
             currentCommand.end(false)
             mCurrentCommandIndex++
             if (mCurrentCommandIndex < mCommands.size) {
-                mCommands[mCurrentCommandIndex].initialize()
+                initCurrentCommand()
             }
         }
     }
