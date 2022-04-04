@@ -1,5 +1,6 @@
 package com.asiankoala.koawalib.math
 
+import com.asiankoala.koawalib.util.Logger
 import com.qualcomm.robotcore.util.Range
 import org.apache.commons.math3.linear.Array2DRowRealMatrix
 import kotlin.math.*
@@ -128,6 +129,7 @@ val Int.d get() = this.toDouble()
 val Float.d get() = this.toDouble()
 
 fun wrap(n: Double, lower: Double, upper: Double): Double {
+    if(lower > upper) Logger.logError("lower > upper")
     return (((n - lower) % (upper - lower)) + (upper - lower)) % (upper - lower) + lower;
 }
 

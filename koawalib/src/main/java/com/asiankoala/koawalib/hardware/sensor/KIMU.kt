@@ -39,9 +39,9 @@ class KIMU(name: String, axesOrder: AxesOrder, axesSigns: AxesSigns) : KDevice<B
 
     private var lastAngularOrientation: Orientation = device.angularOrientation
         private set(value) {
-            _heading = value.firstAngle.d - headingOffset
-            _pitch = value.secondAngle.d - pitchOffset
-            _roll = value.thirdAngle.d - rollOffset
+            _heading = value.firstAngle.d
+            _pitch = value.secondAngle.d
+            _roll = value.thirdAngle.d
 
             val currTime = clock.seconds()
             val dt = currTime - lastUpdateTime

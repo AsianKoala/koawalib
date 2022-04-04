@@ -49,9 +49,9 @@ class KThreeWheelOdo(
             return
         }
 
-        val newAngle = (((leftEncoder.position - rightEncoder.position) / TRACK_WIDTH) + startPose.heading).angleWrap
+        val newAngle = (((rightEncoder.position - leftEncoder.position) / TRACK_WIDTH) + startPose.heading).angleWrap
 
-        val headingDelta = (leftEncoder.delta - rightEncoder.delta) / TRACK_WIDTH
+        val headingDelta = (rightEncoder.delta - leftEncoder.delta) / TRACK_WIDTH
         val auxPredicted = headingDelta * PERP_TRACKER
         val auxDelta = auxEncoder.delta - auxPredicted
 
