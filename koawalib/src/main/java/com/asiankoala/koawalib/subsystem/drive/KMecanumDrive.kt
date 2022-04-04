@@ -8,8 +8,8 @@ import kotlin.math.absoluteValue
 open class KMecanumDrive(
     fl: KMotor,
     bl: KMotor,
-    fr: KMotor,
-    br: KMotor
+    br: KMotor,
+    fr: KMotor
 ) : DeviceSubsystem() {
     private val motors = listOf(fl, bl, fr, br)
 
@@ -28,10 +28,10 @@ open class KMecanumDrive(
     val isEnabled get() = driveState == DriveStates.ENABLED
 
     private fun processPowers() {
-        val fl = powers.y + powers.x + powers.heading
-        val bl = powers.y - powers.x + powers.heading
-        val fr = powers.y - powers.x - powers.heading
-        val br = powers.y + powers.x - powers.heading
+        val fl = powers.y + powers.x - powers.heading
+        val bl = powers.y - powers.x - powers.heading
+        val fr = powers.y - powers.x + powers.heading
+        val br = powers.y + powers.x + powers.heading
 
         val wheels = listOf(fl, bl, fr, br)
         val absMax = wheels.maxOf { it.absoluteValue }
