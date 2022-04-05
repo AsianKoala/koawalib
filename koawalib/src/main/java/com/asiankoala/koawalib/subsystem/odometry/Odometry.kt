@@ -56,7 +56,7 @@ abstract class Odometry : DeviceSubsystem() {
 
         prevRobotRelativePositions.add(TimePose(robotRelativeMovement))
 
-        val incrementX = currPose.heading.cos * deltaY - currPose.heading.sin * deltaX
+        val incrementX = currPose.heading.cos * deltaY + currPose.heading.sin * deltaX
         val incrementY = currPose.heading.sin * deltaY + currPose.heading.cos * deltaX
 
         Logger.addTelemetryData("increment x", incrementX)
