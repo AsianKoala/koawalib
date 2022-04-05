@@ -6,7 +6,6 @@ import org.firstinspires.ftc.robotcore.external.Telemetry
 
 @Suppress("unused")
 object Logger {
-
     var config = LoggerConfig()
     internal var telemetry: Telemetry? = null
     internal var logCount = 0
@@ -64,12 +63,24 @@ object Logger {
         log(message, Log.DEBUG)
     }
 
+    fun logDebug(message: String, data: Any?) {
+        logDebug(getDataString(message, data))
+    }
+
     fun logInfo(message: String) {
         log(message, Log.INFO)
     }
 
+    fun logInfo(message: String, data: Any?) {
+        logInfo(getDataString(message, data))
+    }
+
     fun logWarning(message: String) {
         log("WARNING: $message", Log.WARN)
+    }
+
+    fun logWarning(message: String, data: Any?) {
+        logWarning(getDataString(message, data))
     }
 
     fun logError(message: String) {
@@ -77,9 +88,17 @@ object Logger {
         log("ERROR: $message", Log.ERROR)
     }
 
+    fun logError(message: String, data: Any?) {
+        logError(getDataString(message, data))
+    }
+
     fun logWTF(message: String) {
         log(message, Log.ASSERT)
         throw Exception(message)
+    }
+
+    fun logWTF(message: String, data: Any?) {
+        logWarning(getDataString(message, data))
     }
 
     fun addErrorCommand() {
@@ -88,5 +107,9 @@ object Logger {
 
     private fun String.withColor(color: String): String {
         return "$color$this$Colors.ANSI_RESET"
+    }
+
+    private fun getDataString(message: String, data: Any?): String {
+        return "$message : $data"
     }
 }

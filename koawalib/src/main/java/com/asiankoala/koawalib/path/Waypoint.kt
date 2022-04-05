@@ -1,6 +1,5 @@
 package com.asiankoala.koawalib.path
 
-import com.asiankoala.koawalib.command.commands.Command
 import com.asiankoala.koawalib.math.*
 import com.asiankoala.koawalib.math.Point
 
@@ -13,8 +12,8 @@ data class Waypoint(
     val maxTurnSpeed: Double = 1.0,
     val deccelAngle: Double = 60.0.radians,
     val stop: Boolean = true,
-    val slowDownTurnRadians: Double = 60.0.radians,
-    val lowestSlowDownFromTurnError: Double = 0.4,
+    val minAllowedHeadingError: Double = 60.0.radians,
+    val lowestSlowDownFromHeadingError: Double = 0.4,
 //    val command: Command? = null
 ) {
     val point = Point(x, y)
@@ -22,6 +21,6 @@ data class Waypoint(
     val copy: Waypoint
         get() = Waypoint(
             x, y, followDistance, headingLockAngle, maxMoveSpeed, maxTurnSpeed, deccelAngle,
-            stop, slowDownTurnRadians, lowestSlowDownFromTurnError/*, command*/
+            stop, minAllowedHeadingError, lowestSlowDownFromHeadingError/*, command*/
         )
 }

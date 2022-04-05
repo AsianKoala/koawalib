@@ -1,10 +1,7 @@
 package com.asiankoala.koawalib.path
 
-import com.asiankoala.koawalib.command.commands.PathCommand
 import com.asiankoala.koawalib.math.*
 import com.asiankoala.koawalib.math.Pose
-import com.asiankoala.koawalib.subsystem.drive.KMecanumOdoDrive
-import com.asiankoala.koawalib.util.Logger
 import kotlin.math.absoluteValue
 
 /**
@@ -73,8 +70,8 @@ class Path(private val waypoints: List<Waypoint>) {
             movementLookahead.maxTurnSpeed,
             movementLookahead.deccelAngle,
             movementLookahead.headingLockAngle,
-            movementLookahead.slowDownTurnRadians,
-            movementLookahead.lowestSlowDownFromTurnError,
+            movementLookahead.minAllowedHeadingError,
+            movementLookahead.lowestSlowDownFromHeadingError,
         ).point
 
         val absolutePointAngle = turnLookahead.headingLockAngle ?: (turnLookahead.point - pose).atan2
@@ -89,8 +86,8 @@ class Path(private val waypoints: List<Waypoint>) {
         val realRelativeAngle = turnResult.second
 
         val errorTurnSoScaleMovement = clamp(
-            1.0 - (realRelativeAngle / movementLookahead.slowDownTurnRadians).absoluteValue,
-            movementLookahead.lowestSlowDownFromTurnError,
+            1.0 - (realRelativeAngle / movementLookahead.minAllowedHeadingError).absoluteValue,
+            movementLookahead.lowestSlowDownFromHeadingError,
             1.0
         )
 

@@ -16,8 +16,8 @@ class GoToPointCommand(
     private val maxMoveSpeed: Double = 1.0,
     private val maxTurnSpeed: Double = 1.0,
     private val deccelAngle: Double = 60.0.radians,
-    private val slowDownTurnRadians: Double = 60.0.radians,
-    private val lowestSlowDownFromTurnError: Double = 0.4,
+    private val minAllowedHeadingError: Double = 60.0.radians,
+    private val lowestSlowDownFromHeadingError: Double = 0.4,
 ) : CommandBase() {
 
     override fun execute() {
@@ -29,8 +29,8 @@ class GoToPointCommand(
             maxTurnSpeed,
             deccelAngle,
             target.heading,
-            slowDownTurnRadians,
-            lowestSlowDownFromTurnError,
+            minAllowedHeadingError,
+            lowestSlowDownFromHeadingError,
         )
 
         drive.powers = ret

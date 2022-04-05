@@ -19,8 +19,8 @@ object PurePursuitController {
         maxTurnSpeed: Double = 1.0,
         deccelAngle: Double = 60.0.radians,
         headingLockAngle: Double? = null,
-        slowDownTurnRadians: Double = 60.0.radians,
-        lowestSlowDownFromTurnError: Double = 0.4,
+        minAllowedHeadingError: Double = 60.0.radians,
+        lowestSlowDownFromHeadingError: Double = 0.4,
     ): Pose {
         val absoluteDelta = targetPosition - currPose.point
         val distanceToPoint = absoluteDelta.hypot
@@ -68,8 +68,8 @@ object PurePursuitController {
 
         // slow down if angle is off
         var errorTurnSoScaleMovement = Range.clip(
-            1.0 - (relativePointAngle / slowDownTurnRadians).absoluteValue,
-            lowestSlowDownFromTurnError,
+            1.0 - (relativePointAngle / minAllowedHeadingError).absoluteValue,
+            lowestSlowDownFromHeadingError,
             1.0
         )
 

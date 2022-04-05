@@ -21,10 +21,10 @@ open class KMotor(name: String) : KDevice<DcMotorEx>(name), KDouble {
 
     private var power: Double = 0.0
         private set(value) {
-            val clipped = Range.clip(value, -1.0, 1.0)
+            val clipped = Range.clip(value, -1.0, 1.0) * powerMultiplier
             if (clipped epsilonNotEqual field && (clipped == 0.0 || clipped.absoluteValue == 1.0 || (clipped - field).absoluteValue > 0.005)) {
-                field = value * powerMultiplier
-                device.power = value * powerMultiplier
+                field = clipped
+                device.power = clipped
             }
         }
 
