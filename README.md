@@ -9,9 +9,9 @@ repositories {
   maven { url = 'https://jitpack.io' }
 }
 ```
-- Then add this line to your ```dependencies``` block, where "0.0.10" is the newest release tag
+- Then add this line to your ```dependencies``` block, where "0.0.12" is the newest release tag
 ```
-implementation 'com.github.AsianKoala:koawalib:0.0.10'
+implementation 'com.github.AsianKoala:koawalib:0.0.12'
 ```
 
 - ### Snapshot

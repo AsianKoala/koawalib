@@ -18,7 +18,6 @@ class GoToPointCommand(
     private val deccelAngle: Double = 60.0.radians,
     private val slowDownTurnRadians: Double = 60.0.radians,
     private val lowestSlowDownFromTurnError: Double = 0.4,
-    private val shouldTelemetry: Boolean = true
 ) : CommandBase() {
 
     override fun execute() {
@@ -32,7 +31,6 @@ class GoToPointCommand(
             target.heading,
             slowDownTurnRadians,
             lowestSlowDownFromTurnError,
-            shouldTelemetry
         )
 
         drive.powers = ret

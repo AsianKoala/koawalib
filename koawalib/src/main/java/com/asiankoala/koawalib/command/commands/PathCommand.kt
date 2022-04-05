@@ -6,7 +6,8 @@ import com.asiankoala.koawalib.subsystem.drive.KMecanumOdoDrive
 
 class PathCommand(
     private val drive: KMecanumOdoDrive,
-    private val path: Path
+    private val path: Path,
+    private val tol: Double
 ) : CommandBase() {
 
     override fun initialize() {
@@ -14,7 +15,7 @@ class PathCommand(
     }
 
     override fun execute() {
-//        drive.powers = path.update(drive.position)
+        drive.powers = path.update(drive.position, tol).first
     }
 
     override fun end(interrupted: Boolean) {

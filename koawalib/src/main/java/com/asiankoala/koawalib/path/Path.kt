@@ -16,7 +16,7 @@ class Path(private val waypoints: List<Waypoint>) {
     var isFinished = false
         private set
 
-    fun update(pose: Pose): Pair<Pose, Double> {
+    fun update(pose: Pose, tol: Double): Pair<Pose, Double> {
         val extendedPath = ArrayList<Waypoint>(waypoints)
 
         val clippedToPath = PurePursuitController.clipToPath(waypoints, pose.point)
@@ -97,7 +97,7 @@ class Path(private val waypoints: List<Waypoint>) {
         val finalXPower = movePower.x * errorTurnSoScaleMovement
         val finalYPower = movePower.y * errorTurnSoScaleMovement
 
-        if (clippedDistanceToEnd < 1.0) {
+        if (clippedDistanceToEnd < tol) {
             isFinished = true
         }
 
@@ -117,10 +117,5 @@ class Path(private val waypoints: List<Waypoint>) {
         }
 
         return Path(newWaypoints)
-    }
-
-    // integration with command scheduler
-    fun schedule(drive: KMecanumOdoDrive) {
-        PathCommand(drive, this).schedule()
     }
 }

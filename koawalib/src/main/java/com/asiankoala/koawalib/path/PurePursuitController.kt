@@ -21,7 +21,6 @@ object PurePursuitController {
         headingLockAngle: Double? = null,
         slowDownTurnRadians: Double = 60.0.radians,
         lowestSlowDownFromTurnError: Double = 0.4,
-        shouldTelemetry: Boolean = true
     ): Pose {
         val absoluteDelta = targetPosition - currPose.point
         val distanceToPoint = absoluteDelta.hypot
