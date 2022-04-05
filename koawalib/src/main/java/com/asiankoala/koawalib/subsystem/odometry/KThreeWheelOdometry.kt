@@ -53,11 +53,15 @@ class KThreeWheelOdometry(
         val newAngle = (((rightEncoder.position - leftEncoder.position) / TRACK_WIDTH) + resetHeading).angleWrap
 
         val headingDelta = (rightEncoder.delta - leftEncoder.delta) / TRACK_WIDTH
-        val auxPredicted = headingDelta * -PERP_TRACKER
+        val auxPredicted = headingDelta * PERP_TRACKER
         val auxDelta = auxEncoder.delta - auxPredicted
 
         accumulatedHeading += headingDelta
         accumulatedAuxPrediction += auxPredicted
+
+        Logger.addTelemetryData("heading delta", headingDelta.degrees)
+        Logger.addTelemetryData("aux predicted", auxPredicted)
+        Logger.addTelemetryData("aux delta", auxDelta)
 
         val deltaY = (leftEncoder.delta - rightEncoder.delta) / 2.0
         val pointIncrement = updatePoseWithDeltas(pose, leftEncoder.delta, rightEncoder.delta, auxDelta, deltaY, headingDelta)

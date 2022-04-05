@@ -58,6 +58,10 @@ abstract class Odometry : DeviceSubsystem() {
 
         val incrementX = currPose.heading.cos * deltaY - currPose.heading.sin * deltaX
         val incrementY = currPose.heading.sin * deltaY + currPose.heading.cos * deltaX
+
+        Logger.addTelemetryData("increment x", incrementX)
+        Logger.addTelemetryData("comp 1", currPose.heading.cos * deltaY)
+        Logger.addTelemetryData("comp 2", currPose.heading.sin * deltaX)
         return Point(incrementX, incrementY)
     }
 }
