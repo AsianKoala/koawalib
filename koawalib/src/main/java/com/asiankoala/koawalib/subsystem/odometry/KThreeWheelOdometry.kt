@@ -22,6 +22,7 @@ class KThreeWheelOdometry(
     private var clock = NanoClock.system()
     private var lastResetTime = clock.seconds()
     private var resetHeading = startPose.heading
+    private var accumulatedAux = 0.0
 
     override fun updateTelemetry() {
         Logger.addTelemetryData("start pose", startPose)
@@ -58,11 +59,9 @@ class KThreeWheelOdometry(
 
         accumulatedHeading += headingDelta
         accumulatedAuxPrediction += auxPredicted
+        accumulatedAux += auxEncoder.delta
 
-        Logger.addTelemetryData("heading delta", headingDelta.degrees)
-        Logger.addTelemetryData("aux predicted", auxPredicted)
-        Logger.addTelemetryData("aux delta", auxDelta)
-
+        Logger.addTelemetryData("delta tracker", accumulatedAux - accumulatedAuxPrediction)
         val deltaY = (leftEncoder.delta - rightEncoder.delta) / 2.0
         val pointIncrement = updatePoseWithDeltas(pose, leftEncoder.delta, rightEncoder.delta, auxDelta, deltaY, headingDelta)
         pose = Pose(pose.point + pointIncrement, newAngle)
