@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.util.NanoClock
 import com.asiankoala.koawalib.hardware.KDevice
 import com.asiankoala.koawalib.hardware.sensor.IMUUtil.remapAxes
 import com.asiankoala.koawalib.math.*
+import com.asiankoala.koawalib.subsystem.Subsystem
 import com.asiankoala.koawalib.util.Logger
 import com.qualcomm.hardware.bosch.BNO055IMU
 import com.qualcomm.hardware.bosch.BNO055IMUImpl
@@ -39,9 +40,9 @@ class KIMU(name: String, axesOrder: AxesOrder, axesSigns: AxesSigns) : KDevice<B
 
     private var lastAngularOrientation: Orientation = device.angularOrientation
         private set(value) {
-            _heading = value.firstAngle.d - headingOffset
-            _pitch = value.secondAngle.d - pitchOffset
-            _roll = value.thirdAngle.d - rollOffset
+            _heading = value.firstAngle.d
+            _pitch = value.secondAngle.d
+            _roll = value.thirdAngle.d
 
             val currTime = clock.seconds()
             val dt = currTime - lastUpdateTime

@@ -1,4 +1,4 @@
-package com.asiankoala.koawalib.math
+package com.asiankoala.koawalib.questionmark
 
 import kotlin.math.absoluteValue
 import kotlin.math.pow

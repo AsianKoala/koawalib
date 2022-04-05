@@ -55,7 +55,7 @@ class KEncoder(
 
     fun zero(newPosition: Double = 0.0): KEncoder {
         _position = motor.getRawMotorPosition
-        offset = newPosition * ticksPerUnit - _position * encoderMultiplier
+        offset = newPosition * ticksPerUnit - _position
         prevEncoderPositions.clear()
         prevEncoderPositions.add(Pair(clock.seconds(), _position))
         prevEncoderPositions.add(Pair(clock.seconds() - 1e6, _position))

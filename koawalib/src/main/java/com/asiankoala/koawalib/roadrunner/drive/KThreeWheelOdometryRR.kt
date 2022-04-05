@@ -5,27 +5,25 @@ import com.acmerobotics.roadrunner.localization.Localizer
 import com.asiankoala.koawalib.hardware.sensor.KIMU
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.subsystem.odometry.KEncoder
-import com.asiankoala.koawalib.subsystem.odometry.KTwoWheelOdo
+import com.asiankoala.koawalib.subsystem.odometry.KThreeWheelOdometry
 
-// internally use koawalib's twowheelodometry
-@Suppress("unused")
-class TwoWheelOdometryRR(
-    imu: KIMU,
+class KThreeWheelOdometryRR(
     leftEncoder: KEncoder,
+    rightEncoder: KEncoder,
     perpEncoder: KEncoder,
     TRACK_WIDTH: Double,
     PERP_TRACKER: Double,
-    ) : Localizer {
-    private val odometry = KTwoWheelOdo(imu, leftEncoder, perpEncoder, TRACK_WIDTH, PERP_TRACKER)
+) : Localizer {
+    private val odometry = KThreeWheelOdometry(leftEncoder, rightEncoder, perpEncoder, TRACK_WIDTH, PERP_TRACKER)
     override var poseEstimate: Pose2d
         get() = odometry.pose.toPose2d()
         set(value) {
             odometry.startPose = Pose(value)
         }
-    override val poseVelocity: Pose2d
+    override val poseVelocity: Pose2d?
         get() = odometry.velocity.toPose2d()
 
     override fun update() {
-        // TwoWheelOdometry is updated through CommandScheduler
+        // ThreeWheelOdometry is updated through CommandScheduler
     }
 }

@@ -6,7 +6,6 @@ import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.subsystem.odometry.Odometry
 import com.asiankoala.koawalib.util.Logger
 
-@Config
 open class KMecanumOdoDrive(
     fl: KMotor,
     bl: KMotor,

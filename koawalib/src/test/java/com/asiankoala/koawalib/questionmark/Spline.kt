@@ -1,9 +1,12 @@
-package com.asiankoala.koawalib.math
+package com.asiankoala.koawalib.questionmark
 
+import com.asiankoala.koawalib.math.Point
+import com.asiankoala.koawalib.math.d
 import kotlin.math.abs
 import kotlin.math.pow
 
-class Spline(private val polynomialDegree: Int, private val coeffs: DoubleArray, private val inverted: Boolean) : ParametricFunction {
+class Spline(private val polynomialDegree: Int, private val coeffs: DoubleArray, private val inverted: Boolean) :
+    ParametricFunction {
     constructor(polynomialDegree: Int, inverted: Boolean) : this(polynomialDegree, DoubleArray(2 * (polynomialDegree+1)), inverted)
     constructor(polynomialDegree: Int) : this(polynomialDegree, false)
 

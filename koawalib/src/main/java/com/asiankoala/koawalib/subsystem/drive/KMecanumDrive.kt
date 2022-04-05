@@ -8,47 +8,25 @@ import kotlin.math.absoluteValue
 open class KMecanumDrive(
     fl: KMotor,
     bl: KMotor,
-    fr: KMotor,
-    br: KMotor
+    br: KMotor,
+    fr: KMotor
 ) : DeviceSubsystem() {
-    private val motors = listOf(fl, bl, fr, br)
+    private val motors = listOf(fl, bl, br, fr)
 
     var powers = Pose()
 
-    private var driveState = DriveStates.ENABLED
-
-    fun disable() {
-        driveState = DriveStates.DISABLED
-    }
-
-    fun enable() {
-        driveState = DriveStates.ENABLED
-    }
-
-    val isEnabled get() = driveState == DriveStates.ENABLED
-
-    private fun processPowers() {
-        val fl = powers.y + powers.x + powers.heading
-        val bl = powers.y - powers.x + powers.heading
-        val fr = powers.y - powers.x - powers.heading
-        val br = powers.y + powers.x - powers.heading
-
-        val wheels = listOf(fl, bl, fr, br)
-        val absMax = wheels.maxOf { it.absoluteValue }
-        val scalar = if (absMax > 1.0) absMax else 1.0
-        motors.forEachIndexed { i, it -> it.setSpeed(wheels[i] / scalar) }
+    protected open fun processPowers(drivePowers: Pose): List<Double> {
+        val fl = drivePowers.y + drivePowers.x - drivePowers.heading
+        val bl = drivePowers.y - drivePowers.x - drivePowers.heading
+        val br = drivePowers.y + drivePowers.x + drivePowers.heading
+        val fr = drivePowers.y - drivePowers.x + drivePowers.heading
+        return listOf(fl, bl, br, fr)
     }
 
     override fun periodic() {
-        when (driveState) {
-            DriveStates.DISABLED -> {
-                powers = Pose()
-            }
-
-            DriveStates.ENABLED -> {
-                // expect manual powers being set externally
-            }
-        }
-        processPowers()
+        val wheels = processPowers(powers)
+        val absMax = wheels.maxOf { it.absoluteValue }
+        val scalar = if (absMax > 1.0) absMax else 1.0
+        motors.forEachIndexed { i, it -> it.setSpeed(wheels[i] / scalar) }
     }
 }

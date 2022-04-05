@@ -14,7 +14,7 @@ class PathCommand(
     }
 
     override fun execute() {
-        drive.powers = path.update(drive.position)
+//        drive.powers = path.update(drive.position)
     }
 
     override fun end(interrupted: Boolean) {

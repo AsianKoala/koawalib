@@ -49,6 +49,12 @@ class Pose(
         return Point(x + dxp, y + dyp)
     }
 
+    operator fun plus(other: Pose) = Pose(x + other.x, y + other.y, heading + other.heading)
+
+    fun rawString(): String {
+        return String.format("%.2f, %.2f, %.2f", x, y, heading)
+    }
+
     override fun toString(): String {
         return String.format("%.2f, %.2f, %.2f", x, y, heading.degrees)
     }

@@ -1,5 +1,6 @@
-package com.asiankoala.koawalib.math
+package com.asiankoala.koawalib.questionmark
 
+import com.asiankoala.koawalib.math.Point
 import kotlin.math.atan
 import kotlin.math.pow
 

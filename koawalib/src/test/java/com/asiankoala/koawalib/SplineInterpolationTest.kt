@@ -44,13 +44,4 @@ object SplineInterpolationTest {
 //        plot(xPath, yPath)
     }
 //
-//    fun plot(xs: DoubleArray, ys: DoubleArray) {
-//        val data = mapOf<String, Any>("x" to xs, "y" to ys)
-//        val fig = letsPlot(data) + geomPoint(
-//            color = "dark-green",
-//            size = 1.0
-//        ) { x = "x"; y = "y" }
-//
-//        ggsave(fig, "plot.png")
-//    }
 }

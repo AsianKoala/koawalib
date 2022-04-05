@@ -5,7 +5,7 @@ import com.asiankoala.koawalib.math.*
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.util.Logger
 
-class KTwoWheelOdo(
+class KTwoWheelOdometry(
     private val imu: KIMU,
     private val leftEncoder: KEncoder,
     private val auxEncoder: KEncoder,
@@ -38,11 +38,11 @@ class KTwoWheelOdo(
         Logger.addTelemetryData("accumulated aux", accumAuxScale)
         Logger.addTelemetryData("accumulated aux prediction", accumulatedAuxPrediction)
         Logger.addTelemetryData("accum aux - tracker", auxTrackDiff)
-        Logger.addTelemetryData("should increase aux tracker", auxTrackDiff > 0)
     }
 
     override fun periodic() {
         encoders.forEach(KEncoder::update)
+        imu.update()
 
         if(shouldReset) {
             reset()
