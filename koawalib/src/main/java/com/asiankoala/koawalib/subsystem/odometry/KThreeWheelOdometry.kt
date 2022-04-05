@@ -21,6 +21,7 @@ class KThreeWheelOdometry(
     private var accumulatedAuxPrediction = 0.0
     private var clock = NanoClock.system()
     private var lastResetTime = clock.seconds()
+    private var resetHeading = startPose.heading
 
     override fun updateTelemetry() {
         Logger.addTelemetryData("start pose", startPose)
@@ -37,19 +38,19 @@ class KThreeWheelOdometry(
 
     override fun periodic() {
         encoders.forEach(KEncoder::update)
-
         shouldReset = ((clock.seconds() - lastResetTime) > secondsBetweenResets) || shouldReset
         if(shouldReset) {
             imu.update()
-            val realHeading = (imu.heading + startPose.heading).angleWrap
-            pose = Pose(pose.point, realHeading)
+            resetHeading = (imu.heading + startPose.heading).angleWrap
+            Logger.logInfo("reset imu heading: ${imu.heading}")
+            pose = Pose(pose.point, resetHeading)
             encoders.forEach(KEncoder::zero)
             lastResetTime = clock.seconds()
             shouldReset = false
             return
         }
 
-        val newAngle = (((rightEncoder.position - leftEncoder.position) / TRACK_WIDTH) + startPose.heading).angleWrap
+        val newAngle = (((rightEncoder.position - leftEncoder.position) / TRACK_WIDTH) + resetHeading).angleWrap
 
         val headingDelta = (rightEncoder.delta - leftEncoder.delta) / TRACK_WIDTH
         val auxPredicted = headingDelta * PERP_TRACKER
