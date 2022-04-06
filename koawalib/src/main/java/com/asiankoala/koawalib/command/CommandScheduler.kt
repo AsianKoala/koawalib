@@ -113,9 +113,9 @@ object CommandScheduler {
 
             command.execute()
 
-            if(command !is Watchdog && command !is InfiniteCommand && command !is CommandGroupBase) {
-                Logger.logInfo("${command.name} executed")
-            }
+//            if(command !is Watchdog && command !is InfiniteCommand && command !is CommandGroupBase) {
+//                Logger.logInfo("${command.name} executed")
+//            }
 
             if (command.isFinished) {
                 command.end(false)
