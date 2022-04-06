@@ -1,6 +1,7 @@
 package com.asiankoala.koawalib.command.group
 
 import com.asiankoala.koawalib.command.commands.Command
+import com.asiankoala.koawalib.util.Logger
 
 open class SequentialCommandGroup(vararg commands: Command) : CommandGroupBase() {
     private val mCommands: MutableList<Command> = ArrayList()
@@ -36,6 +37,7 @@ open class SequentialCommandGroup(vararg commands: Command) : CommandGroupBase()
         }
         val currentCommand = mCommands[mCurrentCommandIndex]
         currentCommand.execute()
+        Logger.logInfo("command ${currentCommand.name} of group $name executed")
         if (currentCommand.isFinished) {
             currentCommand.end(false)
             mCurrentCommandIndex++

@@ -1,5 +1,6 @@
 package com.asiankoala.koawalib.gamepad.functionality
 
+// todo combine this with CommandButton
 abstract class ButtonFunc : Button {
     private var _isPressed = false
     private var _isToggled = false
