@@ -33,8 +33,15 @@ open class SequentialCommandGroup(vararg commands: Command) : CommandGroupBase()
 
     override fun execute() {
         if (mCommands.isEmpty()) {
+            Logger.logWarning("command group base $name ended prematurely")
             return
         }
+
+        if(mCurrentCommandIndex !in mCommands.indices) {
+            Logger.logWarning("command group base $name ended prematurely")
+            return
+        }
+
         val currentCommand = mCommands[mCurrentCommandIndex]
         currentCommand.execute()
         Logger.logInfo("command ${currentCommand.name} of group $name executed")
@@ -55,7 +62,7 @@ open class SequentialCommandGroup(vararg commands: Command) : CommandGroupBase()
     }
 
     override val isFinished: Boolean
-        get() = mCurrentCommandIndex == mCommands.size
+        get() = mCurrentCommandIndex !in mCommands.indices
 
     init {
         addCommands(*commands)

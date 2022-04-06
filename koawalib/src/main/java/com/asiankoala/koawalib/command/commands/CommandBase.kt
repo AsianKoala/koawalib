@@ -20,4 +20,8 @@ abstract class CommandBase : Command {
 
     private var _name: String? = null
     override val name: String get() = _name ?: this.javaClass.simpleName
+
+    override fun toString(): String {
+        return name
+    }
 }
