@@ -16,6 +16,7 @@ import com.qualcomm.robotcore.util.ElapsedTime
 open class CommandOpMode : LinearOpMode() {
     protected lateinit var driver: KGamepad
     protected lateinit var gunner: KGamepad
+    protected var opmodeState = OpModeState.INIT
 
     private var prevLoopTime = System.currentTimeMillis()
     private var opModeTimer = ElapsedTime()
@@ -84,6 +85,7 @@ open class CommandOpMode : LinearOpMode() {
 
         while (mainStateMachine.running) {
             mainStateMachine.update()
+            opmodeState = mainStateMachine.state
             prevLoopTime = System.currentTimeMillis()
         }
     }
