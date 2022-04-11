@@ -76,7 +76,7 @@ open class CommandOpMode : LinearOpMode() {
         .state(OpModeState.STOP)
         .onEnter(::mStop)
         .onEnter(opModeTimer::reset)
-        .transition { true }
+        .transition { true }//
         .build()
 
     override fun runOpMode() {
