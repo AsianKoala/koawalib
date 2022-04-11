@@ -30,7 +30,7 @@ open class KMecanumDriveRR(
     driveLocalizer: Localizer,
     TRANSLATIONAL_PID: PIDCoefficients,
     HEADING_PID: PIDCoefficients,
-) : MecanumDrive(driveConstants.kV, driveConstants.ka, driveConstants.kStatic, driveConstants.TRACK_WIDTH), Subsystem {
+) : MecanumDrive(driveConstants.kV, driveConstants.kA, driveConstants.kStatic, driveConstants.TRACK_WIDTH), Subsystem {
     private val velConstraint: TrajectoryVelocityConstraint =
         getVelocityConstraint(driveConstants.MAX_VEL, driveConstants.MAX_ANG_VEL, driveConstants.TRACK_WIDTH)
     private val accelConstraint: TrajectoryAccelerationConstraint =

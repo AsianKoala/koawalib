@@ -10,7 +10,7 @@ data class DriveConstants(
     @JvmField var GEAR_RATIO: Double = 1.0,
     @JvmField var TRACK_WIDTH: Double = 1.0,
     @JvmField var kV: Double = 1.0 / rpmToVelocity(MAX_RPM, GEAR_RATIO, WHEEL_RADIUS),
-    @JvmField var ka: Double = 0.0,
+    @JvmField var kA: Double = 0.0,
     @JvmField var kStatic: Double = 0.0,
     @JvmField var MAX_VEL: Double = 30.0,
     @JvmField var MAX_ACCEL: Double = 30.0,

@@ -16,33 +16,20 @@ import com.asiankoala.koawalib.util.OpModeState
 import com.qualcomm.robotcore.util.ElapsedTime
 import kotlin.math.absoluteValue
 
-class KMotorEx(
-    name: String,
-    private val encoder: KEncoder?,
-    private val controlType: MotorControlType,
-
-    private val pid: PIDConstants = PIDConstants(),
-    private val ff: FeedforwardConstants = FeedforwardConstants(),
-
-    private val positionEpsilon: Double,
-    private val homePositionToDisable: Double = Double.NaN,
-    private val lowerBound: Double = Double.NaN,
-    private val upperBound: Double = Double.NaN,
-    private val maxVelocity: Double = 0.0,
-    private val maxAcceleration: Double = 0.0,
-) : KMotor(name) {
+class KMotorEx(private val config: KMotorExConfig) : KMotor(config.name) {
+    private val encoder = config.encoder
 
     private val controller by lazy {
         val c = PIDFController(
-            pid.asCoeffs,
-            ff.kV,
-            ff.kA,
-            ff.kStatic,
-            ff.kF
+            config.pid.asCoeffs,
+            config.ff.kV,
+            config.ff.kA,
+            config.ff.kStatic,
+            config.ff.kF
         )
 
-        if(!lowerBound.isNaN() && !upperBound.isNaN()) {
-            c.setInputBounds(lowerBound, upperBound)
+        if(!config.lowerBound.isNaN() && !config.upperBound.isNaN()) {
+            c.setInputBounds(config.lowerBound, config.upperBound)
         }
 
         c
@@ -60,13 +47,13 @@ class KMotorEx(
             if(encoder == null) {
                 Logger.logError("encoder for motor $deviceName is null")
             }
-            return (encoder!!.position - controller.targetPosition).absoluteValue < positionEpsilon
+            return (encoder!!.position - controller.targetPosition).absoluteValue < config.positionEpsilon
         }
 
     private fun isHomed(): Boolean {
-        val hasHomePosition = !homePositionToDisable.isNaN()
-        val isTargetingHomePosition = (controller.targetPosition - homePositionToDisable).absoluteValue < positionEpsilon
-        val isAtHomePosition = (homePositionToDisable - encoder!!.position).absoluteValue < positionEpsilon
+        val hasHomePosition = !config.homePositionToDisable.isNaN()
+        val isTargetingHomePosition = (controller.targetPosition - config.homePositionToDisable).absoluteValue < config.positionEpsilon
+        val isAtHomePosition = (config.homePositionToDisable - encoder!!.position).absoluteValue < config.positionEpsilon
         return hasHomePosition && isTargetingHomePosition && isAtHomePosition
     }
 
@@ -78,9 +65,9 @@ class KMotorEx(
 
     private fun getControllerOutput(): Double {
         return controller.update(encoder!!.position) +
-                ff.kCos * controller.targetPosition.cos +
-                ff.kTargetF(controller.targetPosition) +
-                ff.kG
+                config.ff.kCos * controller.targetPosition.cos +
+                config.ff.kTargetF(controller.targetPosition) +
+                config.ff.kG
     }
 
     fun setPIDTarget(target: Double) {
@@ -99,8 +86,8 @@ class KMotorEx(
         val motionProfile = MotionProfileGenerator.generateSimpleMotionProfile(
             startState,
             endState,
-            maxVelocity,
-            maxAcceleration,
+            config.maxVelocity,
+            config.maxAcceleration,
             0.0
         )
 
@@ -118,12 +105,12 @@ class KMotorEx(
     fun update() {
         encoder?.update()
 
-        if(controlType != MotorControlType.OPEN_LOOP) {
+        if(config.controlType != MotorControlType.OPEN_LOOP) {
             if(encoder == null) {
                 Logger.logError("encoder for motor $deviceName is null")
             }
 
-            if(controlType == MotorControlType.MOTION_PROFILE && isFollowingProfile) {
+            if(config.controlType == MotorControlType.MOTION_PROFILE && isFollowingProfile) {
                 when {
                     currentMotionProfile == null -> Logger.logError("MUST BE FOLLOWING A MOTION PROFILE !!!!")
 
