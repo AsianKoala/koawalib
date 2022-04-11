@@ -1,10 +1,8 @@
 package com.asiankoala.koawalib.subsystem.drive
 
-import com.acmerobotics.dashboard.config.Config
 import com.asiankoala.koawalib.hardware.motor.KMotor
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.subsystem.odometry.Odometry
-import com.asiankoala.koawalib.util.Logger
 
 open class KMecanumOdoDrive(
     fl: KMotor,
@@ -13,10 +11,10 @@ open class KMecanumOdoDrive(
     br: KMotor,
     private val odometry: Odometry,
     private val shouldTelemetryOdo: Boolean
-) : KMecanumDrive(fl, bl, fr, br) {
+) : KMecanumDrive(fl, bl, fr, br), LocalizedDrive {
 
-    val position get() = odometry.pose
-    val velocity get() = odometry.velocity
+    override val pose get() = odometry.pose
+    override val vel get() = odometry.velocity
 
     fun setStartPose(pose: Pose) {
         odometry.startPose = pose
@@ -24,8 +22,6 @@ open class KMecanumOdoDrive(
 
     override fun periodic() {
         super.periodic()
-//        odometry.localize()
-        // odometry is updated by commandscheduler now
 
         if (shouldTelemetryOdo) {
             odometry.updateTelemetry()

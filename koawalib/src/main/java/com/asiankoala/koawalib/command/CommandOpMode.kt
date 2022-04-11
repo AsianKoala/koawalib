@@ -14,17 +14,19 @@ import com.qualcomm.robotcore.util.ElapsedTime
 
 @Suppress("unused")
 open class CommandOpMode : LinearOpMode() {
-    protected lateinit var driver: KGamepad
-    protected lateinit var gunner: KGamepad
-    protected var opmodeState = OpModeState.INIT
+    protected val driver: KGamepad by lazy { KGamepad(gamepad1) }
+    protected val gunner: KGamepad by lazy { KGamepad(gamepad2) }
+
+    var opmodeState = OpModeState.INIT
+        private set
 
     private var prevLoopTime = System.currentTimeMillis()
     private var opModeTimer = ElapsedTime()
     private lateinit var hubs: List<LynxModule>
 
-    internal val isLooping get() = mainStateMachine.state == OpModeState.LOOP
-
     private fun setup() {
+        CommandScheduler.opModeInstance = this
+
         Logger.logCount = 0
         Logger.telemetry = telemetry
         Logger.config = LoggerConfig()
@@ -35,8 +37,6 @@ open class CommandOpMode : LinearOpMode() {
         hubs = hardwareMap.getAll(LynxModule::class.java)
         hubs.forEach { it.bulkCachingMode = LynxModule.BulkCachingMode.MANUAL }
 
-        driver = KGamepad(gamepad1)
-        gunner = KGamepad(gamepad2)
         opModeTimer.reset()
         Logger.logInfo("opmode set up")
     }
@@ -69,7 +69,6 @@ open class CommandOpMode : LinearOpMode() {
         .onEnter(::mStart)
         .onEnter(opModeTimer::reset)
         .onEnter { Logger.logInfo("opmode started") }
-        .onEnter(CommandScheduler::startOpModeLooping)
         .transition { true }
         .state(OpModeState.LOOP)
         .loop(::mLoop)

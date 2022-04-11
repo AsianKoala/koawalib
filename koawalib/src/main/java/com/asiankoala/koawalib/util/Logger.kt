@@ -4,6 +4,10 @@ import android.util.Log
 import com.asiankoala.koawalib.command.commands.InfiniteCommand
 import org.firstinspires.ftc.robotcore.external.Telemetry
 
+/**
+ * condense multiple of the same messages into a X times
+ * eg: sequential command group ran X times
+ */
 @Suppress("unused")
 object Logger {
     var config = LoggerConfig()

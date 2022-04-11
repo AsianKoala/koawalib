@@ -1,4 +1,4 @@
-package com.asiankoala.koawalib.subsystem.old
+package com.asiankoala.koawalib.control
 
 import com.acmerobotics.roadrunner.control.PIDCoefficients
 

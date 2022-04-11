@@ -1,4 +1,4 @@
-package com.asiankoala.koawalib.subsystem.old
+package com.asiankoala.koawalib.control
 
 data class FeedforwardConstants(
     val kV: Double = 0.0,

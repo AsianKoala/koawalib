@@ -14,12 +14,16 @@ fun interface Command {
 
     fun end(interrupted: Boolean) {}
 
-    val isFinished: Boolean get() = false
+    val isFinished: Boolean get() = true
 
     fun getRequirements(): Set<Subsystem> { return HashSet() }
 
     fun hasRequirement(requirement: Subsystem): Boolean {
         return getRequirements().contains(requirement)
+    }
+
+    fun waitUntil(condition: () -> Boolean): Command {
+        return SequentialCommandGroup(WaitUntilCommand(condition), this)
     }
 
     // cancels this command based on timeout (seconds)
@@ -30,16 +34,6 @@ fun interface Command {
     // cancels this command based on a condition
     fun interruptOn(condition: () -> Boolean): Command {
         return ParallelRaceGroup(this, WaitUntilCommand(condition))
-    }
-
-    // run an instant command after this command
-    fun whenFinished(action: () -> Unit): Command {
-        return SequentialCommandGroup(this, InstantCommand(action))
-    }
-
-    // run an instant command before this command
-    fun beforeStarting(action: () -> Unit): Command {
-        return SequentialCommandGroup(InstantCommand(action), this)
     }
 
     fun continueIf(condition: () -> Boolean): Command {

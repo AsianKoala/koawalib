@@ -4,6 +4,7 @@ import com.asiankoala.koawalib.command.commands.*
 import com.asiankoala.koawalib.command.group.CommandGroupBase
 import com.asiankoala.koawalib.subsystem.Subsystem
 import com.asiankoala.koawalib.util.Logger
+import com.asiankoala.koawalib.util.OpModeState
 import java.util.*
 import kotlin.collections.ArrayDeque
 import kotlin.collections.component1
@@ -23,13 +24,11 @@ object CommandScheduler {
 
     private var amountOfWatchdogs = 0
 
-    internal var isOpModeLooping = false
-        private set
+    internal lateinit var opModeInstance: CommandOpMode
 
     internal fun resetScheduler() {
         allMaps.forEach(MutableMap<*, *>::clear)
         allLists.forEach(MutableList<*>::clear)
-        isOpModeLooping = false
         amountOfWatchdogs = 0
     }
 
@@ -137,10 +136,6 @@ object CommandScheduler {
         toCancel.addAll(commands)
     }
 
-    fun startOpModeLooping() {
-        isOpModeLooping = true
-    }
-
     fun registerSubsystem(vararg requestedSubsystems: Subsystem) {
         requestedSubsystems.forEach {
             Logger.logInfo("registered subsystem ${it.name}")
@@ -192,4 +187,17 @@ object CommandScheduler {
         Logger.logInfo("added watchdog ${command.name}")
         amountOfWatchdogs++
     }
+
+    fun scheduleForState(state: OpModeState, command: Command) {
+        schedule(command.waitUntil { opModeInstance.opmodeState == state })
+    }
+
+    fun scheduleForInit(command: Command) {
+        scheduleForState(OpModeState.INIT, command)
+    }
+
+    fun scheduleForStart(command: Command) {
+        scheduleForState(OpModeState.START, command)
+    }
+
 }

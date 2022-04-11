@@ -22,7 +22,7 @@ class GoToPointCommand(
 
     override fun execute() {
         val ret = PurePursuitController.goToPosition(
-            drive.position,
+            drive.pose,
             target,
             stop,
             maxMoveSpeed,
@@ -41,7 +41,7 @@ class GoToPointCommand(
     }
 
     override val isFinished: Boolean
-        get() = drive.position.dist(target) < distTol && (target.heading - drive.position.heading).angleWrap.absoluteValue < angleTol
+        get() = drive.pose.dist(target) < distTol && (target.heading - drive.pose.heading).angleWrap.absoluteValue < angleTol
 
     init {
         addRequirements(drive)
