@@ -1,4 +1,4 @@
-package com.asiankoala.koawalib.path
+package com.asiankoala.koawalib.path.purepursuit
 
 import com.asiankoala.koawalib.math.*
 import com.asiankoala.koawalib.math.Pose
@@ -8,7 +8,7 @@ import kotlin.math.absoluteValue
  * Path movements should be continuous and fluid, and as such commands shouldn't adapt to the path,
  * rather the path should be adapted to the commands.
  */
-class Path(private val waypoints: List<Waypoint>) {
+class PurePursuitPath(private val waypoints: List<Waypoint>) {
 
     var isFinished = false
         private set
@@ -16,7 +16,7 @@ class Path(private val waypoints: List<Waypoint>) {
     fun update(pose: Pose, tol: Double): Pair<Pose, Double> {
         val extendedPath = ArrayList<Waypoint>(waypoints)
 
-        val clippedToPath = PurePursuitController.clipToPath(waypoints, pose.point)
+        val clippedToPath = PurePursuitController.clipToPath(waypoints, pose.vec)
         val currFollowIndex = clippedToPath.index + 1
 
         // NOTE: we start running commands based on CLIPPED position
@@ -54,10 +54,10 @@ class Path(private val waypoints: List<Waypoint>) {
             waypoints[currFollowIndex].followDistance
         )
 
-        val clippedDistanceToEnd = (clippedToPath.point - waypoints[waypoints.size - 1].point).hypot
+        val clippedDistanceToEnd = (clippedToPath.vector - waypoints[waypoints.size - 1].point).hypot
 
         if (clippedDistanceToEnd <= movementLookahead.followDistance + 6 ||
-            (pose.point - waypoints[waypoints.size - 1].point).hypot < movementLookahead.followDistance + 6
+            (pose.vec - waypoints[waypoints.size - 1].point).hypot < movementLookahead.followDistance + 6
         ) {
             movementLookahead = waypoints[waypoints.size - 1]
         }
@@ -72,7 +72,7 @@ class Path(private val waypoints: List<Waypoint>) {
             movementLookahead.headingLockAngle,
             movementLookahead.minAllowedHeadingError,
             movementLookahead.lowestSlowDownFromHeadingError,
-        ).point
+        ).vec
 
         val absolutePointAngle = turnLookahead.headingLockAngle ?: (turnLookahead.point - pose).atan2
 
@@ -101,7 +101,7 @@ class Path(private val waypoints: List<Waypoint>) {
         return Pair(Pose(finalXPower, finalYPower, finalTurnPower), absolutePointAngle)
     }
 
-    fun inverted(): Path {
+    fun inverted(): PurePursuitPath {
         val newWaypoints = ArrayList<Waypoint>()
 
         for (waypoint in waypoints) {
@@ -113,6 +113,6 @@ class Path(private val waypoints: List<Waypoint>) {
             )
         }
 
-        return Path(newWaypoints)
+        return PurePursuitPath(newWaypoints)
     }
 }

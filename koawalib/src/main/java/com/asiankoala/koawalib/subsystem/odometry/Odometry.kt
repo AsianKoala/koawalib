@@ -34,13 +34,13 @@ abstract class Odometry : DeviceSubsystem() {
 
             val scalar = (curr.timestamp - old.timestamp).toDouble() / 1000.0
 
-            val dirVel = (curr.pose.point - old.pose.point).scalarDiv(scalar)
+            val dirVel = (curr.pose.vec - old.pose.vec).scalarDiv(scalar)
             val angularVel = (curr.pose.heading - old.pose.heading) * (1 / scalar)
 
             return Pose(dirVel, angularVel.angleWrap)
         }
 
-    fun updatePoseWithDeltas(currPose: Pose, lWheelDelta: Double, rWheelDelta: Double, dx: Double, dy: Double, angleIncrement: Double): Point {
+    fun updatePoseWithDeltas(currPose: Pose, lWheelDelta: Double, rWheelDelta: Double, dx: Double, dy: Double, angleIncrement: Double): Vector {
         var deltaX = dx
         var deltaY = dy
         if (angleIncrement.absoluteValue > 0) {
@@ -59,6 +59,6 @@ abstract class Odometry : DeviceSubsystem() {
         val incrementX = currPose.heading.cos * deltaY + currPose.heading.sin * deltaX
         val incrementY = currPose.heading.sin * deltaY - currPose.heading.cos * deltaX
 
-        return Point(incrementX, incrementY)
+        return Vector(incrementX, incrementY)
     }
 }

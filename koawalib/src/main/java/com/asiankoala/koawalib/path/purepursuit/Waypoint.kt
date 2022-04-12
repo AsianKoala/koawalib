@@ -1,7 +1,7 @@
-package com.asiankoala.koawalib.path
+package com.asiankoala.koawalib.path.purepursuit
 
 import com.asiankoala.koawalib.math.*
-import com.asiankoala.koawalib.math.Point
+import com.asiankoala.koawalib.math.Vector
 
 data class Waypoint(
     val x: Double,
@@ -16,7 +16,7 @@ data class Waypoint(
     val lowestSlowDownFromHeadingError: Double = 0.4,
 //    val command: Command? = null
 ) {
-    val point = Point(x, y)
+    val point = Vector(x, y)
 
     val copy: Waypoint
         get() = Waypoint(

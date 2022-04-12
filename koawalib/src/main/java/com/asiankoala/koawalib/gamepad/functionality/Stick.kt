@@ -1,6 +1,6 @@
 package com.asiankoala.koawalib.gamepad.functionality
 
-import com.asiankoala.koawalib.math.Point
+import com.asiankoala.koawalib.math.Vector
 import com.asiankoala.koawalib.util.Periodic
 
 interface Stick : Periodic {
@@ -14,12 +14,12 @@ interface Stick : Periodic {
     val ySupplier: () -> Double
         get() = this::yAxis
 
-    val point: Point
-        get() = Point(xAxis, yAxis)
+    val vector: Vector
+        get() = Vector(xAxis, yAxis)
 
     val angle: Double
-        get() = point.atan2
+        get() = vector.atan2
 
-    val distanceFromCenter: Double
-        get() = point.hypot
+    val norm: Double
+        get() = vector.hypot
 }

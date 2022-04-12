@@ -1,7 +1,5 @@
 package com.asiankoala.koawalib.subsystem.odometry
 
-import com.acmerobotics.roadrunner.util.NanoClock
-import com.asiankoala.koawalib.hardware.sensor.KIMU
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.degrees
 import com.asiankoala.koawalib.math.angleWrap
@@ -53,6 +51,6 @@ class KThreeWheelOdometry(
 
         val deltaY = (leftEncoder.delta - rightEncoder.delta) / 2.0
         val pointIncrement = updatePoseWithDeltas(pose, leftEncoder.delta, rightEncoder.delta, auxDelta, deltaY, headingDelta)
-        pose = Pose(pose.point + pointIncrement, newAngle)
+        pose = Pose(pose.vec + pointIncrement, newAngle)
     }
 }

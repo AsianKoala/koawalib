@@ -1,3 +1,3 @@
 package com.asiankoala.koawalib.math
 
-data class IndexPoint(val point: Point, val index: Int)
+data class IndexPoint(val vector: Vector, val index: Int)

@@ -1,8 +1,8 @@
-package com.asiankoala.koawalib.path
+package com.asiankoala.koawalib.path.purepursuit
 
 import com.asiankoala.koawalib.math.*
 import com.asiankoala.koawalib.math.IndexPoint
-import com.asiankoala.koawalib.math.Point
+import com.asiankoala.koawalib.math.Vector
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.util.Logger
 import com.qualcomm.robotcore.util.Range
@@ -13,7 +13,7 @@ object PurePursuitController {
 
     fun goToPosition(
         currPose: Pose,
-        targetPosition: Point,
+        targetPosition: Vector,
         stop: Boolean = false,
         maxMoveSpeed: Double = 1.0,
         maxTurnSpeed: Double = 1.0,
@@ -22,7 +22,7 @@ object PurePursuitController {
         minAllowedHeadingError: Double = 60.0.radians,
         lowestSlowDownFromHeadingError: Double = 0.4,
     ): Pose {
-        val absoluteDelta = targetPosition - currPose.point
+        val absoluteDelta = targetPosition - currPose.vec
         val distanceToPoint = absoluteDelta.hypot
 
         val angleToPoint = absoluteDelta.atan2
@@ -104,10 +104,10 @@ object PurePursuitController {
      * This will return which index along the path the robot is. It is the index of the first point
      * It also returns the point of the clipping
      */
-    fun clipToPath(waypoints: List<Waypoint>, position: Point): IndexPoint {
+    fun clipToPath(waypoints: List<Waypoint>, position: Vector): IndexPoint {
         var closestClippedDistance = 100000.0
         var closestClippedIndex = 0
-        var clippedToLine = Point()
+        var clippedToLine = Vector()
 
         for (i in 0 until waypoints.size - 1) {
             val firstPoint = waypoints[i]
@@ -127,20 +127,20 @@ object PurePursuitController {
     fun calcLookahead(waypoints: List<Waypoint>, currPose: Pose, followDistance: Double): Waypoint {
 
         // find what segment we're on
-        val clippedToLine = clipToPath(waypoints, currPose.point)
+        val clippedToLine = clipToPath(waypoints, currPose.vec)
         val currFollowIndex = clippedToLine.index + 1
 
         // extend circle, find intersects with segments, choose closest
         // to last point (TODO maybe heading based instead of waypoint order based ?)
         var followMe = waypoints[currFollowIndex].copy
-        followMe = followMe.copy(x = clippedToLine.point.x, y = clippedToLine.point.y)
+        followMe = followMe.copy(x = clippedToLine.vector.x, y = clippedToLine.vector.y)
         var closestDistance = 69420.0
         for (i in 0 until waypoints.size - 1) {
             val startLine = waypoints[i]
             val endLine = waypoints[i + 1]
 
             val intersections = lineCircleIntersection(
-                currPose.point,
+                currPose.vec,
                 startLine.point,
                 endLine.point,
                 followDistance

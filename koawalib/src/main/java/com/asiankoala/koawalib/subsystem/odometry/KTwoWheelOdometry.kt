@@ -61,7 +61,7 @@ class KTwoWheelOdometry(
 
         val pointIncrement = updatePoseWithDeltas(pose, leftEncoder.delta, rWheelDelta, rX, deltaY, angleIncrement)
 
-        pose = Pose(pose.point + pointIncrement, newAngle)
+        pose = Pose(pose.vec + pointIncrement, newAngle)
         lastAngle = newAngle
     }
 }

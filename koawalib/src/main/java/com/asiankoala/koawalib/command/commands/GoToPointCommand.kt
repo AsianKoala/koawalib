@@ -3,7 +3,7 @@ package com.asiankoala.koawalib.command.commands
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.radians
 import com.asiankoala.koawalib.math.angleWrap
-import com.asiankoala.koawalib.path.PurePursuitController
+import com.asiankoala.koawalib.path.purepursuit.PurePursuitController
 import com.asiankoala.koawalib.subsystem.drive.KMecanumOdoDrive
 import kotlin.math.absoluteValue
 
