@@ -17,7 +17,7 @@ import com.qualcomm.robotcore.util.ElapsedTime
 import kotlin.math.absoluteValue
 
 class KMotorEx(private val config: KMotorExConfig) : KMotor(config.name) {
-    private val encoder = config.encoder
+    private val encoder = KEncoder(this, config.ticksPerUnit, config.isRevEncoder)
 
     private val controller by lazy {
         val c = PIDFController(

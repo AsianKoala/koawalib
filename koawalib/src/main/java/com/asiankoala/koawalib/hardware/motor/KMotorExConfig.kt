@@ -7,7 +7,8 @@ import com.asiankoala.koawalib.subsystem.odometry.KEncoder
 
 data class KMotorExConfig(
     val name: String,
-    val encoder: KEncoder?,
+    val ticksPerUnit: Double,
+    val isRevEncoder: Boolean = false,
     val controlType: MotorControlType,
 
     val pid: PIDConstants = PIDConstants(),
