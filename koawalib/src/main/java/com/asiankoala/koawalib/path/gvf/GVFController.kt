@@ -7,6 +7,7 @@ import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.Vector
 import com.asiankoala.koawalib.math.angleWrap
 import kotlin.math.PI
+import kotlin.math.absoluteValue
 import kotlin.math.sign
 
 class GVFController(
@@ -44,17 +45,17 @@ class GVFController(
         val headingError = (desiredHeading - pose.heading).angleWrap
         val angularOutput = kOmega * headingError
 
-        val endDistance = path.end().toVec().dist(pose.vec)
-        val forwardOutput = kF?.times(endDistance) ?: 1.0
+        val endDisplacement = (s - path.length()).absoluteValue
+        val forwardOutput = if(kF == null) 1.0 else endDisplacement / kF
 
-        finished = finished || projectedVec.toVec().dist(path.end().toVec()) < epsilon
+        finished = finished || endDisplacement < epsilon
         val translationalPower = if(finished) {
             (projectedVec.toVec() - pose.vec)
         } else {
             vectorFieldResult
-        }.scale(forwardOutput).minNormalized()
+        }.scale(forwardOutput).clampNormalized()
 
-//        println("pose $pose, finished $finished, error $error, projected, $projectedVec, displacement $displacementVec, translationalPower $translationalPower, endDistance $endDistance")
+        println("pose $pose, finished $finished, error $error, projected, $projectedVec, displacement $displacementVec, translationalPower $translationalPower, endDistance $endDisplacement")
 
         return Pose(translationalPower, angularOutput)
     }

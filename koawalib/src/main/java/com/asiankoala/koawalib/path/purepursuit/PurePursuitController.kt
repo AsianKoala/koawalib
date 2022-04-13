@@ -39,7 +39,7 @@ object PurePursuitController {
             xPower *= relativeXToPosition.absoluteValue / 12.0
             yPower *= relativeYToPosition.absoluteValue / 12.0
         } else {
-            Logger.addTelemetryLine("FULL SPEED")
+//            Logger.addTelemetryLine("FULL SPEED")
         }
 
         xPower = clamp(xPower, -maxMoveSpeed, maxMoveSpeed)

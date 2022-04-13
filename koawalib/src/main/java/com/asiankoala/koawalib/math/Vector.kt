@@ -53,7 +53,7 @@ data class Vector(
         return Vector2d(x, y)
     }
 
-    fun minNormalized(): Vector {
+    fun clampNormalized(): Vector {
         return if(norm() > 1.0) {
             normalized()
         } else {
