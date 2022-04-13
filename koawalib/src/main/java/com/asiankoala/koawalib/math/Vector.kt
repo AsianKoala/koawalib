@@ -4,7 +4,7 @@ import com.acmerobotics.roadrunner.geometry.Vector2d
 import com.acmerobotics.roadrunner.util.epsilonEquals
 import kotlin.math.*
 
-open class Vector(
+data class Vector(
     val x: Double = 0.0,
     val y: Double = 0.0
 ) {
@@ -53,7 +53,7 @@ open class Vector(
         return Vector2d(x, y)
     }
 
-    fun trueNormal(): Vector {
+    fun minNormalized(): Vector {
         return if(norm() > 1.0) {
             normalized()
         } else {
@@ -66,19 +66,4 @@ open class Vector(
     operator fun unaryMinus() = scale(-1.0)
 
     override fun toString() = String.format("%.2f, %.2f", x, y)
-
-    override fun hashCode(): Int {
-        var result = x.hashCode()
-        result = 31 * result + y.hashCode()
-        return result
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as Vector
-
-        return x epsilonEquals other.x && y epsilonEquals other.y
-    }
 }

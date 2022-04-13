@@ -10,11 +10,11 @@ import kotlin.math.PI
 import kotlin.math.sign
 
 class GVFController(
+    private val path: Path,
     private val kN: Double,
     private val kOmega: Double,
-    private val path: Path,
-    private val epsilon: Double = 0.2,
     private val kF: Double? = null,
+    private val epsilon: Double = 0.2,
     private val errorMap: (Double) -> Double = { it },
 ) {
 
@@ -24,40 +24,43 @@ class GVFController(
 
     fun update(pose: Pose): Pose {
         lastS = if(lastS.isNaN()) {
-            path.project(pose.vec())
+            path.project(pose.toVec2d())
         } else {
-            path.fastProject(pose.vec(), lastS)
+            path.fastProject(pose.toVec2d(), lastS)
         }
 
-        val s = path.project(pose.vec())
-        val projectedVec = path[s]
-        val tangent = path.deriv(s).toPose().vec().toVec().normalized()
+        val s = path.project(pose.toVec2d())
+        val tangent = path.deriv(s).toVec()
         val normalVec = tangent.rotate(PI / 2.0)
-        val displacementVec = projectedVec.vec().toVec().plus(pose.unaryMinus())
-        val orientation = (displacementVec cross tangent).sign
-        val error = orientation * displacementVec.norm()
 
-        val vectorFieldResult = tangent.plus(normalVec.unaryMinus().scale(kN * errorMap.invoke(error))).normalized()
+        val projectedVec = path[s]
+        val displacementVec = projectedVec.toVec().minus(pose.vec)
+        val orientation = displacementVec cross tangent
+        val error = displacementVec.norm() * orientation.sign
+
+        val vectorFieldResult = tangent - normalVec.scale(kN * errorMap.invoke(error))
 
         val desiredHeading = vectorFieldResult.atan2
         val headingError = (desiredHeading - pose.heading).angleWrap
         val angularOutput = kOmega * headingError
 
-        val distanceToPoint = path.end().toPose().vec().toVec().dist(pose)
-        val forwardOutput = kF?.times(distanceToPoint) ?: 1.0
+        val endDistance = path.end().toVec().dist(pose.vec)
+        val forwardOutput = kF?.times(endDistance) ?: 1.0
 
-        finished = finished || projectedVec.toPose().vec.dist(path.end().toPose().vec) < epsilon
+        finished = finished || projectedVec.toVec().dist(path.end().toVec()) < epsilon
         val translationalPower = if(finished) {
-            (projectedVec.vec().toVec() - pose.vec)
+            (projectedVec.toVec() - pose.vec)
         } else {
             vectorFieldResult
-        }.scale(forwardOutput).trueNormal()
+        }.scale(forwardOutput).minNormalized()
 
-        println("pose ${pose.vec} eval $projectedVec power $translationalPower finished $finished forwardOutput $forwardOutput")
+//        println("pose $pose, finished $finished, error $error, projected, $projectedVec, displacement $displacementVec, translationalPower $translationalPower, endDistance $endDistance")
 
         return Pose(translationalPower, angularOutput)
     }
 }
 
-fun Pose2d.toPose() = Pose(this.x, this.y, this.heading)
 fun Vector2d.toVec() = Vector(this.x, this.y)
+fun Pose2d.toVec() = this.vec().toVec()
+fun Pose.toVec2d() = Vector2d(x, y)
+fun Pose.vec(): Vector = Vector(x, y)

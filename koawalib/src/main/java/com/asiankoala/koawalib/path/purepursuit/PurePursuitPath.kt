@@ -74,7 +74,7 @@ class PurePursuitPath(private val waypoints: List<Waypoint>) {
             movementLookahead.lowestSlowDownFromHeadingError,
         ).vec
 
-        val absolutePointAngle = turnLookahead.headingLockAngle ?: (turnLookahead.point - pose).atan2
+        val absolutePointAngle = turnLookahead.headingLockAngle ?: (turnLookahead.point - pose.vec).atan2
 
         val turnResult = PurePursuitController.pointTo(
             absolutePointAngle,

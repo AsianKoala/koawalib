@@ -25,6 +25,4 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.3.1'
     implementation 'com.acmerobotics.dashboard:dashboard:0.4.3'
     implementation 'com.acmerobotics.roadrunner:core:0.5.4'
-    implementation 'org.jetbrains.lets-plot:lets-plot-kotlin-jvm:3.0.2'
-    implementation 'org.jetbrains.lets-plot:lets-plot-image-export:2.1.0'
 }
