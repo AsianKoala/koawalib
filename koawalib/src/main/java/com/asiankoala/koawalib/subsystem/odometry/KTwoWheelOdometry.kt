@@ -1,8 +1,8 @@
 package com.asiankoala.koawalib.subsystem.odometry
 
 import com.asiankoala.koawalib.hardware.sensor.KIMU
-import com.asiankoala.koawalib.math.*
 import com.asiankoala.koawalib.math.Pose
+import com.asiankoala.koawalib.math.angleWrap
 import com.asiankoala.koawalib.util.Logger
 
 class KTwoWheelOdometry(

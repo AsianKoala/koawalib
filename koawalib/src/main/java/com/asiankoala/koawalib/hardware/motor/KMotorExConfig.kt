@@ -3,7 +3,6 @@ package com.asiankoala.koawalib.hardware.motor
 import com.asiankoala.koawalib.control.FeedforwardConstants
 import com.asiankoala.koawalib.control.MotorControlType
 import com.asiankoala.koawalib.control.PIDConstants
-import com.asiankoala.koawalib.subsystem.odometry.KEncoder
 
 data class KMotorExConfig(
     val name: String,
@@ -11,8 +10,8 @@ data class KMotorExConfig(
     val isRevEncoder: Boolean = false,
     val controlType: MotorControlType,
 
-    val pid: PIDConstants = PIDConstants(),
-    val ff: FeedforwardConstants = FeedforwardConstants(),
+    val pid: PIDConstants,
+    val ff: FeedforwardConstants,
 
     val positionEpsilon: Double,
     val homePositionToDisable: Double = Double.NaN,

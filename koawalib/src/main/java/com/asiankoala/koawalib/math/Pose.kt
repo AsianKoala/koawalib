@@ -1,8 +1,6 @@
 package com.asiankoala.koawalib.math
 
 import com.acmerobotics.roadrunner.geometry.Pose2d
-import kotlin.math.cos
-import kotlin.math.sin
 
 class Pose(
     val x: Double = 0.0,

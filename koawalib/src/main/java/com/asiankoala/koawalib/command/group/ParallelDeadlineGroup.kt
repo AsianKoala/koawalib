@@ -49,16 +49,16 @@ class ParallelDeadlineGroup(private var mDeadline: Command, vararg commands: Com
             }
             commandRunning.key.execute()
             if (commandRunning.key.isFinished) {
-                commandRunning.key.end(false)
+                commandRunning.key.end()
                 commandRunning.setValue(false)
             }
         }
     }
 
-    override fun end(interrupted: Boolean) {
+    override fun end() {
         for ((key, value) in mCommands) {
             if (value) {
-                key.end(true)
+                key.end()
             }
         }
     }

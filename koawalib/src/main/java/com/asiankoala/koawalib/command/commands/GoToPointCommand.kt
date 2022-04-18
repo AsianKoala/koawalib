@@ -1,8 +1,8 @@
 package com.asiankoala.koawalib.command.commands
 
 import com.asiankoala.koawalib.math.Pose
-import com.asiankoala.koawalib.math.radians
 import com.asiankoala.koawalib.math.angleWrap
+import com.asiankoala.koawalib.math.radians
 import com.asiankoala.koawalib.path.purepursuit.PurePursuitController
 import com.asiankoala.koawalib.subsystem.drive.KMecanumOdoDrive
 import kotlin.math.absoluteValue
@@ -36,7 +36,7 @@ class GoToPointCommand(
         drive.powers = ret
     }
 
-    override fun end(interrupted: Boolean) {
+    override fun end() {
         drive.powers = Pose()
     }
 

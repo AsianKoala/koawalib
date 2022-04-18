@@ -1,12 +1,10 @@
 package com.asiankoala.koawalib.path.purepursuit
 
 import com.asiankoala.koawalib.math.*
-import com.asiankoala.koawalib.math.IndexPoint
-import com.asiankoala.koawalib.math.Vector
-import com.asiankoala.koawalib.math.Pose
-import com.asiankoala.koawalib.util.Logger
 import com.qualcomm.robotcore.util.Range
-import kotlin.math.*
+import kotlin.math.absoluteValue
+import kotlin.math.hypot
+import kotlin.math.sign
 
 @Suppress("unused")
 object PurePursuitController {
@@ -104,7 +102,7 @@ object PurePursuitController {
      * This will return which index along the path the robot is. It is the index of the first point
      * It also returns the point of the clipping
      */
-    fun clipToPath(waypoints: List<Waypoint>, position: Vector): IndexPoint {
+    fun clipToPath(waypoints: List<Waypoint>, position: Vector): Pair<Vector, Int> {
         var closestClippedDistance = 100000.0
         var closestClippedIndex = 0
         var clippedToLine = Vector()
@@ -121,19 +119,20 @@ object PurePursuitController {
             }
         }
 
-        return IndexPoint(clippedToLine, closestClippedIndex)
+        return Pair(clippedToLine, closestClippedIndex)
     }
 
     fun calcLookahead(waypoints: List<Waypoint>, currPose: Pose, followDistance: Double): Waypoint {
 
         // find what segment we're on
         val clippedToLine = clipToPath(waypoints, currPose.vec)
-        val currFollowIndex = clippedToLine.index + 1
+        val clippedVector = clippedToLine.first
+        val currFollowIndex = clippedToLine.second + 1
 
         // extend circle, find intersects with segments, choose closest
         // to last point (TODO maybe heading based instead of waypoint order based ?)
         var followMe = waypoints[currFollowIndex].copy
-        followMe = followMe.copy(x = clippedToLine.vector.x, y = clippedToLine.vector.y)
+        followMe = followMe.copy(x = clippedVector.x, y = clippedVector.y)
         var closestDistance = 69420.0
         for (i in 0 until waypoints.size - 1) {
             val startLine = waypoints[i]

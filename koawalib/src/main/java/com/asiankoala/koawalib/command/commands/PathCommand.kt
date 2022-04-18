@@ -18,7 +18,7 @@ class PathCommand(
         drive.powers = purePursuitPath.update(drive.pose, tol).first
     }
 
-    override fun end(interrupted: Boolean) {
+    override fun end() {
         drive.powers = Pose()
     }
 

@@ -1,7 +1,7 @@
 package com.asiankoala.koawalib.path.purepursuit
 
-import com.asiankoala.koawalib.math.*
 import com.asiankoala.koawalib.math.Vector
+import com.asiankoala.koawalib.math.radians
 
 data class Waypoint(
     val x: Double,

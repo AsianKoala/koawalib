@@ -2,58 +2,86 @@ package com.asiankoala.koawalib.util
 
 import android.util.Log
 import com.asiankoala.koawalib.command.commands.InfiniteCommand
+import com.asiankoala.koawalib.util.Logger.config
 import org.firstinspires.ftc.robotcore.external.Telemetry
 
 /**
  * condense multiple of the same messages into a X times
  * eg: sequential command group ran X times
+ * @property config Logger Config
  */
 @Suppress("unused")
 object Logger {
+    private data class LogData(
+        val message: String,
+        val priority: Int,
+    ) {
+        var condenseCount = 0
+        var updatedThisLoop = false
+        val formattedMessage get() = "%-10s %s".format(condenseCount, message)
+        val printString
+            get() = "${priorityList[priority]} \t $message".withColor(
+                when(priority) {
+                    Log.DEBUG -> Colors.ANSI_CYAN
+                    Log.INFO -> Colors.ANSI_GREEN
+                    else -> Colors.ANSI_PURPLE
+                }
+            )
+    }
+
     var config = LoggerConfig()
     internal var telemetry: Telemetry? = null
     internal var logCount = 0
     private val priorityList = listOf("NONE", "NONE", "VERBOSE", "DEBUG", "INFO", "WARN", "ERROR", "WTF")
     private var errors = 0
+    private var warnings = 0
+    private var condenseMap = HashMap<String, LogData>()
+    private val tag = "KOAWALIB"
 
-    private fun log(message: String, priority: Int) {
-        val tag = "KOAWALIB"
-        logCount++
-        val formattedMessage = "%-10s %s".format(logCount, message)
-
-        if (config.isPrinting) {
-            val color = when (priority) {
-                Log.DEBUG -> Colors.ANSI_CYAN
-                Log.INFO -> Colors.ANSI_GREEN
-                else -> Colors.ANSI_PURPLE
-            }
-
-            val printMessage = "${priorityList[priority]} \t ${message}"
-            println(printMessage.withColor(color))
-        }
-
-        if (config.isLogging) {
-            Log.println(priority, tag, formattedMessage)
-        }
+    internal fun update() {
+        val iterator = condenseMap.iterator()
 
         if(errors > config.maxErrorCount) {
-            throw Exception("error overflow")
+            logError("error overflow")
+        }
+
+        if(warnings > config.maxWarningCount) {
+            logWTF("warning overflow")
+        }
+
+        while(iterator.hasNext()) {
+            val data = iterator.next().value
+            if(!data.updatedThisLoop) {
+                Log.println(data.priority, tag, data.formattedMessage)
+
+                if(config.isPrinting) {
+                    println(data.printString)
+                }
+
+                iterator.remove()
+            } else {
+                data.condenseCount++
+                data.updatedThisLoop = false
+            }
+        }
+    }
+
+    private fun log(message: String, priority: Int) {
+        if(message in condenseMap.keys) {
+            condenseMap[message]!!.updatedThisLoop = true
+        } else {
+            condenseMap[message] = LogData(message, priority)
         }
     }
 
     fun addTelemetryLine(message: String) {
         if (telemetry == null) {
             val nullStr = "LogManager telemetry is null"
-            if (config.isPrinting) {
-                logWarning(nullStr)
-                logInfo(message)
-            } else {
-                logError(nullStr)
-            }
+            logError(nullStr)
         } else {
             telemetry!!.addLine(message)
             if (config.isLoggingTelemetry) {
-                logInfo(message)
+                logDebug(message)
             }
         }
     }
@@ -80,6 +108,7 @@ object Logger {
     }
 
     fun logWarning(message: String) {
+        warnings++
         log("WARNING: $message", Log.WARN)
     }
 
@@ -102,7 +131,7 @@ object Logger {
     }
 
     fun logWTF(message: String, data: Any?) {
-        logWarning(getDataString(message, data))
+        logWTF(getDataString(message, data))
     }
 
     fun addErrorCommand() {

@@ -1,7 +1,7 @@
 package com.asiankoala.koawalib.hardware.servo
 
 import com.asiankoala.koawalib.hardware.KDevice
-import com.asiankoala.koawalib.math.*
+import com.asiankoala.koawalib.math.epsilonNotEqual
 import com.qualcomm.robotcore.hardware.CRServo
 
 @Suppress("unused")

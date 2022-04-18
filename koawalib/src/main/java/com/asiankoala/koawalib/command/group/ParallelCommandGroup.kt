@@ -39,17 +39,17 @@ open class ParallelCommandGroup(vararg commands: Command) : CommandGroupBase() {
             }
             commandRunning.key.execute()
             if (commandRunning.key.isFinished) {
-                commandRunning.key.end(false)
+                commandRunning.key.end()
                 commandRunning.setValue(false)
             }
         }
     }
 
-    override fun end(interrupted: Boolean) {
+    override fun end() {
         if (interrupted) {
             for ((key, value) in mCommands.entries) {
                 if (value) {
-                    key.end(true)
+                    key.end()
                 }
             }
         }

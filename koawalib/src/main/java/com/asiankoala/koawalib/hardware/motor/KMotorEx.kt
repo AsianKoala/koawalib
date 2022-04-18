@@ -6,16 +6,14 @@ import com.acmerobotics.roadrunner.profile.MotionProfileGenerator
 import com.acmerobotics.roadrunner.profile.MotionState
 import com.asiankoala.koawalib.command.CommandScheduler
 import com.asiankoala.koawalib.command.commands.InfiniteCommand
+import com.asiankoala.koawalib.control.MotorControlType
 import com.asiankoala.koawalib.math.cos
 import com.asiankoala.koawalib.subsystem.odometry.KEncoder
-import com.asiankoala.koawalib.control.FeedforwardConstants
-import com.asiankoala.koawalib.control.MotorControlType
-import com.asiankoala.koawalib.control.PIDConstants
 import com.asiankoala.koawalib.util.Logger
-import com.asiankoala.koawalib.util.OpModeState
 import com.qualcomm.robotcore.util.ElapsedTime
 import kotlin.math.absoluteValue
 
+@Suppress("unused")
 class KMotorEx(private val config: KMotorExConfig) : KMotor(config.name) {
     private val encoder = KEncoder(this, config.ticksPerUnit, config.isRevEncoder)
 
@@ -35,7 +33,6 @@ class KMotorEx(private val config: KMotorExConfig) : KMotor(config.name) {
         c
     }
 
-    var disabled = true
     private var output = 0.0
     private var motionTimer = ElapsedTime()
     private var currentMotionProfile: MotionProfile? = null
@@ -44,16 +41,13 @@ class KMotorEx(private val config: KMotorExConfig) : KMotor(config.name) {
 
     val isAtTarget: Boolean
         get() {
-            if(encoder == null) {
-                Logger.logError("encoder for motor $deviceName is null")
-            }
-            return (encoder!!.position - controller.targetPosition).absoluteValue < config.positionEpsilon
+            return (encoder.position - controller.targetPosition).absoluteValue < config.positionEpsilon
         }
 
     private fun isHomed(): Boolean {
         val hasHomePosition = !config.homePositionToDisable.isNaN()
         val isTargetingHomePosition = (controller.targetPosition - config.homePositionToDisable).absoluteValue < config.positionEpsilon
-        val isAtHomePosition = (config.homePositionToDisable - encoder!!.position).absoluteValue < config.positionEpsilon
+        val isAtHomePosition = (config.homePositionToDisable - encoder.position).absoluteValue < config.positionEpsilon
         return hasHomePosition && isTargetingHomePosition && isAtHomePosition
     }
 
@@ -99,16 +93,13 @@ class KMotorEx(private val config: KMotorExConfig) : KMotor(config.name) {
     }
 
     fun followMotionProfile(targetPosition: Double) {
-        followMotionProfile(encoder!!.position, targetPosition)
+        followMotionProfile(encoder.position, targetPosition)
     }
 
     fun update() {
-        encoder?.update()
+        encoder.update()
 
         if(config.controlType != MotorControlType.OPEN_LOOP) {
-            if(encoder == null) {
-                Logger.logError("encoder for motor $deviceName is null")
-            }
 
             if(config.controlType == MotorControlType.MOTION_PROFILE && isFollowingProfile) {
                 when {
@@ -135,10 +126,11 @@ class KMotorEx(private val config: KMotorExConfig) : KMotor(config.name) {
         }
 
         Logger.addTelemetryData("$deviceName output power", output)
-        if(!disabled) this.setSpeed(output)
+        this.setSpeed(output)
     }
 
     init {
         CommandScheduler.scheduleForStart(InfiniteCommand(this::update))
+
     }
 }

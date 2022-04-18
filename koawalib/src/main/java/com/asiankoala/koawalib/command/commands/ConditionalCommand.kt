@@ -24,8 +24,8 @@ class ConditionalCommand(onTrue: Command, onFalse: Command, condition: () -> Boo
         m_selectedCommand.execute()
     }
 
-    override fun end(interrupted: Boolean) {
-        m_selectedCommand.end(interrupted)
+    override fun end() {
+        m_selectedCommand.end()
     }
 
     override val isFinished: Boolean

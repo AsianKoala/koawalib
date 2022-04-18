@@ -72,7 +72,7 @@ object CommandScheduler {
             return
         }
 
-        this.end(true)
+        this.end()
         Logger.logInfo("command ${this.name} canceled")
         scheduledCommands.remove(this)
         scheduledCommandRequirements.keys.removeAll(this.getRequirements())
@@ -83,6 +83,13 @@ object CommandScheduler {
         Logger.logDebug("amount of scheduled commands before run(): ${scheduledCommands.size + toSchedule.size}")
 
         toSchedule.forEach { it.scheduleThis() }
+
+        // todo fix canceling
+        // todo fix canceling
+        // todo fix canceling
+        // todo fix canceling
+        // todo fix canceling
+        // todo fix canceling
         toCancel.forEach { it.cancelThis() }
 
         subsystems.forEach { (k, v) ->
@@ -117,7 +124,7 @@ object CommandScheduler {
 //            }
 
             if (command.isFinished) {
-                command.end(false)
+                command.end()
                 Logger.logDebug("command ${command.name} finished")
                 iterator.remove()
                 scheduledCommandRequirements.keys.removeAll(command.getRequirements())

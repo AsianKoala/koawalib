@@ -1,7 +1,6 @@
 package com.asiankoala.koawalib.path.purepursuit
 
 import com.asiankoala.koawalib.math.*
-import com.asiankoala.koawalib.math.Pose
 import kotlin.math.absoluteValue
 
 /**

@@ -1,7 +1,8 @@
 package com.asiankoala.koawalib.hardware.motor
 
 import com.asiankoala.koawalib.hardware.KDevice
-import com.asiankoala.koawalib.math.*
+import com.asiankoala.koawalib.math.d
+import com.asiankoala.koawalib.math.epsilonNotEqual
 import com.asiankoala.koawalib.util.KDouble
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx

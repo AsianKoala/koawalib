@@ -38,15 +38,15 @@ class ParallelRaceGroup(vararg commands: Command) : CommandGroupBase() {
             it.execute()
             if (it.isFinished) {
                 finished = true
-                it.end(false)
+                it.end()
             }
         }
     }
 
-    override fun end(interrupted: Boolean) {
+    override fun end() {
         commands.forEach {
             if (!it.isFinished) {
-                it.end(true)
+                it.end()
             }
         }
     }

@@ -46,7 +46,7 @@ open class SequentialCommandGroup(vararg commands: Command) : CommandGroupBase()
         currentCommand.execute()
         Logger.logInfo("command ${currentCommand.name} of group $name executed")
         if (currentCommand.isFinished) {
-            currentCommand.end(false)
+            currentCommand.end()
             mCurrentCommandIndex++
             if (mCurrentCommandIndex < mCommands.size) {
                 initCurrentCommand()
@@ -54,9 +54,9 @@ open class SequentialCommandGroup(vararg commands: Command) : CommandGroupBase()
         }
     }
 
-    override fun end(interrupted: Boolean) {
+    override fun end() {
         if (interrupted && mCurrentCommandIndex < mCommands.size) {
-            mCommands[mCurrentCommandIndex].end(true)
+            mCommands[mCurrentCommandIndex].end()
         }
         mCurrentCommandIndex = -1
     }

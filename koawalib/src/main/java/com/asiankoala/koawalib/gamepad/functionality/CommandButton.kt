@@ -13,12 +13,16 @@ abstract class CommandButton : ButtonFunc() {
         schedule(::isJustReleased, command)
     }
 
-    fun whenPressed(command: Command) {
+    fun whilePressed(command: Command) {
         schedule(::isPressed, command)
     }
 
-    fun whenReleased(command: Command) {
+    fun whileReleased(command: Command) {
         schedule(::isReleased, command)
+    }
+
+    fun onPressUntilRelease(command: Command) {
+        schedule(::isJustPressed, command.cancelUpon(::isReleased))
     }
 
     fun onToggle(command: Command) {

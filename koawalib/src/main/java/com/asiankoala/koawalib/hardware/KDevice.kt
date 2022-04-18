@@ -7,6 +7,10 @@ import com.qualcomm.robotcore.hardware.HardwareMap
 abstract class KDevice<T : HardwareDevice>(protected val deviceName: String) {
     protected val device: T = hardwareMap[HardwareDevice::class.java as Class<T>, deviceName]
 
+    override fun toString(): String {
+        return deviceName
+    }
+
     companion object {
         lateinit var hardwareMap: HardwareMap
     }

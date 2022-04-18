@@ -1,8 +1,9 @@
 package com.asiankoala.koawalib.math
 
 import com.acmerobotics.roadrunner.geometry.Vector2d
-import com.acmerobotics.roadrunner.util.epsilonEquals
-import kotlin.math.*
+import kotlin.math.atan2
+import kotlin.math.hypot
+import kotlin.math.pow
 
 data class Vector(
     val x: Double = 0.0,

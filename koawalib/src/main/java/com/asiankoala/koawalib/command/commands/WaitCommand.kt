@@ -13,7 +13,7 @@ open class WaitCommand(private val seconds: Double) : CommandBase() {
     override fun execute() {
     }
 
-    override fun end(interrupted: Boolean) {
+    override fun end() {
         timer.reset()
     }
 
