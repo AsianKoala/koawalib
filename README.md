@@ -9,9 +9,9 @@ repositories {
   maven { url = 'https://jitpack.io' }
 }
 ```
-- Then add this line to your ```dependencies``` block, where "0.0.12" is the newest release tag
+- Then add this line to your ```dependencies``` block, where "0.0.16" is the newest release tag
 ```
-implementation 'com.github.AsianKoala:koawalib:0.0.12'
+implementation 'com.github.AsianKoala:koawalib:0.0.16'
 ```
 
 - ### Snapshot
@@ -36,5 +36,6 @@ implementation 'com.github.AsianKoala:koawalib:0.0.12'
 
 ## Example usage
 [koawalib-quickstart](https://github.com/AsianKoala/koawalib_quickstart)  
-[docs](https://neil-mehra.gitbook.io/koawalib/)  
+[docs](https://github.com/AsianKoala/koawalib/tree/master/documentation/html) (for now best way to view is clone and render the index.html page through chrome,
+I'll put up a doc page on my website when I have time)
 [implementation in my repo](https://github.com/14607/FF-Private/tree/master/TeamCode/src/main/java/asiankoala/ftc2021)
