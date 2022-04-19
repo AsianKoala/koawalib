@@ -103,7 +103,7 @@ tasks.withType(dokkaHtml.getClass()).configureEach {
 }
 
 tasks.dokkaHtml.configure {
-    outputDirectory.set(file("../documentation/html"))
+    outputDirectory.set(file("../docs/"))
 }
 
 apply from: '../build.dependencies.gradle'
