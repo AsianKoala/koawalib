@@ -37,5 +37,5 @@ implementation 'com.github.AsianKoala:koawalib:0.0.16'
 ## Example usage
 [koawalib-quickstart](https://github.com/AsianKoala/koawalib_quickstart)  
 [docs](https://github.com/AsianKoala/koawalib/tree/master/documentation/html) (for now best way to view is clone and render the index.html page through chrome,
-I'll put up a doc page on my website when I have time)
+I'll put up a doc page on my website when I have time)  
 [implementation in my repo](https://github.com/14607/FF-Private/tree/master/TeamCode/src/main/java/asiankoala/ftc2021)
