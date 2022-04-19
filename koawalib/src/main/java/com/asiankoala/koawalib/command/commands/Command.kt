@@ -40,6 +40,18 @@ fun interface Command {
     val isFinished: Boolean get() = true
 
     /**
+     * Returns whether the command is currently scheduled. Syntax sugar for CommandScheduler.isScheduled(command)
+     */
+    val isScheduled: Boolean get() = CommandScheduler.isScheduled(this)
+
+    /**
+     * The name of the command. Used internally to identify logged commands.
+     * If the user desires identifying commands in the Logger, specify the name of the command with CommandBase's withName() method
+     * @see CommandBase
+     */
+    val name: String get() = ""
+
+    /**
      * @return a set containing the command's subsystem requirements
      */
     fun getRequirements(): Set<Subsystem> { return HashSet() }
@@ -75,63 +87,74 @@ fun interface Command {
      * @param condition the condition that ends the current command
      * @return ParallelRaceGroup with a WaitUntilCommand & this command
      */
-    fun interruptOn(condition: () -> Boolean): Command {
+    fun cancelIf(condition: () -> Boolean): Command {
         return ParallelRaceGroup(this, WaitUntilCommand(condition))
     }
 
-    fun continueIf(condition: () -> Boolean): Command {
-        return SequentialCommandGroup(this, WaitUntilCommand(condition))
-    }
-
-    // run commands sequentially, in a sequential group
+    /**
+     * Runs n commands sequentially after this command
+     * @param next n number of commands to run sequentially following this command
+     * @return SequentialCommandGroup with this command -> next commands
+     */
     fun andThen(vararg next: Command): Command {
         val group = SequentialCommandGroup(this)
         group.addCommands(*next)
         return group
     }
 
+    /**
+     * Pause for n seconds after this command ends
+     * @param seconds amount of seconds to pause following this command
+     * @return SequentialCommandGroup with this command -> WaitCommand
+     */
     fun pauseFor(seconds: Double): Command {
         return SequentialCommandGroup(this, WaitCommand(seconds))
     }
 
-    // run commands in parallel, ends when the current command, the deadline, ends
+    /**
+     * Runs n commands in parallel with this command, ending when this command ends
+     * @param parallel n number of commands to run in parallel with this command
+     * @return ParallelDeadlineGroup with this command as the deadline, with n next commands
+     */
     fun deadlineWith(vararg parallel: Command): Command {
         return ParallelDeadlineGroup(this, *parallel)
     }
 
-    // run commands parallel, ending when all the commands have ended
+    /**
+     * Run n commands in parallel with this command, ending when all commands have ended
+     * @param parallel commands to run in parallel with this command
+     * @return ParallelCommandGroup with this command and n parallel commands
+     */
     fun alongWith(vararg parallel: Command): Command {
         val group = ParallelCommandGroup(this)
         group.addCommands(*parallel)
         return group
     }
 
-    // run commands parallel, ending when one of the commands have ended
+    /**
+     * Run n commands in parallel with this command, ending when any of the commands has ended
+     * @param parallel commands to run in parallel with this command
+     * @return ParallelRaceGroup with this command and n parallel commands
+     */
     fun raceWith(vararg parallel: Command): Command {
         val group = ParallelRaceGroup(this)
         group.addCommands(*parallel)
         return group
     }
 
-    // todo fix canceling
-    // todo fix canceling
-    // todo fix canceling
-    // todo fix canceling
-    // todo fix canceling
-    // todo fix canceling
-    fun cancelUpon(condition: () -> Boolean): Command {
-        return CancelableCommand(condition, this)
-    }
-
+    /**
+     * Schedule this command. Syntax sugar for CommandScheduler.schedule(command)
+     * @see CommandScheduler
+     */
     fun schedule() {
         CommandScheduler.schedule(this)
     }
 
+    /**
+     * Force cancel this command. Syntax sugar for CommandScheduler.cancel()
+     * @see CommandScheduler
+     */
     fun cancel() {
         CommandScheduler.cancel(this)
     }
-
-    val isScheduled: Boolean get() = CommandScheduler.isScheduled(this)
-
-    val name: String get() = ""
 }

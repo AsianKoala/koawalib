@@ -2,10 +2,14 @@ package com.asiankoala.koawalib.command.commands
 
 import com.asiankoala.koawalib.subsystem.Subsystem
 
+/**
+ * Provided implementation of Command. To create custom commands, extend this class
+ * @see Command
+ */
 abstract class CommandBase : Command {
-    protected val mRequirements: MutableSet<Subsystem> = HashSet()
+    internal val mRequirements: MutableSet<Subsystem> = HashSet()
 
-    fun addRequirements(vararg subsystems: Subsystem) {
+    protected fun addRequirements(vararg subsystems: Subsystem) {
         mRequirements.addAll(subsystems)
     }
 
@@ -13,6 +17,9 @@ abstract class CommandBase : Command {
         return mRequirements
     }
 
+    /**
+     * Name the current command, which shows up in the logger.
+     */
     fun withName(commandName: String): Command {
         _name = commandName
         return this

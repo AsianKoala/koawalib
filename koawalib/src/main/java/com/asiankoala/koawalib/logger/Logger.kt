@@ -36,6 +36,7 @@ object Logger {
         while(iterator.hasNext()) {
             val data = iterator.next().value
             if(!data.updatedThisLoop) {
+                logCount++
                 Log.println(data.priority, tag, data.formattedMessage)
 
                 if(config.isPrinting) {
