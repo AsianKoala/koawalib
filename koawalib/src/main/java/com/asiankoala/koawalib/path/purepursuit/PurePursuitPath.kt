@@ -16,7 +16,7 @@ class PurePursuitPath(private val waypoints: List<Waypoint>) {
         val extendedPath = ArrayList<Waypoint>(waypoints)
 
         val clippedToPath = PurePursuitController.clipToPath(waypoints, pose.vec)
-        val currFollowIndex = clippedToPath.index + 1
+        val currFollowIndex = clippedToPath.second + 1
 
         // NOTE: we start running commands based on CLIPPED position
         // meaning, if the robot hasn't passed a waypoint, even if following that next waypoint's segment
@@ -53,10 +53,10 @@ class PurePursuitPath(private val waypoints: List<Waypoint>) {
             waypoints[currFollowIndex].followDistance
         )
 
-        val clippedDistanceToEnd = (clippedToPath.vector - waypoints[waypoints.size - 1].point).hypot
+        val clippedDistanceToEnd = (clippedToPath.first - waypoints[waypoints.size - 1].point).norm
 
         if (clippedDistanceToEnd <= movementLookahead.followDistance + 6 ||
-            (pose.vec - waypoints[waypoints.size - 1].point).hypot < movementLookahead.followDistance + 6
+            (pose.vec - waypoints[waypoints.size - 1].point).norm < movementLookahead.followDistance + 6
         ) {
             movementLookahead = waypoints[waypoints.size - 1]
         }
@@ -73,7 +73,7 @@ class PurePursuitPath(private val waypoints: List<Waypoint>) {
             movementLookahead.lowestSlowDownFromHeadingError,
         ).vec
 
-        val absolutePointAngle = turnLookahead.headingLockAngle ?: (turnLookahead.point - pose.vec).atan2
+        val absolutePointAngle = turnLookahead.headingLockAngle ?: (turnLookahead.point - pose.vec).angle
 
         val turnResult = PurePursuitController.pointTo(
             absolutePointAngle,

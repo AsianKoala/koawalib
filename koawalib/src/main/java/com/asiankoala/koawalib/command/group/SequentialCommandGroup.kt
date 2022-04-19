@@ -1,7 +1,7 @@
 package com.asiankoala.koawalib.command.group
 
 import com.asiankoala.koawalib.command.commands.Command
-import com.asiankoala.koawalib.util.Logger
+import com.asiankoala.koawalib.logger.Logger
 
 open class SequentialCommandGroup(vararg commands: Command) : CommandGroupBase() {
     private val mCommands: MutableList<Command> = ArrayList()
@@ -55,7 +55,7 @@ open class SequentialCommandGroup(vararg commands: Command) : CommandGroupBase()
     }
 
     override fun end() {
-        if (interrupted && mCurrentCommandIndex < mCommands.size) {
+        if (mCurrentCommandIndex < mCommands.size) {
             mCommands[mCurrentCommandIndex].end()
         }
         mCurrentCommandIndex = -1

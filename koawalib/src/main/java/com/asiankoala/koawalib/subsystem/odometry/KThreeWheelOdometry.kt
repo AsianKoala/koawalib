@@ -3,7 +3,7 @@ package com.asiankoala.koawalib.subsystem.odometry
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.angleWrap
 import com.asiankoala.koawalib.math.degrees
-import com.asiankoala.koawalib.util.Logger
+import com.asiankoala.koawalib.logger.Logger
 
 class KThreeWheelOdometry(
     private val leftEncoder: KEncoder,

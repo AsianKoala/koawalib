@@ -18,8 +18,8 @@ interface Stick : Periodic {
         get() = Vector(xAxis, yAxis)
 
     val angle: Double
-        get() = vector.atan2
+        get() = vector.angle
 
     val norm: Double
-        get() = vector.hypot
+        get() = vector.norm
 }

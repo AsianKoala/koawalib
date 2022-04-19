@@ -7,7 +7,7 @@ import com.asiankoala.koawalib.math.d
 import com.asiankoala.koawalib.util.Periodic
 import com.qualcomm.robotcore.hardware.Gamepad
 
-@Suppress("unused")
+@Suppress("unused", "WeakerAccess")
 class KGamepad(private val gamepad: Gamepad) : Periodic {
     val a = KButton { gamepad.a }
     val b = KButton { gamepad.b }

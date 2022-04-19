@@ -3,7 +3,7 @@ package com.asiankoala.koawalib.command
 import com.asiankoala.koawalib.command.commands.*
 import com.asiankoala.koawalib.command.group.CommandGroupBase
 import com.asiankoala.koawalib.subsystem.Subsystem
-import com.asiankoala.koawalib.util.Logger
+import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.util.OpModeState
 import java.util.*
 import kotlin.collections.ArrayDeque

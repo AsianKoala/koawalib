@@ -3,7 +3,7 @@ package com.asiankoala.koawalib.subsystem.odometry
 import com.asiankoala.koawalib.hardware.sensor.KIMU
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.angleWrap
-import com.asiankoala.koawalib.util.Logger
+import com.asiankoala.koawalib.logger.Logger
 
 class KTwoWheelOdometry(
     private val imu: KIMU,

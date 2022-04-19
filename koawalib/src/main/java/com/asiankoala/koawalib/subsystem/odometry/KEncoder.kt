@@ -3,7 +3,7 @@ package com.asiankoala.koawalib.subsystem.odometry
 import com.acmerobotics.roadrunner.util.NanoClock
 import com.acmerobotics.roadrunner.util.epsilonEquals
 import com.asiankoala.koawalib.hardware.motor.KMotor
-import com.asiankoala.koawalib.util.Logger
+import com.asiankoala.koawalib.logger.Logger
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.sign

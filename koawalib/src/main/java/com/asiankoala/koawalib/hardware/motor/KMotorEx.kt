@@ -9,7 +9,7 @@ import com.asiankoala.koawalib.command.commands.InfiniteCommand
 import com.asiankoala.koawalib.control.MotorControlType
 import com.asiankoala.koawalib.math.cos
 import com.asiankoala.koawalib.subsystem.odometry.KEncoder
-import com.asiankoala.koawalib.util.Logger
+import com.asiankoala.koawalib.logger.Logger
 import com.qualcomm.robotcore.util.ElapsedTime
 import kotlin.math.absoluteValue
 

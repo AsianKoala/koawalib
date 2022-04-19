@@ -70,7 +70,11 @@ fun interface Command {
         return ParallelRaceGroup(this, WaitCommand(time))
     }
 
-    // cancels this command based on a condition
+    /**
+     * Cancels this command upon fulfilling a condition
+     * @param condition the condition that ends the current command
+     * @return ParallelRaceGroup with a WaitUntilCommand & this command
+     */
     fun interruptOn(condition: () -> Boolean): Command {
         return ParallelRaceGroup(this, WaitUntilCommand(condition))
     }

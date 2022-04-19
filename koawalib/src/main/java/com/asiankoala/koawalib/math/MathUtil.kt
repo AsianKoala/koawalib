@@ -1,6 +1,6 @@
 package com.asiankoala.koawalib.math
 
-import com.asiankoala.koawalib.util.Logger
+import com.asiankoala.koawalib.logger.Logger
 import com.qualcomm.robotcore.util.Range
 import org.apache.commons.math3.linear.Array2DRowRealMatrix
 import kotlin.math.*
@@ -152,7 +152,7 @@ fun clipToLine(start: Vector, end: Vector, robot: Vector): Vector {
 }
 
 fun extendLine(firstVector: Vector, secondVector: Vector, distance: Double): Vector {
-    val lineAngle = (secondVector - firstVector).atan2
+    val lineAngle = (secondVector - firstVector).angle
     val length = secondVector.dist(firstVector)
     val extendedLineLength = length + distance
 
@@ -179,7 +179,7 @@ fun lineCircleIntersection(
     val end = endVector - center
     val deltas = end - start
     val d = start.x * end.y - end.x * start.y
-    val discriminant = radius.pow(2) * deltas.hypot.pow(2) - d.pow(2)
+    val discriminant = radius.pow(2) * deltas.norm.pow(2) - d.pow(2)
 
     // discriminant = 0 for 1 intersection, >0 for 2
     val intersections = ArrayList<Vector>()
@@ -187,7 +187,7 @@ fun lineCircleIntersection(
     val yLeft = -d * deltas.x
     val xRight: Double = stupidSign(deltas.y) * deltas.x * sqrt(discriminant)
     val yRight = deltas.y.absoluteValue * sqrt(discriminant)
-    val div = deltas.hypot.pow(2)
+    val div = deltas.norm.pow(2)
     if (discriminant == 0.0) {
         intersections.add(Vector(xLeft / div, yLeft / div))
     } else {

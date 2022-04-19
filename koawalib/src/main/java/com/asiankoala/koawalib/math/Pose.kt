@@ -19,8 +19,6 @@ class Pose(
 
     fun plusWrap(other: Pose) = Pose(x + other.x, y + other.y, (heading + other.heading).angleWrap)
 
-    fun scale(scalar: Double) = Pose(x * scalar, y * scalar, heading * scalar)
-
     operator fun plus(other: Pose) = Pose(x + other.x, y + other.y, heading + other.heading)
 
     fun rawString(): String {

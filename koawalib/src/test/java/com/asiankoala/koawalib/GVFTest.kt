@@ -1,6 +1,5 @@
 package com.asiankoala.koawalib
 
-import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.geometry.Vector2d
 import com.acmerobotics.roadrunner.path.PathBuilder
 import com.asiankoala.koawalib.math.Pose
@@ -31,7 +30,7 @@ object GVFTest {
         val yRobot = ArrayList<Double>()
         val dt = 0.7
 
-        while(!controller.finished) {
+        while(!controller.isFinished) {
             val output = controller.update(pose)
             pose = pose.plusWrap(output.scale(dt))
             xRobot.add(pose.x)

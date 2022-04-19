@@ -2,7 +2,7 @@ package com.asiankoala.koawalib.subsystem.odometry
 
 import com.asiankoala.koawalib.math.*
 import com.asiankoala.koawalib.subsystem.DeviceSubsystem
-import com.asiankoala.koawalib.util.Logger
+import com.asiankoala.koawalib.logger.Logger
 import kotlin.math.absoluteValue
 import kotlin.math.max
 
@@ -34,7 +34,7 @@ abstract class Odometry : DeviceSubsystem() {
 
             val scalar = (curr.timestamp - old.timestamp).toDouble() / 1000.0
 
-            val dirVel = (curr.pose.vec - old.pose.vec).scalarDiv(scalar)
+            val dirVel = (curr.pose.vec - old.pose.vec) / scalar
             val angularVel = (curr.pose.heading - old.pose.heading) * (1 / scalar)
 
             return Pose(dirVel, angularVel.angleWrap)

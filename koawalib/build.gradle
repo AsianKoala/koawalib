@@ -102,4 +102,8 @@ tasks.withType(dokkaHtml.getClass()).configureEach {
     )
 }
 
+tasks.dokkaHtml.configure {
+    outputDirectory.set(file("../documentation/html"))
+}
+
 apply from: '../build.dependencies.gradle'

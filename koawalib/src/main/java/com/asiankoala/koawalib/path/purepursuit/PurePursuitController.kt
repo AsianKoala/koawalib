@@ -21,9 +21,9 @@ object PurePursuitController {
         lowestSlowDownFromHeadingError: Double = 0.4,
     ): Pose {
         val absoluteDelta = targetPosition - currPose.vec
-        val distanceToPoint = absoluteDelta.hypot
+        val distanceToPoint = absoluteDelta.norm
 
-        val angleToPoint = absoluteDelta.atan2
+        val angleToPoint = absoluteDelta.angle
         val deltaAngleToPoint = (angleToPoint - (currPose.heading - 90.0.radians)).angleWrap
 
         val relativeXToPosition = distanceToPoint * deltaAngleToPoint.cos
@@ -111,7 +111,7 @@ object PurePursuitController {
             val firstPoint = waypoints[i]
             val secondPoint = waypoints[i + 1]
             val currClippedToLine = clipToLine(firstPoint.point, secondPoint.point, position)
-            val distanceToClip = (position - currClippedToLine).hypot
+            val distanceToClip = (position - currClippedToLine).norm
             if (distanceToClip < closestClippedDistance) {
                 closestClippedDistance = distanceToClip
                 closestClippedIndex = i
@@ -146,7 +146,7 @@ object PurePursuitController {
             )
 
             for (intersection in intersections) {
-                val dist = (intersection - waypoints[waypoints.size - 1].point).hypot
+                val dist = (intersection - waypoints[waypoints.size - 1].point).norm
 
                 if (dist < closestDistance) {
                     closestDistance = dist

@@ -46,13 +46,7 @@ open class ParallelCommandGroup(vararg commands: Command) : CommandGroupBase() {
     }
 
     override fun end() {
-        if (interrupted) {
-            for ((key, value) in mCommands.entries) {
-                if (value) {
-                    key.end()
-                }
-            }
-        }
+        mCommands.forEach { if(it.value) it.key.end() }
     }
 
     override val isFinished: Boolean get() = !mCommands.values.contains(true)

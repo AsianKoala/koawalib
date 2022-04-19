@@ -5,8 +5,8 @@ import com.asiankoala.koawalib.gamepad.KGamepad
 import com.asiankoala.koawalib.hardware.KDevice
 import com.asiankoala.koawalib.statemachine.StateMachine
 import com.asiankoala.koawalib.statemachine.StateMachineBuilder
-import com.asiankoala.koawalib.util.Logger
-import com.asiankoala.koawalib.util.LoggerConfig
+import com.asiankoala.koawalib.logger.Logger
+import com.asiankoala.koawalib.logger.LoggerConfig
 import com.asiankoala.koawalib.util.OpModeState
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
