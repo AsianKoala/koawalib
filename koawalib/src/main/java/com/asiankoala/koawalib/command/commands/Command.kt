@@ -10,8 +10,7 @@ import com.asiankoala.koawalib.subsystem.Subsystem
 /**
  * Commands are the basis of how koawalib interacts with the robot.
  * Each command has initialize(), execute(), and end() methods executed throughout its lifecycle.
- * Commands also contain a list of subsystem "requirements".
- * This prevents multiple commands from accessing the same subsystem simultaneously.
+ * Commands contain a list of subsystem "requirements", preventing multiple subsystems accessing a command simultaneously.
  * To create custom commands, extend the CommandBase class.
  * All commands are scheduled and ran through the CommandScheduler.
  *
@@ -20,34 +19,32 @@ import com.asiankoala.koawalib.subsystem.Subsystem
  */
 fun interface Command {
     /**
-     * The first part of running a command. initialize() is internally called at the very beginning of a command's lifestyle, right when it is scheduled
+     * First part of running a command, called on start of command.
      */
     fun initialize() {}
 
     /**
-     * The main part of a command. Until the command is finished, execute() will be continuously called
+     * Main part of a command, called while command is running.
      */
     fun execute()
 
     /**
-     * The final part of a command. end() will be called once when the command has finished
+     * Final part of a command, called when command finishes.
      */
     fun end() {}
 
     /**
-     * Returns whether the command has finished or not
+     * Finish state of command
      */
     val isFinished: Boolean get() = true
 
     /**
-     * Returns whether the command is currently scheduled. Syntax sugar for CommandScheduler.isScheduled(command)
+     * Whether the command is currently scheduled. Syntax sugar for [CommandScheduler.isScheduled]
      */
     val isScheduled: Boolean get() = CommandScheduler.isScheduled(this)
 
     /**
-     * The name of the command. Used internally to identify logged commands.
-     * If the user desires identifying commands in the Logger, specify the name of the command with CommandBase's withName() method
-     * @see CommandBase
+     * The name of the command. Specify with [CommandBase.withName]
      */
     val name: String get() = ""
 
@@ -143,16 +140,14 @@ fun interface Command {
     }
 
     /**
-     * Schedule this command. Syntax sugar for CommandScheduler.schedule(command)
-     * @see CommandScheduler
+     * Schedule command. Syntax sugar for [CommandScheduler.schedule]
      */
     fun schedule() {
         CommandScheduler.schedule(this)
     }
 
     /**
-     * Force cancel this command. Syntax sugar for CommandScheduler.cancel()
-     * @see CommandScheduler
+     * Cancel command. [CommandScheduler.cancel]
      */
     fun cancel() {
         CommandScheduler.cancel(this)

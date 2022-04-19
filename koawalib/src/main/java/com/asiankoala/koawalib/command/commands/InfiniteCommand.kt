@@ -2,7 +2,11 @@ package com.asiankoala.koawalib.command.commands
 
 import com.asiankoala.koawalib.subsystem.Subsystem
 
-// infinitely runs this command (ends when the opmode ends)
+/**
+ * Command that runs infinitely
+ * @param action action to run
+ * @param requirements subsystem requirements
+ */
 class InfiniteCommand(
     private val action: () -> Unit = {},
     vararg requirements: Subsystem

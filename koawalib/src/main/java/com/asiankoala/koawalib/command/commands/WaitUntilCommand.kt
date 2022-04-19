@@ -1,6 +1,9 @@
 package com.asiankoala.koawalib.command.commands
 
-// used in command groups
+/**
+ * Dummy command, finishes when condition is called
+ * @param condition finish condition
+ */
 open class WaitUntilCommand(private val condition: () -> Boolean) : CommandBase() {
     override fun execute() {
     }

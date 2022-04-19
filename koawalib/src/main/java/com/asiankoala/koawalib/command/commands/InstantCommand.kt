@@ -2,7 +2,11 @@ package com.asiankoala.koawalib.command.commands
 
 import com.asiankoala.koawalib.subsystem.Subsystem
 
-// instant command: ends immediately after running
+/**
+ * Command that runs once and stops
+ * @param action action to run
+ * @param requirements subsystem requirements
+ */
 open class InstantCommand(
     private val action: () -> Unit,
     vararg requirements: Subsystem

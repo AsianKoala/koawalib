@@ -5,6 +5,28 @@ import com.asiankoala.koawalib.math.*
 import com.asiankoala.koawalib.subsystem.drive.KMecanumDrive
 import com.asiankoala.koawalib.util.Alliance
 
+/**
+ * TeleOp drive control command
+ * vector drive power is calculated with the function:
+ * f(x) = scalar * ((1-k)x+kx^3)
+ * e.g. xPower = xScalar * ((1-xCubic) * leftStick.x + xCubic * leftStick.x^3)
+ * If not using field centric drive, leave everything after rScalar as default
+ *
+ * @param drive KMecanumDrive reference
+ * @param leftStick left gamepad joystick
+ * @param rightStick right gamepad joystick
+ * @param xCubic x power k constant in scaling function
+ * @param yCubic y power k constant in scaling function
+ * @param rCubic r power k constant in scaling function
+ * @param xScalar x scalar in scaling function
+ * @param yScalar y scalar in scaling function
+ * @param rScalar r scalar in scaling function
+ * @param alliance robot's alliance for match
+ * @param isTranslationFieldCentric translation field centric
+ * @param isHeadingFieldCentric heading field centric
+ * @param heading heading supplier
+ * @param fieldCentricHeadingScalar angle to start deccel for field centric heading
+ */
 class MecanumDriveCommand(
     private val drive: KMecanumDrive,
     private val leftStick: Stick,
@@ -16,12 +38,15 @@ class MecanumDriveCommand(
     private val yScalar: Double = 1.0,
     private val rScalar: Double = 1.0,
     private val alliance: Alliance = Alliance.BLUE,
-    private val fieldOriented: Boolean = false,
-    private val headingLock: Boolean = false,
+    private val isTranslationFieldCentric: Boolean = false,
+    private val isHeadingFieldCentric: Boolean = false,
     private val heading: () -> Double = { Double.NaN },
-    private val headingLockScalar: Double = 90.0.radians
+    private val fieldCentricHeadingScalar: Double = 90.0.radians
 ) : CommandBase() {
 
+    /**
+     * Sets scaled power to mecanum drive
+     */
     override fun execute() {
         val xRaw = leftStick.xSupplier.invoke()
         val yRaw = -leftStick.ySupplier.invoke()
@@ -31,15 +56,15 @@ class MecanumDriveCommand(
         val yScaled = cubicScaling(yCubic, yRaw) * yScalar
         val rScaled = cubicScaling(rCubic, rRaw) * rScalar
 
-        val final = if (fieldOriented) {
+        val final = if (isTranslationFieldCentric) {
             val translationVector = Vector(xScaled, yScaled)
             val headingInvoked = heading.invoke()
             val rotatedTranslation = translationVector.rotate(-heading.invoke() + if(alliance == Alliance.RED) 180.0.radians else 0.0)
 
-            val turn = if (headingLock && !headingInvoked.isNaN()) {
+            val turn = if (isHeadingFieldCentric && !headingInvoked.isNaN()) {
                 val stickAtan = rightStick.angle
                 val deltaAngle = (headingInvoked - stickAtan).angleWrap
-                val rLockScaled = deltaAngle / headingLockScalar
+                val rLockScaled = deltaAngle / fieldCentricHeadingScalar
 
                 rLockScaled
             } else {
@@ -59,10 +84,5 @@ class MecanumDriveCommand(
 
     init {
         addRequirements(drive)
-    }
-
-    class Test {
-        fun t() {
-        }
     }
 }

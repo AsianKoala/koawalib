@@ -9,6 +9,9 @@ import com.asiankoala.koawalib.subsystem.Subsystem
 abstract class CommandBase : Command {
     internal val mRequirements: MutableSet<Subsystem> = HashSet()
 
+    /**
+     * @param
+     */
     protected fun addRequirements(vararg subsystems: Subsystem) {
         mRequirements.addAll(subsystems)
     }
