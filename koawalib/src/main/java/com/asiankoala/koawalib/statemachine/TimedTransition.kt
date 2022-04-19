@@ -1,6 +1,6 @@
 package com.asiankoala.koawalib.statemachine
 
-class TimedTransition(val time: Double) : () -> Boolean {
+internal class TimedTransition(val time: Double) : () -> Boolean {
     private var startTime = 0L
 
     fun startTimer() {

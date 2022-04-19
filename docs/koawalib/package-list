@@ -184,7 +184,7 @@ $dokka.location:com.asiankoala.koawalib.control/PIDConstants/kI/#/PointingToDecl
 $dokka.location:com.asiankoala.koawalib.control/PIDConstants/kP/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.control/-p-i-d-constants/k-p.html
 $dokka.location:com.asiankoala.koawalib.gamepad.functionality////PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad.functionality/index.html
 $dokka.location:com.asiankoala.koawalib.gamepad.functionality/Button///PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad.functionality/-button/index.html
-$dokka.location:com.asiankoala.koawalib.gamepad.functionality/Button/hasChanged/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad.functionality/-button/has-changed.html
+$dokka.location:com.asiankoala.koawalib.gamepad.functionality/Button/Button/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad.functionality/-button/-button.html
 $dokka.location:com.asiankoala.koawalib.gamepad.functionality/Button/isJustPressed/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad.functionality/-button/is-just-pressed.html
 $dokka.location:com.asiankoala.koawalib.gamepad.functionality/Button/isJustReleased/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad.functionality/-button/is-just-released.html
 $dokka.location:com.asiankoala.koawalib.gamepad.functionality/Button/isJustToggled/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad.functionality/-button/is-just-toggled.html
@@ -193,27 +193,7 @@ $dokka.location:com.asiankoala.koawalib.gamepad.functionality/Button/isPressed/#
 $dokka.location:com.asiankoala.koawalib.gamepad.functionality/Button/isReleased/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad.functionality/-button/is-released.html
 $dokka.location:com.asiankoala.koawalib.gamepad.functionality/Button/isToggled/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad.functionality/-button/is-toggled.html
 $dokka.location:com.asiankoala.koawalib.gamepad.functionality/Button/isUntoggled/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad.functionality/-button/is-untoggled.html
-$dokka.location:com.asiankoala.koawalib.gamepad.functionality/Button/lastState/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad.functionality/-button/last-state.html
-$dokka.location:com.asiankoala.koawalib.gamepad.functionality/ButtonFunc///PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad.functionality/-button-func/index.html
-$dokka.location:com.asiankoala.koawalib.gamepad.functionality/ButtonFunc/ButtonFunc/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad.functionality/-button-func/-button-func.html
-$dokka.location:com.asiankoala.koawalib.gamepad.functionality/ButtonFunc/hasChanged/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad.functionality/-button-func/has-changed.html
-$dokka.location:com.asiankoala.koawalib.gamepad.functionality/ButtonFunc/isPressed/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad.functionality/-button-func/is-pressed.html
-$dokka.location:com.asiankoala.koawalib.gamepad.functionality/ButtonFunc/isToggled/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad.functionality/-button-func/is-toggled.html
-$dokka.location:com.asiankoala.koawalib.gamepad.functionality/ButtonFunc/lastState/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad.functionality/-button-func/last-state.html
-$dokka.location:com.asiankoala.koawalib.gamepad.functionality/ButtonFunc/periodic/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad.functionality/-button-func/periodic.html
-$dokka.location:com.asiankoala.koawalib.gamepad.functionality/CommandButton///PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad.functionality/-command-button/index.html
-$dokka.location:com.asiankoala.koawalib.gamepad.functionality/CommandButton/CommandButton/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad.functionality/-command-button/-command-button.html
-$dokka.location:com.asiankoala.koawalib.gamepad.functionality/CommandButton/onPress/#com.asiankoala.koawalib.command.commands.Command/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad.functionality/-command-button/on-press.html
-$dokka.location:com.asiankoala.koawalib.gamepad.functionality/CommandButton/onPressUntilRelease/#com.asiankoala.koawalib.command.commands.Command/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad.functionality/-command-button/on-press-until-release.html
-$dokka.location:com.asiankoala.koawalib.gamepad.functionality/CommandButton/onRelease/#com.asiankoala.koawalib.command.commands.Command/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad.functionality/-command-button/on-release.html
-$dokka.location:com.asiankoala.koawalib.gamepad.functionality/CommandButton/onToggle/#com.asiankoala.koawalib.command.commands.Command/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad.functionality/-command-button/on-toggle.html
-$dokka.location:com.asiankoala.koawalib.gamepad.functionality/CommandButton/onUnToggle/#com.asiankoala.koawalib.command.commands.Command/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad.functionality/-command-button/on-un-toggle.html
-$dokka.location:com.asiankoala.koawalib.gamepad.functionality/CommandButton/schedule/#com.asiankoala.koawalib.command.commands.Command/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad.functionality/-command-button/schedule.html
-$dokka.location:com.asiankoala.koawalib.gamepad.functionality/CommandButton/schedule/#kotlin.Function0[kotlin.Boolean]#com.asiankoala.koawalib.command.commands.Command/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad.functionality/-command-button/schedule.html
-$dokka.location:com.asiankoala.koawalib.gamepad.functionality/CommandButton/whenToggled/#com.asiankoala.koawalib.command.commands.Command/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad.functionality/-command-button/when-toggled.html
-$dokka.location:com.asiankoala.koawalib.gamepad.functionality/CommandButton/whenUntoggled/#com.asiankoala.koawalib.command.commands.Command/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad.functionality/-command-button/when-untoggled.html
-$dokka.location:com.asiankoala.koawalib.gamepad.functionality/CommandButton/whilePressed/#com.asiankoala.koawalib.command.commands.Command/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad.functionality/-command-button/while-pressed.html
-$dokka.location:com.asiankoala.koawalib.gamepad.functionality/CommandButton/whileReleased/#com.asiankoala.koawalib.command.commands.Command/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad.functionality/-command-button/while-released.html
+$dokka.location:com.asiankoala.koawalib.gamepad.functionality/Button/periodic/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad.functionality/-button/periodic.html
 $dokka.location:com.asiankoala.koawalib.gamepad.functionality/Stick///PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad.functionality/-stick/index.html
 $dokka.location:com.asiankoala.koawalib.gamepad.functionality/Stick/angle/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad.functionality/-stick/angle.html
 $dokka.location:com.asiankoala.koawalib.gamepad.functionality/Stick/norm/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad.functionality/-stick/norm.html
@@ -234,6 +214,17 @@ $dokka.location:com.asiankoala.koawalib.gamepad/KAxis/setTriggerThreshold/#kotli
 $dokka.location:com.asiankoala.koawalib.gamepad/KButton///PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad/-k-button/index.html
 $dokka.location:com.asiankoala.koawalib.gamepad/KButton/KButton/#kotlin.Function0[kotlin.Boolean]/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad/-k-button/-k-button.html
 $dokka.location:com.asiankoala.koawalib.gamepad/KButton/invokeBoolean/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad/-k-button/invoke-boolean.html
+$dokka.location:com.asiankoala.koawalib.gamepad/KButton/onPress/#com.asiankoala.koawalib.command.commands.Command/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad/-k-button/on-press.html
+$dokka.location:com.asiankoala.koawalib.gamepad/KButton/onPressUntilRelease/#com.asiankoala.koawalib.command.commands.Command/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad/-k-button/on-press-until-release.html
+$dokka.location:com.asiankoala.koawalib.gamepad/KButton/onRelease/#com.asiankoala.koawalib.command.commands.Command/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad/-k-button/on-release.html
+$dokka.location:com.asiankoala.koawalib.gamepad/KButton/onToggle/#com.asiankoala.koawalib.command.commands.Command/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad/-k-button/on-toggle.html
+$dokka.location:com.asiankoala.koawalib.gamepad/KButton/onUnToggle/#com.asiankoala.koawalib.command.commands.Command/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad/-k-button/on-un-toggle.html
+$dokka.location:com.asiankoala.koawalib.gamepad/KButton/schedule/#com.asiankoala.koawalib.command.commands.Command/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad/-k-button/schedule.html
+$dokka.location:com.asiankoala.koawalib.gamepad/KButton/schedule/#kotlin.Function0[kotlin.Boolean]#com.asiankoala.koawalib.command.commands.Command/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad/-k-button/schedule.html
+$dokka.location:com.asiankoala.koawalib.gamepad/KButton/whenToggled/#com.asiankoala.koawalib.command.commands.Command/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad/-k-button/when-toggled.html
+$dokka.location:com.asiankoala.koawalib.gamepad/KButton/whenUntoggled/#com.asiankoala.koawalib.command.commands.Command/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad/-k-button/when-untoggled.html
+$dokka.location:com.asiankoala.koawalib.gamepad/KButton/whilePressed/#com.asiankoala.koawalib.command.commands.Command/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad/-k-button/while-pressed.html
+$dokka.location:com.asiankoala.koawalib.gamepad/KButton/whileReleased/#com.asiankoala.koawalib.command.commands.Command/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad/-k-button/while-released.html
 $dokka.location:com.asiankoala.koawalib.gamepad/KGamepad///PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad/-k-gamepad/index.html
 $dokka.location:com.asiankoala.koawalib.gamepad/KGamepad/KGamepad/#com.qualcomm.robotcore.hardware.Gamepad/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad/-k-gamepad/-k-gamepad.html
 $dokka.location:com.asiankoala.koawalib.gamepad/KGamepad/a/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad/-k-gamepad/a.html
@@ -415,10 +406,6 @@ $dokka.location:com.asiankoala.koawalib.math/Pose/toString/#/PointingToDeclarati
 $dokka.location:com.asiankoala.koawalib.math/Pose/vec/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.math/-pose/vec.html
 $dokka.location:com.asiankoala.koawalib.math/Pose/x/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.math/-pose/x.html
 $dokka.location:com.asiankoala.koawalib.math/Pose/y/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.math/-pose/y.html
-$dokka.location:com.asiankoala.koawalib.math/TimePose///PointingToDeclaration/koawalib/com.asiankoala.koawalib.math/-time-pose/index.html
-$dokka.location:com.asiankoala.koawalib.math/TimePose/TimePose/#com.asiankoala.koawalib.math.Pose#kotlin.Long/PointingToDeclaration/koawalib/com.asiankoala.koawalib.math/-time-pose/-time-pose.html
-$dokka.location:com.asiankoala.koawalib.math/TimePose/pose/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.math/-time-pose/pose.html
-$dokka.location:com.asiankoala.koawalib.math/TimePose/timestamp/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.math/-time-pose/timestamp.html
 $dokka.location:com.asiankoala.koawalib.math/Vector///PointingToDeclaration/koawalib/com.asiankoala.koawalib.math/-vector/index.html
 $dokka.location:com.asiankoala.koawalib.math/Vector/Vector/#com.asiankoala.koawalib.math.Vector/PointingToDeclaration/koawalib/com.asiankoala.koawalib.math/-vector/-vector.html
 $dokka.location:com.asiankoala.koawalib.math/Vector/Vector/#kotlin.Double#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.math/-vector/-vector.html
@@ -468,37 +455,6 @@ $dokka.location:com.asiankoala.koawalib.path.purepursuit/Waypoint/point/#/Pointi
 $dokka.location:com.asiankoala.koawalib.path.purepursuit/Waypoint/stop/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.path.purepursuit/-waypoint/stop.html
 $dokka.location:com.asiankoala.koawalib.path.purepursuit/Waypoint/x/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.path.purepursuit/-waypoint/x.html
 $dokka.location:com.asiankoala.koawalib.path.purepursuit/Waypoint/y/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.path.purepursuit/-waypoint/y.html
-$dokka.location:com.asiankoala.koawalib.statemachine////PointingToDeclaration/koawalib/com.asiankoala.koawalib.statemachine/index.html
-$dokka.location:com.asiankoala.koawalib.statemachine/State///PointingToDeclaration/koawalib/com.asiankoala.koawalib.statemachine/-state/index.html
-$dokka.location:com.asiankoala.koawalib.statemachine/State/State/#TypeParam(bounds=[kotlin.Any?])#kotlin.collections.MutableList[kotlin.Function0[kotlin.Unit]]#kotlin.collections.MutableList[kotlin.Function0[kotlin.Unit]]#kotlin.collections.MutableList[kotlin.Function0[kotlin.Unit]]#kotlin.Function0[kotlin.Boolean]/PointingToDeclaration/koawalib/com.asiankoala.koawalib.statemachine/-state/-state.html
-$dokka.location:com.asiankoala.koawalib.statemachine/State/enterActions/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.statemachine/-state/enter-actions.html
-$dokka.location:com.asiankoala.koawalib.statemachine/State/exitActions/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.statemachine/-state/exit-actions.html
-$dokka.location:com.asiankoala.koawalib.statemachine/State/loopActions/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.statemachine/-state/loop-actions.html
-$dokka.location:com.asiankoala.koawalib.statemachine/State/state/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.statemachine/-state/state.html
-$dokka.location:com.asiankoala.koawalib.statemachine/State/transitionCondition/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.statemachine/-state/transition-condition.html
-$dokka.location:com.asiankoala.koawalib.statemachine/StateMachine///PointingToDeclaration/koawalib/com.asiankoala.koawalib.statemachine/-state-machine/index.html
-$dokka.location:com.asiankoala.koawalib.statemachine/StateMachine/StateMachine/#kotlin.collections.List[com.asiankoala.koawalib.statemachine.State[TypeParam(bounds=[kotlin.Any?])]]#kotlin.collections.List[kotlin.Function0[kotlin.Unit]]/PointingToDeclaration/koawalib/com.asiankoala.koawalib.statemachine/-state-machine/-state-machine.html
-$dokka.location:com.asiankoala.koawalib.statemachine/StateMachine/reset/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.statemachine/-state-machine/reset.html
-$dokka.location:com.asiankoala.koawalib.statemachine/StateMachine/running/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.statemachine/-state-machine/running.html
-$dokka.location:com.asiankoala.koawalib.statemachine/StateMachine/start/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.statemachine/-state-machine/start.html
-$dokka.location:com.asiankoala.koawalib.statemachine/StateMachine/state/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.statemachine/-state-machine/state.html
-$dokka.location:com.asiankoala.koawalib.statemachine/StateMachine/stop/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.statemachine/-state-machine/stop.html
-$dokka.location:com.asiankoala.koawalib.statemachine/StateMachine/update/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.statemachine/-state-machine/update.html
-$dokka.location:com.asiankoala.koawalib.statemachine/StateMachineBuilder///PointingToDeclaration/koawalib/com.asiankoala.koawalib.statemachine/-state-machine-builder/index.html
-$dokka.location:com.asiankoala.koawalib.statemachine/StateMachineBuilder/StateMachineBuilder/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.statemachine/-state-machine-builder/-state-machine-builder.html
-$dokka.location:com.asiankoala.koawalib.statemachine/StateMachineBuilder/build/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.statemachine/-state-machine-builder/build.html
-$dokka.location:com.asiankoala.koawalib.statemachine/StateMachineBuilder/loop/#kotlin.Function0[kotlin.Unit]/PointingToDeclaration/koawalib/com.asiankoala.koawalib.statemachine/-state-machine-builder/loop.html
-$dokka.location:com.asiankoala.koawalib.statemachine/StateMachineBuilder/onEnter/#kotlin.Function0[kotlin.Unit]/PointingToDeclaration/koawalib/com.asiankoala.koawalib.statemachine/-state-machine-builder/on-enter.html
-$dokka.location:com.asiankoala.koawalib.statemachine/StateMachineBuilder/onExit/#kotlin.Function0[kotlin.Unit]/PointingToDeclaration/koawalib/com.asiankoala.koawalib.statemachine/-state-machine-builder/on-exit.html
-$dokka.location:com.asiankoala.koawalib.statemachine/StateMachineBuilder/state/#TypeParam(bounds=[kotlin.Any?])/PointingToDeclaration/koawalib/com.asiankoala.koawalib.statemachine/-state-machine-builder/state.html
-$dokka.location:com.asiankoala.koawalib.statemachine/StateMachineBuilder/transition/#kotlin.Function0[kotlin.Boolean]/PointingToDeclaration/koawalib/com.asiankoala.koawalib.statemachine/-state-machine-builder/transition.html
-$dokka.location:com.asiankoala.koawalib.statemachine/StateMachineBuilder/transitionTimed/#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.statemachine/-state-machine-builder/transition-timed.html
-$dokka.location:com.asiankoala.koawalib.statemachine/StateMachineBuilder/universal/#kotlin.Function0[kotlin.Unit]/PointingToDeclaration/koawalib/com.asiankoala.koawalib.statemachine/-state-machine-builder/universal.html
-$dokka.location:com.asiankoala.koawalib.statemachine/TimedTransition///PointingToDeclaration/koawalib/com.asiankoala.koawalib.statemachine/-timed-transition/index.html
-$dokka.location:com.asiankoala.koawalib.statemachine/TimedTransition/TimedTransition/#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.statemachine/-timed-transition/-timed-transition.html
-$dokka.location:com.asiankoala.koawalib.statemachine/TimedTransition/invoke/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.statemachine/-timed-transition/invoke.html
-$dokka.location:com.asiankoala.koawalib.statemachine/TimedTransition/startTimer/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.statemachine/-timed-transition/start-timer.html
-$dokka.location:com.asiankoala.koawalib.statemachine/TimedTransition/time/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.statemachine/-timed-transition/time.html
 $dokka.location:com.asiankoala.koawalib.subsystem.drive////PointingToDeclaration/koawalib/com.asiankoala.koawalib.subsystem.drive/index.html
 $dokka.location:com.asiankoala.koawalib.subsystem.drive/KMecanumDrive///PointingToDeclaration/koawalib/com.asiankoala.koawalib.subsystem.drive/-k-mecanum-drive/index.html
 $dokka.location:com.asiankoala.koawalib.subsystem.drive/KMecanumDrive/KMecanumDrive/#com.asiankoala.koawalib.hardware.motor.KMotor#com.asiankoala.koawalib.hardware.motor.KMotor#com.asiankoala.koawalib.hardware.motor.KMotor#com.asiankoala.koawalib.hardware.motor.KMotor/PointingToDeclaration/koawalib/com.asiankoala.koawalib.subsystem.drive/-k-mecanum-drive/-k-mecanum-drive.html
@@ -568,29 +524,6 @@ $dokka.location:com.asiankoala.koawalib.util/Alliance.BLUE///PointingToDeclarati
 $dokka.location:com.asiankoala.koawalib.util/Alliance.RED///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}koawalib/com.asiankoala.koawalib.util/-alliance/-r-e-d/index.html
 $dokka.location:com.asiankoala.koawalib.util/Alliance///PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-alliance/index.html
 $dokka.location:com.asiankoala.koawalib.util/Alliance/decide/#TypeParam(bounds=[kotlin.Any?])#TypeParam(bounds=[kotlin.Any?])/PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-alliance/decide.html
-$dokka.location:com.asiankoala.koawalib.util/Colors///PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-colors/index.html
-$dokka.location:com.asiankoala.koawalib.util/Colors/ANSI_BLACK/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-colors/-a-n-s-i_-b-l-a-c-k.html
-$dokka.location:com.asiankoala.koawalib.util/Colors/ANSI_BLACK_BACKGROUND/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-colors/-a-n-s-i_-b-l-a-c-k_-b-a-c-k-g-r-o-u-n-d.html
-$dokka.location:com.asiankoala.koawalib.util/Colors/ANSI_BLINK/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-colors/-a-n-s-i_-b-l-i-n-k.html
-$dokka.location:com.asiankoala.koawalib.util/Colors/ANSI_BLUE/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-colors/-a-n-s-i_-b-l-u-e.html
-$dokka.location:com.asiankoala.koawalib.util/Colors/ANSI_BLUE_BACKGROUND/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-colors/-a-n-s-i_-b-l-u-e_-b-a-c-k-g-r-o-u-n-d.html
-$dokka.location:com.asiankoala.koawalib.util/Colors/ANSI_BOLD/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-colors/-a-n-s-i_-b-o-l-d.html
-$dokka.location:com.asiankoala.koawalib.util/Colors/ANSI_CYAN/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-colors/-a-n-s-i_-c-y-a-n.html
-$dokka.location:com.asiankoala.koawalib.util/Colors/ANSI_CYAN_BACKGROUND/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-colors/-a-n-s-i_-c-y-a-n_-b-a-c-k-g-r-o-u-n-d.html
-$dokka.location:com.asiankoala.koawalib.util/Colors/ANSI_GREEN/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-colors/-a-n-s-i_-g-r-e-e-n.html
-$dokka.location:com.asiankoala.koawalib.util/Colors/ANSI_GREEN_BACKGROUND/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-colors/-a-n-s-i_-g-r-e-e-n_-b-a-c-k-g-r-o-u-n-d.html
-$dokka.location:com.asiankoala.koawalib.util/Colors/ANSI_PURPLE/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-colors/-a-n-s-i_-p-u-r-p-l-e.html
-$dokka.location:com.asiankoala.koawalib.util/Colors/ANSI_PURPLE_BACKGROUND/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-colors/-a-n-s-i_-p-u-r-p-l-e_-b-a-c-k-g-r-o-u-n-d.html
-$dokka.location:com.asiankoala.koawalib.util/Colors/ANSI_RED/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-colors/-a-n-s-i_-r-e-d.html
-$dokka.location:com.asiankoala.koawalib.util/Colors/ANSI_RED_BACKGROUND/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-colors/-a-n-s-i_-r-e-d_-b-a-c-k-g-r-o-u-n-d.html
-$dokka.location:com.asiankoala.koawalib.util/Colors/ANSI_RESET/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-colors/-a-n-s-i_-r-e-s-e-t.html
-$dokka.location:com.asiankoala.koawalib.util/Colors/ANSI_STOP_UNDERLINE/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-colors/-a-n-s-i_-s-t-o-p_-u-n-d-e-r-l-i-n-e.html
-$dokka.location:com.asiankoala.koawalib.util/Colors/ANSI_UNBOLD/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-colors/-a-n-s-i_-u-n-b-o-l-d.html
-$dokka.location:com.asiankoala.koawalib.util/Colors/ANSI_UNDERLINE/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-colors/-a-n-s-i_-u-n-d-e-r-l-i-n-e.html
-$dokka.location:com.asiankoala.koawalib.util/Colors/ANSI_WHITE/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-colors/-a-n-s-i_-w-h-i-t-e.html
-$dokka.location:com.asiankoala.koawalib.util/Colors/ANSI_WHITE_BACKGROUND/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-colors/-a-n-s-i_-w-h-i-t-e_-b-a-c-k-g-r-o-u-n-d.html
-$dokka.location:com.asiankoala.koawalib.util/Colors/ANSI_YELLOW/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-colors/-a-n-s-i_-y-e-l-l-o-w.html
-$dokka.location:com.asiankoala.koawalib.util/Colors/ANSI_YELLOW_BACKGROUND/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-colors/-a-n-s-i_-y-e-l-l-o-w_-b-a-c-k-g-r-o-u-n-d.html
 $dokka.location:com.asiankoala.koawalib.util/KBoolean///PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-k-boolean/index.html
 $dokka.location:com.asiankoala.koawalib.util/KBoolean/invokeBoolean/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-k-boolean/invoke-boolean.html
 $dokka.location:com.asiankoala.koawalib.util/KDouble///PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-k-double/index.html
@@ -618,7 +551,6 @@ com.asiankoala.koawalib.logger
 com.asiankoala.koawalib.math
 com.asiankoala.koawalib.path.gvf
 com.asiankoala.koawalib.path.purepursuit
-com.asiankoala.koawalib.statemachine
 com.asiankoala.koawalib.subsystem
 com.asiankoala.koawalib.subsystem.drive
 com.asiankoala.koawalib.subsystem.intake

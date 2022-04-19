@@ -1,3 +1,3 @@
 package com.asiankoala.koawalib.math
 
-data class TimePose(val pose: Pose, val timestamp: Long = System.currentTimeMillis())
+internal data class TimePose(val pose: Pose, val timestamp: Long = System.currentTimeMillis())

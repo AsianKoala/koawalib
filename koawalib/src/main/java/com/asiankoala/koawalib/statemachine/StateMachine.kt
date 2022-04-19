@@ -1,6 +1,6 @@
 package com.asiankoala.koawalib.statemachine
 
-class StateMachine<StateEnum>(private val stateList: List<State<StateEnum>>, private val universals: List<() -> Unit>) {
+internal class StateMachine<StateEnum>(private val stateList: List<State<StateEnum>>, private val universals: List<() -> Unit>) {
     var running = false
         private set
 

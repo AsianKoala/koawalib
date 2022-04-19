@@ -1,6 +1,6 @@
 package com.asiankoala.koawalib.statemachine
 
-class StateMachineBuilder<StateEnum> {
+internal class StateMachineBuilder<StateEnum> {
 
     private val stateList = mutableListOf<State<StateEnum>>()
     private val universals = mutableListOf<() -> Unit>()
