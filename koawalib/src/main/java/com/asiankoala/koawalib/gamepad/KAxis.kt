@@ -8,26 +8,15 @@ import kotlin.math.absoluteValue
 @Suppress("unused")
 class KAxis(
     private val axis: () -> Double,
-) : Button(), KDouble, Periodic {
-    private var triggerThreshold = DEFAULT_TRIGGER_THRESHOLD
-
-    fun setTriggerThreshold(threshold: Double): KAxis {
-        triggerThreshold = threshold
-        return this
-    }
-
+) : KButton({ axis.invoke().absoluteValue > DEFAULT_TRIGGER_THRESHOLD}), KDouble {
     override fun invokeDouble(): Double {
         return axis.invoke()
-    }
-
-    override fun invokeBoolean(): Boolean {
-        return axis.invoke().absoluteValue > triggerThreshold
     }
 
     val inverted
         get() = KAxis { -axis.invoke() }
 
     companion object {
-        const val DEFAULT_TRIGGER_THRESHOLD = 0.3
+        var DEFAULT_TRIGGER_THRESHOLD = 0.3
     }
 }
