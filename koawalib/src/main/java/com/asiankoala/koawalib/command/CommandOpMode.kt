@@ -12,8 +12,12 @@ import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.util.ElapsedTime
 
+/**
+ * The template opmode for utilizing koawalib. DO NOT OVERRIDE runOpMode(). Iterative OpMode's init, init loop, start, and loop functions have been
+ * implemented with mInit(), mInitLoop(), mStart(), mLoop(), mStop()
+ */
 @Suppress("unused")
-open class CommandOpMode : LinearOpMode() {
+abstract class CommandOpMode : LinearOpMode() {
     protected val driver: KGamepad by lazy { KGamepad(gamepad1) }
     protected val gunner: KGamepad by lazy { KGamepad(gamepad2) }
 
@@ -55,7 +59,6 @@ open class CommandOpMode : LinearOpMode() {
 
     private val mainStateMachine: StateMachine<OpModeState> = StateMachineBuilder<OpModeState>()
         .universal(CommandScheduler::run)
-        .universal(::mUniversal)
         .universal(telemetry::update)
         .state(OpModeState.INIT)
         .onEnter(::setup)
@@ -89,10 +92,9 @@ open class CommandOpMode : LinearOpMode() {
         }
     }
 
-    open fun mInit() {}
+    abstract fun mInit()
     open fun mInitLoop() {}
     open fun mStart() {}
     open fun mLoop() {}
     open fun mStop() {}
-    open fun mUniversal() {}
 }

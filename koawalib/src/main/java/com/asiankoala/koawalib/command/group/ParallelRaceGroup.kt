@@ -3,13 +3,17 @@ package com.asiankoala.koawalib.command.group
 import com.asiankoala.koawalib.command.commands.Command
 import java.util.*
 
+/**
+ * Run multiple commands in parallel until one of them finish
+ * @param commands Commands to run in parallel
+ */
 class ParallelRaceGroup(vararg commands: Command) : CommandGroupBase() {
     private val commands: MutableSet<Command> = HashSet()
     private var mRunsWhenDisabled = false
     private var finished = true
 
     override fun addCommands(vararg commands: Command) {
-        requireUngrouped(*commands)
+        assertUngrouped(*commands)
 
         if (!finished) {
             throw IllegalStateException("Cannot add commands to group while group is running")

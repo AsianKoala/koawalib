@@ -3,6 +3,16 @@ package com.asiankoala.koawalib.gamepad.functionality
 import com.asiankoala.koawalib.math.Vector
 import com.asiankoala.koawalib.util.Periodic
 
+/**
+ * Stick functionality
+ * @property xAxis x value of stick
+ * @property yAxis y value of stick
+ * @property xSupplier function returning xAxis
+ * @property ySupplier function returning yAxis
+ * @property vector vector of xAxis, yAxis
+ * @property angle angle of stick on [-180,180] interval
+ * @property norm magnitude of stick
+ */
 interface Stick : Periodic {
     val xAxis: Double
 

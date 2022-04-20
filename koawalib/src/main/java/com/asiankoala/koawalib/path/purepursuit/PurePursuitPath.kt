@@ -7,6 +7,7 @@ import kotlin.math.absoluteValue
  * Path movements should be continuous and fluid, and as such commands shouldn't adapt to the path,
  * rather the path should be adapted to the commands.
  */
+@Deprecated("use gvf")
 class PurePursuitPath(private val waypoints: List<Waypoint>) {
 
     var isFinished = false

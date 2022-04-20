@@ -13,13 +13,6 @@ infix fun Double.epsilonNotEqual(other: Double) = (this - other).absoluteValue >
 val Double.radians get() = Math.toRadians(this)
 val Double.degrees get() = Math.toDegrees(this)
 
-fun Double.clip(a: Double) = Range.clip(this, -a, a)
-
-fun rotatePoint(p: Vector, h: Double) = Vector(
-    h.cos * p.y + h.sin * p.x,
-    h.sin * p.y - h.cos * p.x
-)
-
 fun absMax(a: Double, b: Double): Double {
     return if(a.absoluteValue >= b.absoluteValue) a else b
 }
@@ -34,36 +27,8 @@ fun clamp(x: Double, a: Double, b: Double): Double {
     return x
 }
 
-// opposite of range
-fun maxify(input: Double, min: Double): Double {
-    return when (input) {
-        in 0.0..min -> min
-        in -min..0.0 -> -min
-        else -> input
-    }
-}
-
 fun cubicScaling(k: Double, x: Double): Double {
     return (1 - k) * x + k * x * x * x
-}
-
-fun clipIntersection(start: Vector, end: Vector, robot: Vector): Vector {
-    var startX = start.y
-    var startY = start.x
-
-    if (start.x == end.x)
-        startX += 0.01
-
-    if (start.y == end.y)
-        startY += 0.01
-
-    val mStart = Vector(startX, startY)
-
-    val m1 = (end.y - mStart.y) / (end.x - mStart.x)
-    val m2 = -1.0 / m1
-    val xClip = (-m2 * robot.x + robot.y + m1 * mStart.x - mStart.y) / (m1 - m2)
-    val yClip = m1 * (xClip - mStart.x) + mStart.y
-    return Vector(xClip, yClip)
 }
 
 fun stupidSign(a: Double): Int = if (a > 0) 1 else -1
@@ -74,12 +39,6 @@ val Double.cos get() = cos(this)
 val Int.d get() = this.toDouble()
 val Float.d get() = this.toDouble()
 
-fun wrap(n: Double, lower: Double, upper: Double): Double {
-    if(lower > upper) Logger.logError("lower > upper")
-    return (((n - lower) % (upper - lower)) + (upper - lower)) % (upper - lower) + lower;
-}
-
-
 val Double.angleWrap: Double
     get() {
         var wrapped = this
@@ -87,50 +46,6 @@ val Double.angleWrap: Double
         while(wrapped < -PI) wrapped += TAU
         return wrapped
     }
-//    get() = wrap(this, -180.0, 180.0)
-
-val MATRIX_E = Array2DRowRealMatrix(arrayOf(doubleArrayOf(0.0, 1.0), doubleArrayOf(-1.0, 0.0)))
-val MATRIX_I2 = Array2DRowRealMatrix(arrayOf(doubleArrayOf(1.0, 0.0), doubleArrayOf(0.0, 1.0)))
-
-fun lerp(a: Double, b: Double, t: Double): Double {
-    return (b - a) * t + a
-}
-
-fun invLerp(a: Double, b: Double, l: Double): Double {
-    return (l - a) / (b - a)
-}
-
-fun normalizeAngle(angle: Double): Double {
-    var ang = angle % (2 * PI)
-    if (ang < 0) {
-        ang += 2 * PI
-    }
-    return ang
-}
-
-fun toHeading(angle: Double): Double {
-    var n = normalizeAngle(angle)
-    if (n > PI) {
-        n -= 2 * PI
-    }
-    return n
-}
-
-fun sigmoid(x: Double, k: Double): Double {
-    return 1.0 / (1 + E.pow(-k * x))
-}
-
-fun minimize(func: (Double) -> Double, guess: Double): Double {
-    var currentGuess: Double
-    var nextGuess = guess
-    val d = 0.0001
-    do {
-        currentGuess = nextGuess
-        val deriv = (func(currentGuess - d * 0.5) + func(currentGuess + d * 0.5)) / d
-        nextGuess = guess - func(currentGuess) / deriv
-    } while ((nextGuess - currentGuess).absoluteValue > 1.0 / 10000)
-    return nextGuess
-}
 
 fun clipToLine(start: Vector, end: Vector, robot: Vector): Vector {
     var startX = start.x
@@ -195,14 +110,6 @@ fun lineCircleIntersection(
         intersections.add(Vector((xLeft + xRight) / div, (yLeft + yRight) / div))
         intersections.add(Vector((xLeft - xRight) / div, (yLeft - yRight) / div))
     }
-//        var closest = Point(69420.0, -69420.0)
-//        for (p in intersections) { // add circle center offsets
-//            val offsetPoint = Point(p.x + center.x, p.y + center.y)
-//            if (offsetPoint.distance(endPoint) < closest.distance(endPoint)) {
-//                closest = offsetPoint
-//            }
-//        }
-//        return closest
     return intersections.map { it + center }
 }
 

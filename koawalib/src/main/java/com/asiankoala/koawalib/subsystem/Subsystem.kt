@@ -18,7 +18,7 @@ interface Subsystem : Periodic {
         return CommandScheduler.getDefaultCommand(this)
     }
 
-    fun getCurrentCommand(): Command {
+    fun getCurrentCommand(): Command? {
         return CommandScheduler.requiring(this)
     }
 

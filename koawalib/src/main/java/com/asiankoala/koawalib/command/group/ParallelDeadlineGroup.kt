@@ -3,6 +3,11 @@ package com.asiankoala.koawalib.command.group
 import com.asiankoala.koawalib.command.commands.Command
 import java.util.*
 
+/**
+ * Run commands in parallel until the deadline command is finished
+ * @param mDeadline Deadline command
+ * @param commands Commands to run in parallel
+ */
 class ParallelDeadlineGroup(private var mDeadline: Command, vararg commands: Command) : CommandGroupBase() {
     // maps commands in this group to whether they are still running
     private val mCommands: MutableMap<Command, Boolean> = HashMap()
@@ -16,7 +21,7 @@ class ParallelDeadlineGroup(private var mDeadline: Command, vararg commands: Com
     }
 
     override fun addCommands(vararg commands: Command) {
-        requireUngrouped(*commands)
+        assertUngrouped(*commands)
 
         check(!mCommands.containsValue(true)) { "Commands cannot be added to a CommandGroup while the group is running" }
 

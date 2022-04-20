@@ -49,12 +49,12 @@ class KEncoder(
         _velocity = (currPosition.second - oldPosition.second) / scalar
 
         if(isRevEncoder) {
-            _velocity = inverseOverflow(motor.getRawMotorVelocity * encoderMultiplier, _velocity)
+            _velocity = inverseOverflow(motor.rawMotorVelocity * encoderMultiplier, _velocity)
         }
     }
 
     fun zero(newPosition: Double = 0.0): KEncoder {
-        _position = motor.getRawMotorPosition
+        _position = motor.rawMotorPosition
         offset = newPosition * ticksPerUnit - _position
         prevEncoderPositions.clear()
         prevEncoderPositions.add(Pair(clock.seconds(), _position))
@@ -65,7 +65,7 @@ class KEncoder(
 
     fun update() {
         prevEncoderPositions.add(Pair(clock.seconds(), _position))
-        _position = motor.getRawMotorPosition
+        _position = motor.rawMotorPosition
         attemptVelUpdate()
     }
 

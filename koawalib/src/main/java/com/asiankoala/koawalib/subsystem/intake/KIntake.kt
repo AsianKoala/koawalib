@@ -7,18 +7,18 @@ import com.asiankoala.koawalib.subsystem.DeviceSubsystem
 open class KIntake(private val motor: KMotor, private val MAX_POWER: Double) : DeviceSubsystem() {
 
     fun turnOn() {
-        motor.setSpeed(MAX_POWER)
+        motor.power = MAX_POWER
     }
 
     fun turnReverse() {
-        motor.setSpeed(-MAX_POWER)
+        motor.power = -MAX_POWER
     }
 
     fun turnOff() {
-        motor.setSpeed(0.0)
+        motor.power = 0.0
     }
 
     fun setIntakeSpeed(speed: Double) {
-        motor.setSpeed(speed)
+        motor.power = speed
     }
 }

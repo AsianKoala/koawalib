@@ -28,7 +28,7 @@ class ConditionalCommand(private val onTrue: Command, private val onFalse: Comma
         get() = m_selectedCommand.isFinished
 
     init {
-        CommandGroupBase.requireUngrouped(onTrue, onFalse)
+        CommandGroupBase.assertUngrouped(onTrue, onFalse)
         CommandGroupBase.registerGroupedCommands(onTrue, onFalse)
         mRequirements.addAll(onTrue.getRequirements())
         mRequirements.addAll(onFalse.getRequirements())

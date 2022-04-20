@@ -6,13 +6,18 @@ import com.asiankoala.koawalib.hardware.sensor.IMUUtil.remapAxes
 import com.asiankoala.koawalib.math.angleWrap
 import com.asiankoala.koawalib.math.d
 import com.asiankoala.koawalib.logger.Logger
+import com.asiankoala.koawalib.util.Periodic
 import com.qualcomm.hardware.bosch.BNO055IMU
 import com.qualcomm.hardware.bosch.BNO055IMUImpl
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation
 
+/**
+ * koawalib's IMU implementation with init offset and velocity calc for all 3 axis
+ * Must call periodic() to poll the imu
+ */
 @Suppress("unused")
-class KIMU(name: String, axesOrder: AxesOrder, axesSigns: AxesSigns) : KDevice<BNO055IMUImpl>(name) {
+class KIMU(name: String, axesOrder: AxesOrder, axesSigns: AxesSigns) : KDevice<BNO055IMUImpl>(name), Periodic {
     private val headingOffset: Double
     private val rollOffset: Double
     private val pitchOffset: Double
@@ -67,7 +72,7 @@ class KIMU(name: String, axesOrder: AxesOrder, axesSigns: AxesSigns) : KDevice<B
         }
 
 
-    fun update() {
+    override fun periodic() {
         isReadFresh = true
         lastAngularOrientation = device.angularOrientation
     }

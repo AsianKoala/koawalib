@@ -4,6 +4,12 @@ import kotlin.math.absoluteValue
 import kotlin.math.max
 import kotlin.math.sqrt
 
+/**
+ * Asymmetric trapezoidal motion profile
+ * @param startState start state of profile
+ * @param endState end state of profile
+ * @param constraints constraints the profile must obey
+ */
 class MotionProfile(
     startState: MotionState,
     private val endState: MotionState,

@@ -11,6 +11,11 @@ import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
 
+/**
+ * CommandScheduler runs all commands. Every loop the scheduler checks for newly scheduled commands, cancelled commands, finished commands,
+ * and handles them accordingly. Processing is done behind the scenes, so the main purpose of this class for the user
+ * is to schedule commands, mainly using [CommandScheduler.schedule]
+ */
 @Suppress("unused")
 object CommandScheduler {
     private val scheduledCommands: MutableList<Command> = ArrayList()
@@ -76,6 +81,7 @@ object CommandScheduler {
         Logger.logInfo("command ${this.name} canceled")
         scheduledCommands.remove(this)
         scheduledCommandRequirements.keys.removeAll(this.getRequirements())
+        toSchedule.remove(this)
     }
 
     internal fun run() {
@@ -119,9 +125,9 @@ object CommandScheduler {
 
             command.execute()
 
-//            if(command !is Watchdog && command !is InfiniteCommand && command !is CommandGroupBase) {
-//                Logger.logInfo("${command.name} executed")
-//            }
+            if(command !is Watchdog && command !is InfiniteCommand && command !is CommandGroupBase) {
+                Logger.logDebug("${command.name} executed")
+            }
 
             if (command.isFinished) {
                 command.end()
@@ -132,6 +138,14 @@ object CommandScheduler {
         }
     }
 
+    private fun scheduleForState(state: OpModeState, command: Command) {
+        schedule(command.waitUntil { opModeInstance.opmodeState == state })
+    }
+
+    /**
+     * Schedule commands
+     * @param commands commands to schedule
+     */
     fun schedule(vararg commands: Command) {
         commands.forEach {
             toSchedule.add(it)
@@ -139,10 +153,18 @@ object CommandScheduler {
         }
     }
 
+    /**
+     * Cancel commands, removing them from the scheduler and ending them
+     * @param commands commands to cancel
+     */
     fun cancel(vararg commands: Command) {
         toCancel.addAll(commands)
     }
 
+    /**
+     * Register n subsystems
+     * @param requestedSubsystems subsystems to register
+     */
     fun registerSubsystem(vararg requestedSubsystems: Subsystem) {
         requestedSubsystems.forEach {
             Logger.logInfo("registered subsystem ${it.name}")
@@ -150,11 +172,20 @@ object CommandScheduler {
         }
     }
 
+    /**
+     * Unregister subsystems
+     * @param requestedSubsystems subsystems to unregister
+     */
     fun unregisterSubsystem(vararg requestedSubsystems: Subsystem) {
         requestedSubsystems.forEach { Logger.logInfo("unregistered subsystem ${it.name}") }
         this.subsystems.keys.removeAll(requestedSubsystems)
     }
 
+    /**
+     * Set the default command of a subsystem. Default commands run when no other command requires the specified subsystem
+     * @param subsystem subsystem to set default command of
+     * @param command the default command
+     */
     fun setDefaultCommand(subsystem: Subsystem, command: Command) {
         if (!command.getRequirements().contains(subsystem)) {
             Logger.logError("command ${command.name}: default commands must require subsystem")
@@ -172,39 +203,58 @@ object CommandScheduler {
         subsystems[subsystem] = command
     }
 
+    /**
+     * Get default command of a subsystem
+     * @param subsystem queried subsystem
+     * @return queried subsystem's default command
+     */
     fun getDefaultCommand(subsystem: Subsystem): Command {
         return subsystems[subsystem]!!
     }
 
-    fun cancelAll() {
-        scheduledCommands.forEach(Command::cancel)
-        Logger.logInfo("canceled all commands")
-    }
-
+    /**
+     * Get if commands are scheduled
+     * @param commands queried commands
+     * @return if all commands are currently scheduled
+     */
     fun isScheduled(vararg commands: Command): Boolean {
         return scheduledCommands.containsAll(commands.toList())
     }
 
-    fun requiring(subsystem: Subsystem): Command {
-        return scheduledCommandRequirements[subsystem]!!
+    /**
+     * Get the command that is requiring a subsystem
+     * @param subsystem queried subsystem
+     * @return the command that is requiring the queried subsystem, if it exists
+     */
+    fun requiring(subsystem: Subsystem): Command? {
+        return scheduledCommandRequirements[subsystem]
     }
 
+    /**
+     * Schedule a watchdog
+     * @see Watchdog
+     * @param condition condition to schedule the watchdog's command
+     * @param command the watchdog's command
+     */
     fun scheduleWatchdog(condition: () -> Boolean, command: Command) {
         schedule(Watchdog(condition, command).withName(command.name))
         Logger.logInfo("added watchdog ${command.name}")
         amountOfWatchdogs++
     }
 
-    fun scheduleForState(state: OpModeState, command: Command) {
-        schedule(command.waitUntil { opModeInstance.opmodeState == state })
-    }
-
+    /**
+     * Schedule a command upon entering opmode init
+     * @param command command to be scheduled
+     */
     fun scheduleForInit(command: Command) {
         scheduleForState(OpModeState.INIT, command)
     }
 
+    /**
+     * Schedule a command upon entering opmode start
+     * @param command command to be scheduled
+     */
     fun scheduleForStart(command: Command) {
         scheduleForState(OpModeState.START, command)
     }
-
 }

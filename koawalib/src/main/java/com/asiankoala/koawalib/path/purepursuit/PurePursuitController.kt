@@ -7,6 +7,7 @@ import kotlin.math.hypot
 import kotlin.math.sign
 
 @Suppress("unused")
+@Deprecated("use gvf")
 object PurePursuitController {
 
     fun goToPosition(

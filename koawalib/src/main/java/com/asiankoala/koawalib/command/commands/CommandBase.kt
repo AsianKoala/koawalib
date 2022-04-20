@@ -8,9 +8,11 @@ import com.asiankoala.koawalib.subsystem.Subsystem
  */
 abstract class CommandBase : Command {
     internal val mRequirements: MutableSet<Subsystem> = HashSet()
+    private var _name: String? = null
+    override val name: String get() = _name ?: this.javaClass.simpleName
 
     /**
-     * @param
+     * @param subsystems subsystem requirements of the command
      */
     protected fun addRequirements(vararg subsystems: Subsystem) {
         mRequirements.addAll(subsystems)
@@ -27,9 +29,6 @@ abstract class CommandBase : Command {
         _name = commandName
         return this
     }
-
-    private var _name: String? = null
-    override val name: String get() = _name ?: this.javaClass.simpleName
 
     override fun toString(): String {
         return name

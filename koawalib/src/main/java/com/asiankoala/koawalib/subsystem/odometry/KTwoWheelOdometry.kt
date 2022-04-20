@@ -42,7 +42,7 @@ class KTwoWheelOdometry(
 
     override fun periodic() {
         encoders.forEach(KEncoder::update)
-        imu.update()
+        imu.periodic()
 
         if(shouldReset) {
             reset()

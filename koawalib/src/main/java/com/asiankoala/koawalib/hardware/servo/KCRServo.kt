@@ -4,7 +4,9 @@ import com.asiankoala.koawalib.hardware.KDevice
 import com.asiankoala.koawalib.math.epsilonNotEqual
 import com.qualcomm.robotcore.hardware.CRServo
 
-@Suppress("unused")
+/**
+ * koawalib CRServo device
+ */
 class KCRServo(name: String) : KDevice<CRServo>(name) {
 
     var speed: Double = 0.0

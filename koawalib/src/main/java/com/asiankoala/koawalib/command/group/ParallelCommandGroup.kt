@@ -3,11 +3,15 @@ package com.asiankoala.koawalib.command.group
 import com.asiankoala.koawalib.command.commands.Command
 import java.util.*
 
+/**
+ * Run multiple commands in parallel
+ * @param commands parallel commands
+ */
 open class ParallelCommandGroup(vararg commands: Command) : CommandGroupBase() {
     private val mCommands = HashMap<Command, Boolean>()
 
     override fun addCommands(vararg commands: Command) {
-        requireUngrouped(*commands)
+        assertUngrouped(*commands)
 
         if (mCommands.containsValue(true)) {
             throw IllegalStateException("Commands cannot be added to a CommandGroup while the group is running")

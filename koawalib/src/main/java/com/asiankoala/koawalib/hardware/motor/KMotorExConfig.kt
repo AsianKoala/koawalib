@@ -4,6 +4,9 @@ import com.asiankoala.koawalib.control.FeedforwardConstants
 import com.asiankoala.koawalib.control.MotorControlType
 import com.asiankoala.koawalib.control.PIDConstants
 
+/**
+ * Config needed for creating a
+ */
 data class KMotorExConfig(
     val name: String,
     val ticksPerUnit: Double,

@@ -3,6 +3,7 @@ package com.asiankoala.koawalib.path.purepursuit
 import com.asiankoala.koawalib.math.Vector
 import com.asiankoala.koawalib.math.radians
 
+@Deprecated("use gvf")
 data class Waypoint(
     val x: Double,
     val y: Double,

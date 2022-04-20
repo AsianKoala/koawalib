@@ -43,11 +43,6 @@ class KGamepad(private val gamepad: Gamepad) : Periodic {
         leftTrigger, rightTrigger, leftStick, rightStick, dpadUp, dpadDown, dpadLeft, dpadRight
     )
 
-    fun scheduleStick(s: Stick, f: (Double, Double) -> Command): KGamepad {
-        CommandScheduler.scheduleWatchdog({ true }, f.invoke(s.xAxis, s.yAxis))
-        return this
-    }
-
     override fun periodic() {
         periodics.forEach(Periodic::periodic)
     }

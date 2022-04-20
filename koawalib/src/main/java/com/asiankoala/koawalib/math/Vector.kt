@@ -3,6 +3,11 @@ package com.asiankoala.koawalib.math
 import com.acmerobotics.roadrunner.geometry.Vector2d
 import kotlin.math.*
 
+/**
+ * Represents 2D Vectors
+ * @property norm norm (magnitude) of the vector
+ * @property angle angle vector makes with the x axis
+ */
 data class Vector(
     val x: Double = 0.0,
     val y: Double = 0.0

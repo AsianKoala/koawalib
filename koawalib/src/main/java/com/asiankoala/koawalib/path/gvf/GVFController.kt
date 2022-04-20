@@ -9,12 +9,24 @@ import kotlin.math.PI
 import kotlin.math.absoluteValue
 import kotlin.math.sign
 
+/**
+ *  Guided Vector Field follower
+ *  Uses roadrunner path generation internally
+ *  @link https://arxiv.org/pdf/1610.04391.pdf
+ *  @param path roadrunner path
+ *  @param kN normal path attraction
+ *  @param kOmega heading weight
+ *  @param kF end displacement weight
+ *  @param epsilon allowed absolute and projected error
+ *  @param errorMap error map to transform normal displacement error
+ *  @property isFinished path finish state
+ */
 class GVFController(
     private val path: Path,
     private val kN: Double,
     private val kOmega: Double,
     private val kF: Double,
-    private val kEnd: Double,
+    private val epsilon: Double,
     private val errorMap: (Double) -> Double = { it },
 ) {
 
@@ -43,7 +55,7 @@ class GVFController(
         val displacementVec = projected - pose.vec()
         val orientation = displacementVec.toVec() cross tangentVec.toVec()
         val error = displacementVec.norm() * orientation.sign
-        val vectorFieldResult = tangentVec - (normalVec * (kN * errorMap.invoke(error)))
+        val vectorFieldResult = tangentVec - normalVec * kN * errorMap.invoke(error)
 
         val optimalHeading = vectorFieldResult.angle()
         val headingError = (optimalHeading - pose.heading).angleWrap
@@ -53,10 +65,10 @@ class GVFController(
         var translationalPower = vectorFieldResult * (projectedDisplacement / kF)
 
         val absoluteDisplacement = path.end().vec() - pose.vec()
-        isFinished = projectedDisplacement < kEnd && absoluteDisplacement.norm() < kEnd
+        isFinished = projectedDisplacement < epsilon && absoluteDisplacement.norm() < epsilon
         val absoluteVector = absoluteDisplacement * (projectedDisplacement / kF)
 
-        if(isFinished) translationalPower =  absoluteVector
+        if(isFinished) translationalPower = absoluteVector
         if(translationalPower.norm() > 1.0) translationalPower /= translationalPower.norm()
 
         val rotated = translationalPower.rotated(PI / 2.0 - pose.heading)

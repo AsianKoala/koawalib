@@ -1,5 +1,8 @@
 package com.asiankoala.koawalib.hardware.sensor
 
+/**
+ * Represents signs of x,y,z axes on IMU
+ */
 enum class AxesSigns(@JvmField val bVal: Int) {
     PPP(0),
     PPN(1),

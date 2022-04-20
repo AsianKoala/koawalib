@@ -32,7 +32,7 @@ object GVFTest {
 
         while(!controller.isFinished) {
             val output = controller.update(pose)
-            pose = pose.plusWrap(output.scale(dt))
+            pose = pose.plusWrap(output.first * dt)
             xRobot.add(pose.x)
             yRobot.add(pose.y)
         }

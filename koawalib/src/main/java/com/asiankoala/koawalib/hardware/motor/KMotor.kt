@@ -10,18 +10,25 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.util.Range
 import kotlin.math.absoluteValue
 
-open class KMotor(name: String) : KDevice<DcMotorEx>(name), KDouble {
+/**
+ * The koawalib standard open-loop motor. Default settings are zeroPowerBehavior: float and direction: forward
+ * @see KMotorEx for closed-loop control
+ */
+open class KMotor(name: String) : KDevice<DcMotorEx>(name) {
     private var powerMultiplier = 1.0
 
-    fun setSpeed(speed: Double) {
-        this.power = speed
-    }
+    /**
+     * raw motor position (ticks, no offset)
+     */
+    val rawMotorPosition get() = device.currentPosition.d
 
-    val getRawMotorPosition get() = device.currentPosition.d
-    val getRawMotorVelocity get() = device.velocity
+    /**
+     * raw motor velocity (ticks)
+     */
+    val rawMotorVelocity get() = device.velocity
 
-    private var power: Double = 0.0
-        private set(value) {
+    var power: Double = 0.0
+        set(value) {
             val clipped = Range.clip(value, -1.0, 1.0) * powerMultiplier
             if (clipped epsilonNotEqual field && (clipped == 0.0 || clipped.absoluteValue == 1.0 || (clipped - field).absoluteValue > 0.005)) {
                 field = clipped
@@ -45,36 +52,44 @@ open class KMotor(name: String) : KDevice<DcMotorEx>(name), KDouble {
             field = value
         }
 
+    /**
+     * Return this motor with brake mode
+     */
     val brake: KMotor
         get() {
             zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
             return this
         }
 
+    /**
+     * Return this motor with float mode
+     */
     val float: KMotor
         get() {
             zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
             return this
         }
 
+    /**
+     * Return this motor with direction forward
+     */
     val forward: KMotor
         get() {
             direction = DcMotorSimple.Direction.FORWARD
             return this
         }
 
+    /**
+     * Return this motor with direction backward
+     */
     val reverse: KMotor
         get() {
             direction = DcMotorSimple.Direction.REVERSE
             return this
         }
 
-    override fun invokeDouble(): Double {
-        return power
-    }
-
     init {
         device.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
-        device.zeroPowerBehavior = zeroPowerBehavior
+        device.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
     }
 }

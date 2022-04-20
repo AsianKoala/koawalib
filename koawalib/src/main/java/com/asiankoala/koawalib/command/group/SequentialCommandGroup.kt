@@ -3,6 +3,10 @@ package com.asiankoala.koawalib.command.group
 import com.asiankoala.koawalib.command.commands.Command
 import com.asiankoala.koawalib.logger.Logger
 
+/**
+ * Run multiple commands sequentially, finishing when the last one finishes
+ * @param commands Commands to run sequentially
+ */
 open class SequentialCommandGroup(vararg commands: Command) : CommandGroupBase() {
     private val mCommands: MutableList<Command> = ArrayList()
     private var mCurrentCommandIndex = -1
@@ -15,7 +19,7 @@ open class SequentialCommandGroup(vararg commands: Command) : CommandGroupBase()
     }
 
     final override fun addCommands(vararg commands: Command) {
-        requireUngrouped(*commands)
+        assertUngrouped(*commands)
         assert(mCurrentCommandIndex == -1) { "Commands cannot be added to a CommandGroup while the group is running" }
         registerGroupedCommands(*commands)
         for (command in commands) {

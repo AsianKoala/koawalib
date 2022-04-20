@@ -3,7 +3,7 @@ package com.asiankoala.koawalib.hardware.sensor
 import com.qualcomm.hardware.bosch.BNO055IMU
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder
 
-object IMUUtil {
+internal object IMUUtil {
     /**
      * Remap BNO055 IMU axes and signs. For reference, the default order is [AxesOrder.ZYX].
      * Call after [BNO055IMU.initialize].

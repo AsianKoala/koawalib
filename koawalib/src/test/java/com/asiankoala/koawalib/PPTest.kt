@@ -36,7 +36,7 @@ object PPTest {
 
         while(!path.isFinished) {
             val output = path.update(pose, 2.0)
-            val vec = Vector(output.first.x, output.first.y).scale(dt)
+            val vec = Vector(output.first.x, output.first.y) * dt
             val add = vec.rotate(pose.heading - 90.0.radians)
             pose = Pose(pose.vec + add, output.second)
             xRobot.add(pose.x)

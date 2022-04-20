@@ -27,6 +27,6 @@ open class KMecanumDrive(
         val wheels = processPowers(powers)
         val absMax = wheels.maxOf { it.absoluteValue }
         val scalar = if (absMax > 1.0) absMax else 1.0
-        motors.forEachIndexed { i, it -> it.setSpeed(wheels[i] / scalar) }
+        motors.forEachIndexed { i, it -> it.power = wheels[i] / scalar }
     }
 }
