@@ -1,8 +1,6 @@
 package com.asiankoala.koawalib.gamepad
 
-import com.asiankoala.koawalib.gamepad.functionality.Button
 import com.asiankoala.koawalib.util.KDouble
-import com.asiankoala.koawalib.util.Periodic
 import kotlin.math.absoluteValue
 
 @Suppress("unused")

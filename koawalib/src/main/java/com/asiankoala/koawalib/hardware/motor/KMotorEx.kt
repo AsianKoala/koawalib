@@ -21,7 +21,7 @@ import kotlin.math.absoluteValue
  */
 @Suppress("unused")
 class KMotorEx(private val config: KMotorExConfig) : KMotor(config.name) {
-    private val encoder = KEncoder(this, config.ticksPerUnit, config.isRevEncoder)
+    val encoder = KEncoder(this, config.ticksPerUnit, config.isRevEncoder)
 
     private val controller by lazy {
         val c = PIDFController(
