@@ -46,4 +46,8 @@ data class Vector(
     operator fun unaryMinus() = this * -1.0
 
     override fun toString() = String.format("%.2f, %.2f", x, y)
+
+    companion object {
+        fun unitFromAngle(angle: Double): Vector = Vector(angle.cos, angle.sin)
+    }
 }

@@ -32,6 +32,11 @@ $dokka.location:com.asiankoala.koawalib.command.commands/ConditionalCommand/end/
 $dokka.location:com.asiankoala.koawalib.command.commands/ConditionalCommand/execute/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-conditional-command/execute.html
 $dokka.location:com.asiankoala.koawalib.command.commands/ConditionalCommand/initialize/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-conditional-command/initialize.html
 $dokka.location:com.asiankoala.koawalib.command.commands/ConditionalCommand/isFinished/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-conditional-command/is-finished.html
+$dokka.location:com.asiankoala.koawalib.command.commands/GVFCommand///PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-g-v-f-command/index.html
+$dokka.location:com.asiankoala.koawalib.command.commands/GVFCommand/GVFCommand/#com.asiankoala.koawalib.subsystem.drive.KMecanumOdoDrive#com.acmerobotics.roadrunner.path.Path#kotlin.Double#kotlin.Double#kotlin.Double#kotlin.Double#kotlin.Double#kotlin.Function1[kotlin.Double,kotlin.Double]/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-g-v-f-command/-g-v-f-command.html
+$dokka.location:com.asiankoala.koawalib.command.commands/GVFCommand/end/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-g-v-f-command/end.html
+$dokka.location:com.asiankoala.koawalib.command.commands/GVFCommand/execute/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-g-v-f-command/execute.html
+$dokka.location:com.asiankoala.koawalib.command.commands/GVFCommand/isFinished/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-g-v-f-command/is-finished.html
 $dokka.location:com.asiankoala.koawalib.command.commands/InfiniteCommand///PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-infinite-command/index.html
 $dokka.location:com.asiankoala.koawalib.command.commands/InfiniteCommand/InfiniteCommand/#kotlin.Function0[kotlin.Unit]#kotlin.Array[com.asiankoala.koawalib.subsystem.Subsystem]/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-infinite-command/-infinite-command.html
 $dokka.location:com.asiankoala.koawalib.command.commands/InfiniteCommand/execute/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-infinite-command/execute.html
@@ -43,12 +48,6 @@ $dokka.location:com.asiankoala.koawalib.command.commands/MecanumDriveCommand///P
 $dokka.location:com.asiankoala.koawalib.command.commands/MecanumDriveCommand/MecanumDriveCommand/#com.asiankoala.koawalib.subsystem.drive.KMecanumDrive#com.asiankoala.koawalib.gamepad.functionality.Stick#com.asiankoala.koawalib.gamepad.functionality.Stick#kotlin.Double#kotlin.Double#kotlin.Double#kotlin.Double#kotlin.Double#kotlin.Double#com.asiankoala.koawalib.util.Alliance#kotlin.Boolean#kotlin.Boolean#kotlin.Function0[kotlin.Double]#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-mecanum-drive-command/-mecanum-drive-command.html
 $dokka.location:com.asiankoala.koawalib.command.commands/MecanumDriveCommand/execute/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-mecanum-drive-command/execute.html
 $dokka.location:com.asiankoala.koawalib.command.commands/MecanumDriveCommand/isFinished/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-mecanum-drive-command/is-finished.html
-$dokka.location:com.asiankoala.koawalib.command.commands/PathCommand///PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-path-command/index.html
-$dokka.location:com.asiankoala.koawalib.command.commands/PathCommand/PathCommand/#com.asiankoala.koawalib.subsystem.drive.KMecanumOdoDrive#com.asiankoala.koawalib.path.purepursuit.PurePursuitPath#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-path-command/-path-command.html
-$dokka.location:com.asiankoala.koawalib.command.commands/PathCommand/end/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-path-command/end.html
-$dokka.location:com.asiankoala.koawalib.command.commands/PathCommand/execute/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-path-command/execute.html
-$dokka.location:com.asiankoala.koawalib.command.commands/PathCommand/initialize/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-path-command/initialize.html
-$dokka.location:com.asiankoala.koawalib.command.commands/PathCommand/isFinished/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-path-command/is-finished.html
 $dokka.location:com.asiankoala.koawalib.command.commands/WaitCommand///PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-wait-command/index.html
 $dokka.location:com.asiankoala.koawalib.command.commands/WaitCommand/WaitCommand/#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-wait-command/-wait-command.html
 $dokka.location:com.asiankoala.koawalib.command.commands/WaitCommand/end/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-wait-command/end.html
@@ -177,9 +176,7 @@ $dokka.location:com.asiankoala.koawalib.gamepad/KAxis.Companion/DEFAULT_TRIGGER_
 $dokka.location:com.asiankoala.koawalib.gamepad/KAxis///PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad/-k-axis/index.html
 $dokka.location:com.asiankoala.koawalib.gamepad/KAxis/KAxis/#kotlin.Function0[kotlin.Double]/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad/-k-axis/-k-axis.html
 $dokka.location:com.asiankoala.koawalib.gamepad/KAxis/inverted/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad/-k-axis/inverted.html
-$dokka.location:com.asiankoala.koawalib.gamepad/KAxis/invokeBoolean/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad/-k-axis/invoke-boolean.html
 $dokka.location:com.asiankoala.koawalib.gamepad/KAxis/invokeDouble/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad/-k-axis/invoke-double.html
-$dokka.location:com.asiankoala.koawalib.gamepad/KAxis/setTriggerThreshold/#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad/-k-axis/set-trigger-threshold.html
 $dokka.location:com.asiankoala.koawalib.gamepad/KButton///PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad/-k-button/index.html
 $dokka.location:com.asiankoala.koawalib.gamepad/KButton/KButton/#kotlin.Function0[kotlin.Boolean]/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad/-k-button/-k-button.html
 $dokka.location:com.asiankoala.koawalib.gamepad/KButton/invokeBoolean/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad/-k-button/invoke-boolean.html
@@ -220,6 +217,11 @@ $dokka.location:com.asiankoala.koawalib.gamepad/KStick/xAxis/#/PointingToDeclara
 $dokka.location:com.asiankoala.koawalib.gamepad/KStick/xInverted/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad/-k-stick/x-inverted.html
 $dokka.location:com.asiankoala.koawalib.gamepad/KStick/yAxis/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad/-k-stick/y-axis.html
 $dokka.location:com.asiankoala.koawalib.gamepad/KStick/yInverted/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gamepad/-k-stick/y-inverted.html
+$dokka.location:com.asiankoala.koawalib.gvf////PointingToDeclaration/koawalib/com.asiankoala.koawalib.gvf/index.html
+$dokka.location:com.asiankoala.koawalib.gvf/GVFController///PointingToDeclaration/koawalib/com.asiankoala.koawalib.gvf/-g-v-f-controller/index.html
+$dokka.location:com.asiankoala.koawalib.gvf/GVFController/GVFController/#com.acmerobotics.roadrunner.path.Path#kotlin.Double#kotlin.Double#kotlin.Double#kotlin.Double#kotlin.Double#kotlin.Function1[kotlin.Double,kotlin.Double]/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gvf/-g-v-f-controller/-g-v-f-controller.html
+$dokka.location:com.asiankoala.koawalib.gvf/GVFController/isFinished/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gvf/-g-v-f-controller/is-finished.html
+$dokka.location:com.asiankoala.koawalib.gvf/GVFController/update/#com.asiankoala.koawalib.math.Pose/PointingToDeclaration/koawalib/com.asiankoala.koawalib.gvf/-g-v-f-controller/update.html
 $dokka.location:com.asiankoala.koawalib.hardware.motor////PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/index.html
 $dokka.location:com.asiankoala.koawalib.hardware.motor/KMotor///PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor/index.html
 $dokka.location:com.asiankoala.koawalib.hardware.motor/KMotor/KMotor/#kotlin.String/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor/-k-motor.html
@@ -234,6 +236,7 @@ $dokka.location:com.asiankoala.koawalib.hardware.motor/KMotorEx.Companion///Poin
 $dokka.location:com.asiankoala.koawalib.hardware.motor/KMotorEx.Companion/createMotor/#kotlin.String#kotlin.Double#kotlin.Boolean#com.asiankoala.koawalib.control.MotorControlType#com.asiankoala.koawalib.control.PIDConstants#com.asiankoala.koawalib.control.FeedforwardConstants#kotlin.Double#kotlin.Double#kotlin.Double#kotlin.Double#kotlin.Double#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor-ex/-companion/create-motor.html
 $dokka.location:com.asiankoala.koawalib.hardware.motor/KMotorEx///PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor-ex/index.html
 $dokka.location:com.asiankoala.koawalib.hardware.motor/KMotorEx/KMotorEx/#com.asiankoala.koawalib.hardware.motor.KMotorExConfig/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor-ex/-k-motor-ex.html
+$dokka.location:com.asiankoala.koawalib.hardware.motor/KMotorEx/encoder/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor-ex/encoder.html
 $dokka.location:com.asiankoala.koawalib.hardware.motor/KMotorEx/followMotionProfile/#com.acmerobotics.roadrunner.profile.MotionProfile/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor-ex/follow-motion-profile.html
 $dokka.location:com.asiankoala.koawalib.hardware.motor/KMotorEx/followMotionProfile/#com.acmerobotics.roadrunner.profile.MotionState#com.acmerobotics.roadrunner.profile.MotionState/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor-ex/follow-motion-profile.html
 $dokka.location:com.asiankoala.koawalib.hardware.motor/KMotorEx/followMotionProfile/#kotlin.Double#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor-ex/follow-motion-profile.html
@@ -348,6 +351,8 @@ $dokka.location:com.asiankoala.koawalib.math/Pose/toString/#/PointingToDeclarati
 $dokka.location:com.asiankoala.koawalib.math/Pose/vec/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.math/-pose/vec.html
 $dokka.location:com.asiankoala.koawalib.math/Pose/x/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.math/-pose/x.html
 $dokka.location:com.asiankoala.koawalib.math/Pose/y/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.math/-pose/y.html
+$dokka.location:com.asiankoala.koawalib.math/Vector.Companion///PointingToDeclaration/koawalib/com.asiankoala.koawalib.math/-vector/-companion/index.html
+$dokka.location:com.asiankoala.koawalib.math/Vector.Companion/unitFromAngle/#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.math/-vector/-companion/unit-from-angle.html
 $dokka.location:com.asiankoala.koawalib.math/Vector///PointingToDeclaration/koawalib/com.asiankoala.koawalib.math/-vector/index.html
 $dokka.location:com.asiankoala.koawalib.math/Vector/Vector/#com.asiankoala.koawalib.math.Vector/PointingToDeclaration/koawalib/com.asiankoala.koawalib.math/-vector/-vector.html
 $dokka.location:com.asiankoala.koawalib.math/Vector/Vector/#kotlin.Double#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.math/-vector/-vector.html
@@ -367,36 +372,6 @@ $dokka.location:com.asiankoala.koawalib.math/Vector/unaryMinus/#/PointingToDecla
 $dokka.location:com.asiankoala.koawalib.math/Vector/vec/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.math/-vector/vec.html
 $dokka.location:com.asiankoala.koawalib.math/Vector/x/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.math/-vector/x.html
 $dokka.location:com.asiankoala.koawalib.math/Vector/y/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.math/-vector/y.html
-$dokka.location:com.asiankoala.koawalib.path.gvf////PointingToDeclaration/koawalib/com.asiankoala.koawalib.path.gvf/index.html
-$dokka.location:com.asiankoala.koawalib.path.gvf/GVFController///PointingToDeclaration/koawalib/com.asiankoala.koawalib.path.gvf/-g-v-f-controller/index.html
-$dokka.location:com.asiankoala.koawalib.path.gvf/GVFController/GVFController/#com.acmerobotics.roadrunner.path.Path#kotlin.Double#kotlin.Double#kotlin.Double#kotlin.Double#kotlin.Function1[kotlin.Double,kotlin.Double]/PointingToDeclaration/koawalib/com.asiankoala.koawalib.path.gvf/-g-v-f-controller/-g-v-f-controller.html
-$dokka.location:com.asiankoala.koawalib.path.gvf/GVFController/isFinished/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.path.gvf/-g-v-f-controller/is-finished.html
-$dokka.location:com.asiankoala.koawalib.path.gvf/GVFController/update/#com.asiankoala.koawalib.math.Pose/PointingToDeclaration/koawalib/com.asiankoala.koawalib.path.gvf/-g-v-f-controller/update.html
-$dokka.location:com.asiankoala.koawalib.path.purepursuit////PointingToDeclaration/koawalib/com.asiankoala.koawalib.path.purepursuit/index.html
-$dokka.location:com.asiankoala.koawalib.path.purepursuit/PurePursuitController///PointingToDeclaration/koawalib/com.asiankoala.koawalib.path.purepursuit/-pure-pursuit-controller/index.html
-$dokka.location:com.asiankoala.koawalib.path.purepursuit/PurePursuitController/calcLookahead/#kotlin.collections.List[com.asiankoala.koawalib.path.purepursuit.Waypoint]#com.asiankoala.koawalib.math.Pose#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.path.purepursuit/-pure-pursuit-controller/calc-lookahead.html
-$dokka.location:com.asiankoala.koawalib.path.purepursuit/PurePursuitController/clipToPath/#kotlin.collections.List[com.asiankoala.koawalib.path.purepursuit.Waypoint]#com.asiankoala.koawalib.math.Vector/PointingToDeclaration/koawalib/com.asiankoala.koawalib.path.purepursuit/-pure-pursuit-controller/clip-to-path.html
-$dokka.location:com.asiankoala.koawalib.path.purepursuit/PurePursuitController/goToPosition/#com.asiankoala.koawalib.math.Pose#com.asiankoala.koawalib.math.Vector#kotlin.Boolean#kotlin.Double#kotlin.Double#kotlin.Double#kotlin.Double?#kotlin.Double#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.path.purepursuit/-pure-pursuit-controller/go-to-position.html
-$dokka.location:com.asiankoala.koawalib.path.purepursuit/PurePursuitController/pointTo/#kotlin.Double#kotlin.Double#kotlin.Double#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.path.purepursuit/-pure-pursuit-controller/point-to.html
-$dokka.location:com.asiankoala.koawalib.path.purepursuit/PurePursuitPath///PointingToDeclaration/koawalib/com.asiankoala.koawalib.path.purepursuit/-pure-pursuit-path/index.html
-$dokka.location:com.asiankoala.koawalib.path.purepursuit/PurePursuitPath/PurePursuitPath/#kotlin.collections.List[com.asiankoala.koawalib.path.purepursuit.Waypoint]/PointingToDeclaration/koawalib/com.asiankoala.koawalib.path.purepursuit/-pure-pursuit-path/-pure-pursuit-path.html
-$dokka.location:com.asiankoala.koawalib.path.purepursuit/PurePursuitPath/inverted/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.path.purepursuit/-pure-pursuit-path/inverted.html
-$dokka.location:com.asiankoala.koawalib.path.purepursuit/PurePursuitPath/isFinished/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.path.purepursuit/-pure-pursuit-path/is-finished.html
-$dokka.location:com.asiankoala.koawalib.path.purepursuit/PurePursuitPath/update/#com.asiankoala.koawalib.math.Pose#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.path.purepursuit/-pure-pursuit-path/update.html
-$dokka.location:com.asiankoala.koawalib.path.purepursuit/Waypoint///PointingToDeclaration/koawalib/com.asiankoala.koawalib.path.purepursuit/-waypoint/index.html
-$dokka.location:com.asiankoala.koawalib.path.purepursuit/Waypoint/Waypoint/#kotlin.Double#kotlin.Double#kotlin.Double#kotlin.Double?#kotlin.Double#kotlin.Double#kotlin.Double#kotlin.Boolean#kotlin.Double#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.path.purepursuit/-waypoint/-waypoint.html
-$dokka.location:com.asiankoala.koawalib.path.purepursuit/Waypoint/copy/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.path.purepursuit/-waypoint/copy.html
-$dokka.location:com.asiankoala.koawalib.path.purepursuit/Waypoint/deccelAngle/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.path.purepursuit/-waypoint/deccel-angle.html
-$dokka.location:com.asiankoala.koawalib.path.purepursuit/Waypoint/followDistance/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.path.purepursuit/-waypoint/follow-distance.html
-$dokka.location:com.asiankoala.koawalib.path.purepursuit/Waypoint/headingLockAngle/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.path.purepursuit/-waypoint/heading-lock-angle.html
-$dokka.location:com.asiankoala.koawalib.path.purepursuit/Waypoint/lowestSlowDownFromHeadingError/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.path.purepursuit/-waypoint/lowest-slow-down-from-heading-error.html
-$dokka.location:com.asiankoala.koawalib.path.purepursuit/Waypoint/maxMoveSpeed/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.path.purepursuit/-waypoint/max-move-speed.html
-$dokka.location:com.asiankoala.koawalib.path.purepursuit/Waypoint/maxTurnSpeed/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.path.purepursuit/-waypoint/max-turn-speed.html
-$dokka.location:com.asiankoala.koawalib.path.purepursuit/Waypoint/minAllowedHeadingError/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.path.purepursuit/-waypoint/min-allowed-heading-error.html
-$dokka.location:com.asiankoala.koawalib.path.purepursuit/Waypoint/point/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.path.purepursuit/-waypoint/point.html
-$dokka.location:com.asiankoala.koawalib.path.purepursuit/Waypoint/stop/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.path.purepursuit/-waypoint/stop.html
-$dokka.location:com.asiankoala.koawalib.path.purepursuit/Waypoint/x/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.path.purepursuit/-waypoint/x.html
-$dokka.location:com.asiankoala.koawalib.path.purepursuit/Waypoint/y/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.path.purepursuit/-waypoint/y.html
 $dokka.location:com.asiankoala.koawalib.subsystem.drive////PointingToDeclaration/koawalib/com.asiankoala.koawalib.subsystem.drive/index.html
 $dokka.location:com.asiankoala.koawalib.subsystem.drive/KMecanumDrive///PointingToDeclaration/koawalib/com.asiankoala.koawalib.subsystem.drive/-k-mecanum-drive/index.html
 $dokka.location:com.asiankoala.koawalib.subsystem.drive/KMecanumDrive/KMecanumDrive/#com.asiankoala.koawalib.hardware.motor.KMotor#com.asiankoala.koawalib.hardware.motor.KMotor#com.asiankoala.koawalib.hardware.motor.KMotor#com.asiankoala.koawalib.hardware.motor.KMotor/PointingToDeclaration/koawalib/com.asiankoala.koawalib.subsystem.drive/-k-mecanum-drive/-k-mecanum-drive.html
@@ -412,9 +387,6 @@ $dokka.location:com.asiankoala.koawalib.subsystem.drive/LocalizedDrive///Pointin
 $dokka.location:com.asiankoala.koawalib.subsystem.drive/LocalizedDrive/pose/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.subsystem.drive/-localized-drive/pose.html
 $dokka.location:com.asiankoala.koawalib.subsystem.drive/LocalizedDrive/vel/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.subsystem.drive/-localized-drive/vel.html
 $dokka.location:com.asiankoala.koawalib.subsystem.intake////PointingToDeclaration/koawalib/com.asiankoala.koawalib.subsystem.intake/index.html
-$dokka.location:com.asiankoala.koawalib.subsystem.intake/IntakeConfig///PointingToDeclaration/koawalib/com.asiankoala.koawalib.subsystem.intake/-intake-config/index.html
-$dokka.location:com.asiankoala.koawalib.subsystem.intake/IntakeConfig/DEFAULT_MAX_POWER/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.subsystem.intake/-intake-config/-d-e-f-a-u-l-t_-m-a-x_-p-o-w-e-r.html
-$dokka.location:com.asiankoala.koawalib.subsystem.intake/IntakeConfig/IntakeConfig/#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.subsystem.intake/-intake-config/-intake-config.html
 $dokka.location:com.asiankoala.koawalib.subsystem.intake/KIntake///PointingToDeclaration/koawalib/com.asiankoala.koawalib.subsystem.intake/-k-intake/index.html
 $dokka.location:com.asiankoala.koawalib.subsystem.intake/KIntake/KIntake/#com.asiankoala.koawalib.hardware.motor.KMotor#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.subsystem.intake/-k-intake/-k-intake.html
 $dokka.location:com.asiankoala.koawalib.subsystem.intake/KIntake/setIntakeSpeed/#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.subsystem.intake/-k-intake/set-intake-speed.html
@@ -485,14 +457,13 @@ com.asiankoala.koawalib.control
 com.asiankoala.koawalib.control.motion
 com.asiankoala.koawalib.gamepad
 com.asiankoala.koawalib.gamepad.functionality
+com.asiankoala.koawalib.gvf
 com.asiankoala.koawalib.hardware
 com.asiankoala.koawalib.hardware.motor
 com.asiankoala.koawalib.hardware.sensor
 com.asiankoala.koawalib.hardware.servo
 com.asiankoala.koawalib.logger
 com.asiankoala.koawalib.math
-com.asiankoala.koawalib.path.gvf
-com.asiankoala.koawalib.path.purepursuit
 com.asiankoala.koawalib.subsystem
 com.asiankoala.koawalib.subsystem.drive
 com.asiankoala.koawalib.subsystem.intake

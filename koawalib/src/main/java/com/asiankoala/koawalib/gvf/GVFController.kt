@@ -5,8 +5,10 @@ import com.acmerobotics.roadrunner.path.Path
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.Vector
 import com.asiankoala.koawalib.math.angleWrap
+import com.asiankoala.koawalib.math.degrees
 import kotlin.math.PI
 import kotlin.math.absoluteValue
+import kotlin.math.max
 import kotlin.math.sign
 
 /**
@@ -25,6 +27,7 @@ class GVFController(
     private val path: Path,
     private val kN: Double,
     private val kOmega: Double,
+    private val kTheta: Double,
     private val kF: Double,
     private val epsilon: Double,
     private val errorMap: (Double) -> Double = { it },
@@ -57,8 +60,8 @@ class GVFController(
         val error = displacementVec.norm() * orientation.sign
         val vectorFieldResult = tangentVec - normalVec * kN * errorMap.invoke(error)
 
-        val optimalHeading = vectorFieldResult.angle()
-        val headingError = (optimalHeading - pose.heading).angleWrap
+        val desiredHeading = vectorFieldResult.angle()
+        val headingError = (desiredHeading - pose.heading).angleWrap
         val angularOutput = kOmega * headingError
 
         val projectedDisplacement = (s - path.length()).absoluteValue
@@ -71,8 +74,11 @@ class GVFController(
         if(isFinished) translationalPower = absoluteVector
         if(translationalPower.norm() > 1.0) translationalPower /= translationalPower.norm()
 
-        val rotated = translationalPower.rotated(PI / 2.0 - pose.heading)
-        return Pair(Pose(translationalPower.toVec(), angularOutput), Pose(rotated.toVec(), angularOutput))
+        val thetaWeight = headingError.degrees.absoluteValue / kTheta
+        translationalPower /= max(1.0, thetaWeight)
+
+        val rotated = translationalPower.rotated(PI / 2.0 - pose.heading).toVec()
+        return Pair(Pose(translationalPower.toVec(), angularOutput), Pose(rotated, angularOutput))
     }
 }
 

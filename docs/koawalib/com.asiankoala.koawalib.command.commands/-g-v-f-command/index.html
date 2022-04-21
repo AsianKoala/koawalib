@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
-    <title>CommandBase</title>
+    <title>GVFCommand</title>
     <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">
     <script>var pathToRoot = "../../../";</script>
     <script>const storage = localStorage.getItem("dokka-dark-mode")
@@ -42,70 +42,51 @@ if(savedDarkMode === true){
         <div id="sideMenu"></div>
     </div>
     <div id="main">
-<div class="main-content" id="content" pageIds="koawalib::com.asiankoala.koawalib.command.commands/CommandBase///PointingToDeclaration//470886224">
-  <div class="breadcrumbs"><a href="../../../index.html">koawalib</a><span class="delimiter">/</span><a href="../index.html">com.asiankoala.koawalib.command.commands</a><span class="delimiter">/</span><a href="index.html">CommandBase</a></div>
+<div class="main-content" id="content" pageIds="koawalib::com.asiankoala.koawalib.command.commands/GVFCommand///PointingToDeclaration//470886224">
+  <div class="breadcrumbs"><a href="../../../index.html">koawalib</a><span class="delimiter">/</span><a href="../index.html">com.asiankoala.koawalib.command.commands</a><span class="delimiter">/</span><a href="index.html">GVFCommand</a></div>
   <div class="cover ">
-    <h1 class="cover"><span>Command</span><wbr></wbr><span><span>Base</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":koawalib:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">class </span><a href="index.html">CommandBase</a> : <a href="../-command/index.html">Command</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">Provided implementation of Command. To create custom commands, extend this class</p></div></div>
+    <h1 class="cover"><span><span>GVFCommand</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":koawalib:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">GVFCommand</a><span class="token punctuation">(</span><span class="parameters wrapped"><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;drive<span class="token operator">: </span><a href="../../com.asiankoala.koawalib.subsystem.drive/-k-mecanum-odo-drive/index.html">KMecanumOdoDrive</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;path<span class="token operator">: </span><span data-unresolved-link="com.acmerobotics.roadrunner.path/Path///PointingToDeclaration/">Path</span><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;kN<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;kOmega<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;kTheta<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;kF<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;epsilon<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;errorMap<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a><span class="token operator"> = </span>{ it }</span></span><span class="token punctuation">)</span> : <a href="../-command-base/index.html">CommandBase</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
   <div class="tabbedcontent">
-    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Constructors">Constructors</button><button class="section-tab" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Inherited functions">Inherited functions</button><button class="section-tab" data-togglable="Properties">Properties</button><button class="section-tab" data-togglable="Inherited properties">Inherited properties</button><button class="section-tab" data-togglable="See also">See also</button><button class="section-tab" data-togglable="Inheritors">Inheritors</button></div>
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Constructors">Constructors</button><button class="section-tab" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Inherited functions">Inherited functions</button><button class="section-tab" data-togglable="Properties">Properties</button><button class="section-tab" data-togglable="Inherited properties">Inherited properties</button></div>
     <div class="tabs-section-body">
-      <h2 class="">See also</h2>
-      <div data-togglable="See also">
-        <div class="platform-hinted WithExtraAttributes" data-platform-hinted="data-platform-hinted" data-togglable="See also"><div class="content sourceset-depenent-content" data-active="" data-togglable=":koawalib:dokkaHtml/release"><div data-togglable="See also"><div class="table" data-togglable="See also"><div class="table-row" data-filterable-current=":koawalib:dokkaHtml/release" data-filterable-set=":koawalib:dokkaHtml/release"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><a href="../-command/index.html"><span>com.</span><wbr></wbr><span>asiankoala.</span><wbr></wbr><span>koawalib.</span><wbr></wbr><span>command.</span><wbr></wbr><span>commands.</span><wbr></wbr><span>Command</span></a></div></span></div><div><div class="title"><div data-togglable="See also"></div></div></div></div></div></div></div></div></div>
-      </div>
       <h2 class="tabbedcontent">Constructors</h2>
-      <div class="table" data-togglable="Constructors"><a data-name="-831844837%2FConstructors%2F470886224" anchor-label="CommandBase" id="-831844837%2FConstructors%2F470886224" data-filterable-set=":koawalib:dokkaHtml/release"></a>
+      <div class="table" data-togglable="Constructors"><a data-name="-114499973%2FConstructors%2F470886224" anchor-label="GVFCommand" id="-114499973%2FConstructors%2F470886224" data-filterable-set=":koawalib:dokkaHtml/release"></a>
         <div class="table-row" data-filterable-current=":koawalib:dokkaHtml/release" data-filterable-set=":koawalib:dokkaHtml/release">
           <div class="main-subrow keyValue TabbedContent">
             <div class=""><span class="inline-flex">
-                <div><a href="-command-base.html"><span>Command</span><wbr></wbr><span><span>Base</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-831844837%2FConstructors%2F470886224"></span>
+                <div><a href="-g-v-f-command.html"><span><span>GVFCommand</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-114499973%2FConstructors%2F470886224"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":koawalib:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="-command-base.html"><span class="token function">CommandBase</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":koawalib:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="-g-v-f-command.html"><span class="token function">GVFCommand</span></a><span class="token punctuation">(</span><span class="parameters wrapped"><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;drive<span class="token operator">: </span><a href="../../com.asiankoala.koawalib.subsystem.drive/-k-mecanum-odo-drive/index.html">KMecanumOdoDrive</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;path<span class="token operator">: </span><span data-unresolved-link="com.acmerobotics.roadrunner.path/Path///PointingToDeclaration/">Path</span><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;kN<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;kOmega<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;kTheta<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;kF<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;epsilon<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;errorMap<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a><span class="token operator"> = </span>{ it }</span></span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
               </div>
             </div>
           </div>
         </div>
       </div>
       <h2 class="">Properties</h2>
-      <div class="table" data-togglable="Properties"><a data-name="1578170712%2FProperties%2F470886224" anchor-label="name" id="1578170712%2FProperties%2F470886224" data-filterable-set=":koawalib:dokkaHtml/release"></a>
+      <div class="table" data-togglable="Properties"><a data-name="253296813%2FProperties%2F470886224" anchor-label="isFinished" id="253296813%2FProperties%2F470886224" data-filterable-set=":koawalib:dokkaHtml/release"></a>
         <div class="table-row" data-filterable-current=":koawalib:dokkaHtml/release" data-filterable-set=":koawalib:dokkaHtml/release">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="name.html">name</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1578170712%2FProperties%2F470886224"></span>
+                <div><a href="is-finished.html">isFinished</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="253296813%2FProperties%2F470886224"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":koawalib:dokkaHtml/release"><a data-name="1578170712%2FProperties%2F470886224" anchor-label="name" id="1578170712%2FProperties%2F470886224" data-filterable-set=":koawalib:dokkaHtml/release"></a><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="name.html">name</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="1578170712%2FProperties%2F470886224" anchor-label="name" id="1578170712%2FProperties%2F470886224" data-filterable-set=":koawalib:dokkaHtml/release"></a><p class="paragraph">The name of the command. Specify with <a href="with-name.html">CommandBase.withName</a></p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":koawalib:dokkaHtml/release"><a data-name="253296813%2FProperties%2F470886224" anchor-label="isFinished" id="253296813%2FProperties%2F470886224" data-filterable-set=":koawalib:dokkaHtml/release"></a><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="is-finished.html">isFinished</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="253296813%2FProperties%2F470886224" anchor-label="isFinished" id="253296813%2FProperties%2F470886224" data-filterable-set=":koawalib:dokkaHtml/release"></a><p class="paragraph">Finish state of command</p></div></div></div>
               </div>
             </div>
           </div>
         </div>
       </div>
       <h2 class="">Inherited properties</h2>
-      <div class="table" data-togglable="Inherited properties"><a data-name="-1903336362%2FProperties%2F470886224" anchor-label="isFinished" id="-1903336362%2FProperties%2F470886224" data-filterable-set=":koawalib:dokkaHtml/release"></a>
-        <div class="table-row" data-filterable-current=":koawalib:dokkaHtml/release" data-filterable-set=":koawalib:dokkaHtml/release">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../-command/is-finished.html">isFinished</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1903336362%2FProperties%2F470886224"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Inherited properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":koawalib:dokkaHtml/release"><a data-name="-1903336362%2FProperties%2F470886224" anchor-label="isFinished" id="-1903336362%2FProperties%2F470886224" data-filterable-set=":koawalib:dokkaHtml/release"></a><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../-command/is-finished.html">isFinished</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="-1903336362%2FProperties%2F470886224" anchor-label="isFinished" id="-1903336362%2FProperties%2F470886224" data-filterable-set=":koawalib:dokkaHtml/release"></a><p class="paragraph">Finish state of command</p></div></div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-<a data-name="92351557%2FProperties%2F470886224" anchor-label="isScheduled" id="92351557%2FProperties%2F470886224" data-filterable-set=":koawalib:dokkaHtml/release"></a>
+      <div class="table" data-togglable="Inherited properties"><a data-name="92351557%2FProperties%2F470886224" anchor-label="isScheduled" id="92351557%2FProperties%2F470886224" data-filterable-set=":koawalib:dokkaHtml/release"></a>
         <div class="table-row" data-filterable-current=":koawalib:dokkaHtml/release" data-filterable-set=":koawalib:dokkaHtml/release">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
@@ -120,49 +101,49 @@ if(savedDarkMode === true){
             </div>
           </div>
         </div>
+<a data-name="1578170712%2FProperties%2F470886224" anchor-label="name" id="1578170712%2FProperties%2F470886224" data-filterable-set=":koawalib:dokkaHtml/release"></a>
+        <div class="table-row" data-filterable-current=":koawalib:dokkaHtml/release" data-filterable-set=":koawalib:dokkaHtml/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-command-base/name.html">name</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1578170712%2FProperties%2F470886224"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Inherited properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":koawalib:dokkaHtml/release"><a data-name="1578170712%2FProperties%2F470886224" anchor-label="name" id="1578170712%2FProperties%2F470886224" data-filterable-set=":koawalib:dokkaHtml/release"></a><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="../-command-base/name.html">name</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="1578170712%2FProperties%2F470886224" anchor-label="name" id="1578170712%2FProperties%2F470886224" data-filterable-set=":koawalib:dokkaHtml/release"></a><p class="paragraph">The name of the command. Specify with <a href="../-command-base/with-name.html">CommandBase.withName</a></p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <h2 class="">Functions</h2>
-      <div class="table" data-togglable="Functions"><a data-name="-459304463%2FFunctions%2F470886224" anchor-label="getRequirements" id="-459304463%2FFunctions%2F470886224" data-filterable-set=":koawalib:dokkaHtml/release"></a>
+      <div class="table" data-togglable="Functions"><a data-name="1451825046%2FFunctions%2F470886224" anchor-label="end" id="1451825046%2FFunctions%2F470886224" data-filterable-set=":koawalib:dokkaHtml/release"></a>
         <div class="table-row" data-filterable-current=":koawalib:dokkaHtml/release" data-filterable-set=":koawalib:dokkaHtml/release">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="get-requirements.html"><span>get</span><wbr></wbr><span><span>Requirements</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-459304463%2FFunctions%2F470886224"></span>
+                <div><a href="end.html"><span><span>end</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1451825046%2FFunctions%2F470886224"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":koawalib:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="get-requirements.html"><span class="token function">getRequirements</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html">Set</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../com.asiankoala.koawalib.subsystem/-subsystem/index.html">Subsystem</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":koawalib:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="end.html"><span class="token function">end</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Final part of a command, called when command finishes.</p></div></div></div>
               </div>
             </div>
           </div>
         </div>
-<a data-name="715636119%2FFunctions%2F470886224" anchor-label="toString" id="715636119%2FFunctions%2F470886224" data-filterable-set=":koawalib:dokkaHtml/release"></a>
+<a data-name="-2060115908%2FFunctions%2F470886224" anchor-label="execute" id="-2060115908%2FFunctions%2F470886224" data-filterable-set=":koawalib:dokkaHtml/release"></a>
         <div class="table-row" data-filterable-current=":koawalib:dokkaHtml/release" data-filterable-set=":koawalib:dokkaHtml/release">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="to-string.html"><span>to</span><wbr></wbr><span><span>String</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="715636119%2FFunctions%2F470886224"></span>
+                <div><a href="execute.html"><span><span>execute</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2060115908%2FFunctions%2F470886224"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":koawalib:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="to-string.html"><span class="token function">toString</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-<a data-name="-1053872366%2FFunctions%2F470886224" anchor-label="withName" id="-1053872366%2FFunctions%2F470886224" data-filterable-set=":koawalib:dokkaHtml/release"></a>
-        <div class="table-row" data-filterable-current=":koawalib:dokkaHtml/release" data-filterable-set=":koawalib:dokkaHtml/release">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="with-name.html"><span>with</span><wbr></wbr><span><span>Name</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1053872366%2FFunctions%2F470886224"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":koawalib:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="with-name.html"><span class="token function">withName</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">commandName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-command/index.html">Command</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Name the current command, which shows up in the logger.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":koawalib:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="execute.html"><span class="token function">execute</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Main part of a command, called while command is running.</p></div></div></div>
               </div>
             </div>
           </div>
@@ -244,32 +225,17 @@ if(savedDarkMode === true){
             </div>
           </div>
         </div>
-<a data-name="97095693%2FFunctions%2F470886224" anchor-label="end" id="97095693%2FFunctions%2F470886224" data-filterable-set=":koawalib:dokkaHtml/release"></a>
+<a data-name="-459304463%2FFunctions%2F470886224" anchor-label="getRequirements" id="-459304463%2FFunctions%2F470886224" data-filterable-set=":koawalib:dokkaHtml/release"></a>
         <div class="table-row" data-filterable-current=":koawalib:dokkaHtml/release" data-filterable-set=":koawalib:dokkaHtml/release">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="../-command/end.html"><span><span>end</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="97095693%2FFunctions%2F470886224"></span>
+                <div><a href="../-command-base/get-requirements.html"><span>get</span><wbr></wbr><span><span>Requirements</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-459304463%2FFunctions%2F470886224"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":koawalib:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-command/end.html"><span class="token function">end</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Final part of a command, called when command finishes.</p></div></div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-<a data-name="906396979%2FFunctions%2F470886224" anchor-label="execute" id="906396979%2FFunctions%2F470886224" data-filterable-set=":koawalib:dokkaHtml/release"></a>
-        <div class="table-row" data-filterable-current=":koawalib:dokkaHtml/release" data-filterable-set=":koawalib:dokkaHtml/release">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../-command/execute.html"><span><span>execute</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="906396979%2FFunctions%2F470886224"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":koawalib:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-command/execute.html"><span class="token function">execute</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Main part of a command, called while command is running.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":koawalib:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../-command-base/get-requirements.html"><span class="token function">getRequirements</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html">Set</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../com.asiankoala.koawalib.subsystem/-subsystem/index.html">Subsystem</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
               </div>
             </div>
           </div>
@@ -349,6 +315,21 @@ if(savedDarkMode === true){
             </div>
           </div>
         </div>
+<a data-name="715636119%2FFunctions%2F470886224" anchor-label="toString" id="715636119%2FFunctions%2F470886224" data-filterable-set=":koawalib:dokkaHtml/release"></a>
+        <div class="table-row" data-filterable-current=":koawalib:dokkaHtml/release" data-filterable-set=":koawalib:dokkaHtml/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-command-base/to-string.html"><span>to</span><wbr></wbr><span><span>String</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="715636119%2FFunctions%2F470886224"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":koawalib:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../-command-base/to-string.html"><span class="token function">toString</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
 <a data-name="776540877%2FFunctions%2F470886224" anchor-label="waitUntil" id="776540877%2FFunctions%2F470886224" data-filterable-set=":koawalib:dokkaHtml/release"></a>
         <div class="table-row" data-filterable-current=":koawalib:dokkaHtml/release" data-filterable-set=":koawalib:dokkaHtml/release">
           <div class="main-subrow keyValue ">
@@ -360,6 +341,21 @@ if(savedDarkMode === true){
             <div>
               <div class="title">
                 <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":koawalib:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-command/wait-until.html"><span class="token function">waitUntil</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">condition<span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-command/index.html">Command</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Wait until a condition has been fulfilled to run this command</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1053872366%2FFunctions%2F470886224" anchor-label="withName" id="-1053872366%2FFunctions%2F470886224" data-filterable-set=":koawalib:dokkaHtml/release"></a>
+        <div class="table-row" data-filterable-current=":koawalib:dokkaHtml/release" data-filterable-set=":koawalib:dokkaHtml/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-command-base/with-name.html"><span>with</span><wbr></wbr><span><span>Name</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1053872366%2FFunctions%2F470886224"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":koawalib:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-command-base/with-name.html"><span class="token function">withName</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">commandName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-command/index.html">Command</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Name the current command, which shows up in the logger.</p></div></div></div>
               </div>
             </div>
           </div>
@@ -377,96 +373,6 @@ if(savedDarkMode === true){
                 <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":koawalib:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../-command/with-timeout.html"><span class="token function">withTimeout</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">time<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-command/index.html">Command</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Cancels this command after some time if not finished</p></div></div></div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-      <h2 class="">Inheritors</h2>
-      <div class="table" data-togglable="Inheritors"><a data-name="-1745204859%2FInheritors%2F470886224" anchor-label="ConditionalCommand" id="-1745204859%2FInheritors%2F470886224" data-filterable-set=":koawalib:dokkaHtml/release"></a>
-        <div class="table-row" data-filterable-current=":koawalib:dokkaHtml/release" data-filterable-set=":koawalib:dokkaHtml/release">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../-conditional-command/index.html">ConditionalCommand</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1745204859%2FInheritors%2F470886224"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="-74359466%2FInheritors%2F470886224" anchor-label="GVFCommand" id="-74359466%2FInheritors%2F470886224" data-filterable-set=":koawalib:dokkaHtml/release"></a>
-        <div class="table-row" data-filterable-current=":koawalib:dokkaHtml/release" data-filterable-set=":koawalib:dokkaHtml/release">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../-g-v-f-command/index.html">GVFCommand</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-74359466%2FInheritors%2F470886224"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="943378561%2FInheritors%2F470886224" anchor-label="InfiniteCommand" id="943378561%2FInheritors%2F470886224" data-filterable-set=":koawalib:dokkaHtml/release"></a>
-        <div class="table-row" data-filterable-current=":koawalib:dokkaHtml/release" data-filterable-set=":koawalib:dokkaHtml/release">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../-infinite-command/index.html">InfiniteCommand</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="943378561%2FInheritors%2F470886224"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="-24487584%2FInheritors%2F470886224" anchor-label="InstantCommand" id="-24487584%2FInheritors%2F470886224" data-filterable-set=":koawalib:dokkaHtml/release"></a>
-        <div class="table-row" data-filterable-current=":koawalib:dokkaHtml/release" data-filterable-set=":koawalib:dokkaHtml/release">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../-instant-command/index.html">InstantCommand</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-24487584%2FInheritors%2F470886224"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="-2107903353%2FInheritors%2F470886224" anchor-label="MecanumDriveCommand" id="-2107903353%2FInheritors%2F470886224" data-filterable-set=":koawalib:dokkaHtml/release"></a>
-        <div class="table-row" data-filterable-current=":koawalib:dokkaHtml/release" data-filterable-set=":koawalib:dokkaHtml/release">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../-mecanum-drive-command/index.html">MecanumDriveCommand</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2107903353%2FInheritors%2F470886224"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="717344610%2FInheritors%2F470886224" anchor-label="WaitCommand" id="717344610%2FInheritors%2F470886224" data-filterable-set=":koawalib:dokkaHtml/release"></a>
-        <div class="table-row" data-filterable-current=":koawalib:dokkaHtml/release" data-filterable-set=":koawalib:dokkaHtml/release">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../-wait-command/index.html">WaitCommand</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="717344610%2FInheritors%2F470886224"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="-1508798424%2FInheritors%2F470886224" anchor-label="WaitUntilCommand" id="-1508798424%2FInheritors%2F470886224" data-filterable-set=":koawalib:dokkaHtml/release"></a>
-        <div class="table-row" data-filterable-current=":koawalib:dokkaHtml/release" data-filterable-set=":koawalib:dokkaHtml/release">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../-wait-until-command/index.html">WaitUntilCommand</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1508798424%2FInheritors%2F470886224"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
-          </div>
-        </div>
-<a data-name="1649865852%2FInheritors%2F470886224" anchor-label="CommandGroupBase" id="1649865852%2FInheritors%2F470886224" data-filterable-set=":koawalib:dokkaHtml/release"></a>
-        <div class="table-row" data-filterable-current=":koawalib:dokkaHtml/release" data-filterable-set=":koawalib:dokkaHtml/release">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="../../com.asiankoala.koawalib.command.group/-command-group-base/index.html">CommandGroupBase</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1649865852%2FInheritors%2F470886224"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div></div>
           </div>
         </div>
       </div>
