@@ -52,6 +52,8 @@ object Logger {
                 data.updatedThisLoop = false
             }
         }
+
+        telemetry!!.update()
     }
 
     internal fun addErrorCommand() {

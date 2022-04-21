@@ -59,7 +59,7 @@ abstract class CommandOpMode : LinearOpMode() {
 
     private val mainStateMachine: StateMachine<OpModeState> = StateMachineBuilder<OpModeState>()
         .universal(CommandScheduler::run)
-        .universal(telemetry::update)
+        .universal(Logger::update)
         .state(OpModeState.INIT)
         .onEnter(::setup)
         .onEnter(::schedulePeriodics)
