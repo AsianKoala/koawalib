@@ -17,7 +17,7 @@ import com.asiankoala.koawalib.subsystem.Subsystem
  * @see CommandScheduler
  * @see CommandBase
  */
-fun interface Command {
+interface Command {
     /**
      * First part of running a command, called on start of command.
      */
@@ -36,7 +36,7 @@ fun interface Command {
     /**
      * Finish state of command
      */
-    val isFinished: Boolean get() = true
+    val isFinished: Boolean get() = false
 
     /**
      * Whether the command is currently scheduled. Syntax sugar for [CommandScheduler.isScheduled]
@@ -46,7 +46,7 @@ fun interface Command {
     /**
      * The name of the command. Specify with [CommandBase.withName]
      */
-    val name: String get() = ""
+    val name: String
 
     /**
      * @return a set containing the command's subsystem requirements

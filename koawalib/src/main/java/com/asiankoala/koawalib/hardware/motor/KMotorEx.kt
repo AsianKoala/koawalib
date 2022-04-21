@@ -162,7 +162,7 @@ class KMotorEx(private val config: KMotorExConfig) : KMotor(config.name) {
     }
 
     init {
-        CommandScheduler.scheduleForStart(InfiniteCommand(this::update))
+        CommandScheduler.schedule(InfiniteCommand(this::update))
     }
 
     companion object {

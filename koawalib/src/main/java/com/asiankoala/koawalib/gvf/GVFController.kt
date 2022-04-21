@@ -1,4 +1,4 @@
-package com.asiankoala.koawalib.path.gvf
+package com.asiankoala.koawalib.gvf
 
 import com.acmerobotics.roadrunner.geometry.Vector2d
 import com.acmerobotics.roadrunner.path.Path
