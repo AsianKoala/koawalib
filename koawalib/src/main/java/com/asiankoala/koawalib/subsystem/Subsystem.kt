@@ -1,7 +1,7 @@
 package com.asiankoala.koawalib.subsystem
 
 import com.asiankoala.koawalib.command.KScheduler
-import com.asiankoala.koawalib.command.commands.Command
+import com.asiankoala.koawalib.command.commands.Cmd
 import com.asiankoala.koawalib.util.Periodic
 
 interface Subsystem : Periodic {
@@ -10,15 +10,15 @@ interface Subsystem : Periodic {
 
     }
 
-    fun setDefaultCommand(command: Command) {
-        KScheduler.setDefaultCommand(this, command)
+    fun setDefaultCommand(cmd: Cmd) {
+        KScheduler.setDefaultCommand(this, cmd)
     }
 
-    fun getDefaultCommand(): Command {
+    fun getDefaultCommand(): Cmd {
         return KScheduler.getDefaultCommand(this)
     }
 
-    fun getCurrentCommand(): Command? {
+    fun getCurrentCommand(): Cmd? {
         return KScheduler.requiring(this)
     }
 

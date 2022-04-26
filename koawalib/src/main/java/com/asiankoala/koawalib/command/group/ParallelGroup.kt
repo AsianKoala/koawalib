@@ -1,23 +1,23 @@
 package com.asiankoala.koawalib.command.group
 
-import com.asiankoala.koawalib.command.commands.Command
+import com.asiankoala.koawalib.command.commands.Cmd
 import java.util.*
 import kotlin.collections.HashMap
 
 /**
  * CommandGroups are used to run multiple commands. To create a custom CommandGroup, extend this class
  */
-open class ParallelGroup(private val endCond: (Map<Command, Boolean>) -> Boolean = { !it.containsValue(true) }, vararg commands: Command) : Command(), Group {
-    constructor(vararg cmds: Command) : this(commands = cmds)
+open class ParallelGroup(private val endCond: (Map<Cmd, Boolean>) -> Boolean = { !it.containsValue(true) }, vararg cmds: Cmd) : Cmd(), Group {
+    constructor(vararg cmds: Cmd) : this(cmds = cmds)
 
-    private val cmdMap = HashMap<Command, Boolean>()
+    private val cmdMap = HashMap<Cmd, Boolean>()
 
-    final override fun addCommands(vararg commands: Command) {
+    final override fun addCommands(vararg cmds: Cmd) {
         if (cmdMap.containsValue(true)) {
             throw IllegalStateException("Commands cannot be added to a CommandGroup while the group is running")
         }
 
-        commands.forEach {
+        cmds.forEach {
             if (!Collections.disjoint(it.requirements, requirements)) {
                 throw IllegalStateException("Multiple commands in a parallel group cannot require the same subsystems")
             }
@@ -54,6 +54,6 @@ open class ParallelGroup(private val endCond: (Map<Command, Boolean>) -> Boolean
         get() = endCond.invoke(cmdMap)
 
     init {
-        addCommands(*commands)
+        addCommands(*cmds)
     }
 }

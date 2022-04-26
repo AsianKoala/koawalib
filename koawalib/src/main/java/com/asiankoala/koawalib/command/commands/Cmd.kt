@@ -14,7 +14,7 @@ import com.asiankoala.koawalib.subsystem.Subsystem
  * All commands are scheduled and ran through the CommandScheduler.
  * @see KScheduler
  */
-abstract class Command {
+abstract class Cmd {
     private var _name: String? = null
     internal val requirements: MutableSet<Subsystem> = HashSet()
 
@@ -58,7 +58,7 @@ abstract class Command {
      * @param condition condition to allow the start of this command
      * @return SequentialCommandGroup with a WaitUntilCommand -> this command
      */
-    fun waitUntil(condition: () -> Boolean): Command {
+    fun waitUntil(condition: () -> Boolean): Cmd {
         return SequentialGroup(WaitForCmd(condition), this)
     }
 
@@ -67,7 +67,7 @@ abstract class Command {
      * @param time the timeout duration. units are seconds
      * @return ParallelRaceGroup with a WaitCommand & this command
      */
-    fun withTimeout(time: Double): Command {
+    fun withTimeout(time: Double): Cmd {
         return RaceGroup(this, WaitCmd(time))
     }
 
@@ -76,7 +76,7 @@ abstract class Command {
      * @param condition the condition that ends the current command
      * @return ParallelRaceGroup with a WaitUntilCommand & this command
      */
-    fun cancelIf(condition: () -> Boolean): Command {
+    fun cancelIf(condition: () -> Boolean): Cmd {
         return RaceGroup(this, WaitForCmd(condition))
     }
 
@@ -85,7 +85,7 @@ abstract class Command {
      * @param next n number of commands to run sequentially following this command
      * @return SequentialCommandGroup with this command -> next commands
      */
-    fun andThen(vararg next: Command): Command {
+    fun andThen(vararg next: Cmd): Cmd {
         val group = SequentialGroup(this)
         group.addCommands(*next)
         return group
@@ -96,7 +96,7 @@ abstract class Command {
      * @param seconds amount of seconds to pause following this command
      * @return SequentialCommandGroup with this command -> WaitCommand
      */
-    fun pauseFor(seconds: Double): Command {
+    fun pauseFor(seconds: Double): Cmd {
         return SequentialGroup(this, WaitCmd(seconds))
     }
 
@@ -105,7 +105,7 @@ abstract class Command {
      * @param parallel n number of commands to run in parallel with this command
      * @return ParallelDeadlineGroup with this command as the deadline, with n next commands
      */
-    fun deadlineWith(vararg parallel: Command): Command {
+    fun deadlineWith(vararg parallel: Cmd): Cmd {
         return DeadlineGroup(this, *parallel)
     }
 
@@ -114,7 +114,7 @@ abstract class Command {
      * @param parallel commands to run in parallel with this command
      * @return ParallelCommandGroup with this command and n parallel commands
      */
-    fun alongWith(vararg parallel: Command): Command {
+    fun alongWith(vararg parallel: Cmd): Cmd {
         val group = ParallelGroup(this)
         group.addCommands(*parallel)
         return group
@@ -125,7 +125,7 @@ abstract class Command {
      * @param parallel commands to run in parallel with this command
      * @return ParallelRaceGroup with this command and n parallel commands
      */
-    fun raceWith(vararg parallel: Command): Command {
+    fun raceWith(vararg parallel: Cmd): Cmd {
         val group = RaceGroup(this)
         group.addCommands(*parallel)
         return group
@@ -134,7 +134,7 @@ abstract class Command {
     /**
      * Name the current command, which shows up in the logger.
      */
-    fun withName(commandName: String): Command {
+    fun withName(commandName: String): Cmd {
         _name = commandName
         return this
     }

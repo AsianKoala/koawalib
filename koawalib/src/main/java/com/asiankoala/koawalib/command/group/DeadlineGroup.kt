@@ -1,5 +1,5 @@
 package com.asiankoala.koawalib.command.group
 
-import com.asiankoala.koawalib.command.commands.Command
+import com.asiankoala.koawalib.command.commands.Cmd
 
-class DeadlineGroup(deadline: Command, vararg parallel: Command) : ParallelGroup({ deadline.isFinished }, deadline, *parallel)
+class DeadlineGroup(deadline: Cmd, vararg parallel: Cmd) : ParallelGroup({ deadline.isFinished }, deadline, *parallel)

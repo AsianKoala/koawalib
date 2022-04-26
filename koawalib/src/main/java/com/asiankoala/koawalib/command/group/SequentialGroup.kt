@@ -1,19 +1,19 @@
 package com.asiankoala.koawalib.command.group
 
-import com.asiankoala.koawalib.command.commands.Command
+import com.asiankoala.koawalib.command.commands.Cmd
 import com.asiankoala.koawalib.logger.Logger
 
 /**
  * Run multiple commands sequentially, finishing when the last one finishes
- * @param commands Commands to run sequentially
+ * @param cmds Commands to run sequentially
  */
-open class SequentialGroup(vararg commands: Command) : Command(), Group {
-    private val cmds: MutableList<Command> = ArrayList()
+open class SequentialGroup(vararg cmds: Cmd) : Cmd(), Group {
+    private val cmds: MutableList<Cmd> = ArrayList()
     private var idx = -1
 
-    final override fun addCommands(vararg commands: Command) {
+    final override fun addCommands(vararg cmds: Cmd) {
         assert(idx == -1) { "Commands cannot be added to a CommandGroup while the group is running" }
-        cmds.addAll(commands)
+        this.cmds.addAll(cmds)
     }
 
     override fun initialize() {
@@ -46,8 +46,8 @@ open class SequentialGroup(vararg commands: Command) : Command(), Group {
         get() = idx !in cmds.indices
 
     init {
-        addCommands(*commands)
+        addCommands(*cmds)
 
-        if(cmds.isEmpty()) Logger.logWarning("sequential group $name is empty")
+        if(this.cmds.isEmpty()) Logger.logWarning("sequential group $name is empty")
     }
 }

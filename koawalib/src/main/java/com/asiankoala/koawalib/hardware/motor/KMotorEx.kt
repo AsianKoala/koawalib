@@ -50,13 +50,13 @@ class KMotorEx(private val config: KMotorExConfig) : KMotor(config.name) {
      */
     val isAtTarget: Boolean
         get() {
-            return (encoder.position - controller.targetPosition).absoluteValue < config.positionEpsilon
+            return (encoder.pos - controller.targetPosition).absoluteValue < config.positionEpsilon
         }
 
     private fun isHomed(): Boolean {
         val hasHomePosition = !config.homePositionToDisable.isNaN()
         val isTargetingHomePosition = (controller.targetPosition - config.homePositionToDisable).absoluteValue < config.positionEpsilon
-        val isAtHomePosition = (config.homePositionToDisable - encoder.position).absoluteValue < config.positionEpsilon
+        val isAtHomePosition = (config.homePositionToDisable - encoder.pos).absoluteValue < config.positionEpsilon
         return hasHomePosition && isTargetingHomePosition && isAtHomePosition
     }
 
@@ -67,7 +67,7 @@ class KMotorEx(private val config: KMotorExConfig) : KMotor(config.name) {
     }
 
     private fun getControllerOutput(): Double {
-        return controller.update(encoder.position) +
+        return controller.update(encoder.pos) +
                 config.ff.kCos * controller.targetPosition.cos +
                 config.ff.kTargetF(controller.targetPosition) +
                 config.ff.kG
@@ -158,7 +158,7 @@ class KMotorEx(private val config: KMotorExConfig) : KMotor(config.name) {
      * @param targetPosition end position of the motion profile
      */
     fun followMotionProfile(targetPosition: Double) {
-        followMotionProfile(encoder.position, targetPosition)
+        followMotionProfile(encoder.pos, targetPosition)
     }
 
     init {

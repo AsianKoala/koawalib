@@ -10,7 +10,7 @@ import com.asiankoala.koawalib.subsystem.Subsystem
 open class InstantCmd(
     private val action: () -> Unit,
     vararg requirements: Subsystem
-) : Command() {
+) : Cmd() {
 
     override fun execute() {
         action.invoke()

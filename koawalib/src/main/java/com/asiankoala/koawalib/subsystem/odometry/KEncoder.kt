@@ -16,58 +16,81 @@ class KEncoder(
 ) {
     private var clock = NanoClock.system()
     private var offset = 0.0
-    private var encoderMultiplier = 1.0
-    private var _position = 0.0
-    private var _velocity = 0.0
-    private val prevEncoderPositions = ArrayList<Pair<Double, Double>>() // time, position
+    private var multiplier = 1.0
+    private var _pos = 0.0
+    private var _vel = 0.0
+    private var _accel = 0.0
+    private val prevPos = ArrayList<Pair<Double, Double>>()
+    private val prevVel = ArrayList<Pair<Double, Double>>()
 
-    val position get() = (_position + offset) * encoderMultiplier / ticksPerUnit
+    val pos get() = (_pos + offset) * multiplier / ticksPerUnit
 
-    val velocity get() = _velocity / ticksPerUnit
+    val vel get() = _vel / ticksPerUnit
 
-    val delta get() = (prevEncoderPositions[prevEncoderPositions.size-1].second
-            - prevEncoderPositions[prevEncoderPositions.size-2].second) / ticksPerUnit
+    val accel get() = _accel / ticksPerUnit
+
+    val delta get() = (prevPos[prevPos.size-1].second
+            - prevPos[prevPos.size-2].second) / ticksPerUnit
 
     val reversed: KEncoder
         get() {
-            encoderMultiplier *= -1.0
+            multiplier *= -1.0
             return this
         }
 
     private fun attemptVelUpdate() {
-        if(prevEncoderPositions.size < 2) {
-            _velocity = 0.0
+        if(prevPos.size < 2) {
+            _vel = 0.0
             return
         }
 
-        val oldIndex = max(0, prevEncoderPositions.size - LOOK_BEHIND - 1)
-        val oldPosition = prevEncoderPositions[oldIndex]
-        val currPosition = prevEncoderPositions[prevEncoderPositions.size - 1]
+        val oldIndex = max(0, prevPos.size - LOOK_BEHIND - 1)
+        val oldPosition = prevPos[oldIndex]
+        val currPosition = prevPos[prevPos.size - 1]
         val scalar = (currPosition.first - oldPosition.first)
 
         if(scalar epsilonEquals 0.0) Logger.logError(motor.toString())
 
-        _velocity = (currPosition.second - oldPosition.second) / scalar
+        _vel = (currPosition.second - oldPosition.second) / scalar
 
         if(isRevEncoder) {
-            _velocity = inverseOverflow(motor.rawMotorVelocity * encoderMultiplier, _velocity)
+            _vel = inverseOverflow(motor.rawMotorVelocity * multiplier, _vel)
         }
     }
 
+    private fun attemptAccelUpdate() {
+        if(prevVel.size < 2) {
+            _accel = 0.0
+            return
+        }
+
+        val oldIndex = max(0, prevVel.size - LOOK_BEHIND - 1)
+        val oldVel = prevVel[oldIndex]
+        val currVel = prevVel[prevPos.size - 1]
+        val scalar = (currVel.first - oldVel.first)
+
+        if(scalar epsilonEquals 0.0) Logger.logError(motor.toString())
+
+        _accel = (currVel.second - oldVel.second) / scalar
+    }
+
     fun zero(newPosition: Double = 0.0): KEncoder {
-        _position = motor.rawMotorPosition
-        offset = newPosition * ticksPerUnit - _position
-        prevEncoderPositions.clear()
-        prevEncoderPositions.add(Pair(clock.seconds(), _position))
-        prevEncoderPositions.add(Pair(clock.seconds() - 1e6, _position))
-        _velocity = 0.0
+        _pos = motor.rawMotorPosition
+        offset = newPosition * ticksPerUnit - _pos
+        prevPos.clear()
+        prevPos.add(Pair(clock.seconds(), _pos))
+        prevPos.add(Pair(clock.seconds() - 1e6, _pos))
+        _vel = 0.0
         return this
     }
 
     fun update() {
-        prevEncoderPositions.add(Pair(clock.seconds(), _position))
-        _position = motor.rawMotorPosition
+        val seconds = clock.seconds()
+        prevPos.add(Pair(seconds, _pos))
+        _pos = motor.rawMotorPosition
         attemptVelUpdate()
+        prevVel.add(Pair(seconds, _vel))
+        attemptAccelUpdate()
     }
 
     companion object {

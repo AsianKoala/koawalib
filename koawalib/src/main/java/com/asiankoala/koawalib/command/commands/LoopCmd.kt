@@ -10,7 +10,7 @@ import com.asiankoala.koawalib.subsystem.Subsystem
 class LoopCmd(
     private val action: () -> Unit = {},
     vararg requirements: Subsystem
-) : Command() {
+) : Cmd() {
     override fun execute() {
         action.invoke()
     }

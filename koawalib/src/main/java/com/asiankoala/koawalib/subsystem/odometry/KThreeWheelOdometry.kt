@@ -21,9 +21,9 @@ class KThreeWheelOdometry(
     override fun updateTelemetry() {
         Logger.addTelemetryData("start pose", startPose)
         Logger.addTelemetryData("curr pose", pose)
-        Logger.addTelemetryData("left encoder", leftEncoder.position)
-        Logger.addTelemetryData("right encoder", rightEncoder.position)
-        Logger.addTelemetryData("aux encoder", auxEncoder.position)
+        Logger.addTelemetryData("left encoder", leftEncoder.pos)
+        Logger.addTelemetryData("right encoder", rightEncoder.pos)
+        Logger.addTelemetryData("aux encoder", auxEncoder.pos)
         Logger.addTelemetryData("accumulated heading", accumulatedHeading.degrees)
         Logger.addTelemetryData("delta tracker", accumulatedAux - accumulatedAuxPrediction)
     }
@@ -40,7 +40,7 @@ class KThreeWheelOdometry(
             return
         }
 
-        val newAngle = (((rightEncoder.position - leftEncoder.position) / TRACK_WIDTH) + startPose.heading).angleWrap
+        val newAngle = (((rightEncoder.pos - leftEncoder.pos) / TRACK_WIDTH) + startPose.heading).angleWrap
 
         val headingDelta = (rightEncoder.delta - leftEncoder.delta) / TRACK_WIDTH
         val auxPredicted = headingDelta * PERP_TRACKER

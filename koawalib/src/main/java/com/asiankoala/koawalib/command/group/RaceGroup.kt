@@ -1,5 +1,5 @@
 package com.asiankoala.koawalib.command.group
 
-import com.asiankoala.koawalib.command.commands.Command
+import com.asiankoala.koawalib.command.commands.Cmd
 
-class RaceGroup(vararg commands: Command) : ParallelGroup({ it.containsValue(false) }, *commands)
+class RaceGroup(vararg cmds: Cmd) : ParallelGroup({ it.containsValue(false) }, *cmds)

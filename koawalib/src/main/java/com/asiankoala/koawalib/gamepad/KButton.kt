@@ -1,7 +1,7 @@
 package com.asiankoala.koawalib.gamepad
 
 import com.asiankoala.koawalib.command.KScheduler
-import com.asiankoala.koawalib.command.commands.Command
+import com.asiankoala.koawalib.command.commands.Cmd
 import com.asiankoala.koawalib.gamepad.functionality.Button
 import com.asiankoala.koawalib.util.KBoolean
 
@@ -9,46 +9,46 @@ import com.asiankoala.koawalib.util.KBoolean
 open class KButton(private val buttonState: () -> Boolean) : Button(), KBoolean {
     /**
      * Schedule command on press
-     * @param command command to schedule
+     * @param cmd command to schedule
      */
-    fun onPress(command: Command) {
-        schedule(::isJustPressed, command)
+    fun onPress(cmd: Cmd) {
+        schedule(::isJustPressed, cmd)
     }
 
     /**
      * Schedule command on release
-     * @param command command to schedule
+     * @param cmd command to schedule
      */
-    fun onRelease(command: Command) {
-        schedule(::isJustReleased, command)
+    fun onRelease(cmd: Cmd) {
+        schedule(::isJustReleased, cmd)
     }
 
     /**
      * Schedule command while pressed
-     * @param command command to schedule
+     * @param cmd command to schedule
      */
-    fun whilePressed(command: Command) {
-        schedule(::isPressed, command)
+    fun whilePressed(cmd: Cmd) {
+        schedule(::isPressed, cmd)
     }
 
     /**
      * Schedule command while released
-     * @param command command to schedule
+     * @param cmd command to schedule
      */
-    fun whileReleased(command: Command) {
-        schedule(::isReleased, command)
+    fun whileReleased(cmd: Cmd) {
+        schedule(::isReleased, cmd)
     }
 
     /**
      * Schedule command when pressed to cancel on release
-     * @param command command to schedule
+     * @param cmd command to schedule
      */
-    fun onPressUntilRelease(command: Command) {
-        schedule(::isJustPressed, command.cancelIf(::isReleased))
+    fun onPressUntilRelease(cmd: Cmd) {
+        schedule(::isJustPressed, cmd.cancelIf(::isReleased))
     }
 
-    private fun schedule(condition: () -> Boolean, command: Command) {
-        KScheduler.scheduleWatchdog(condition, command)
+    private fun schedule(condition: () -> Boolean, cmd: Cmd) {
+        KScheduler.scheduleWatchdog(condition, cmd)
     }
 
     override fun invokeBoolean(): Boolean {

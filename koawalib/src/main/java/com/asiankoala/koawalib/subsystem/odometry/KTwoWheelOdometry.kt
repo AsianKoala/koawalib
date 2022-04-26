@@ -30,10 +30,10 @@ class KTwoWheelOdometry(
     override fun updateTelemetry() {
         Logger.addTelemetryData("start pose", startPose)
         Logger.addTelemetryData("curr pose", pose)
-        Logger.addTelemetryData("left encoder", leftEncoder.position)
-        Logger.addTelemetryData("aux encoder", auxEncoder.position)
+        Logger.addTelemetryData("left encoder", leftEncoder.pos)
+        Logger.addTelemetryData("aux encoder", auxEncoder.pos)
 
-        val accumAuxScale = auxEncoder.position
+        val accumAuxScale = auxEncoder.pos
         val auxTrackDiff = accumAuxScale - accumulatedAuxPrediction
         Logger.addTelemetryData("accumulated aux", accumAuxScale)
         Logger.addTelemetryData("accumulated aux prediction", accumulatedAuxPrediction)

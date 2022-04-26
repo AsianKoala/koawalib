@@ -1,7 +1,7 @@
 package com.asiankoala.koawalib.command.group
 
-import com.asiankoala.koawalib.command.commands.Command
+import com.asiankoala.koawalib.command.commands.Cmd
 
 interface Group {
-    fun addCommands(vararg commands: Command)
+    fun addCommands(vararg cmds: Cmd)
 }
