@@ -1,4 +1,4 @@
-package com.asiankoala.koawalib.control.filter
+package com.asiankoala.koawalib.wpilib.filter
 
 import com.acmerobotics.roadrunner.util.NanoClock
 
@@ -10,7 +10,7 @@ import com.acmerobotics.roadrunner.util.NanoClock
 @Suppress("unused")
 class Debouncer @JvmOverloads constructor(
     private val m_debounceTimeSeconds: Double,
-    private val m_debounceType: DebounceType = DebounceType.kRising
+    private val m_debounceType: DebounceType = DebounceType.kBoth
 ) {
     enum class DebounceType {
         kRising, kFalling, kBoth

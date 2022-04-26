@@ -42,7 +42,7 @@ class MecanumDriveCommand(
     private val isHeadingFieldCentric: Boolean = false,
     private val heading: () -> Double = { Double.NaN },
     private val fieldCentricHeadingScalar: Double = 90.0.radians
-) : CommandBase() {
+) : Command() {
 
     /**
      * Sets scaled power to mecanum drive

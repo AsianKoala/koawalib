@@ -2,6 +2,7 @@ $dokka.format:html-v1
 $dokka.linkExtension:html
 $dokka.location:com.asiankoala.koawalib.command.commands////PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/index.html
 $dokka.location:com.asiankoala.koawalib.command.commands/Command///PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-command/index.html
+$dokka.location:com.asiankoala.koawalib.command.commands/Command/Command/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-command/-command.html
 $dokka.location:com.asiankoala.koawalib.command.commands/Command/alongWith/#kotlin.Array[com.asiankoala.koawalib.command.commands.Command]/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-command/along-with.html
 $dokka.location:com.asiankoala.koawalib.command.commands/Command/andThen/#kotlin.Array[com.asiankoala.koawalib.command.commands.Command]/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-command/and-then.html
 $dokka.location:com.asiankoala.koawalib.command.commands/Command/cancel/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-command/cancel.html
@@ -9,8 +10,6 @@ $dokka.location:com.asiankoala.koawalib.command.commands/Command/cancelIf/#kotli
 $dokka.location:com.asiankoala.koawalib.command.commands/Command/deadlineWith/#kotlin.Array[com.asiankoala.koawalib.command.commands.Command]/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-command/deadline-with.html
 $dokka.location:com.asiankoala.koawalib.command.commands/Command/end/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-command/end.html
 $dokka.location:com.asiankoala.koawalib.command.commands/Command/execute/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-command/execute.html
-$dokka.location:com.asiankoala.koawalib.command.commands/Command/getRequirements/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-command/get-requirements.html
-$dokka.location:com.asiankoala.koawalib.command.commands/Command/hasRequirement/#com.asiankoala.koawalib.subsystem.Subsystem/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-command/has-requirement.html
 $dokka.location:com.asiankoala.koawalib.command.commands/Command/initialize/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-command/initialize.html
 $dokka.location:com.asiankoala.koawalib.command.commands/Command/isFinished/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-command/is-finished.html
 $dokka.location:com.asiankoala.koawalib.command.commands/Command/isScheduled/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-command/is-scheduled.html
@@ -18,14 +17,10 @@ $dokka.location:com.asiankoala.koawalib.command.commands/Command/name/#/Pointing
 $dokka.location:com.asiankoala.koawalib.command.commands/Command/pauseFor/#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-command/pause-for.html
 $dokka.location:com.asiankoala.koawalib.command.commands/Command/raceWith/#kotlin.Array[com.asiankoala.koawalib.command.commands.Command]/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-command/race-with.html
 $dokka.location:com.asiankoala.koawalib.command.commands/Command/schedule/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-command/schedule.html
+$dokka.location:com.asiankoala.koawalib.command.commands/Command/toString/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-command/to-string.html
 $dokka.location:com.asiankoala.koawalib.command.commands/Command/waitUntil/#kotlin.Function0[kotlin.Boolean]/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-command/wait-until.html
+$dokka.location:com.asiankoala.koawalib.command.commands/Command/withName/#kotlin.String/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-command/with-name.html
 $dokka.location:com.asiankoala.koawalib.command.commands/Command/withTimeout/#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-command/with-timeout.html
-$dokka.location:com.asiankoala.koawalib.command.commands/CommandBase///PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-command-base/index.html
-$dokka.location:com.asiankoala.koawalib.command.commands/CommandBase/CommandBase/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-command-base/-command-base.html
-$dokka.location:com.asiankoala.koawalib.command.commands/CommandBase/getRequirements/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-command-base/get-requirements.html
-$dokka.location:com.asiankoala.koawalib.command.commands/CommandBase/name/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-command-base/name.html
-$dokka.location:com.asiankoala.koawalib.command.commands/CommandBase/toString/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-command-base/to-string.html
-$dokka.location:com.asiankoala.koawalib.command.commands/CommandBase/withName/#kotlin.String/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-command-base/with-name.html
 $dokka.location:com.asiankoala.koawalib.command.commands/ConditionalCommand///PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-conditional-command/index.html
 $dokka.location:com.asiankoala.koawalib.command.commands/ConditionalCommand/ConditionalCommand/#com.asiankoala.koawalib.command.commands.Command#com.asiankoala.koawalib.command.commands.Command#kotlin.Function0[kotlin.Boolean]/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-conditional-command/-conditional-command.html
 $dokka.location:com.asiankoala.koawalib.command.commands/ConditionalCommand/end/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-conditional-command/end.html
@@ -59,42 +54,27 @@ $dokka.location:com.asiankoala.koawalib.command.commands/WaitUntilCommand/WaitUn
 $dokka.location:com.asiankoala.koawalib.command.commands/WaitUntilCommand/execute/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-wait-until-command/execute.html
 $dokka.location:com.asiankoala.koawalib.command.commands/WaitUntilCommand/isFinished/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-wait-until-command/is-finished.html
 $dokka.location:com.asiankoala.koawalib.command.group////PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/index.html
-$dokka.location:com.asiankoala.koawalib.command.group/CommandGroupBase.Companion///PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-command-group-base/-companion/index.html
-$dokka.location:com.asiankoala.koawalib.command.group/CommandGroupBase.Companion/assertUngrouped/#kotlin.Array[com.asiankoala.koawalib.command.commands.Command]/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-command-group-base/-companion/assert-ungrouped.html
-$dokka.location:com.asiankoala.koawalib.command.group/CommandGroupBase.Companion/getGroupedCommands/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-command-group-base/-companion/get-grouped-commands.html
-$dokka.location:com.asiankoala.koawalib.command.group/CommandGroupBase.Companion/registerGroupedCommands/#kotlin.Array[com.asiankoala.koawalib.command.commands.Command]/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-command-group-base/-companion/register-grouped-commands.html
-$dokka.location:com.asiankoala.koawalib.command.group/CommandGroupBase///PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-command-group-base/index.html
-$dokka.location:com.asiankoala.koawalib.command.group/CommandGroupBase/CommandGroupBase/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-command-group-base/-command-group-base.html
-$dokka.location:com.asiankoala.koawalib.command.group/CommandGroupBase/addCommands/#kotlin.Array[com.asiankoala.koawalib.command.commands.Command]/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-command-group-base/add-commands.html
-$dokka.location:com.asiankoala.koawalib.command.group/ParallelCommandGroup///PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-parallel-command-group/index.html
-$dokka.location:com.asiankoala.koawalib.command.group/ParallelCommandGroup/ParallelCommandGroup/#kotlin.Array[com.asiankoala.koawalib.command.commands.Command]/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-parallel-command-group/-parallel-command-group.html
-$dokka.location:com.asiankoala.koawalib.command.group/ParallelCommandGroup/addCommands/#kotlin.Array[com.asiankoala.koawalib.command.commands.Command]/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-parallel-command-group/add-commands.html
-$dokka.location:com.asiankoala.koawalib.command.group/ParallelCommandGroup/end/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-parallel-command-group/end.html
-$dokka.location:com.asiankoala.koawalib.command.group/ParallelCommandGroup/execute/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-parallel-command-group/execute.html
-$dokka.location:com.asiankoala.koawalib.command.group/ParallelCommandGroup/initialize/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-parallel-command-group/initialize.html
-$dokka.location:com.asiankoala.koawalib.command.group/ParallelCommandGroup/isFinished/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-parallel-command-group/is-finished.html
-$dokka.location:com.asiankoala.koawalib.command.group/ParallelDeadlineGroup///PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-parallel-deadline-group/index.html
-$dokka.location:com.asiankoala.koawalib.command.group/ParallelDeadlineGroup/ParallelDeadlineGroup/#com.asiankoala.koawalib.command.commands.Command#kotlin.Array[com.asiankoala.koawalib.command.commands.Command]/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-parallel-deadline-group/-parallel-deadline-group.html
-$dokka.location:com.asiankoala.koawalib.command.group/ParallelDeadlineGroup/addCommands/#kotlin.Array[com.asiankoala.koawalib.command.commands.Command]/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-parallel-deadline-group/add-commands.html
-$dokka.location:com.asiankoala.koawalib.command.group/ParallelDeadlineGroup/end/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-parallel-deadline-group/end.html
-$dokka.location:com.asiankoala.koawalib.command.group/ParallelDeadlineGroup/execute/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-parallel-deadline-group/execute.html
-$dokka.location:com.asiankoala.koawalib.command.group/ParallelDeadlineGroup/initialize/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-parallel-deadline-group/initialize.html
-$dokka.location:com.asiankoala.koawalib.command.group/ParallelDeadlineGroup/isFinished/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-parallel-deadline-group/is-finished.html
-$dokka.location:com.asiankoala.koawalib.command.group/ParallelDeadlineGroup/setDeadline/#com.asiankoala.koawalib.command.commands.Command/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-parallel-deadline-group/set-deadline.html
-$dokka.location:com.asiankoala.koawalib.command.group/ParallelRaceGroup///PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-parallel-race-group/index.html
-$dokka.location:com.asiankoala.koawalib.command.group/ParallelRaceGroup/ParallelRaceGroup/#kotlin.Array[com.asiankoala.koawalib.command.commands.Command]/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-parallel-race-group/-parallel-race-group.html
-$dokka.location:com.asiankoala.koawalib.command.group/ParallelRaceGroup/addCommands/#kotlin.Array[com.asiankoala.koawalib.command.commands.Command]/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-parallel-race-group/add-commands.html
-$dokka.location:com.asiankoala.koawalib.command.group/ParallelRaceGroup/end/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-parallel-race-group/end.html
-$dokka.location:com.asiankoala.koawalib.command.group/ParallelRaceGroup/execute/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-parallel-race-group/execute.html
-$dokka.location:com.asiankoala.koawalib.command.group/ParallelRaceGroup/initialize/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-parallel-race-group/initialize.html
-$dokka.location:com.asiankoala.koawalib.command.group/ParallelRaceGroup/isFinished/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-parallel-race-group/is-finished.html
-$dokka.location:com.asiankoala.koawalib.command.group/SequentialCommandGroup///PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-sequential-command-group/index.html
-$dokka.location:com.asiankoala.koawalib.command.group/SequentialCommandGroup/SequentialCommandGroup/#kotlin.Array[com.asiankoala.koawalib.command.commands.Command]/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-sequential-command-group/-sequential-command-group.html
-$dokka.location:com.asiankoala.koawalib.command.group/SequentialCommandGroup/addCommands/#kotlin.Array[com.asiankoala.koawalib.command.commands.Command]/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-sequential-command-group/add-commands.html
-$dokka.location:com.asiankoala.koawalib.command.group/SequentialCommandGroup/end/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-sequential-command-group/end.html
-$dokka.location:com.asiankoala.koawalib.command.group/SequentialCommandGroup/execute/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-sequential-command-group/execute.html
-$dokka.location:com.asiankoala.koawalib.command.group/SequentialCommandGroup/initialize/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-sequential-command-group/initialize.html
-$dokka.location:com.asiankoala.koawalib.command.group/SequentialCommandGroup/isFinished/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-sequential-command-group/is-finished.html
+$dokka.location:com.asiankoala.koawalib.command.group/DeadlineGroup///PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-deadline-group/index.html
+$dokka.location:com.asiankoala.koawalib.command.group/DeadlineGroup/DeadlineGroup/#com.asiankoala.koawalib.command.commands.Command#kotlin.Array[com.asiankoala.koawalib.command.commands.Command]/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-deadline-group/-deadline-group.html
+$dokka.location:com.asiankoala.koawalib.command.group/Group///PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-group/index.html
+$dokka.location:com.asiankoala.koawalib.command.group/Group/addCommands/#kotlin.Array[com.asiankoala.koawalib.command.commands.Command]/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-group/add-commands.html
+$dokka.location:com.asiankoala.koawalib.command.group/ParallelGroup///PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-parallel-group/index.html
+$dokka.location:com.asiankoala.koawalib.command.group/ParallelGroup/ParallelGroup/#kotlin.Array[com.asiankoala.koawalib.command.commands.Command]/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-parallel-group/-parallel-group.html
+$dokka.location:com.asiankoala.koawalib.command.group/ParallelGroup/ParallelGroup/#kotlin.Function1[kotlin.collections.Map[com.asiankoala.koawalib.command.commands.Command,kotlin.Boolean],kotlin.Boolean]#kotlin.Array[com.asiankoala.koawalib.command.commands.Command]/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-parallel-group/-parallel-group.html
+$dokka.location:com.asiankoala.koawalib.command.group/ParallelGroup/addCommands/#kotlin.Array[com.asiankoala.koawalib.command.commands.Command]/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-parallel-group/add-commands.html
+$dokka.location:com.asiankoala.koawalib.command.group/ParallelGroup/end/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-parallel-group/end.html
+$dokka.location:com.asiankoala.koawalib.command.group/ParallelGroup/execute/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-parallel-group/execute.html
+$dokka.location:com.asiankoala.koawalib.command.group/ParallelGroup/initialize/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-parallel-group/initialize.html
+$dokka.location:com.asiankoala.koawalib.command.group/ParallelGroup/isFinished/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-parallel-group/is-finished.html
+$dokka.location:com.asiankoala.koawalib.command.group/RaceGroup///PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-race-group/index.html
+$dokka.location:com.asiankoala.koawalib.command.group/RaceGroup/RaceGroup/#kotlin.Array[com.asiankoala.koawalib.command.commands.Command]/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-race-group/-race-group.html
+$dokka.location:com.asiankoala.koawalib.command.group/SequentialGroup///PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-sequential-group/index.html
+$dokka.location:com.asiankoala.koawalib.command.group/SequentialGroup/SequentialGroup/#kotlin.Array[com.asiankoala.koawalib.command.commands.Command]/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-sequential-group/-sequential-group.html
+$dokka.location:com.asiankoala.koawalib.command.group/SequentialGroup/addCommands/#kotlin.Array[com.asiankoala.koawalib.command.commands.Command]/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-sequential-group/add-commands.html
+$dokka.location:com.asiankoala.koawalib.command.group/SequentialGroup/end/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-sequential-group/end.html
+$dokka.location:com.asiankoala.koawalib.command.group/SequentialGroup/execute/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-sequential-group/execute.html
+$dokka.location:com.asiankoala.koawalib.command.group/SequentialGroup/initialize/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-sequential-group/initialize.html
+$dokka.location:com.asiankoala.koawalib.command.group/SequentialGroup/isFinished/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.group/-sequential-group/is-finished.html
 $dokka.location:com.asiankoala.koawalib.command////PointingToDeclaration/koawalib/com.asiankoala.koawalib.command/index.html
 $dokka.location:com.asiankoala.koawalib.command/CommandOpMode///PointingToDeclaration/koawalib/com.asiankoala.koawalib.command/-command-op-mode/index.html
 $dokka.location:com.asiankoala.koawalib.command/CommandOpMode/CommandOpMode/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command/-command-op-mode/-command-op-mode.html
@@ -228,10 +208,12 @@ $dokka.location:com.asiankoala.koawalib.hardware.motor/KMotor/KMotor/#kotlin.Str
 $dokka.location:com.asiankoala.koawalib.hardware.motor/KMotor/brake/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor/brake.html
 $dokka.location:com.asiankoala.koawalib.hardware.motor/KMotor/float/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor/float.html
 $dokka.location:com.asiankoala.koawalib.hardware.motor/KMotor/forward/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor/forward.html
+$dokka.location:com.asiankoala.koawalib.hardware.motor/KMotor/noVoltFF/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor/no-volt-f-f.html
 $dokka.location:com.asiankoala.koawalib.hardware.motor/KMotor/power/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor/power.html
 $dokka.location:com.asiankoala.koawalib.hardware.motor/KMotor/rawMotorPosition/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor/raw-motor-position.html
 $dokka.location:com.asiankoala.koawalib.hardware.motor/KMotor/rawMotorVelocity/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor/raw-motor-velocity.html
 $dokka.location:com.asiankoala.koawalib.hardware.motor/KMotor/reverse/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor/reverse.html
+$dokka.location:com.asiankoala.koawalib.hardware.motor/KMotor/voltFF/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor/volt-f-f.html
 $dokka.location:com.asiankoala.koawalib.hardware.motor/KMotorEx.Companion///PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor-ex/-companion/index.html
 $dokka.location:com.asiankoala.koawalib.hardware.motor/KMotorEx.Companion/createMotor/#kotlin.String#kotlin.Double#kotlin.Boolean#com.asiankoala.koawalib.control.MotorControlType#com.asiankoala.koawalib.control.PIDConstants#com.asiankoala.koawalib.control.FeedforwardConstants#kotlin.Double#kotlin.Double#kotlin.Double#kotlin.Double#kotlin.Double#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor-ex/-companion/create-motor.html
 $dokka.location:com.asiankoala.koawalib.hardware.motor/KMotorEx///PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor-ex/index.html
@@ -274,13 +256,16 @@ $dokka.location:com.asiankoala.koawalib.hardware.sensor/KDistanceSensor/lastRead
 $dokka.location:com.asiankoala.koawalib.hardware.sensor/KDistanceSensor/periodic/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.sensor/-k-distance-sensor/periodic.html
 $dokka.location:com.asiankoala.koawalib.hardware.sensor/KIMU///PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.sensor/-k-i-m-u/index.html
 $dokka.location:com.asiankoala.koawalib.hardware.sensor/KIMU/KIMU/#kotlin.String#org.firstinspires.ftc.robotcore.external.navigation.AxesOrder#com.asiankoala.koawalib.hardware.sensor.AxesSigns/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.sensor/-k-i-m-u/-k-i-m-u.html
+$dokka.location:com.asiankoala.koawalib.hardware.sensor/KIMU/_headingVel/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.sensor/-k-i-m-u/_heading-vel.html
+$dokka.location:com.asiankoala.koawalib.hardware.sensor/KIMU/_pitchVel/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.sensor/-k-i-m-u/_pitch-vel.html
+$dokka.location:com.asiankoala.koawalib.hardware.sensor/KIMU/_rollVel/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.sensor/-k-i-m-u/_roll-vel.html
 $dokka.location:com.asiankoala.koawalib.hardware.sensor/KIMU/heading/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.sensor/-k-i-m-u/heading.html
-$dokka.location:com.asiankoala.koawalib.hardware.sensor/KIMU/headingVel/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.sensor/-k-i-m-u/heading-vel.html
+$dokka.location:com.asiankoala.koawalib.hardware.sensor/KIMU/headingDelta/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.sensor/-k-i-m-u/heading-delta.html
 $dokka.location:com.asiankoala.koawalib.hardware.sensor/KIMU/periodic/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.sensor/-k-i-m-u/periodic.html
 $dokka.location:com.asiankoala.koawalib.hardware.sensor/KIMU/pitch/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.sensor/-k-i-m-u/pitch.html
-$dokka.location:com.asiankoala.koawalib.hardware.sensor/KIMU/pitchVel/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.sensor/-k-i-m-u/pitch-vel.html
+$dokka.location:com.asiankoala.koawalib.hardware.sensor/KIMU/pitchDelta/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.sensor/-k-i-m-u/pitch-delta.html
 $dokka.location:com.asiankoala.koawalib.hardware.sensor/KIMU/roll/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.sensor/-k-i-m-u/roll.html
-$dokka.location:com.asiankoala.koawalib.hardware.sensor/KIMU/rollVel/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.sensor/-k-i-m-u/roll-vel.html
+$dokka.location:com.asiankoala.koawalib.hardware.sensor/KIMU/rollDelta/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.sensor/-k-i-m-u/roll-delta.html
 $dokka.location:com.asiankoala.koawalib.hardware.servo////PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.servo/index.html
 $dokka.location:com.asiankoala.koawalib.hardware.servo/KCRServo///PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.servo/-k-c-r-servo/index.html
 $dokka.location:com.asiankoala.koawalib.hardware.servo/KCRServo/KCRServo/#kotlin.String/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.servo/-k-c-r-servo/-k-c-r-servo.html
@@ -450,6 +435,18 @@ $dokka.location:com.asiankoala.koawalib.util/OpModeState.STOP///PointingToDeclar
 $dokka.location:com.asiankoala.koawalib.util/OpModeState///PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-op-mode-state/index.html
 $dokka.location:com.asiankoala.koawalib.util/Periodic///PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-periodic/index.html
 $dokka.location:com.asiankoala.koawalib.util/Periodic/periodic/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-periodic/periodic.html
+$dokka.location:com.asiankoala.koawalib.wpilib.filter////PointingToDeclaration/koawalib/com.asiankoala.koawalib.wpilib.filter/index.html
+$dokka.location:com.asiankoala.koawalib.wpilib.filter/Debouncer.DebounceType.kBoth///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}koawalib/com.asiankoala.koawalib.wpilib.filter/-debouncer/-debounce-type/k-both/index.html
+$dokka.location:com.asiankoala.koawalib.wpilib.filter/Debouncer.DebounceType.kFalling///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}koawalib/com.asiankoala.koawalib.wpilib.filter/-debouncer/-debounce-type/k-falling/index.html
+$dokka.location:com.asiankoala.koawalib.wpilib.filter/Debouncer.DebounceType.kRising///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}koawalib/com.asiankoala.koawalib.wpilib.filter/-debouncer/-debounce-type/k-rising/index.html
+$dokka.location:com.asiankoala.koawalib.wpilib.filter/Debouncer.DebounceType///PointingToDeclaration/koawalib/com.asiankoala.koawalib.wpilib.filter/-debouncer/-debounce-type/index.html
+$dokka.location:com.asiankoala.koawalib.wpilib.filter/Debouncer///PointingToDeclaration/koawalib/com.asiankoala.koawalib.wpilib.filter/-debouncer/index.html
+$dokka.location:com.asiankoala.koawalib.wpilib.filter/Debouncer/Debouncer/#kotlin.Double#com.asiankoala.koawalib.wpilib.filter.Debouncer.DebounceType/PointingToDeclaration/koawalib/com.asiankoala.koawalib.wpilib.filter/-debouncer/-debouncer.html
+$dokka.location:com.asiankoala.koawalib.wpilib.filter/Debouncer/calculate/#kotlin.Boolean/PointingToDeclaration/koawalib/com.asiankoala.koawalib.wpilib.filter/-debouncer/calculate.html
+$dokka.location:com.asiankoala.koawalib.wpilib.filter/SlewRateLimiter///PointingToDeclaration/koawalib/com.asiankoala.koawalib.wpilib.filter/-slew-rate-limiter/index.html
+$dokka.location:com.asiankoala.koawalib.wpilib.filter/SlewRateLimiter/SlewRateLimiter/#kotlin.Double#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.wpilib.filter/-slew-rate-limiter/-slew-rate-limiter.html
+$dokka.location:com.asiankoala.koawalib.wpilib.filter/SlewRateLimiter/calculate/#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.wpilib.filter/-slew-rate-limiter/calculate.html
+$dokka.location:com.asiankoala.koawalib.wpilib.filter/SlewRateLimiter/reset/#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.wpilib.filter/-slew-rate-limiter/reset.html
 com.asiankoala.koawalib.command
 com.asiankoala.koawalib.command.commands
 com.asiankoala.koawalib.command.group
@@ -469,4 +466,5 @@ com.asiankoala.koawalib.subsystem.drive
 com.asiankoala.koawalib.subsystem.intake
 com.asiankoala.koawalib.subsystem.odometry
 com.asiankoala.koawalib.util
+com.asiankoala.koawalib.wpilib.filter
 

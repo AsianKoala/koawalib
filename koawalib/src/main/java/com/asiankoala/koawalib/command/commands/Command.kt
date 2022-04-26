@@ -1,42 +1,27 @@
 package com.asiankoala.koawalib.command.commands
 
 import com.asiankoala.koawalib.command.CommandScheduler
-import com.asiankoala.koawalib.command.group.ParallelCommandGroup
-import com.asiankoala.koawalib.command.group.ParallelDeadlineGroup
-import com.asiankoala.koawalib.command.group.ParallelRaceGroup
-import com.asiankoala.koawalib.command.group.SequentialCommandGroup
+import com.asiankoala.koawalib.command.group.DeadlineGroup
+import com.asiankoala.koawalib.command.group.ParallelGroup
+import com.asiankoala.koawalib.command.group.RaceGroup
+import com.asiankoala.koawalib.command.group.SequentialGroup
 import com.asiankoala.koawalib.subsystem.Subsystem
 
 /**
  * Commands are the basis of how koawalib interacts with the robot.
  * Each command has initialize(), execute(), and end() methods executed throughout its lifecycle.
  * Commands contain a list of subsystem "requirements", preventing multiple subsystems accessing a command simultaneously.
- * To create custom commands, extend the CommandBase class.
  * All commands are scheduled and ran through the CommandScheduler.
- *
  * @see CommandScheduler
- * @see CommandBase
  */
-interface Command {
-    /**
-     * First part of running a command, called on start of command.
-     */
-    fun initialize() {}
-
-    /**
-     * Main part of a command, called while command is running.
-     */
-    fun execute()
-
-    /**
-     * Final part of a command, called when command finishes.
-     */
-    fun end() {}
+abstract class Command {
+    private var _name: String? = null
+    internal val requirements: MutableSet<Subsystem> = HashSet()
 
     /**
      * Finish state of command
      */
-    val isFinished: Boolean get() = false
+    open val isFinished: Boolean get() = false
 
     /**
      * Whether the command is currently scheduled. Syntax sugar for [CommandScheduler.isScheduled]
@@ -44,22 +29,29 @@ interface Command {
     val isScheduled: Boolean get() = CommandScheduler.isScheduled(this)
 
     /**
-     * The name of the command. Specify with [CommandBase.withName]
+     * The name of the command
      */
-    val name: String
+    val name: String get() = _name ?: this.javaClass.simpleName
 
-    /**
-     * @return a set containing the command's subsystem requirements
-     */
-    fun getRequirements(): Set<Subsystem> { return HashSet() }
-
-    /**
-     * @param requirement queried subsystem requirement
-     * @return whether or not the command contains the queried subsystem as part of it's requirements
-     */
-    fun hasRequirement(requirement: Subsystem): Boolean {
-        return getRequirements().contains(requirement)
+    protected fun addRequirements(vararg subsystems: Subsystem) {
+        requirements.addAll(subsystems)
     }
+
+    /**
+     * First part of running a command, called on start of command.
+     */
+    open fun initialize() {}
+
+    /**
+     * Main part of a command, called while command is running.
+     */
+    abstract fun execute()
+
+    /**
+     * Final part of a command, called when command finishes.
+     */
+    open fun end() {}
+
 
     /**
      * Wait until a condition has been fulfilled to run this command
@@ -67,7 +59,7 @@ interface Command {
      * @return SequentialCommandGroup with a WaitUntilCommand -> this command
      */
     fun waitUntil(condition: () -> Boolean): Command {
-        return SequentialCommandGroup(WaitUntilCommand(condition), this)
+        return SequentialGroup(WaitUntilCommand(condition), this)
     }
 
     /**
@@ -76,7 +68,7 @@ interface Command {
      * @return ParallelRaceGroup with a WaitCommand & this command
      */
     fun withTimeout(time: Double): Command {
-        return ParallelRaceGroup(this, WaitCommand(time))
+        return RaceGroup(this, WaitCommand(time))
     }
 
     /**
@@ -85,7 +77,7 @@ interface Command {
      * @return ParallelRaceGroup with a WaitUntilCommand & this command
      */
     fun cancelIf(condition: () -> Boolean): Command {
-        return ParallelRaceGroup(this, WaitUntilCommand(condition))
+        return RaceGroup(this, WaitUntilCommand(condition))
     }
 
     /**
@@ -94,7 +86,7 @@ interface Command {
      * @return SequentialCommandGroup with this command -> next commands
      */
     fun andThen(vararg next: Command): Command {
-        val group = SequentialCommandGroup(this)
+        val group = SequentialGroup(this)
         group.addCommands(*next)
         return group
     }
@@ -105,7 +97,7 @@ interface Command {
      * @return SequentialCommandGroup with this command -> WaitCommand
      */
     fun pauseFor(seconds: Double): Command {
-        return SequentialCommandGroup(this, WaitCommand(seconds))
+        return SequentialGroup(this, WaitCommand(seconds))
     }
 
     /**
@@ -114,7 +106,7 @@ interface Command {
      * @return ParallelDeadlineGroup with this command as the deadline, with n next commands
      */
     fun deadlineWith(vararg parallel: Command): Command {
-        return ParallelDeadlineGroup(this, *parallel)
+        return DeadlineGroup(this, *parallel)
     }
 
     /**
@@ -123,7 +115,7 @@ interface Command {
      * @return ParallelCommandGroup with this command and n parallel commands
      */
     fun alongWith(vararg parallel: Command): Command {
-        val group = ParallelCommandGroup(this)
+        val group = ParallelGroup(this)
         group.addCommands(*parallel)
         return group
     }
@@ -134,9 +126,17 @@ interface Command {
      * @return ParallelRaceGroup with this command and n parallel commands
      */
     fun raceWith(vararg parallel: Command): Command {
-        val group = ParallelRaceGroup(this)
+        val group = RaceGroup(this)
         group.addCommands(*parallel)
         return group
+    }
+
+    /**
+     * Name the current command, which shows up in the logger.
+     */
+    fun withName(commandName: String): Command {
+        _name = commandName
+        return this
     }
 
     /**
@@ -151,5 +151,9 @@ interface Command {
      */
     fun cancel() {
         CommandScheduler.cancel(this)
+    }
+
+    override fun toString(): String {
+        return name
     }
 }

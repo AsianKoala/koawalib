@@ -166,7 +166,7 @@ class KMotorEx(private val config: KMotorExConfig) : KMotor(config.name) {
     }
 
     companion object {
-            fun createMotor(
+        fun createMotor(
             name: String,
             ticksPerUnit: Double,
             isRevEncoder: Boolean,

@@ -1,7 +1,7 @@
 package com.asiankoala.koawalib.command
 
 import com.asiankoala.koawalib.command.commands.*
-import com.asiankoala.koawalib.command.group.CommandGroupBase
+import com.asiankoala.koawalib.command.group.ParallelGroup
 import com.asiankoala.koawalib.subsystem.Subsystem
 import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.util.OpModeState
@@ -45,14 +45,6 @@ object CommandScheduler {
     }
 
     private fun Command.scheduleThis() {
-        if (CommandGroupBase.getGroupedCommands().contains(this)) {
-            Logger.logError("command ${this.name}: Command in command groups cannot be independently scheduled")
-        } else {
-            Logger.logDebug("command ${this.name}: Command not in any command groups")
-        }
-
-        val requirements = this.getRequirements()
-
         if (Collections.disjoint(scheduledCommandRequirements.keys, requirements)) {
             initCommand(this, requirements)
             Logger.logDebug("command ${this.name}: Command disjoint with scheduledRequirementKeys")
@@ -80,7 +72,7 @@ object CommandScheduler {
         this.end()
         Logger.logInfo("command ${this.name} canceled")
         scheduledCommands.remove(this)
-        scheduledCommandRequirements.keys.removeAll(this.getRequirements())
+        scheduledCommandRequirements.keys.removeAll(this.requirements)
         toSchedule.remove(this)
     }
 
@@ -100,7 +92,7 @@ object CommandScheduler {
 
         subsystems.forEach { (k, v) ->
             if (!scheduledCommandRequirements.containsKey(k) && v != null && Collections.disjoint(
-                    scheduledCommandRequirements.keys, v.getRequirements()
+                    scheduledCommandRequirements.keys, v.requirements
                 )
             ) {
                 v.execute()
@@ -125,7 +117,7 @@ object CommandScheduler {
 
             command.execute()
 
-            if(command !is Watchdog && command !is InfiniteCommand && command !is CommandGroupBase) {
+            if(command !is Watchdog && command !is InfiniteCommand && command !is ParallelGroup) {
                 Logger.logDebug("${command.name} executed")
             }
 
@@ -133,7 +125,7 @@ object CommandScheduler {
                 command.end()
                 Logger.logDebug("command ${command.name} finished")
                 iterator.remove()
-                scheduledCommandRequirements.keys.removeAll(command.getRequirements())
+                scheduledCommandRequirements.keys.removeAll(command.requirements)
             }
         }
     }
@@ -187,11 +179,11 @@ object CommandScheduler {
      * @param command the default command
      */
     fun setDefaultCommand(subsystem: Subsystem, command: Command) {
-        if (!command.getRequirements().contains(subsystem)) {
+        if (!command.requirements.contains(subsystem)) {
             Logger.logError("command ${command.name}: default commands must require subsystem")
         }
 
-        if (command.getRequirements().size != 1) {
+        if (command.requirements.size != 1) {
             Logger.logError("command ${command.name}: default commands must only require one subsystem")
         }
 

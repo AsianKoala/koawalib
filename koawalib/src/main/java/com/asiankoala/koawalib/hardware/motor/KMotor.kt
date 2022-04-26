@@ -16,6 +16,7 @@ import kotlin.math.absoluteValue
  */
 open class KMotor(name: String) : KDevice<DcMotorEx>(name) {
     private var powerMultiplier = 1.0
+    private val voltageSensor = hardwareMap.voltageSensor.iterator().next()
 
     /**
      * raw motor position (ticks, no offset)
@@ -29,7 +30,8 @@ open class KMotor(name: String) : KDevice<DcMotorEx>(name) {
 
     var power: Double = 0.0
         set(value) {
-            val clipped = Range.clip(value, -1.0, 1.0) * powerMultiplier
+            var clipped = Range.clip(value, -1.0, 1.0) * powerMultiplier
+            if(isUsingVoltageFF) clipped *= 12.0 / voltageSensor.voltage
             if (clipped epsilonNotEqual field && (clipped == 0.0 || clipped.absoluteValue == 1.0 || (clipped - field).absoluteValue > 0.005)) {
                 field = clipped
                 device.power = clipped
@@ -51,6 +53,8 @@ open class KMotor(name: String) : KDevice<DcMotorEx>(name) {
             }
             field = value
         }
+
+    private var isUsingVoltageFF = false
 
     /**
      * Return this motor with brake mode
@@ -85,6 +89,18 @@ open class KMotor(name: String) : KDevice<DcMotorEx>(name) {
     val reverse: KMotor
         get() {
             direction = DcMotorSimple.Direction.REVERSE
+            return this
+        }
+
+    val voltFF: KMotor
+        get() {
+            isUsingVoltageFF = true
+            return this
+        }
+
+    val noVoltFF: KMotor
+        get() {
+            isUsingVoltageFF = false
             return this
         }
 

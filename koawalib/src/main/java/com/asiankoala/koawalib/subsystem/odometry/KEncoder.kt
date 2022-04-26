@@ -8,6 +8,7 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.sign
 
+@Suppress("unused")
 class KEncoder(
     private val motor: KMotor,
     private val ticksPerUnit: Double,
@@ -44,7 +45,7 @@ class KEncoder(
         val currPosition = prevEncoderPositions[prevEncoderPositions.size - 1]
         val scalar = (currPosition.first - oldPosition.first)
 
-        if(scalar epsilonEquals 0.0) Logger.logError("${motor.toString()}")
+        if(scalar epsilonEquals 0.0) Logger.logError(motor.toString())
 
         _velocity = (currPosition.second - oldPosition.second) / scalar
 

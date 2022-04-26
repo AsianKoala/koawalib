@@ -4,6 +4,7 @@ import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.angleWrap
 import com.asiankoala.koawalib.math.degrees
 import com.asiankoala.koawalib.logger.Logger
+import kotlin.math.absoluteValue
 
 class KThreeWheelOdometry(
     private val leftEncoder: KEncoder,
@@ -45,9 +46,9 @@ class KThreeWheelOdometry(
         val auxPredicted = headingDelta * PERP_TRACKER
         val auxDelta = auxEncoder.delta - auxPredicted
 
-        accumulatedHeading += headingDelta
-        accumulatedAuxPrediction += auxPredicted
-        accumulatedAux += auxEncoder.delta
+        accumulatedHeading += headingDelta.absoluteValue
+        accumulatedAuxPrediction += auxPredicted.absoluteValue
+        accumulatedAux += auxEncoder.delta.absoluteValue
 
         val deltaY = (leftEncoder.delta - rightEncoder.delta) / 2.0
         val pointIncrement = updatePoseWithDeltas(pose, leftEncoder.delta, rightEncoder.delta, auxDelta, deltaY, headingDelta)

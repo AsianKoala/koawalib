@@ -6,7 +6,7 @@ import com.asiankoala.koawalib.util.OpModeState
 internal class Watchdog(
     private val condition: () -> Boolean,
     private val toSchedule: Command
-) : CommandBase() {
+) : Command() {
 
     override fun execute() {
         if (condition.invoke() && CommandScheduler.opModeInstance.opmodeState == OpModeState.LOOP) {

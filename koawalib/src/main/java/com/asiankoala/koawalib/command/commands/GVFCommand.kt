@@ -14,7 +14,7 @@ class GVFCommand(
     kF: Double,
     epsilon: Double,
     errorMap: (Double) -> Double = { it }
-) : CommandBase() {
+) : Command() {
     private val controller = GVFController(path, kN, kOmega, kTheta, kF, epsilon, errorMap)
 
     override fun execute() {

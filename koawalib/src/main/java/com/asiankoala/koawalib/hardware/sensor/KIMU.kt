@@ -31,16 +31,22 @@ class KIMU(name: String, axesOrder: AxesOrder, axesSigns: AxesSigns) : KDevice<B
     private var _heading = 0.0
     private var _pitch = 0.0
     private var _roll = 0.0
-    private var _headingVel = 0.0
-    private var _pitchVel = 0.0
-    private var _rollVel = 0.0
+    var headingDelta = 0.0
+        private set
+    var pitchDelta = 0.0
+        private set
+    var rollDelta = 0.0
+        private set
+    var _headingVel = 0.0
+        private set
+    var _pitchVel = 0.0
+        private set
+    var _rollVel = 0.0
+        private set
 
     val heading get() = (_heading - headingOffset).angleWrap
     val pitch get() = (_pitch - pitchOffset).angleWrap
     val roll get() = (_roll - rollOffset).angleWrap
-    val headingVel get() = _headingVel
-    val pitchVel get() = _pitchVel
-    val rollVel get() = _rollVel
 
 
     private var lastAngularOrientation: Orientation = device.angularOrientation
@@ -48,6 +54,10 @@ class KIMU(name: String, axesOrder: AxesOrder, axesSigns: AxesSigns) : KDevice<B
             _heading = value.firstAngle.d
             _pitch = value.secondAngle.d
             _roll = value.thirdAngle.d
+
+            headingDelta = (_heading - lastHeading).angleWrap
+            pitchDelta = (_pitch - lastPitch).angleWrap
+            rollDelta = (_roll - lastRoll).angleWrap
 
             val currTime = clock.seconds()
             val dt = currTime - lastUpdateTime
