@@ -1,6 +1,6 @@
 package com.asiankoala.koawalib.command.commands
 
-import com.asiankoala.koawalib.command.CommandScheduler
+import com.asiankoala.koawalib.command.KScheduler
 import com.asiankoala.koawalib.util.OpModeState
 
 internal class Watchdog(
@@ -9,7 +9,7 @@ internal class Watchdog(
 ) : Command() {
 
     override fun execute() {
-        if (condition.invoke() && CommandScheduler.opModeInstance.opmodeState == OpModeState.LOOP) {
+        if (condition.invoke() && KScheduler.opModeInstance.opmodeState == OpModeState.LOOP) {
             toSchedule.schedule()
         }
     }

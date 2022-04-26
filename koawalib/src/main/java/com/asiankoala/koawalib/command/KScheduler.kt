@@ -14,10 +14,10 @@ import kotlin.collections.set
 /**
  * CommandScheduler runs all commands. Every loop the scheduler checks for newly scheduled commands, cancelled commands, finished commands,
  * and handles them accordingly. Processing is done behind the scenes, so the main purpose of this class for the user
- * is to schedule commands, mainly using [CommandScheduler.schedule]
+ * is to schedule commands, mainly using [KScheduler.schedule]
  */
 @Suppress("unused")
-object CommandScheduler {
+object KScheduler {
     private val scheduledCommands: MutableList<Command> = ArrayList()
     private val scheduledCommandRequirements: MutableMap<Subsystem, Command> = LinkedHashMap()
     private val subsystems: MutableMap<Subsystem, Command?> = LinkedHashMap()
@@ -29,7 +29,7 @@ object CommandScheduler {
 
     private var amountOfWatchdogs = 0
 
-    internal lateinit var opModeInstance: CommandOpMode
+    internal lateinit var opModeInstance: KOpMode
 
     internal fun resetScheduler() {
         allMaps.forEach(MutableMap<*, *>::clear)
@@ -117,7 +117,7 @@ object CommandScheduler {
 
             command.execute()
 
-            if(command !is Watchdog && command !is InfiniteCommand && command !is ParallelGroup) {
+            if(command !is Watchdog && command !is LoopCmd && command !is ParallelGroup) {
                 Logger.logDebug("${command.name} executed")
             }
 

@@ -4,8 +4,8 @@ import com.acmerobotics.roadrunner.control.PIDFController
 import com.acmerobotics.roadrunner.profile.MotionProfile
 import com.acmerobotics.roadrunner.profile.MotionProfileGenerator
 import com.acmerobotics.roadrunner.profile.MotionState
-import com.asiankoala.koawalib.command.CommandScheduler
-import com.asiankoala.koawalib.command.commands.InfiniteCommand
+import com.asiankoala.koawalib.command.KScheduler
+import com.asiankoala.koawalib.command.commands.LoopCmd
 import com.asiankoala.koawalib.control.FeedforwardConstants
 import com.asiankoala.koawalib.control.MotorControlType
 import com.asiankoala.koawalib.control.PIDConstants
@@ -162,7 +162,7 @@ class KMotorEx(private val config: KMotorExConfig) : KMotor(config.name) {
     }
 
     init {
-        CommandScheduler.schedule(InfiniteCommand(this::update))
+        KScheduler.schedule(LoopCmd(this::update))
     }
 
     companion object {

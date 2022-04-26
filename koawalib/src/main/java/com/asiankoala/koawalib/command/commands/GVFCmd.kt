@@ -5,7 +5,7 @@ import com.asiankoala.koawalib.gvf.GVFController
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.subsystem.drive.KMecanumOdoDrive
 
-class GVFCommand(
+class GVFCmd(
     private val drive: KMecanumOdoDrive,
     path: Path, 
     kN: Double, 

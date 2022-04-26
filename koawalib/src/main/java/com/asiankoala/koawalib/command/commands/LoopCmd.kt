@@ -7,7 +7,7 @@ import com.asiankoala.koawalib.subsystem.Subsystem
  * @param action action to run
  * @param requirements subsystem requirements
  */
-class InfiniteCommand(
+class LoopCmd(
     private val action: () -> Unit = {},
     vararg requirements: Subsystem
 ) : Command() {

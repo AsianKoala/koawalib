@@ -4,7 +4,7 @@ package com.asiankoala.koawalib.command.commands
  * Dummy command, finishes when condition is called
  * @param condition finish condition
  */
-open class WaitUntilCommand(private val condition: () -> Boolean) : Command() {
+open class WaitForCmd(private val condition: () -> Boolean) : Command() {
     override fun execute() {
     }
 

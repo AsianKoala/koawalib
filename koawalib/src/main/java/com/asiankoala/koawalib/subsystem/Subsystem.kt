@@ -1,6 +1,6 @@
 package com.asiankoala.koawalib.subsystem
 
-import com.asiankoala.koawalib.command.CommandScheduler
+import com.asiankoala.koawalib.command.KScheduler
 import com.asiankoala.koawalib.command.commands.Command
 import com.asiankoala.koawalib.util.Periodic
 
@@ -11,23 +11,23 @@ interface Subsystem : Periodic {
     }
 
     fun setDefaultCommand(command: Command) {
-        CommandScheduler.setDefaultCommand(this, command)
+        KScheduler.setDefaultCommand(this, command)
     }
 
     fun getDefaultCommand(): Command {
-        return CommandScheduler.getDefaultCommand(this)
+        return KScheduler.getDefaultCommand(this)
     }
 
     fun getCurrentCommand(): Command? {
-        return CommandScheduler.requiring(this)
+        return KScheduler.requiring(this)
     }
 
     fun register() {
-        CommandScheduler.registerSubsystem(this)
+        KScheduler.registerSubsystem(this)
     }
 
     fun unregister() {
-        CommandScheduler.unregisterSubsystem(this)
+        KScheduler.unregisterSubsystem(this)
     }
 
     val name: String get() = this.javaClass.simpleName

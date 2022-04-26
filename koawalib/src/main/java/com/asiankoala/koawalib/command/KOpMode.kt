@@ -1,6 +1,6 @@
 package com.asiankoala.koawalib.command
 
-import com.asiankoala.koawalib.command.commands.InfiniteCommand
+import com.asiankoala.koawalib.command.commands.LoopCmd
 import com.asiankoala.koawalib.gamepad.KGamepad
 import com.asiankoala.koawalib.hardware.KDevice
 import com.asiankoala.koawalib.statemachine.StateMachine
@@ -17,7 +17,7 @@ import com.qualcomm.robotcore.util.ElapsedTime
  * implemented with mInit(), mInitLoop(), mStart(), mLoop(), mStop()
  */
 @Suppress("unused")
-abstract class CommandOpMode : LinearOpMode() {
+abstract class KOpMode : LinearOpMode() {
     protected val driver: KGamepad by lazy { KGamepad(gamepad1) }
     protected val gunner: KGamepad by lazy { KGamepad(gamepad2) }
 
@@ -29,12 +29,12 @@ abstract class CommandOpMode : LinearOpMode() {
     private lateinit var hubs: List<LynxModule>
 
     private fun setup() {
-        CommandScheduler.opModeInstance = this
+        KScheduler.opModeInstance = this
 
         Logger.logCount = 0
         Logger.telemetry = telemetry
         Logger.config = LoggerConfig()
-        CommandScheduler.resetScheduler()
+        KScheduler.resetScheduler()
         Logger.addErrorCommand()
 
         KDevice.hardwareMap = hardwareMap
@@ -46,10 +46,10 @@ abstract class CommandOpMode : LinearOpMode() {
     }
 
     private fun schedulePeriodics() {
-        InfiniteCommand(driver::periodic).withName("driver gamepad periodic").schedule()
-        InfiniteCommand(gunner::periodic).withName("gunner gamepad periodic").schedule()
-        InfiniteCommand({ hubs.forEach(LynxModule::clearBulkCache) }).withName("clear bulk data periodic").schedule()
-        InfiniteCommand(::handleLoopMsTelemetry).withName("loop ms telemetry periodic").schedule()
+        LoopCmd(driver::periodic).withName("driver gamepad periodic").schedule()
+        LoopCmd(gunner::periodic).withName("gunner gamepad periodic").schedule()
+        LoopCmd({ hubs.forEach(LynxModule::clearBulkCache) }).withName("clear bulk data periodic").schedule()
+        LoopCmd(::handleLoopMsTelemetry).withName("loop ms telemetry periodic").schedule()
     }
 
     private fun handleLoopMsTelemetry() {
@@ -58,7 +58,7 @@ abstract class CommandOpMode : LinearOpMode() {
     }
 
     private val mainStateMachine: StateMachine<OpModeState> = StateMachineBuilder<OpModeState>()
-        .universal(CommandScheduler::run)
+        .universal(KScheduler::run)
         .universal(Logger::update)
         .universal(telemetry::update)
         .state(OpModeState.INIT)

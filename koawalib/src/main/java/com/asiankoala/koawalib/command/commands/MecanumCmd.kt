@@ -27,7 +27,7 @@ import com.asiankoala.koawalib.util.Alliance
  * @param heading heading supplier
  * @param fieldCentricHeadingScalar angle to start deccel for field centric heading
  */
-class MecanumDriveCommand(
+class MecanumCmd(
     private val drive: KMecanumDrive,
     private val leftStick: Stick,
     private val rightStick: Stick,

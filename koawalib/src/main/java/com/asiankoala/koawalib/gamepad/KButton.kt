@@ -1,6 +1,6 @@
 package com.asiankoala.koawalib.gamepad
 
-import com.asiankoala.koawalib.command.CommandScheduler
+import com.asiankoala.koawalib.command.KScheduler
 import com.asiankoala.koawalib.command.commands.Command
 import com.asiankoala.koawalib.gamepad.functionality.Button
 import com.asiankoala.koawalib.util.KBoolean
@@ -48,7 +48,7 @@ open class KButton(private val buttonState: () -> Boolean) : Button(), KBoolean 
     }
 
     private fun schedule(condition: () -> Boolean, command: Command) {
-        CommandScheduler.scheduleWatchdog(condition, command)
+        KScheduler.scheduleWatchdog(condition, command)
     }
 
     override fun invokeBoolean(): Boolean {

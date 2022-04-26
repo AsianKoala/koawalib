@@ -1,9 +1,8 @@
 package com.asiankoala.koawalib.logger
 
 import android.util.Log
-import com.asiankoala.koawalib.command.commands.InfiniteCommand
+import com.asiankoala.koawalib.command.commands.LoopCmd
 import com.asiankoala.koawalib.logger.Logger.config
-import com.asiankoala.koawalib.util.Colors
 import org.firstinspires.ftc.robotcore.external.Telemetry
 
 /**
@@ -61,7 +60,7 @@ object Logger {
     }
 
     internal fun addErrorCommand() {
-        InfiniteCommand({ addTelemetryData("error count", errors) }).withName("error counter").schedule()
+        LoopCmd({ addTelemetryData("error count", errors) }).withName("error counter").schedule()
     }
 
     /**

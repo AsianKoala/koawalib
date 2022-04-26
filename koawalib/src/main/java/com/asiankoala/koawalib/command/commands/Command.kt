@@ -1,6 +1,6 @@
 package com.asiankoala.koawalib.command.commands
 
-import com.asiankoala.koawalib.command.CommandScheduler
+import com.asiankoala.koawalib.command.KScheduler
 import com.asiankoala.koawalib.command.group.DeadlineGroup
 import com.asiankoala.koawalib.command.group.ParallelGroup
 import com.asiankoala.koawalib.command.group.RaceGroup
@@ -12,7 +12,7 @@ import com.asiankoala.koawalib.subsystem.Subsystem
  * Each command has initialize(), execute(), and end() methods executed throughout its lifecycle.
  * Commands contain a list of subsystem "requirements", preventing multiple subsystems accessing a command simultaneously.
  * All commands are scheduled and ran through the CommandScheduler.
- * @see CommandScheduler
+ * @see KScheduler
  */
 abstract class Command {
     private var _name: String? = null
@@ -24,9 +24,9 @@ abstract class Command {
     open val isFinished: Boolean get() = false
 
     /**
-     * Whether the command is currently scheduled. Syntax sugar for [CommandScheduler.isScheduled]
+     * Whether the command is currently scheduled. Syntax sugar for [KScheduler.isScheduled]
      */
-    val isScheduled: Boolean get() = CommandScheduler.isScheduled(this)
+    val isScheduled: Boolean get() = KScheduler.isScheduled(this)
 
     /**
      * The name of the command
@@ -59,7 +59,7 @@ abstract class Command {
      * @return SequentialCommandGroup with a WaitUntilCommand -> this command
      */
     fun waitUntil(condition: () -> Boolean): Command {
-        return SequentialGroup(WaitUntilCommand(condition), this)
+        return SequentialGroup(WaitForCmd(condition), this)
     }
 
     /**
@@ -68,7 +68,7 @@ abstract class Command {
      * @return ParallelRaceGroup with a WaitCommand & this command
      */
     fun withTimeout(time: Double): Command {
-        return RaceGroup(this, WaitCommand(time))
+        return RaceGroup(this, WaitCmd(time))
     }
 
     /**
@@ -77,7 +77,7 @@ abstract class Command {
      * @return ParallelRaceGroup with a WaitUntilCommand & this command
      */
     fun cancelIf(condition: () -> Boolean): Command {
-        return RaceGroup(this, WaitUntilCommand(condition))
+        return RaceGroup(this, WaitForCmd(condition))
     }
 
     /**
@@ -97,7 +97,7 @@ abstract class Command {
      * @return SequentialCommandGroup with this command -> WaitCommand
      */
     fun pauseFor(seconds: Double): Command {
-        return SequentialGroup(this, WaitCommand(seconds))
+        return SequentialGroup(this, WaitCmd(seconds))
     }
 
     /**
@@ -140,17 +140,17 @@ abstract class Command {
     }
 
     /**
-     * Schedule command. Syntax sugar for [CommandScheduler.schedule]
+     * Schedule command. Syntax sugar for [KScheduler.schedule]
      */
     fun schedule() {
-        CommandScheduler.schedule(this)
+        KScheduler.schedule(this)
     }
 
     /**
-     * Cancel command. [CommandScheduler.cancel]
+     * Cancel command. [KScheduler.cancel]
      */
     fun cancel() {
-        CommandScheduler.cancel(this)
+        KScheduler.cancel(this)
     }
 
     override fun toString(): String {

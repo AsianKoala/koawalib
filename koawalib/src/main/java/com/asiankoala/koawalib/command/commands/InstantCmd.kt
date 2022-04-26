@@ -7,7 +7,7 @@ import com.asiankoala.koawalib.subsystem.Subsystem
  * @param action action to run
  * @param requirements subsystem requirements
  */
-open class InstantCommand(
+open class InstantCmd(
     private val action: () -> Unit,
     vararg requirements: Subsystem
 ) : Command() {
