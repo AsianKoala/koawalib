@@ -52,7 +52,6 @@ abstract class Cmd {
      */
     open fun end() {}
 
-
     /**
      * Wait until a condition has been fulfilled to run this command
      * @param condition condition to allow the start of this command

@@ -4,15 +4,12 @@ import com.acmerobotics.dashboard.config.Config
 import com.asiankoala.koawalib.command.KOpMode
 import com.asiankoala.koawalib.command.commands.InstantCmd
 import com.asiankoala.koawalib.control.PIDConstants
-import com.asiankoala.koawalib.gamepad.KButton
 import com.asiankoala.koawalib.gamepad.functionality.Button
 import com.asiankoala.koawalib.hardware.motor.KMotorEx
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 
 @Config
 @Suppress("unused")
-abstract class SimplePIDTuner(
-) : KOpMode() {
+abstract class SimplePIDTuner() : KOpMode() {
     internal companion object {
         @JvmField var kP = Double.NaN
         @JvmField var kI = Double.NaN
@@ -32,9 +29,9 @@ abstract class SimplePIDTuner(
     private var lastD = Double.NaN
 
     override fun mInit() {
-        if(kHome.isNaN()) kHome = home
-        if(kTarget.isNaN()) kTarget = target
-        if(kP.isNaN()) {
+        if (kHome.isNaN()) kHome = home
+        if (kTarget.isNaN()) kTarget = target
+        if (kP.isNaN()) {
             kP = motor.config.pid.kP
             kI = motor.config.pid.kI
             kD = motor.config.pid.kD
@@ -48,7 +45,7 @@ abstract class SimplePIDTuner(
     }
 
     override fun mLoop() {
-        if(lastP != kP || lastI != kI || lastD != kP) {
+        if (lastP != kP || lastI != kI || lastD != kP) {
             motor.setPIDConstants(PIDConstants(kP, kI, kD))
         }
 

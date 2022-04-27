@@ -9,9 +9,9 @@ import com.asiankoala.koawalib.command.commands.LoopCmd
 import com.asiankoala.koawalib.control.FeedforwardConstants
 import com.asiankoala.koawalib.control.MotorControlType
 import com.asiankoala.koawalib.control.PIDConstants
+import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.math.cos
 import com.asiankoala.koawalib.subsystem.odometry.KEncoder
-import com.asiankoala.koawalib.logger.Logger
 import com.qualcomm.robotcore.util.ElapsedTime
 import kotlin.math.absoluteValue
 
@@ -24,12 +24,12 @@ class KMotorEx(val config: KMotorExConfig) : KMotor(config.name) {
     val encoder = KEncoder(this, config.ticksPerUnit, config.isRevEncoder)
 
     private var controller = PIDFController(
-            config.pid.asCoeffs,
-            config.ff.kV,
-            config.ff.kA,
-            config.ff.kStatic,
-            config.ff.kF
-        )
+        config.pid.asCoeffs,
+        config.ff.kV,
+        config.ff.kA,
+        config.ff.kStatic,
+        config.ff.kF
+    )
 
     private var output = 0.0
     private var motionTimer = ElapsedTime()
@@ -60,18 +60,17 @@ class KMotorEx(val config: KMotorExConfig) : KMotor(config.name) {
 
     private fun getControllerOutput(): Double {
         return controller.update(encoder.pos) +
-                config.ff.kCos * controller.targetPosition.cos +
-                config.ff.kTargetF(controller.targetPosition) +
-                config.ff.kG
+            config.ff.kCos * controller.targetPosition.cos +
+            config.ff.kTargetF(controller.targetPosition) +
+            config.ff.kG
     }
-
 
     internal fun update() {
         encoder.update()
 
-        if(config.controlType != MotorControlType.OPEN_LOOP) {
+        if (config.controlType != MotorControlType.OPEN_LOOP) {
 
-            if(config.controlType == MotorControlType.MOTION_PROFILE && isFollowingProfile) {
+            if (config.controlType == MotorControlType.MOTION_PROFILE && isFollowingProfile) {
                 when {
                     currentMotionProfile == null -> Logger.logError("MUST BE FOLLOWING A MOTION PROFILE !!!!")
 
@@ -88,7 +87,7 @@ class KMotorEx(val config: KMotorExConfig) : KMotor(config.name) {
                 }
             }
 
-            output = if(isHomed()) {
+            output = if (isHomed()) {
                 0.0
             } else {
                 getControllerOutput()
@@ -168,7 +167,7 @@ class KMotorEx(val config: KMotorExConfig) : KMotor(config.name) {
     }
 
     init {
-        if(!config.lowerBound.isNaN() && !config.upperBound.isNaN()) {
+        if (!config.lowerBound.isNaN() && !config.upperBound.isNaN()) {
             controller.setInputBounds(config.lowerBound, config.upperBound)
         }
 
@@ -193,7 +192,7 @@ class KMotorEx(val config: KMotorExConfig) : KMotor(config.name) {
             maxVelocity: Double = Double.NaN,
             maxAcceleration: Double = Double.NaN,
 
-            ) : KMotorEx {
+        ): KMotorEx {
             return KMotorEx(
                 KMotorExConfig(
                     name,

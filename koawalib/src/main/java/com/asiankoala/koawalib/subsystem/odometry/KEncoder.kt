@@ -29,8 +29,10 @@ class KEncoder(
 
     val accel get() = _accel / ticksPerUnit
 
-    val delta get() = (prevPos[prevPos.size-1].second
-            - prevPos[prevPos.size-2].second) / ticksPerUnit
+    val delta get() = (
+        prevPos[prevPos.size - 1].second -
+            prevPos[prevPos.size - 2].second
+        ) / ticksPerUnit
 
     val reversed: KEncoder
         get() {
@@ -39,7 +41,7 @@ class KEncoder(
         }
 
     private fun attemptVelUpdate() {
-        if(prevPos.size < 2) {
+        if (prevPos.size < 2) {
             _vel = 0.0
             return
         }
@@ -49,17 +51,17 @@ class KEncoder(
         val currPosition = prevPos[prevPos.size - 1]
         val scalar = (currPosition.first - oldPosition.first)
 
-        if(scalar epsilonEquals 0.0) Logger.logError(motor.toString())
+        if (scalar epsilonEquals 0.0) Logger.logError(motor.toString())
 
         _vel = (currPosition.second - oldPosition.second) / scalar
 
-        if(isRevEncoder) {
+        if (isRevEncoder) {
             _vel = inverseOverflow(motor.rawMotorVelocity * multiplier, _vel)
         }
     }
 
     private fun attemptAccelUpdate() {
-        if(prevVel.size < 2) {
+        if (prevVel.size < 2) {
             _accel = 0.0
             return
         }
@@ -69,7 +71,7 @@ class KEncoder(
         val currVel = prevVel[prevPos.size - 1]
         val scalar = (currVel.first - oldVel.first)
 
-        if(scalar epsilonEquals 0.0) Logger.logError(motor.toString())
+        if (scalar epsilonEquals 0.0) Logger.logError(motor.toString())
 
         _accel = (currVel.second - oldVel.second) / scalar
     }

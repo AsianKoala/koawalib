@@ -13,12 +13,12 @@ class KTrigger(private val triggerState: () -> Double) : Button(), Periodic {
     private val isTriggerPressed get() = triggerState.invoke() > threshold
 
     override fun periodic() {
-        if(debouncerEnabled) {
+        if (debouncerEnabled) {
             debouncerState = debouncer.calculate(isTriggerPressed)
         }
     }
 
     override fun invokeBoolean(): Boolean {
-        return if(debouncerEnabled) debouncerState else isTriggerPressed
+        return if (debouncerEnabled) debouncerState else isTriggerPressed
     }
 }

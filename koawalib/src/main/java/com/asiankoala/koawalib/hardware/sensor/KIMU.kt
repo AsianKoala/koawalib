@@ -3,9 +3,9 @@ package com.asiankoala.koawalib.hardware.sensor
 import com.acmerobotics.roadrunner.util.NanoClock
 import com.asiankoala.koawalib.hardware.KDevice
 import com.asiankoala.koawalib.hardware.sensor.IMUUtil.remapAxes
+import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.math.angleWrap
 import com.asiankoala.koawalib.math.d
-import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.util.Periodic
 import com.qualcomm.hardware.bosch.BNO055IMU
 import com.qualcomm.hardware.bosch.BNO055IMUImpl
@@ -48,7 +48,6 @@ class KIMU(name: String, axesOrder: AxesOrder, axesSigns: AxesSigns) : KDevice<B
     val pitch get() = (_pitch - pitchOffset).angleWrap
     val roll get() = (_roll - rollOffset).angleWrap
 
-
     private var lastAngularOrientation: Orientation = device.angularOrientation
         private set(value) {
             _heading = value.firstAngle.d
@@ -80,7 +79,6 @@ class KIMU(name: String, axesOrder: AxesOrder, axesSigns: AxesSigns) : KDevice<B
             isReadFresh = false
             return field
         }
-
 
     override fun periodic() {
         isReadFresh = true

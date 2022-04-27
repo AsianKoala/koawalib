@@ -14,10 +14,10 @@ data class LinearSystem(
 
     init {
         val l = listOf(A, B, C, D)
-        for(m in l) {
-            for(r in 0..m.numRows()) {
-                for(c in 0..m.numCols()) {
-                    if(!m[r,c].isFinite()) throw Exception("matrix not finite")
+        for (m in l) {
+            for (r in 0..m.numRows()) {
+                for (c in 0..m.numCols()) {
+                    if (!m[r, c].isFinite()) throw Exception("matrix not finite")
                 }
             }
         }

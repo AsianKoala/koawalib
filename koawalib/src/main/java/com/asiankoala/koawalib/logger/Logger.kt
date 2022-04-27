@@ -28,7 +28,7 @@ object Logger {
 //    private val toLog = ArrayList<LogData>()
 
     private fun log(message: String, priority: Int) {
-        if(message in condenseMap.keys) {
+        if (message in condenseMap.keys) {
             condenseMap[message]!!.updatedThisLoop = true
         } else {
             condenseMap[message] = LogData(message, priority)
@@ -41,17 +41,17 @@ object Logger {
 //        toLog.clear()
         val iterator = condenseMap.iterator()
 
-        if(errors > config.maxErrorCount) {
+        if (errors > config.maxErrorCount) {
             logError("error overflow")
         }
 
-        while(iterator.hasNext()) {
+        while (iterator.hasNext()) {
             val data = iterator.next().value
-            if(!data.updatedThisLoop) {
+            if (!data.updatedThisLoop) {
                 logCount++
                 Log.println(data.priority, tag, data.formattedMessage)
 
-                if(config.isPrinting) {
+                if (config.isPrinting) {
                     println(data.printString)
                 }
 
@@ -62,7 +62,7 @@ object Logger {
             }
         }
 
-        if(config.isDashboardEnabled) {
+        if (config.isDashboardEnabled) {
             dashboard.sendTelemetryPacket(packet)
             packet = TelemetryPacket()
         }
@@ -73,7 +73,7 @@ object Logger {
     }
 
     fun addVar(name: String, data: Any?) {
-        if(config.isDashboardEnabled) {
+        if (config.isDashboardEnabled) {
             packet.put(name, data)
         }
     }
@@ -92,7 +92,7 @@ object Logger {
                 logDebug(message)
             }
 
-            if(config.isDashboardEnabled) {
+            if (config.isDashboardEnabled) {
                 packet.addLine(message)
             }
         }
@@ -112,7 +112,7 @@ object Logger {
      * @param message logger message to send
      */
     fun logDebug(message: String) {
-        if(!config.isDebugging) return
+        if (!config.isDebugging) return
         log(message, Log.DEBUG)
     }
 

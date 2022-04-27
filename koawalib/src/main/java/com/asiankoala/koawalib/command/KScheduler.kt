@@ -2,8 +2,8 @@ package com.asiankoala.koawalib.command
 
 import com.asiankoala.koawalib.command.commands.*
 import com.asiankoala.koawalib.command.group.ParallelGroup
-import com.asiankoala.koawalib.subsystem.Subsystem
 import com.asiankoala.koawalib.logger.Logger
+import com.asiankoala.koawalib.subsystem.Subsystem
 import com.asiankoala.koawalib.util.OpModeState
 import java.util.*
 import kotlin.collections.ArrayDeque
@@ -117,7 +117,7 @@ object KScheduler {
 
             command.execute()
 
-            if(command !is Watchdog && command !is LoopCmd && command !is ParallelGroup) {
+            if (command !is Watchdog && command !is LoopCmd && command !is ParallelGroup) {
                 Logger.logDebug("${command.name} executed")
             }
 

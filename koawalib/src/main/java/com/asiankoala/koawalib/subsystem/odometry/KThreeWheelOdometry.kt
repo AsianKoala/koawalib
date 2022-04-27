@@ -1,9 +1,9 @@
 package com.asiankoala.koawalib.subsystem.odometry
 
+import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.angleWrap
 import com.asiankoala.koawalib.math.degrees
-import com.asiankoala.koawalib.logger.Logger
 import kotlin.math.absoluteValue
 
 class KThreeWheelOdometry(
@@ -34,7 +34,7 @@ class KThreeWheelOdometry(
 
     override fun periodic() {
         encoders.forEach(KEncoder::update)
-        if(shouldReset) {
+        if (shouldReset) {
             encoders.forEach(KEncoder::zero)
             shouldReset = false
             return

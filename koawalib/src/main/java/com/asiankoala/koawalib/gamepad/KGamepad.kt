@@ -1,6 +1,5 @@
 package com.asiankoala.koawalib.gamepad
 
-import com.asiankoala.koawalib.gamepad.functionality.Button
 import com.asiankoala.koawalib.math.d
 import com.asiankoala.koawalib.util.Periodic
 import com.qualcomm.robotcore.hardware.Gamepad

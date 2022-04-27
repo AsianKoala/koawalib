@@ -35,11 +35,11 @@ open class ParallelGroup(private val endCond: (Map<Cmd, Boolean>) -> Boolean = {
     }
 
     override fun execute() {
-        for(entry in cmdMap.entries) {
-            if(!entry.value) continue
+        for (entry in cmdMap.entries) {
+            if (!entry.value) continue
             val cmd = entry.key
             cmd.execute()
-            if(cmd.isFinished) {
+            if (cmd.isFinished) {
                 cmd.end()
                 entry.setValue(false)
             }
@@ -47,7 +47,7 @@ open class ParallelGroup(private val endCond: (Map<Cmd, Boolean>) -> Boolean = {
     }
 
     override fun end() {
-        cmdMap.forEach { if(it.value) it.key.end() }
+        cmdMap.forEach { if (it.value) it.key.end() }
     }
 
     override val isFinished: Boolean

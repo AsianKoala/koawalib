@@ -13,5 +13,4 @@ class ArmFeedforward(
     fun calculate(theta: Double, v: Double, a: Double = 0.0): Double {
         return kCos * theta.cos + kS * v.sign + kV * v + kA * a
     }
-
 }

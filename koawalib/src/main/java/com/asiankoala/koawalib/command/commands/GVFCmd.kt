@@ -7,10 +7,10 @@ import com.asiankoala.koawalib.subsystem.drive.KMecanumOdoDrive
 
 class GVFCmd(
     private val drive: KMecanumOdoDrive,
-    path: Path, 
-    kN: Double, 
-    kOmega: Double, 
-    kTheta: Double, 
+    path: Path,
+    kN: Double,
+    kOmega: Double,
+    kTheta: Double,
     kF: Double,
     epsilon: Double,
     errorMap: (Double) -> Double = { it }

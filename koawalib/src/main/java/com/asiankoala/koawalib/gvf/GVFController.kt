@@ -56,7 +56,7 @@ class GVFController(
      */
     fun update(currPose: Pose, heading: Double? = null): Pair<Pose, Pose> {
         val pose = currPose.toPose2d()
-        lastS = if(lastS.isNaN()) {
+        lastS = if (lastS.isNaN()) {
             path.project(pose.vec())
         } else {
             path.fastProject(pose.vec(), lastS)
@@ -75,8 +75,8 @@ class GVFController(
         isFinished = projectedDisplacement < epsilon && absoluteDisplacement.norm() < epsilon
         val absoluteVector = absoluteDisplacement * (projectedDisplacement / kF)
 
-        if(isFinished) translationalPower = absoluteVector
-        if(translationalPower.norm() > 1.0) translationalPower /= translationalPower.norm()
+        if (isFinished) translationalPower = absoluteVector
+        if (translationalPower.norm() > 1.0) translationalPower /= translationalPower.norm()
 
         val thetaWeight = headingError.degrees.absoluteValue / kTheta
         translationalPower /= max(1.0, thetaWeight)
@@ -85,4 +85,3 @@ class GVFController(
         return Pair(Pose(translationalPower.toVec(), angularOutput), Pose(rotated, angularOutput))
     }
 }
-
