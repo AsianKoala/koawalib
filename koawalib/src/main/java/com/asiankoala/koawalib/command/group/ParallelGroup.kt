@@ -8,7 +8,7 @@ import kotlin.collections.HashMap
  * CommandGroups are used to run multiple commands. To create a custom CommandGroup, extend this class
  */
 open class ParallelGroup(private val endCond: (Map<Cmd, Boolean>) -> Boolean = { !it.containsValue(true) }, vararg cmds: Cmd) : Cmd(), Group {
-    constructor(vararg cmds: Cmd) : this(cmds = cmds)
+    constructor(vararg commands: Cmd) : this(cmds = commands)
 
     private val cmdMap = HashMap<Cmd, Boolean>()
 

@@ -14,6 +14,7 @@ data class LoggerConfig(
     var isPrinting: Boolean = false,
     var isLoggingTelemetry: Boolean = false,
     var isDebugging: Boolean = true,
+    var isDashboardEnabled: Boolean = false,
     var maxErrorCount: Int = 1,
-    var maxWarningCount: Int = 1
+    var maxWarningCount: Int = 1,
 )

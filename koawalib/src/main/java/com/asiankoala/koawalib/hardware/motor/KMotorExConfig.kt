@@ -13,8 +13,8 @@ data class KMotorExConfig(
     val isRevEncoder: Boolean = false,
     val controlType: MotorControlType,
 
-    val pid: PIDConstants,
-    val ff: FeedforwardConstants,
+    var pid: PIDConstants,
+    var ff: FeedforwardConstants,
 
     val positionEpsilon: Double,
     val homePositionToDisable: Double = Double.NaN,

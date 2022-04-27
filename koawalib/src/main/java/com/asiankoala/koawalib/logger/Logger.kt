@@ -1,6 +1,8 @@
 package com.asiankoala.koawalib.logger
 
 import android.util.Log
+import com.acmerobotics.dashboard.FtcDashboard
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.asiankoala.koawalib.command.commands.LoopCmd
 import com.asiankoala.koawalib.logger.Logger.config
 import org.firstinspires.ftc.robotcore.external.Telemetry
@@ -20,6 +22,8 @@ object Logger {
     private var warnings = 0
     private var condenseMap = HashMap<String, LogData>()
     private val tag = "KOAWALIB"
+    private val dashboard = FtcDashboard.getInstance()
+    private var packet = TelemetryPacket()
 
 //    private val toLog = ArrayList<LogData>()
 
@@ -57,10 +61,21 @@ object Logger {
                 data.updatedThisLoop = false
             }
         }
+
+        if(config.isDashboardEnabled) {
+            dashboard.sendTelemetryPacket(packet)
+            packet = TelemetryPacket()
+        }
     }
 
     internal fun addErrorCommand() {
         LoopCmd({ addTelemetryData("error count", errors) }).withName("error counter").schedule()
+    }
+
+    fun addVar(name: String, data: Any?) {
+        if(config.isDashboardEnabled) {
+            packet.put(name, data)
+        }
     }
 
     /**
@@ -75,6 +90,10 @@ object Logger {
             telemetry!!.addLine(message)
             if (config.isLoggingTelemetry) {
                 logDebug(message)
+            }
+
+            if(config.isDashboardEnabled) {
+                packet.addLine(message)
             }
         }
     }

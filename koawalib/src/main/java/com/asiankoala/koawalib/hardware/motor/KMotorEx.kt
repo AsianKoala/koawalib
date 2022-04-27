@@ -20,24 +20,16 @@ import kotlin.math.absoluteValue
  * @see KMotorExConfig
  */
 @Suppress("unused")
-class KMotorEx(private val config: KMotorExConfig) : KMotor(config.name) {
+class KMotorEx(val config: KMotorExConfig) : KMotor(config.name) {
     val encoder = KEncoder(this, config.ticksPerUnit, config.isRevEncoder)
 
-    private val controller by lazy {
-        val c = PIDFController(
+    private var controller = PIDFController(
             config.pid.asCoeffs,
             config.ff.kV,
             config.ff.kA,
             config.ff.kStatic,
             config.ff.kF
         )
-
-        if(!config.lowerBound.isNaN() && !config.upperBound.isNaN()) {
-            c.setInputBounds(config.lowerBound, config.upperBound)
-        }
-
-        c
-    }
 
     private var output = 0.0
     private var motionTimer = ElapsedTime()
@@ -161,7 +153,26 @@ class KMotorEx(private val config: KMotorExConfig) : KMotor(config.name) {
         followMotionProfile(encoder.pos, targetPosition)
     }
 
+    fun setPIDConstants(constants: PIDConstants) {
+        config.pid = constants
+        val oldTarget = controller.targetPosition
+        controller = PIDFController(
+            config.pid.asCoeffs,
+            config.ff.kV,
+            config.ff.kA,
+            config.ff.kStatic,
+            config.ff.kF
+        )
+        controller.reset()
+        setPIDTarget(oldTarget)
+    }
+
     init {
+        if(!config.lowerBound.isNaN() && !config.upperBound.isNaN()) {
+            controller.setInputBounds(config.lowerBound, config.upperBound)
+        }
+
+        controller.reset()
         KScheduler.schedule(LoopCmd(this::update))
     }
 

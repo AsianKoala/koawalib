@@ -16,6 +16,7 @@ import kotlin.math.absoluteValue
  */
 open class KMotor(name: String) : KDevice<DcMotorEx>(name) {
     private var powerMultiplier = 1.0
+    private var isUsingVoltageFF = false
     private val voltageSensor = hardwareMap.voltageSensor.iterator().next()
 
     /**
@@ -54,8 +55,6 @@ open class KMotor(name: String) : KDevice<DcMotorEx>(name) {
             field = value
         }
 
-    private var isUsingVoltageFF = false
-
     /**
      * Return this motor with brake mode
      */
@@ -92,13 +91,13 @@ open class KMotor(name: String) : KDevice<DcMotorEx>(name) {
             return this
         }
 
-    val voltFF: KMotor
+    val enableVoltageCorrection: KMotor
         get() {
             isUsingVoltageFF = true
             return this
         }
 
-    val noVoltFF: KMotor
+    val disableVoltageCorrection: KMotor
         get() {
             isUsingVoltageFF = false
             return this

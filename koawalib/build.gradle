@@ -69,6 +69,7 @@ dependencies {
     implementation 'org.apache.commons:commons-math3:3.6.1'
 //    implementation 'org.jetbrains.lets-plot:lets-plot-kotlin-jvm:3.1.1'
 //    implementation 'org.jetbrains.lets-plot:lets-plot-image-export:2.1.0'
+    implementation 'org.ejml:ejml-all:0.41'
 
     ktlint("com.pinterest:ktlint:0.42.1") {
         attributes {

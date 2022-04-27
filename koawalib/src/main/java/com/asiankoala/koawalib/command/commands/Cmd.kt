@@ -100,6 +100,8 @@ abstract class Cmd {
         return SequentialGroup(this, WaitCmd(seconds))
     }
 
+    fun waitForC
+
     /**
      * Runs n commands in parallel with this command, ending when this command ends
      * @param parallel n number of commands to run in parallel with this command
