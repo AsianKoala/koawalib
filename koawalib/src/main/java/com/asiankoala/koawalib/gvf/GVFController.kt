@@ -1,5 +1,6 @@
 package com.asiankoala.koawalib.gvf
 
+import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.geometry.Vector2d
 import com.acmerobotics.roadrunner.path.Path
 import com.asiankoala.koawalib.math.Pose
@@ -32,25 +33,13 @@ class GVFController(
     private val epsilon: Double,
     private val errorMap: (Double) -> Double = { it },
 ) {
-
     private var lastS: Double = Double.NaN
     var isFinished = false
         private set
 
     private fun Vector2d.toVec() = Vector(this.x, this.y)
 
-    /**
-     * @param currPose current pose of robot
-     * @return a Pair of field relative and robot relative x,y,omega powers
-     */
-    fun update(currPose: Pose): Pair<Pose, Pose> {
-        val pose = currPose.toPose2d()
-        lastS = if(lastS.isNaN()) {
-            path.project(pose.vec())
-        } else {
-            path.fastProject(pose.vec(), lastS)
-        }
-
+    private fun gvfVecAt(pose: Pose2d): Vector2d {
         val s = lastS
         val tangentVec = path.deriv(s).vec()
         val normalVec = tangentVec.rotated(PI / 2.0)
@@ -58,13 +47,28 @@ class GVFController(
         val displacementVec = projected - pose.vec()
         val orientation = displacementVec.toVec() cross tangentVec.toVec()
         val error = displacementVec.norm() * orientation.sign
-        val vectorFieldResult = tangentVec - normalVec * kN * errorMap.invoke(error)
+        return tangentVec - normalVec * kN * errorMap.invoke(error)
+    }
 
-        val desiredHeading = vectorFieldResult.angle()
+    /**
+     * @param currPose current pose of robot
+     * @return a Pair of field relative and robot relative x,y,omega powers
+     */
+    fun update(currPose: Pose, heading: Double? = null): Pair<Pose, Pose> {
+        val pose = currPose.toPose2d()
+        lastS = if(lastS.isNaN()) {
+            path.project(pose.vec())
+        } else {
+            path.fastProject(pose.vec(), lastS)
+        }
+
+        val vectorFieldResult = gvfVecAt(pose)
+
+        val desiredHeading = heading ?: vectorFieldResult.angle()
         val headingError = (desiredHeading - pose.heading).angleWrap
         val angularOutput = kOmega * headingError
 
-        val projectedDisplacement = (s - path.length()).absoluteValue
+        val projectedDisplacement = (lastS - path.length()).absoluteValue
         var translationalPower = vectorFieldResult * (projectedDisplacement / kF)
 
         val absoluteDisplacement = path.end().vec() - pose.vec()

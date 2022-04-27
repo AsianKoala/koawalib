@@ -59,7 +59,7 @@ abstract class Cmd {
      * @return SequentialCommandGroup with a WaitUntilCommand -> this command
      */
     fun waitUntil(condition: () -> Boolean): Cmd {
-        return SequentialGroup(WaitForCmd(condition), this)
+        return SequentialGroup(WaitUntilCmd(condition), this)
     }
 
     /**
@@ -77,7 +77,7 @@ abstract class Cmd {
      * @return ParallelRaceGroup with a WaitUntilCommand & this command
      */
     fun cancelIf(condition: () -> Boolean): Cmd {
-        return RaceGroup(this, WaitForCmd(condition))
+        return RaceGroup(this, WaitUntilCmd(condition))
     }
 
     /**
@@ -99,8 +99,6 @@ abstract class Cmd {
     fun pauseFor(seconds: Double): Cmd {
         return SequentialGroup(this, WaitCmd(seconds))
     }
-
-    fun waitForC
 
     /**
      * Runs n commands in parallel with this command, ending when this command ends

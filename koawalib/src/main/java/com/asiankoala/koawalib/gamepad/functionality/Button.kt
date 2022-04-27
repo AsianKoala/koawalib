@@ -10,25 +10,27 @@ import com.asiankoala.koawalib.util.Periodic
  * @property isJustReleased was button just released (state changed this loop)
  * @property isReleased is button not pressed
  */
-abstract class Button : KBoolean, Periodic {
-    var isPressed: Boolean = false
-        private set
-    private var hasChanged: Boolean = false
-    private var lastState: Boolean = false
+abstract class Button : ButtonFunc, KBoolean, Periodic {
+    private var _isPressed = false
+    private var _hasChanged: Boolean = false
+    private var _lastState: Boolean = false
 
-    val isJustPressed: Boolean
-        get() = isPressed && hasChanged
+    override val isPressed: Boolean
+        get() = _isPressed
 
-    val isJustReleased: Boolean
-        get() = !isPressed && hasChanged
+    override val isJustPressed: Boolean
+        get() = isPressed && _hasChanged
 
-    val isReleased: Boolean
+    override val isJustReleased: Boolean
+        get() = !isPressed && _hasChanged
+
+    override val isReleased: Boolean
         get() = !isPressed
 
     override fun periodic() {
         val currentState = invokeBoolean()
-        hasChanged = lastState != currentState
-        lastState = currentState
-        isPressed = currentState
+        _hasChanged = _lastState != currentState
+        _lastState = currentState
+        _isPressed = currentState
     }
 }

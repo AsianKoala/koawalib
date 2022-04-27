@@ -47,8 +47,8 @@ class MotionProfile(
         cruiseTime =
             (deltaX - accelState.integrate(accelTime) - deccelState.integrate(deccelTime)) / constraints.vMax
 
-        if (cruiseTime < constraints.minCruiseTime) {
-            cruiseTime = constraints.minCruiseTime
+        // TOOD()
+        if (cruiseTime < 0) {
             constraints.aMax = max(constraints.aMax, constraints.dMax)
             constraints.dMax = constraints.aMax
             accelTime = sqrt(endState.x.absoluteValue / constraints.aMax.absoluteValue)

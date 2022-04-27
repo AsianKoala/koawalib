@@ -1,5 +1,6 @@
 package com.asiankoala.koawalib.gamepad
 
+import com.asiankoala.koawalib.gamepad.functionality.Button
 import com.asiankoala.koawalib.math.d
 import com.asiankoala.koawalib.util.Periodic
 import com.qualcomm.robotcore.hardware.Gamepad
@@ -17,11 +18,11 @@ class KGamepad(private val gamepad: Gamepad) : Periodic {
     val leftBumper = KButton { gamepad.left_bumper }
     val rightBumper = KButton { gamepad.right_bumper }
 
+    val leftTrigger = KTrigger { gamepad.left_trigger.d }
+    val rightTrigger = KTrigger { gamepad.right_trigger.d }
+
     val leftStickButton = KButton { gamepad.left_stick_button }
     val rightStickButton = KButton { gamepad.right_stick_button }
-
-    val leftTrigger = KAxis { gamepad.left_trigger.d }
-    val rightTrigger = KAxis { gamepad.right_trigger.d }
     val leftStickX = KAxis { gamepad.left_stick_x.d }
     val leftStickY = KAxis { gamepad.left_stick_y.d }
     val rightStickX = KAxis { gamepad.right_stick_x.d }

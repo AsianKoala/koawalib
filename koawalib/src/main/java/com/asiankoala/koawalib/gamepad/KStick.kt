@@ -8,8 +8,6 @@ class KStick(
     private val stickButton: KButton
 ) : Stick {
     override fun periodic() {
-        stickXAxis.periodic()
-        stickYAxis.periodic()
         stickButton.periodic()
     }
 
