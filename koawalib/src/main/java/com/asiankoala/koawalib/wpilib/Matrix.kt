@@ -11,7 +11,6 @@ import org.ejml.dense.row.factory.DecompositionFactory_DDRM
 import org.ejml.simple.SimpleMatrix
 import java.util.*
 
-
 @Suppress("unused")
 open class Matrix<R : Num, C : Num>(protected val storage: SimpleMatrix) {
     constructor(rows: Nat<R>, cols: Nat<C>) : this(SimpleMatrix(rows.getNum(), cols.getNum()))
@@ -30,14 +29,13 @@ open class Matrix<R : Num, C : Num>(protected val storage: SimpleMatrix) {
     val det get() = storage.determinant()
     val normF get() = storage.normF()
     val normIndP1 get() = NormOps_DDRM.inducedP1(storage.ddrm)
-    val elementSum  get() = storage.elementSum()
+    val elementSum get() = storage.elementSum()
     val trace get() = storage.trace()
     val data get() = storage.ddrm.data
 
-
-    operator fun get(r: Int, c: Int) = storage[r,c]
+    operator fun get(r: Int, c: Int) = storage[r, c]
     operator fun set(r: Int, c: Int, x: Double) {
-        storage[r,c] = x
+        storage[r, c] = x
     }
 
     fun <C2 : Num> times(value: Matrix<C, C2>) = Matrix<R, C>(storage.mult(value.storage))
@@ -84,7 +82,6 @@ open class Matrix<R : Num, C : Num>(protected val storage: SimpleMatrix) {
 //        return toReturn
 //    }
 
-
     fun elementPower(b: Double): Matrix<R, C> {
         return Matrix(storage.elementPower(b))
     }
@@ -102,7 +99,10 @@ open class Matrix<R : Num, C : Num>(protected val storage: SimpleMatrix) {
     }
 
     fun <R2 : Num, C2 : Num> block(
-        height: Nat<R2>, width: Nat<C2>, startingRow: Int, startingCol: Int
+        height: Nat<R2>,
+        width: Nat<C2>,
+        startingRow: Int,
+        startingCol: Int
     ): Matrix<R2, C2> {
         return Matrix(
             storage.extractMatrix(
@@ -115,7 +115,10 @@ open class Matrix<R : Num, C : Num>(protected val storage: SimpleMatrix) {
     }
 
     fun <R2 : Num, C2 : Num> block(
-        height: Int, width: Int, startingRow: Int, startingCol: Int
+        height: Int,
+        width: Int,
+        startingRow: Int,
+        startingCol: Int
     ): Matrix<R2, C2> {
         return Matrix(
             storage.extractMatrix(
@@ -125,7 +128,9 @@ open class Matrix<R : Num, C : Num>(protected val storage: SimpleMatrix) {
     }
 
     fun <R2 : Num, C2 : Num> assignBlock(
-        startingRow: Int, startingCol: Int, other: Matrix<R2, C2>
+        startingRow: Int,
+        startingCol: Int,
+        other: Matrix<R2, C2>
     ) {
         storage.insertIntoThis(
             startingRow, startingCol, other.storage
@@ -141,9 +146,11 @@ open class Matrix<R : Num, C : Num>(protected val storage: SimpleMatrix) {
      * @param startingRow The starting row in the supplied matrix to extract the submatrix.
      * @param startingCol The starting column in the supplied matrix to extract the submatrix.
      * @param other The matrix to extract the submatrix from.
-    </C2></R2> */
+     </C2></R2> */
     open fun <R2 : Num, C2 : Num> extractFrom(
-        startingRow: Int, startingCol: Int, other: Matrix<R2, C2>
+        startingRow: Int,
+        startingCol: Int,
+        other: Matrix<R2, C2>
     ) {
         CommonOps_DDRM.extract(
             other.storage.ddrm, startingRow, startingCol, storage.ddrm
@@ -179,7 +186,6 @@ open class Matrix<R : Num, C : Num>(protected val storage: SimpleMatrix) {
         return Matrix(SimpleMatrix.wrap(chol.getT(null)))
     }
 
-    
     companion object {
         fun <D : Num> eye(dim: Nat<D>): Matrix<D, D> {
             return Matrix(SimpleMatrix.identity(dim.getNum()))

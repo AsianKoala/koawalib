@@ -2,7 +2,6 @@ package com.asiankoala.koawalib.wpilib
 
 import org.ejml.simple.SimpleMatrix
 
-
 open class MatBuilder<R : Num, C : Num>(val rows: Nat<R>, val cols: Nat<C>) {
 
     /**

@@ -38,7 +38,13 @@ class WPILIBVectorBuilder<N : Num>(rows: Nat<N>) : MatBuilder<N, Numbers.N1>(row
         }
 
         fun fill(
-            n1: Double, n2: Double, n3: Double, n4: Double, n5: Double, n6: Double, n7: Double
+            n1: Double,
+            n2: Double,
+            n3: Double,
+            n4: Double,
+            n5: Double,
+            n6: Double,
+            n7: Double
         ): WPILIBVector<Numbers.N7> {
             return WPILIBVectorBuilder(Nat.N7()).fillVec(n1, n2, n3, n4, n5, n6, n7)
         }
