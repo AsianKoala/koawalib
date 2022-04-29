@@ -3,14 +3,16 @@
 // the WPILib BSD license file in the root directory of this project.
 package com.asiankoala.koawalib.wpilib.plant
 
+import com.asiankoala.koawalib.wpilib.Units
+
 /** Holds the constants for a DC motor.  */
 @Suppress("unused")
-internal class DCMotor(
-    nominalVoltageVolts: Double,
+class BrushedDCMotor(
+    val nominalVoltageVolts: Double,
     val stallTorqueNewtonMeters: Double,
     val stallCurrentAmps: Double,
     val freeCurrentAmps: Double,
-    freeSpeedRadPerSec: Double,
+    val freeSpeedRadPerSec: Double,
 ) {
     val rOhms: Double = nominalVoltageVolts / this.stallCurrentAmps
     val KvRadPerSecPerVolt: Double = freeSpeedRadPerSec / (nominalVoltageVolts - rOhms * this.freeCurrentAmps)
@@ -25,5 +27,17 @@ internal class DCMotor(
      */
     fun getCurrent(speedRadiansPerSec: Double, voltageInputVolts: Double): Double {
         return -1.0 / KvRadPerSecPerVolt / rOhms * speedRadiansPerSec + 1.0 / rOhms * voltageInputVolts
+    }
+
+    companion object {
+        private fun createGoMotor(kgCm: Double, rpm: Double) = BrushedDCMotor(
+            12.0, Units.kgCmToNewtonMeters(kgCm), 9.2, 0.25, Units.rotationsPerMinuteToRadiansPerSecond(rpm)
+        )
+
+        fun createGo6000() = createGoMotor(1.47, 5400.0)
+        fun createGo1620() = createGoMotor(5.4, 1620.0)
+        fun createGo1150() = createGoMotor(7.9, 1150.0)
+        fun createGo435() = createGoMotor(18.7, 435.0)
+        fun createGo312() = createGoMotor(24.3, 312.0)
     }
 }
