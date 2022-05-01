@@ -1,24 +1,23 @@
-package com.asiankoala.koawalib.tuner
+package com.asiankoala.koawalib.rework
 
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.config.Config
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.asiankoala.koawalib.command.KOpMode
 import com.asiankoala.koawalib.command.commands.InstantCmd
-import com.asiankoala.koawalib.control.rework.ComplexMotor
 import com.asiankoala.koawalib.gamepad.functionality.Button
 
 @Config
-//@Suppress("unused")
-abstract class ComplexMotorFFTuner: KOpMode() {
-    abstract val motor: ComplexMotor
+@Suppress("unused")
+abstract class SimpleComplexMotorFFTuner: KOpMode() {
+    abstract val motor: SimpleComplexMotor
     abstract val toTargetButton: Button
     abstract val toHomeButton: Button
     abstract val homePosition: Double
     abstract val targetPosition: Double
 
-    protected val dashboard = FtcDashboard.getInstance()
-    protected var packet = TelemetryPacket()
+    private val dashboard = FtcDashboard.getInstance()
+    private var packet = TelemetryPacket()
 
     private fun updateMotorFFGains() {
         if(!kS.isNaN()) motor.kS = kS
@@ -37,6 +36,7 @@ abstract class ComplexMotorFFTuner: KOpMode() {
 
     override fun mLoop() {
         updateMotorFFGains()
+        motor.update()
         packet.put("v", motor.encoder.vel)
         packet.put("target v", motor.setpointMotionState.v)
         dashboard.sendTelemetryPacket(packet)

@@ -1,4 +1,4 @@
-package com.asiankoala.koawalib.control.rework
+package com.asiankoala.koawalib.rework
 
 import com.asiankoala.koawalib.control.motion.MotionConstraints
 import com.asiankoala.koawalib.control.motion.MotionProfile
@@ -14,25 +14,20 @@ import kotlin.math.sign
 
 @Suppress("unused")
 abstract class ComplexMotor(
-    name: String,
-    _kP: Double,
-    _kI: Double,
-    _kD: Double,
+    settings: ComplexMotorSettings,
     var kS: Double,
     var kV: Double,
     var kA: Double,
-    ticksPerUnit: Double,
-    isRevEncoder: Boolean,
     var constraints: MotionConstraints,
     var allowedPositionError: Double,
     var allowedVelocityError: Double = Double.POSITIVE_INFINITY,
     var disabledPosition: Double? = null,
-) : KMotor(name) {
+) : KMotor(settings.name) {
     var output = 0.0; private set
     var voltage = 0.0; private set
 
-    val encoder = KEncoder(this, ticksPerUnit, isRevEncoder)
-    val controller = PIDController(_kP, _kI, _kD)
+    val encoder = KEncoder(this, settings.ticksPerUnit, settings.isRevEncoder)
+    val controller = PIDController(settings._kP, settings._kI, settings._kD)
     var setpointMotionState: MotionState = MotionState(); private set
     var pidOutput = 0.0; private set
     var isPIDEnabled = false
@@ -51,7 +46,7 @@ abstract class ComplexMotor(
     var isFollowingProfile = false; private set
 
     private fun isInDisabledZone(): Boolean {
-        // if we dont have a disabled position or still in motion
+        // if we don't have a disabled position or still in motion
         if (disabledPosition == null) return false
         // if our setpoint isn't in the deadzone
         if ((setpointMotionState.x - disabledPosition!!).absoluteValue > allowedPositionError) return false
@@ -136,17 +131,14 @@ abstract class ComplexMotor(
     }
 
     init {
-        assertPositive(_kP)
-        assertPositive(_kI)
-        assertPositive(_kD)
         assertPositive(kS)
         assertPositive(kV)
         assertPositive(kA)
         assertPositive(constraints.vMax)
         assertPositive(constraints.aMax)
         assertPositive(constraints.dMax)
-        assertPositive(ticksPerUnit)
         assertPositive(allowedPositionError)
         assertPositive((allowedVelocityError))
     }
 }
+

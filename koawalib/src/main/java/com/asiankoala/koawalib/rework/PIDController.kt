@@ -1,4 +1,4 @@
-package com.asiankoala.koawalib.control.rework
+package com.asiankoala.koawalib.rework
 
 import com.acmerobotics.roadrunner.util.NanoClock
 import com.asiankoala.koawalib.math.clamp
