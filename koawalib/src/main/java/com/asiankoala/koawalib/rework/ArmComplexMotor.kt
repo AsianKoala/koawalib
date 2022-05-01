@@ -18,4 +18,6 @@ class ArmComplexMotor(
 ) {
     override val calculateFeedforward: Double
         get() = kCos * encoder.pos.cos
+
+    fun build(): ArmComplexMotor = this
 }

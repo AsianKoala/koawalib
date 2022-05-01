@@ -1,11 +1,10 @@
-package com.asiankoala.koawalib.tuner
+package com.asiankoala.koawalib.hardware.motor
 
 import com.acmerobotics.dashboard.config.Config
 import com.asiankoala.koawalib.command.KOpMode
 import com.asiankoala.koawalib.command.commands.InstantCmd
 import com.asiankoala.koawalib.control.PIDConstants
 import com.asiankoala.koawalib.gamepad.functionality.Button
-import com.asiankoala.koawalib.hardware.motor.KMotorEx
 
 @Config
 @Suppress("unused")

@@ -25,6 +25,7 @@ abstract class ComplexMotor(
 ) : KMotor(settings.name) {
     var output = 0.0; private set
     var voltage = 0.0; private set
+    var isCompletelyDisabled = false
 
     val encoder = KEncoder(this, settings.ticksPerUnit, settings.isRevEncoder)
     val controller = PIDController(settings._kP, settings._kI, settings._kD)
@@ -33,7 +34,7 @@ abstract class ComplexMotor(
     var isPIDEnabled = false
 
     var batteryScaledOutput = 0.0; private set
-    private var isUsingVoltageFF = false
+    var isUsingVoltageFF = false
     private val voltageSensor = hardwareMap.voltageSensor.iterator().next()
     abstract val calculateFeedforward: Double
     var ffOutput = 0.0; private set
@@ -66,7 +67,17 @@ abstract class ComplexMotor(
         return !isFollowingProfile && isAtTarget() && isVelocityAtTarget()
     }
 
-    fun build(): ComplexMotor = this
+    val enableVoltageFF: ComplexMotor
+        get() {
+            isUsingVoltageFF = true
+            return this
+        }
+
+    val disableVoltageFF: ComplexMotor
+        get() {
+            isUsingVoltageFF = false
+            return this
+        }
 
     fun setTarget(x: Double, v: Double = 0.0) {
         controller.reset()
@@ -119,7 +130,7 @@ abstract class ComplexMotor(
         output = realPIDOutput + realFFOutput
 
         super.power = when {
-            isInDisabledZone() -> 0.0
+            isCompletelyDisabled || isInDisabledZone() -> 0.0
             isUsingVoltageFF -> {
                 voltage = voltageSensor.voltage
                 batteryScaledOutput = output * (12.0 / voltage)
@@ -141,4 +152,3 @@ abstract class ComplexMotor(
         assertPositive((allowedVelocityError))
     }
 }
-

@@ -9,7 +9,7 @@ import com.asiankoala.koawalib.gamepad.functionality.Button
 
 @Config
 @Suppress("unused")
-abstract class ArmComplexMotorFFTuner: KOpMode() {
+abstract class ArmComplexMotorFFTuner : KOpMode() {
     abstract val motor: ArmComplexMotor
     abstract val toTargetButton: Button
     abstract val toHomeButton: Button
@@ -20,10 +20,10 @@ abstract class ArmComplexMotorFFTuner: KOpMode() {
     private var packet = TelemetryPacket()
 
     private fun updateMotorFFGains() {
-        if(!kCos.isNaN()) motor.kCos = kCos
-        if(!kS.isNaN()) motor.kS = kS
-        if(!kV.isNaN()) motor.kV = kV
-        if(!kA.isNaN()) motor.kA = kA
+        if (!kCos.isNaN()) motor.kCos = kCos
+        if (!kS.isNaN()) motor.kS = kS
+        if (!kV.isNaN()) motor.kV = kV
+        if (!kA.isNaN()) motor.kA = kA
     }
 
     override fun mInit() {
@@ -31,8 +31,8 @@ abstract class ArmComplexMotorFFTuner: KOpMode() {
         motor.isFFEnabled = true
         updateMotorFFGains()
 
-        toTargetButton.onPress(InstantCmd({motor.setTarget(targetPosition)}))
-        toHomeButton.onPress(InstantCmd({motor.setTarget(homePosition)}))
+        toTargetButton.onPress(InstantCmd({ motor.setTarget(targetPosition) }))
+        toHomeButton.onPress(InstantCmd({ motor.setTarget(homePosition) }))
     }
 
     override fun mLoop() {

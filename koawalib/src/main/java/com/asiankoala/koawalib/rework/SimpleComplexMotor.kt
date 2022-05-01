@@ -11,8 +11,11 @@ class SimpleComplexMotor(
     allowedPositionError: Double,
     allowedVelocityError: Double = Double.POSITIVE_INFINITY,
     disabledPosition: Double? = null,
-) : ComplexMotor(settings, kS, kV, kA, constraints, allowedPositionError, allowedVelocityError, disabledPosition
+) : ComplexMotor(
+    settings, kS, kV, kA, constraints, allowedPositionError, allowedVelocityError, disabledPosition
 ) {
     override val calculateFeedforward: Double
         get() = 0.0
+
+    fun build(): SimpleComplexMotor = this
 }

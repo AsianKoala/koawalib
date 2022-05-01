@@ -1,15 +1,5 @@
 $dokka.format:html-v1
 $dokka.linkExtension:html
-$dokka.location:com.asiankoala.koawalib.characterize////PointingToDeclaration/koawalib/com.asiankoala.koawalib.characterize/index.html
-$dokka.location:com.asiankoala.koawalib.characterize/SimplePIDTuner///PointingToDeclaration/koawalib/com.asiankoala.koawalib.characterize/-simple-p-i-d-tuner/index.html
-$dokka.location:com.asiankoala.koawalib.characterize/SimplePIDTuner/SimplePIDTuner/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.characterize/-simple-p-i-d-tuner/-simple-p-i-d-tuner.html
-$dokka.location:com.asiankoala.koawalib.characterize/SimplePIDTuner/home/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.characterize/-simple-p-i-d-tuner/home.html
-$dokka.location:com.asiankoala.koawalib.characterize/SimplePIDTuner/mInit/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.characterize/-simple-p-i-d-tuner/m-init.html
-$dokka.location:com.asiankoala.koawalib.characterize/SimplePIDTuner/mLoop/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.characterize/-simple-p-i-d-tuner/m-loop.html
-$dokka.location:com.asiankoala.koawalib.characterize/SimplePIDTuner/motor/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.characterize/-simple-p-i-d-tuner/motor.html
-$dokka.location:com.asiankoala.koawalib.characterize/SimplePIDTuner/target/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.characterize/-simple-p-i-d-tuner/target.html
-$dokka.location:com.asiankoala.koawalib.characterize/SimplePIDTuner/toHomeButton/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.characterize/-simple-p-i-d-tuner/to-home-button.html
-$dokka.location:com.asiankoala.koawalib.characterize/SimplePIDTuner/toTargetButton/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.characterize/-simple-p-i-d-tuner/to-target-button.html
 $dokka.location:com.asiankoala.koawalib.command.commands////PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/index.html
 $dokka.location:com.asiankoala.koawalib.command.commands/ChooseCmd///PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-choose-cmd/index.html
 $dokka.location:com.asiankoala.koawalib.command.commands/ChooseCmd/ChooseCmd/#com.asiankoala.koawalib.command.commands.Cmd#com.asiankoala.koawalib.command.commands.Cmd#kotlin.Function0[kotlin.Boolean]/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-choose-cmd/-choose-cmd.html
@@ -34,6 +24,7 @@ $dokka.location:com.asiankoala.koawalib.command.commands/Cmd/pauseFor/#kotlin.Do
 $dokka.location:com.asiankoala.koawalib.command.commands/Cmd/raceWith/#kotlin.Array[com.asiankoala.koawalib.command.commands.Cmd]/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-cmd/race-with.html
 $dokka.location:com.asiankoala.koawalib.command.commands/Cmd/schedule/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-cmd/schedule.html
 $dokka.location:com.asiankoala.koawalib.command.commands/Cmd/toString/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-cmd/to-string.html
+$dokka.location:com.asiankoala.koawalib.command.commands/Cmd/unaryPlus/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-cmd/unary-plus.html
 $dokka.location:com.asiankoala.koawalib.command.commands/Cmd/waitUntil/#kotlin.Function0[kotlin.Boolean]/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-cmd/wait-until.html
 $dokka.location:com.asiankoala.koawalib.command.commands/Cmd/withName/#kotlin.String/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-cmd/with-name.html
 $dokka.location:com.asiankoala.koawalib.command.commands/Cmd/withTimeout/#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.command.commands/-cmd/with-timeout.html
@@ -116,6 +107,7 @@ $dokka.location:com.asiankoala.koawalib.control.motion/MotionConstraints/vMax/#/
 $dokka.location:com.asiankoala.koawalib.control.motion/MotionProfile///PointingToDeclaration/koawalib/com.asiankoala.koawalib.control.motion/-motion-profile/index.html
 $dokka.location:com.asiankoala.koawalib.control.motion/MotionProfile/MotionProfile/#com.asiankoala.koawalib.control.motion.MotionState#com.asiankoala.koawalib.control.motion.MotionState#com.asiankoala.koawalib.control.motion.MotionConstraints/PointingToDeclaration/koawalib/com.asiankoala.koawalib.control.motion/-motion-profile/-motion-profile.html
 $dokka.location:com.asiankoala.koawalib.control.motion/MotionProfile/get/#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.control.motion/-motion-profile/get.html
+$dokka.location:com.asiankoala.koawalib.control.motion/MotionProfile/profileDuration/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.control.motion/-motion-profile/profile-duration.html
 $dokka.location:com.asiankoala.koawalib.control.motion/MotionState///PointingToDeclaration/koawalib/com.asiankoala.koawalib.control.motion/-motion-state/index.html
 $dokka.location:com.asiankoala.koawalib.control.motion/MotionState/MotionState/#kotlin.Double#kotlin.Double#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.control.motion/-motion-state/-motion-state.html
 $dokka.location:com.asiankoala.koawalib.control.motion/MotionState/a/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.control.motion/-motion-state/a.html
@@ -123,19 +115,6 @@ $dokka.location:com.asiankoala.koawalib.control.motion/MotionState/calculate/#ko
 $dokka.location:com.asiankoala.koawalib.control.motion/MotionState/integrate/#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.control.motion/-motion-state/integrate.html
 $dokka.location:com.asiankoala.koawalib.control.motion/MotionState/v/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.control.motion/-motion-state/v.html
 $dokka.location:com.asiankoala.koawalib.control.motion/MotionState/x/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.control.motion/-motion-state/x.html
-$dokka.location:com.asiankoala.koawalib.control.rework////PointingToDeclaration/koawalib/com.asiankoala.koawalib.control.rework/index.html
-$dokka.location:com.asiankoala.koawalib.control.rework/ArmFeedforward///PointingToDeclaration/koawalib/com.asiankoala.koawalib.control.rework/-arm-feedforward/index.html
-$dokka.location:com.asiankoala.koawalib.control.rework/ArmFeedforward/ArmFeedforward/#kotlin.Double#kotlin.Double#kotlin.Double#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.control.rework/-arm-feedforward/-arm-feedforward.html
-$dokka.location:com.asiankoala.koawalib.control.rework/ArmFeedforward/calculate/#kotlin.Double#kotlin.Double#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.control.rework/-arm-feedforward/calculate.html
-$dokka.location:com.asiankoala.koawalib.control.rework/ElevatorFeedforward///PointingToDeclaration/koawalib/com.asiankoala.koawalib.control.rework/-elevator-feedforward/index.html
-$dokka.location:com.asiankoala.koawalib.control.rework/ElevatorFeedforward/ElevatorFeedforward/#kotlin.Double#kotlin.Double#kotlin.Double#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.control.rework/-elevator-feedforward/-elevator-feedforward.html
-$dokka.location:com.asiankoala.koawalib.control.rework/ElevatorFeedforward/calculate/#kotlin.Double#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.control.rework/-elevator-feedforward/calculate.html
-$dokka.location:com.asiankoala.koawalib.control.rework/Feedforward///PointingToDeclaration/koawalib/com.asiankoala.koawalib.control.rework/-feedforward/index.html
-$dokka.location:com.asiankoala.koawalib.control.rework/MotorFeedforward///PointingToDeclaration/koawalib/com.asiankoala.koawalib.control.rework/-motor-feedforward/index.html
-$dokka.location:com.asiankoala.koawalib.control.rework/MotorFeedforward/MotorFeedforward/#kotlin.Double#kotlin.Double#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.control.rework/-motor-feedforward/-motor-feedforward.html
-$dokka.location:com.asiankoala.koawalib.control.rework/MotorFeedforward/calculate/#kotlin.Double#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.control.rework/-motor-feedforward/calculate.html
-$dokka.location:com.asiankoala.koawalib.control.rework/NoFeedforward///PointingToDeclaration/koawalib/com.asiankoala.koawalib.control.rework/-no-feedforward/index.html
-$dokka.location:com.asiankoala.koawalib.control.rework/NoFeedforward/NoFeedforward/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.control.rework/-no-feedforward/-no-feedforward.html
 $dokka.location:com.asiankoala.koawalib.control////PointingToDeclaration/koawalib/com.asiankoala.koawalib.control/index.html
 $dokka.location:com.asiankoala.koawalib.control/FeedforwardConstants///PointingToDeclaration/koawalib/com.asiankoala.koawalib.control/-feedforward-constants/index.html
 $dokka.location:com.asiankoala.koawalib.control/FeedforwardConstants/FeedforwardConstants/#kotlin.Double#kotlin.Double#kotlin.Double#kotlin.Double#kotlin.Double#kotlin.Function2[kotlin.Double,kotlin.Double?,kotlin.Double]#kotlin.Function1[kotlin.Double,kotlin.Double]/PointingToDeclaration/koawalib/com.asiankoala.koawalib.control/-feedforward-constants/-feedforward-constants.html
@@ -235,18 +214,26 @@ $dokka.location:com.asiankoala.koawalib.hardware.motor////PointingToDeclaration/
 $dokka.location:com.asiankoala.koawalib.hardware.motor/KMotor///PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor/index.html
 $dokka.location:com.asiankoala.koawalib.hardware.motor/KMotor/KMotor/#kotlin.String/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor/-k-motor.html
 $dokka.location:com.asiankoala.koawalib.hardware.motor/KMotor/brake/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor/brake.html
-$dokka.location:com.asiankoala.koawalib.hardware.motor/KMotor/disableVoltageCorrection/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor/disable-voltage-correction.html
-$dokka.location:com.asiankoala.koawalib.hardware.motor/KMotor/enableVoltageCorrection/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor/enable-voltage-correction.html
 $dokka.location:com.asiankoala.koawalib.hardware.motor/KMotor/float/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor/float.html
 $dokka.location:com.asiankoala.koawalib.hardware.motor/KMotor/forward/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor/forward.html
 $dokka.location:com.asiankoala.koawalib.hardware.motor/KMotor/power/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor/power.html
 $dokka.location:com.asiankoala.koawalib.hardware.motor/KMotor/rawMotorPosition/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor/raw-motor-position.html
 $dokka.location:com.asiankoala.koawalib.hardware.motor/KMotor/rawMotorVelocity/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor/raw-motor-velocity.html
 $dokka.location:com.asiankoala.koawalib.hardware.motor/KMotor/reverse/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor/reverse.html
+$dokka.location:com.asiankoala.koawalib.hardware.motor/KMotorEXTuner///PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor-e-x-tuner/index.html
+$dokka.location:com.asiankoala.koawalib.hardware.motor/KMotorEXTuner/KMotorEXTuner/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor-e-x-tuner/-k-motor-e-x-tuner.html
+$dokka.location:com.asiankoala.koawalib.hardware.motor/KMotorEXTuner/home/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor-e-x-tuner/home.html
+$dokka.location:com.asiankoala.koawalib.hardware.motor/KMotorEXTuner/mInit/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor-e-x-tuner/m-init.html
+$dokka.location:com.asiankoala.koawalib.hardware.motor/KMotorEXTuner/mLoop/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor-e-x-tuner/m-loop.html
+$dokka.location:com.asiankoala.koawalib.hardware.motor/KMotorEXTuner/motor/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor-e-x-tuner/motor.html
+$dokka.location:com.asiankoala.koawalib.hardware.motor/KMotorEXTuner/target/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor-e-x-tuner/target.html
+$dokka.location:com.asiankoala.koawalib.hardware.motor/KMotorEXTuner/toHomeButton/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor-e-x-tuner/to-home-button.html
+$dokka.location:com.asiankoala.koawalib.hardware.motor/KMotorEXTuner/toTargetButton/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor-e-x-tuner/to-target-button.html
 $dokka.location:com.asiankoala.koawalib.hardware.motor/KMotorEx.Companion///PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor-ex/-companion/index.html
 $dokka.location:com.asiankoala.koawalib.hardware.motor/KMotorEx.Companion/createMotor/#kotlin.String#kotlin.Double#kotlin.Boolean#com.asiankoala.koawalib.control.MotorControlType#com.asiankoala.koawalib.control.PIDConstants#com.asiankoala.koawalib.control.FeedforwardConstants#kotlin.Double#kotlin.Double#kotlin.Double#kotlin.Double#kotlin.Double#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor-ex/-companion/create-motor.html
 $dokka.location:com.asiankoala.koawalib.hardware.motor/KMotorEx///PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor-ex/index.html
 $dokka.location:com.asiankoala.koawalib.hardware.motor/KMotorEx/KMotorEx/#com.asiankoala.koawalib.hardware.motor.KMotorExConfig/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor-ex/-k-motor-ex.html
+$dokka.location:com.asiankoala.koawalib.hardware.motor/KMotorEx/build/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor-ex/build.html
 $dokka.location:com.asiankoala.koawalib.hardware.motor/KMotorEx/config/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor-ex/config.html
 $dokka.location:com.asiankoala.koawalib.hardware.motor/KMotorEx/encoder/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor-ex/encoder.html
 $dokka.location:com.asiankoala.koawalib.hardware.motor/KMotorEx/followMotionProfile/#com.acmerobotics.roadrunner.profile.MotionProfile/PointingToDeclaration/koawalib/com.asiankoala.koawalib.hardware.motor/-k-motor-ex/follow-motion-profile.html
@@ -339,8 +326,10 @@ $dokka.location:com.asiankoala.koawalib.logger/LoggerConfig/maxWarningCount/#/Po
 $dokka.location:com.asiankoala.koawalib.math////PointingToDeclaration/koawalib/com.asiankoala.koawalib.math/index.html
 $dokka.location:com.asiankoala.koawalib.math//EPSILON/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.math/-e-p-s-i-l-o-n.html
 $dokka.location:com.asiankoala.koawalib.math//TAU/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.math/-t-a-u.html
+$dokka.location:com.asiankoala.koawalib.math//VOLTAGE_CONSTANT/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.math/-v-o-l-t-a-g-e_-c-o-n-s-t-a-n-t.html
 $dokka.location:com.asiankoala.koawalib.math//absMax/#kotlin.Double#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.math/abs-max.html
 $dokka.location:com.asiankoala.koawalib.math//angleWrap/kotlin.Double#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.math/angle-wrap.html
+$dokka.location:com.asiankoala.koawalib.math//assertPositive/#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.math/assert-positive.html
 $dokka.location:com.asiankoala.koawalib.math//clamp/#kotlin.Double#kotlin.Double#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.math/clamp.html
 $dokka.location:com.asiankoala.koawalib.math//clipToLine/#com.asiankoala.koawalib.math.Vector#com.asiankoala.koawalib.math.Vector#com.asiankoala.koawalib.math.Vector/PointingToDeclaration/koawalib/com.asiankoala.koawalib.math/clip-to-line.html
 $dokka.location:com.asiankoala.koawalib.math//cos/kotlin.Double#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.math/cos.html
@@ -350,6 +339,7 @@ $dokka.location:com.asiankoala.koawalib.math//d/kotlin.Int#/PointingToDeclaratio
 $dokka.location:com.asiankoala.koawalib.math//degrees/kotlin.Double#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.math/degrees.html
 $dokka.location:com.asiankoala.koawalib.math//epsilonNotEqual/kotlin.Double#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.math/epsilon-not-equal.html
 $dokka.location:com.asiankoala.koawalib.math//extendLine/#com.asiankoala.koawalib.math.Vector#com.asiankoala.koawalib.math.Vector#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.math/extend-line.html
+$dokka.location:com.asiankoala.koawalib.math//inputModulus/#kotlin.Double#kotlin.Double#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.math/input-modulus.html
 $dokka.location:com.asiankoala.koawalib.math//lineCircleIntersection/#com.asiankoala.koawalib.math.Vector#com.asiankoala.koawalib.math.Vector#com.asiankoala.koawalib.math.Vector#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.math/line-circle-intersection.html
 $dokka.location:com.asiankoala.koawalib.math//radians/kotlin.Double#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.math/radians.html
 $dokka.location:com.asiankoala.koawalib.math//sin/kotlin.Double#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.math/sin.html
@@ -390,6 +380,103 @@ $dokka.location:com.asiankoala.koawalib.math/Vector/unaryMinus/#/PointingToDecla
 $dokka.location:com.asiankoala.koawalib.math/Vector/vec/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.math/-vector/vec.html
 $dokka.location:com.asiankoala.koawalib.math/Vector/x/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.math/-vector/x.html
 $dokka.location:com.asiankoala.koawalib.math/Vector/y/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.math/-vector/y.html
+$dokka.location:com.asiankoala.koawalib.rework////PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/index.html
+$dokka.location:com.asiankoala.koawalib.rework/ArmComplexMotor///PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-arm-complex-motor/index.html
+$dokka.location:com.asiankoala.koawalib.rework/ArmComplexMotor/ArmComplexMotor/#kotlin.Double#com.asiankoala.koawalib.rework.ComplexMotorSettings#kotlin.Double#kotlin.Double#kotlin.Double#com.asiankoala.koawalib.control.motion.MotionConstraints#kotlin.Double#kotlin.Double#kotlin.Double?/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-arm-complex-motor/-arm-complex-motor.html
+$dokka.location:com.asiankoala.koawalib.rework/ArmComplexMotor/build/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-arm-complex-motor/build.html
+$dokka.location:com.asiankoala.koawalib.rework/ArmComplexMotor/calculateFeedforward/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-arm-complex-motor/calculate-feedforward.html
+$dokka.location:com.asiankoala.koawalib.rework/ArmComplexMotor/kCos/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-arm-complex-motor/k-cos.html
+$dokka.location:com.asiankoala.koawalib.rework/ArmComplexMotorFFTuner///PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-arm-complex-motor-f-f-tuner/index.html
+$dokka.location:com.asiankoala.koawalib.rework/ArmComplexMotorFFTuner/ArmComplexMotorFFTuner/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-arm-complex-motor-f-f-tuner/-arm-complex-motor-f-f-tuner.html
+$dokka.location:com.asiankoala.koawalib.rework/ArmComplexMotorFFTuner/homePosition/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-arm-complex-motor-f-f-tuner/home-position.html
+$dokka.location:com.asiankoala.koawalib.rework/ArmComplexMotorFFTuner/mInit/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-arm-complex-motor-f-f-tuner/m-init.html
+$dokka.location:com.asiankoala.koawalib.rework/ArmComplexMotorFFTuner/mLoop/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-arm-complex-motor-f-f-tuner/m-loop.html
+$dokka.location:com.asiankoala.koawalib.rework/ArmComplexMotorFFTuner/motor/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-arm-complex-motor-f-f-tuner/motor.html
+$dokka.location:com.asiankoala.koawalib.rework/ArmComplexMotorFFTuner/targetPosition/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-arm-complex-motor-f-f-tuner/target-position.html
+$dokka.location:com.asiankoala.koawalib.rework/ArmComplexMotorFFTuner/toHomeButton/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-arm-complex-motor-f-f-tuner/to-home-button.html
+$dokka.location:com.asiankoala.koawalib.rework/ArmComplexMotorFFTuner/toTargetButton/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-arm-complex-motor-f-f-tuner/to-target-button.html
+$dokka.location:com.asiankoala.koawalib.rework/ComplexMotor///PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-complex-motor/index.html
+$dokka.location:com.asiankoala.koawalib.rework/ComplexMotor/ComplexMotor/#com.asiankoala.koawalib.rework.ComplexMotorSettings#kotlin.Double#kotlin.Double#kotlin.Double#com.asiankoala.koawalib.control.motion.MotionConstraints#kotlin.Double#kotlin.Double#kotlin.Double?/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-complex-motor/-complex-motor.html
+$dokka.location:com.asiankoala.koawalib.rework/ComplexMotor/allowedPositionError/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-complex-motor/allowed-position-error.html
+$dokka.location:com.asiankoala.koawalib.rework/ComplexMotor/allowedVelocityError/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-complex-motor/allowed-velocity-error.html
+$dokka.location:com.asiankoala.koawalib.rework/ComplexMotor/batteryScaledOutput/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-complex-motor/battery-scaled-output.html
+$dokka.location:com.asiankoala.koawalib.rework/ComplexMotor/calculateFeedforward/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-complex-motor/calculate-feedforward.html
+$dokka.location:com.asiankoala.koawalib.rework/ComplexMotor/constraints/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-complex-motor/constraints.html
+$dokka.location:com.asiankoala.koawalib.rework/ComplexMotor/controller/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-complex-motor/controller.html
+$dokka.location:com.asiankoala.koawalib.rework/ComplexMotor/currentMotionProfile/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-complex-motor/current-motion-profile.html
+$dokka.location:com.asiankoala.koawalib.rework/ComplexMotor/currentMotionState/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-complex-motor/current-motion-state.html
+$dokka.location:com.asiankoala.koawalib.rework/ComplexMotor/disableVoltageFF/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-complex-motor/disable-voltage-f-f.html
+$dokka.location:com.asiankoala.koawalib.rework/ComplexMotor/disabledPosition/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-complex-motor/disabled-position.html
+$dokka.location:com.asiankoala.koawalib.rework/ComplexMotor/enableVoltageFF/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-complex-motor/enable-voltage-f-f.html
+$dokka.location:com.asiankoala.koawalib.rework/ComplexMotor/encoder/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-complex-motor/encoder.html
+$dokka.location:com.asiankoala.koawalib.rework/ComplexMotor/ffOutput/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-complex-motor/ff-output.html
+$dokka.location:com.asiankoala.koawalib.rework/ComplexMotor/finalTargetMotionState/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-complex-motor/final-target-motion-state.html
+$dokka.location:com.asiankoala.koawalib.rework/ComplexMotor/isAtTarget/#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-complex-motor/is-at-target.html
+$dokka.location:com.asiankoala.koawalib.rework/ComplexMotor/isCompletelyDisabled/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-complex-motor/is-completely-disabled.html
+$dokka.location:com.asiankoala.koawalib.rework/ComplexMotor/isCompletelyFinished/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-complex-motor/is-completely-finished.html
+$dokka.location:com.asiankoala.koawalib.rework/ComplexMotor/isFFEnabled/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-complex-motor/is-f-f-enabled.html
+$dokka.location:com.asiankoala.koawalib.rework/ComplexMotor/isFollowingProfile/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-complex-motor/is-following-profile.html
+$dokka.location:com.asiankoala.koawalib.rework/ComplexMotor/isPIDEnabled/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-complex-motor/is-p-i-d-enabled.html
+$dokka.location:com.asiankoala.koawalib.rework/ComplexMotor/isUsingVoltageFF/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-complex-motor/is-using-voltage-f-f.html
+$dokka.location:com.asiankoala.koawalib.rework/ComplexMotor/isVelocityAtTarget/#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-complex-motor/is-velocity-at-target.html
+$dokka.location:com.asiankoala.koawalib.rework/ComplexMotor/kA/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-complex-motor/k-a.html
+$dokka.location:com.asiankoala.koawalib.rework/ComplexMotor/kS/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-complex-motor/k-s.html
+$dokka.location:com.asiankoala.koawalib.rework/ComplexMotor/kV/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-complex-motor/k-v.html
+$dokka.location:com.asiankoala.koawalib.rework/ComplexMotor/motionTimer/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-complex-motor/motion-timer.html
+$dokka.location:com.asiankoala.koawalib.rework/ComplexMotor/output/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-complex-motor/output.html
+$dokka.location:com.asiankoala.koawalib.rework/ComplexMotor/pidOutput/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-complex-motor/pid-output.html
+$dokka.location:com.asiankoala.koawalib.rework/ComplexMotor/setTarget/#kotlin.Double#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-complex-motor/set-target.html
+$dokka.location:com.asiankoala.koawalib.rework/ComplexMotor/setpointMotionState/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-complex-motor/setpoint-motion-state.html
+$dokka.location:com.asiankoala.koawalib.rework/ComplexMotor/update/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-complex-motor/update.html
+$dokka.location:com.asiankoala.koawalib.rework/ComplexMotor/voltage/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-complex-motor/voltage.html
+$dokka.location:com.asiankoala.koawalib.rework/ComplexMotorSettings///PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-complex-motor-settings/index.html
+$dokka.location:com.asiankoala.koawalib.rework/ComplexMotorSettings/ComplexMotorSettings/#kotlin.String#kotlin.Double#kotlin.Double#kotlin.Double#kotlin.Double#kotlin.Boolean/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-complex-motor-settings/-complex-motor-settings.html
+$dokka.location:com.asiankoala.koawalib.rework/ComplexMotorSettings/_kD/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-complex-motor-settings/_k-d.html
+$dokka.location:com.asiankoala.koawalib.rework/ComplexMotorSettings/_kI/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-complex-motor-settings/_k-i.html
+$dokka.location:com.asiankoala.koawalib.rework/ComplexMotorSettings/_kP/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-complex-motor-settings/_k-p.html
+$dokka.location:com.asiankoala.koawalib.rework/ComplexMotorSettings/isRevEncoder/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-complex-motor-settings/is-rev-encoder.html
+$dokka.location:com.asiankoala.koawalib.rework/ComplexMotorSettings/name/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-complex-motor-settings/name.html
+$dokka.location:com.asiankoala.koawalib.rework/ComplexMotorSettings/ticksPerUnit/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-complex-motor-settings/ticks-per-unit.html
+$dokka.location:com.asiankoala.koawalib.rework/LiftComplexMotor///PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-lift-complex-motor/index.html
+$dokka.location:com.asiankoala.koawalib.rework/LiftComplexMotor/LiftComplexMotor/#kotlin.Double#com.asiankoala.koawalib.rework.ComplexMotorSettings#kotlin.Double#kotlin.Double#kotlin.Double#com.asiankoala.koawalib.control.motion.MotionConstraints#kotlin.Double#kotlin.Double#kotlin.Double?/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-lift-complex-motor/-lift-complex-motor.html
+$dokka.location:com.asiankoala.koawalib.rework/LiftComplexMotor/build/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-lift-complex-motor/build.html
+$dokka.location:com.asiankoala.koawalib.rework/LiftComplexMotor/calculateFeedforward/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-lift-complex-motor/calculate-feedforward.html
+$dokka.location:com.asiankoala.koawalib.rework/LiftComplexMotor/kG/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-lift-complex-motor/k-g.html
+$dokka.location:com.asiankoala.koawalib.rework/LiftComplexMotorFFTuner///PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-lift-complex-motor-f-f-tuner/index.html
+$dokka.location:com.asiankoala.koawalib.rework/LiftComplexMotorFFTuner/LiftComplexMotorFFTuner/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-lift-complex-motor-f-f-tuner/-lift-complex-motor-f-f-tuner.html
+$dokka.location:com.asiankoala.koawalib.rework/LiftComplexMotorFFTuner/homePosition/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-lift-complex-motor-f-f-tuner/home-position.html
+$dokka.location:com.asiankoala.koawalib.rework/LiftComplexMotorFFTuner/mInit/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-lift-complex-motor-f-f-tuner/m-init.html
+$dokka.location:com.asiankoala.koawalib.rework/LiftComplexMotorFFTuner/mLoop/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-lift-complex-motor-f-f-tuner/m-loop.html
+$dokka.location:com.asiankoala.koawalib.rework/LiftComplexMotorFFTuner/motor/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-lift-complex-motor-f-f-tuner/motor.html
+$dokka.location:com.asiankoala.koawalib.rework/LiftComplexMotorFFTuner/targetPosition/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-lift-complex-motor-f-f-tuner/target-position.html
+$dokka.location:com.asiankoala.koawalib.rework/LiftComplexMotorFFTuner/toHomeButton/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-lift-complex-motor-f-f-tuner/to-home-button.html
+$dokka.location:com.asiankoala.koawalib.rework/LiftComplexMotorFFTuner/toTargetButton/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-lift-complex-motor-f-f-tuner/to-target-button.html
+$dokka.location:com.asiankoala.koawalib.rework/PIDController///PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-p-i-d-controller/index.html
+$dokka.location:com.asiankoala.koawalib.rework/PIDController/PIDController/#kotlin.Double#kotlin.Double#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-p-i-d-controller/-p-i-d-controller.html
+$dokka.location:com.asiankoala.koawalib.rework/PIDController/disableContinuousInput/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-p-i-d-controller/disable-continuous-input.html
+$dokka.location:com.asiankoala.koawalib.rework/PIDController/enableContinuousInput/#kotlin.Double#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-p-i-d-controller/enable-continuous-input.html
+$dokka.location:com.asiankoala.koawalib.rework/PIDController/isAtTarget/#kotlin.Double#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-p-i-d-controller/is-at-target.html
+$dokka.location:com.asiankoala.koawalib.rework/PIDController/kD/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-p-i-d-controller/k-d.html
+$dokka.location:com.asiankoala.koawalib.rework/PIDController/kI/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-p-i-d-controller/k-i.html
+$dokka.location:com.asiankoala.koawalib.rework/PIDController/kP/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-p-i-d-controller/k-p.html
+$dokka.location:com.asiankoala.koawalib.rework/PIDController/position/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-p-i-d-controller/position.html
+$dokka.location:com.asiankoala.koawalib.rework/PIDController/reset/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-p-i-d-controller/reset.html
+$dokka.location:com.asiankoala.koawalib.rework/PIDController/setIntegratorRange/#kotlin.Double#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-p-i-d-controller/set-integrator-range.html
+$dokka.location:com.asiankoala.koawalib.rework/PIDController/target/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-p-i-d-controller/target.html
+$dokka.location:com.asiankoala.koawalib.rework/PIDController/update/#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-p-i-d-controller/update.html
+$dokka.location:com.asiankoala.koawalib.rework/SimpleComplexMotor///PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-simple-complex-motor/index.html
+$dokka.location:com.asiankoala.koawalib.rework/SimpleComplexMotor/SimpleComplexMotor/#com.asiankoala.koawalib.rework.ComplexMotorSettings#kotlin.Double#kotlin.Double#kotlin.Double#com.asiankoala.koawalib.control.motion.MotionConstraints#kotlin.Double#kotlin.Double#kotlin.Double?/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-simple-complex-motor/-simple-complex-motor.html
+$dokka.location:com.asiankoala.koawalib.rework/SimpleComplexMotor/build/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-simple-complex-motor/build.html
+$dokka.location:com.asiankoala.koawalib.rework/SimpleComplexMotor/calculateFeedforward/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-simple-complex-motor/calculate-feedforward.html
+$dokka.location:com.asiankoala.koawalib.rework/SimpleComplexMotorFFTuner///PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-simple-complex-motor-f-f-tuner/index.html
+$dokka.location:com.asiankoala.koawalib.rework/SimpleComplexMotorFFTuner/SimpleComplexMotorFFTuner/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-simple-complex-motor-f-f-tuner/-simple-complex-motor-f-f-tuner.html
+$dokka.location:com.asiankoala.koawalib.rework/SimpleComplexMotorFFTuner/homePosition/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-simple-complex-motor-f-f-tuner/home-position.html
+$dokka.location:com.asiankoala.koawalib.rework/SimpleComplexMotorFFTuner/mInit/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-simple-complex-motor-f-f-tuner/m-init.html
+$dokka.location:com.asiankoala.koawalib.rework/SimpleComplexMotorFFTuner/mLoop/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-simple-complex-motor-f-f-tuner/m-loop.html
+$dokka.location:com.asiankoala.koawalib.rework/SimpleComplexMotorFFTuner/motor/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-simple-complex-motor-f-f-tuner/motor.html
+$dokka.location:com.asiankoala.koawalib.rework/SimpleComplexMotorFFTuner/targetPosition/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-simple-complex-motor-f-f-tuner/target-position.html
+$dokka.location:com.asiankoala.koawalib.rework/SimpleComplexMotorFFTuner/toHomeButton/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-simple-complex-motor-f-f-tuner/to-home-button.html
+$dokka.location:com.asiankoala.koawalib.rework/SimpleComplexMotorFFTuner/toTargetButton/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.rework/-simple-complex-motor-f-f-tuner/to-target-button.html
 $dokka.location:com.asiankoala.koawalib.subsystem.drive////PointingToDeclaration/koawalib/com.asiankoala.koawalib.subsystem.drive/index.html
 $dokka.location:com.asiankoala.koawalib.subsystem.drive/KMecanumDrive///PointingToDeclaration/koawalib/com.asiankoala.koawalib.subsystem.drive/-k-mecanum-drive/index.html
 $dokka.location:com.asiankoala.koawalib.subsystem.drive/KMecanumDrive/KMecanumDrive/#com.asiankoala.koawalib.hardware.motor.KMotor#com.asiankoala.koawalib.hardware.motor.KMotor#com.asiankoala.koawalib.hardware.motor.KMotor#com.asiankoala.koawalib.hardware.motor.KMotor/PointingToDeclaration/koawalib/com.asiankoala.koawalib.subsystem.drive/-k-mecanum-drive/-k-mecanum-drive.html
@@ -417,6 +504,8 @@ $dokka.location:com.asiankoala.koawalib.subsystem.odometry/KEncoder///PointingTo
 $dokka.location:com.asiankoala.koawalib.subsystem.odometry/KEncoder/KEncoder/#com.asiankoala.koawalib.hardware.motor.KMotor#kotlin.Double#kotlin.Boolean/PointingToDeclaration/koawalib/com.asiankoala.koawalib.subsystem.odometry/-k-encoder/-k-encoder.html
 $dokka.location:com.asiankoala.koawalib.subsystem.odometry/KEncoder/accel/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.subsystem.odometry/-k-encoder/accel.html
 $dokka.location:com.asiankoala.koawalib.subsystem.odometry/KEncoder/delta/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.subsystem.odometry/-k-encoder/delta.html
+$dokka.location:com.asiankoala.koawalib.subsystem.odometry/KEncoder/disable/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.subsystem.odometry/-k-encoder/disable.html
+$dokka.location:com.asiankoala.koawalib.subsystem.odometry/KEncoder/enable/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.subsystem.odometry/-k-encoder/enable.html
 $dokka.location:com.asiankoala.koawalib.subsystem.odometry/KEncoder/pos/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.subsystem.odometry/-k-encoder/pos.html
 $dokka.location:com.asiankoala.koawalib.subsystem.odometry/KEncoder/reversed/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.subsystem.odometry/-k-encoder/reversed.html
 $dokka.location:com.asiankoala.koawalib.subsystem.odometry/KEncoder/update/#/PointingToDeclaration/koawalib/com.asiankoala.koawalib.subsystem.odometry/-k-encoder/update.html
@@ -701,13 +790,11 @@ $dokka.location:com.asiankoala.koawalib.wpilib/WPILIBVectorBuilder.Companion/fil
 $dokka.location:com.asiankoala.koawalib.wpilib/WPILIBVectorBuilder.Companion/fill/#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.wpilib/-w-p-i-l-i-b-vector-builder/-companion/fill.html
 $dokka.location:com.asiankoala.koawalib.wpilib/WPILIBVectorBuilder///PointingToDeclaration/koawalib/com.asiankoala.koawalib.wpilib/-w-p-i-l-i-b-vector-builder/index.html
 $dokka.location:com.asiankoala.koawalib.wpilib/WPILIBVectorBuilder/WPILIBVectorBuilder/#com.asiankoala.koawalib.wpilib.Nat[TypeParam(bounds=[com.asiankoala.koawalib.wpilib.Num])]/PointingToDeclaration/koawalib/com.asiankoala.koawalib.wpilib/-w-p-i-l-i-b-vector-builder/-w-p-i-l-i-b-vector-builder.html
-com.asiankoala.koawalib.characterize
 com.asiankoala.koawalib.command
 com.asiankoala.koawalib.command.commands
 com.asiankoala.koawalib.command.group
 com.asiankoala.koawalib.control
 com.asiankoala.koawalib.control.motion
-com.asiankoala.koawalib.control.rework
 com.asiankoala.koawalib.gamepad
 com.asiankoala.koawalib.gamepad.functionality
 com.asiankoala.koawalib.gvf
@@ -717,6 +804,7 @@ com.asiankoala.koawalib.hardware.sensor
 com.asiankoala.koawalib.hardware.servo
 com.asiankoala.koawalib.logger
 com.asiankoala.koawalib.math
+com.asiankoala.koawalib.rework
 com.asiankoala.koawalib.subsystem
 com.asiankoala.koawalib.subsystem.drive
 com.asiankoala.koawalib.subsystem.intake

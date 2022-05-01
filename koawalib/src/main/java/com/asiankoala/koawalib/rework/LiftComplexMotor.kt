@@ -17,4 +17,6 @@ class LiftComplexMotor(
 ) {
     override val calculateFeedforward: Double
         get() = kG
+
+    fun build(): LiftComplexMotor = this
 }
