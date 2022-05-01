@@ -1,9 +1,11 @@
 package com.asiankoala.koawalib.math
 
+import com.asiankoala.koawalib.logger.Logger
 import kotlin.math.*
 
 const val EPSILON = 1e-6
 const val TAU = 2 * PI
+const val VOLTAGE_CONSTANT = 12.0
 
 infix fun Double.epsilonNotEqual(other: Double) = (this - other).absoluteValue > EPSILON
 
@@ -24,8 +26,26 @@ fun clamp(x: Double, a: Double, b: Double): Double {
     return x
 }
 
+fun assertPositive(value: Double) {
+    if (value.sign < 0.0) Logger.logError("value $value must be positive")
+}
+
 fun cubicScaling(k: Double, x: Double): Double {
     return (1 - k) * x + k * x * x * x
+}
+
+fun inputModulus(input: Double, minimumInput: Double, maximumInput: Double): Double {
+    var input = input
+    val modulus = maximumInput - minimumInput
+
+    // Wrap input if it's above the maximum input
+    val numMax = ((input - minimumInput) / modulus).toInt()
+    input -= numMax * modulus
+
+    // Wrap input if it's below the minimum input
+    val numMin = ((input - maximumInput) / modulus).toInt()
+    input -= numMin * modulus
+    return input
 }
 
 fun stupidSign(a: Double): Int = if (a > 0) 1 else -1

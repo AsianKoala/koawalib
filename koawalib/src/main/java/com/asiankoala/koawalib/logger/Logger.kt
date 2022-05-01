@@ -12,6 +12,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry
  * @property config Logger Config
  */
 // TODO Fix logger condensation
+// TODO FIX THIS STUPUID SHIT ALREADY ITS BEEN BROKEN FOR HALF A YEAR
 @Suppress("unused")
 object Logger {
     var config = LoggerConfig()

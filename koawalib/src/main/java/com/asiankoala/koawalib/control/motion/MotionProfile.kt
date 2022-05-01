@@ -23,7 +23,7 @@ class MotionProfile(
     private var cruiseState: MotionState
     private var deccelState: MotionState
 
-    private val profileDuration: Double
+    val profileDuration: Double
     private val totalIntegral: Double
 
     operator fun get(time: Double): MotionState {

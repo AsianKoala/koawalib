@@ -4,11 +4,12 @@ import com.acmerobotics.roadrunner.util.NanoClock
 import com.acmerobotics.roadrunner.util.epsilonEquals
 import com.asiankoala.koawalib.hardware.motor.KMotor
 import com.asiankoala.koawalib.logger.Logger
+import com.qualcomm.robotcore.util.MovingStatistics
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.sign
 
-@Suppress("unused")
+// @Suppress("unused")
 class KEncoder(
     private val motor: KMotor,
     private val ticksPerUnit: Double,
@@ -22,12 +23,15 @@ class KEncoder(
     private var _accel = 0.0
     private val prevPos = ArrayList<Pair<Double, Double>>()
     private val prevVel = ArrayList<Pair<Double, Double>>()
+    private val velStats = MovingStatistics(5)
+    private val accelStats = MovingStatistics(5)
+    private var disabled = false
 
     val pos get() = (_pos + offset) * multiplier / ticksPerUnit
 
-    val vel get() = _vel / ticksPerUnit
+    val vel get() = velStats.mean / ticksPerUnit
 
-    val accel get() = _accel / ticksPerUnit
+    val accel get() = accelStats.mean / ticksPerUnit
 
     val delta get() = (
         prevPos[prevPos.size - 1].second -
@@ -41,58 +45,62 @@ class KEncoder(
         }
 
     private fun attemptVelUpdate() {
-        if (prevPos.size < 2) {
-            _vel = 0.0
-            return
-        }
-
-        val oldIndex = max(0, prevPos.size - LOOK_BEHIND - 1)
-        val oldPosition = prevPos[oldIndex]
-        val currPosition = prevPos[prevPos.size - 1]
-        val scalar = (currPosition.first - oldPosition.first)
-
-        if (scalar epsilonEquals 0.0) Logger.logError(motor.toString())
-
-        _vel = (currPosition.second - oldPosition.second) / scalar
+        val ret = estimateDerivative(prevPos)
+        if (!ret.second) return
+        var estimatedVel = ret.first
 
         if (isRevEncoder) {
-            _vel = inverseOverflow(motor.rawMotorVelocity * multiplier, _vel)
+            estimatedVel = inverseOverflow(motor.rawMotorVelocity * multiplier, _vel)
         }
+
+        velStats.add(estimatedVel)
     }
 
     private fun attemptAccelUpdate() {
-        if (prevVel.size < 2) {
-            _accel = 0.0
-            return
-        }
-
-        val oldIndex = max(0, prevVel.size - LOOK_BEHIND - 1)
-        val oldVel = prevVel[oldIndex]
-        val currVel = prevVel[prevPos.size - 1]
-        val scalar = (currVel.first - oldVel.first)
-
-        if (scalar epsilonEquals 0.0) Logger.logError(motor.toString())
-
-        _accel = (currVel.second - oldVel.second) / scalar
+        val ret = estimateDerivative(prevVel)
+        if (!ret.second) return
+        val estimatedAccel = ret.first
+        accelStats.add(estimatedAccel)
     }
 
-    fun zero(newPosition: Double = 0.0): KEncoder {
+    private fun internalReset() {
         _pos = motor.rawMotorPosition
-        offset = newPosition * ticksPerUnit - _pos
         prevPos.clear()
         prevPos.add(Pair(clock.seconds(), _pos))
         prevPos.add(Pair(clock.seconds() - 1e6, _pos))
+        prevVel.clear()
+        velStats.clear()
+        accelStats.clear()
         _vel = 0.0
+        _accel = 0.0
+    }
+
+    fun zero(newPosition: Double = 0.0): KEncoder {
+        internalReset()
+        offset = newPosition * ticksPerUnit - _pos
         return this
     }
 
     fun update() {
-        val seconds = clock.seconds()
-        prevPos.add(Pair(seconds, _pos))
-        _pos = motor.rawMotorPosition
-        attemptVelUpdate()
-        prevVel.add(Pair(seconds, _vel))
-        attemptAccelUpdate()
+        if (!disabled) {
+            val seconds = clock.seconds()
+            _pos = motor.rawMotorPosition
+            prevPos.add(Pair(seconds, _pos))
+            attemptVelUpdate()
+            prevVel.add(Pair(seconds, _vel))
+            attemptAccelUpdate()
+        } else {
+            Logger.logWarning("encoder queried when disabled")
+        }
+    }
+
+    fun disable() {
+        disabled = true
+    }
+
+    fun enable() {
+        disabled = false
+        internalReset()
     }
 
     companion object {
@@ -105,6 +113,21 @@ class KEncoder(
                 real += sign(estimate - real) * CPS_STEP
             }
             return real
+        }
+
+        private fun estimateDerivative(estimates: List<Pair<Double, Double>>): Pair<Double, Boolean> {
+            if (estimates.size < 2) {
+                return Pair(0.0, false)
+            }
+
+            val oldIndex = max(0, estimates.size - LOOK_BEHIND - 1)
+            val oldPosition = estimates[oldIndex]
+            val currPosition = estimates[estimates.size - 1]
+            val scalar = (currPosition.first - oldPosition.first)
+
+            if (scalar epsilonEquals 0.0) Logger.logError("failed encoder derivative")
+
+            return Pair((currPosition.second - oldPosition.second) / scalar, true)
         }
     }
 }

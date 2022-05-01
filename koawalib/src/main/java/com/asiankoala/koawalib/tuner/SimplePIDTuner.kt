@@ -1,4 +1,4 @@
-package com.asiankoala.koawalib.characterize
+package com.asiankoala.koawalib.tuner
 
 import com.acmerobotics.dashboard.config.Config
 import com.asiankoala.koawalib.command.KOpMode

@@ -166,6 +166,8 @@ class KMotorEx(val config: KMotorExConfig) : KMotor(config.name) {
         setPIDTarget(oldTarget)
     }
 
+    fun build(): KMotorEx = this
+
     init {
         if (!config.lowerBound.isNaN() && !config.upperBound.isNaN()) {
             controller.setInputBounds(config.lowerBound, config.upperBound)

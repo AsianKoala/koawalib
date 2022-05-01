@@ -11,9 +11,9 @@ import kotlin.math.pow
  * @param a acceleration of system
  */
 data class MotionState(
-    val x: Double,
-    val v: Double,
-    val a: Double
+    val x: Double = 0.0,
+    val v: Double = 0.0,
+    val a: Double = 0.0
 ) {
     /**
      * Calculate a new motion state by integrating constant acceleration

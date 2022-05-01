@@ -138,6 +138,8 @@ abstract class Cmd {
         return this
     }
 
+    operator fun unaryPlus() = schedule()
+
     /**
      * Schedule command. Syntax sugar for [KScheduler.schedule]
      */
