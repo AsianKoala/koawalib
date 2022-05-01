@@ -9,7 +9,7 @@ import com.asiankoala.koawalib.hardware.motor.KMotorEx
 
 @Config
 @Suppress("unused")
-abstract class SimplePIDTuner() : KOpMode() {
+abstract class KMotorEXTuner() : KOpMode() {
     internal companion object {
         @JvmField var kP = Double.NaN
         @JvmField var kI = Double.NaN

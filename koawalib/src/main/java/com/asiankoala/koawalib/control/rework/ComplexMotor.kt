@@ -31,7 +31,7 @@ abstract class ComplexMotor(
     var output = 0.0; private set
     var voltage = 0.0; private set
 
-    private val encoder = KEncoder(this, ticksPerUnit, isRevEncoder)
+    val encoder = KEncoder(this, ticksPerUnit, isRevEncoder)
     val controller = PIDController(_kP, _kI, _kD)
     var setpointMotionState: MotionState = MotionState(); private set
     var pidOutput = 0.0; private set
