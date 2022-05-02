@@ -1,8 +1,5 @@
 package com.asiankoala.koawalib.math
 
-import com.asiankoala.koawalib.logger.Logger
-import com.qualcomm.robotcore.util.Range
-import org.apache.commons.math3.linear.Array2DRowRealMatrix
 import kotlin.math.*
 
 const val EPSILON = 1e-6
@@ -14,7 +11,7 @@ val Double.radians get() = Math.toRadians(this)
 val Double.degrees get() = Math.toDegrees(this)
 
 fun absMax(a: Double, b: Double): Double {
-    return if(a.absoluteValue >= b.absoluteValue) a else b
+    return if (a.absoluteValue >= b.absoluteValue) a else b
 }
 
 fun clamp(x: Double, a: Double, b: Double): Double {
@@ -42,8 +39,8 @@ val Float.d get() = this.toDouble()
 val Double.angleWrap: Double
     get() {
         var wrapped = this
-        while(wrapped > PI) wrapped -= TAU
-        while(wrapped < -PI) wrapped += TAU
+        while (wrapped > PI) wrapped -= TAU
+        while (wrapped < -PI) wrapped += TAU
         return wrapped
     }
 
@@ -112,4 +109,3 @@ fun lineCircleIntersection(
     }
     return intersections.map { it + center }
 }
-

@@ -38,7 +38,7 @@ open class SequentialGroup(vararg commands: Command) : Command(), Group {
     }
 
     override fun end() {
-        if(idx in cmds.indices) cmds[idx].end()
+        if (idx in cmds.indices) cmds[idx].end()
         idx = -1
     }
 
@@ -48,6 +48,6 @@ open class SequentialGroup(vararg commands: Command) : Command(), Group {
     init {
         addCommands(*commands)
 
-        if(cmds.isEmpty()) Logger.logWarning("sequential group $name is empty")
+        if (cmds.isEmpty()) Logger.logWarning("sequential group $name is empty")
     }
 }

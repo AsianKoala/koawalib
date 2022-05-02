@@ -31,7 +31,7 @@ class KServo(name: String) : KDevice<Servo>(name) {
     var direction: Servo.Direction = Servo.Direction.FORWARD
         private set
 
-    val reverse : KServo
+    val reverse: KServo
         get() {
             direction = Servo.Direction.REVERSE
             return this

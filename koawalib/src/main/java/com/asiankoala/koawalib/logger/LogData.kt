@@ -12,7 +12,7 @@ internal data class LogData(
     val formattedMessage get() = "%-10s repeated %-10s %s".format(Logger.logCount, condenseCount, message)
     val printString
         get() = "${Logger.priorityList[priority]} \t $message".withColor(
-            when(priority) {
+            when (priority) {
                 Log.DEBUG -> Colors.ANSI_CYAN
                 Log.INFO -> Colors.ANSI_GREEN
                 else -> Colors.ANSI_PURPLE

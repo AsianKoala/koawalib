@@ -6,7 +6,7 @@ import kotlin.math.absoluteValue
 @Suppress("unused")
 class KAxis(
     private val axis: () -> Double,
-) : KButton({ axis.invoke().absoluteValue > DEFAULT_TRIGGER_THRESHOLD}), KDouble {
+) : KButton({ axis.invoke().absoluteValue > DEFAULT_TRIGGER_THRESHOLD }), KDouble {
     override fun invokeDouble(): Double {
         return axis.invoke()
     }

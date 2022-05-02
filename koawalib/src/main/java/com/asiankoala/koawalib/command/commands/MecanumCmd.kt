@@ -59,7 +59,7 @@ class MecanumCmd(
         val final = if (isTranslationFieldCentric) {
             val translationVector = Vector(xScaled, yScaled)
             val headingInvoked = heading.invoke()
-            val rotatedTranslation = translationVector.rotate(-heading.invoke() + if(alliance == Alliance.RED) 180.0.radians else 0.0)
+            val rotatedTranslation = translationVector.rotate(-heading.invoke() + if (alliance == Alliance.RED) 180.0.radians else 0.0)
 
             val turn = if (isHeadingFieldCentric && !headingInvoked.isNaN()) {
                 val stickAtan = rightStick.angle

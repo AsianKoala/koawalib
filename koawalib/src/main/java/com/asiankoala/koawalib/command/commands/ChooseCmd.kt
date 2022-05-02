@@ -8,7 +8,7 @@ package com.asiankoala.koawalib.command.commands
  */
 @Suppress("unused")
 class ChooseCmd(private val onTrue: Command, private val onFalse: Command, private val condition: () -> Boolean) : Command() {
-    private val selected by lazy { if(condition.invoke()) onTrue else onFalse }
+    private val selected by lazy { if (condition.invoke()) onTrue else onFalse }
 
     override fun initialize() {
         requirements.addAll(selected.requirements)
