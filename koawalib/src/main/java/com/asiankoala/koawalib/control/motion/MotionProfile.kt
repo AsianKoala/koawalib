@@ -1,5 +1,7 @@
 package com.asiankoala.koawalib.control.motion
 
+import com.asiankoala.koawalib.math.absMax
+import com.asiankoala.koawalib.math.absMin
 import kotlin.math.absoluteValue
 import kotlin.math.max
 import kotlin.math.sqrt
@@ -10,6 +12,7 @@ import kotlin.math.sqrt
  * @param endState end state of profile
  * @param constraints constraints the profile must obey
  */
+// TODO: test if works on real robot
 class MotionProfile(
     startState: MotionState,
     private val endState: MotionState,
@@ -49,11 +52,8 @@ class MotionProfile(
 
         if (cruiseTime < 0) {
             cruiseTime = 0.0
-            if(constraints.aMax.absoluteValue > constraints.dMax.absoluteValue) {
-                constraints.aMax = constraints.dMax.absoluteValue
-            } else {
-                constraints.dMax = constraints.aMax.absoluteValue
-            }
+            constraints.aMax = absMin(constraints.aMax, constraints.dMax)
+            constraints.dMax = constraints.aMax
             accelTime = sqrt(endState.x.absoluteValue / constraints.aMax.absoluteValue)
             deccelTime = sqrt(endState.x.absoluteValue / constraints.dMax.absoluteValue)
             val newAccelEndState = accelState.calculate(accelTime)

@@ -16,6 +16,4 @@ class SimpleComplexMotor(
 ) {
     override val calculateFeedforward: Double
         get() = 0.0
-
-    fun build(): SimpleComplexMotor = this
 }

@@ -16,6 +16,10 @@ fun absMax(a: Double, b: Double): Double {
     return if (a.absoluteValue >= b.absoluteValue) a else b
 }
 
+fun absMin(a: Double, b: Double): Double {
+    return if (a.absoluteValue <= b.absoluteValue) a else b
+}
+
 fun clamp(x: Double, a: Double, b: Double): Double {
     if (x < a) {
         return a
