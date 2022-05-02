@@ -4,6 +4,7 @@ import android.R
 import com.asiankoala.koawalib.math.d
 import com.asiankoala.koawalib.wpilib.Numbers.N1
 import org.checkerframework.checker.units.qual.C
+import org.ejml.MatrixDimensionException
 import org.ejml.dense.row.CommonOps_DDRM
 import org.ejml.dense.row.MatrixFeatures_DDRM
 import org.ejml.dense.row.NormOps_DDRM
@@ -11,8 +12,9 @@ import org.ejml.dense.row.factory.DecompositionFactory_DDRM
 import org.ejml.simple.SimpleMatrix
 import java.util.*
 
+
 @Suppress("unused")
-open class Matrix<R : Num, C : Num>(protected val storage: SimpleMatrix) {
+open class Matrix<R : Num, C : Num>(val storage: SimpleMatrix) {
     constructor(rows: Nat<R>, cols: Nat<C>) : this(SimpleMatrix(rows.getNum(), cols.getNum()))
     constructor(other: Matrix<R, C>) : this(other.storage.copy())
 
@@ -67,20 +69,40 @@ open class Matrix<R : Num, C : Num>(protected val storage: SimpleMatrix) {
         return Matrix(storage.solve(b.storage))
     }
 
-//    fun pow(exponent: Double): Matrix<R, C> {
-//        if (rows != cols) {
-//            throw MatrixDimensionException("Non-square matrices cannot be exponentiated! This matrix is $rows x $cols")
-//        }
-//        val toReturn: Matrix<R, C> =
-//            Matrix(SimpleMatrix(rows, cols))
-//        WPIMathJNI.exp(
-//            storage.ddrm.data,
-//            this.rows,
-//            exponent,
-//            storage.ddrm.data
-//        )
-//        return toReturn
-//    }
+    fun exp(): Matrix<R, C> {
+        if (this.getNumRows() !== this.getNumCols()) {
+            throw MatrixDimensionException(
+                "Non-square matrices cannot be exponentiated! "
+                        + "This matrix is "
+                        + this.getNumRows()
+                        + " x "
+                        + this.getNumCols()
+            )
+        }
+        val toReturn: Matrix<R, C> =
+            Matrix<Any?, Any?>(SimpleMatrix(this.getNumRows(), this.getNumCols()))
+        WPIMathJNI.exp(
+            this.m_storage.getDDRM().getData(),
+            this.getNumRows(),
+            toReturn.m_storage.getDDRM().getData()
+        )
+        return toReturn
+    }
+
+    fun pow(exponent: Double): Matrix<R, C> {
+        if (rows != cols) {
+            throw MatrixDimensionException("Non-square matrices cannot be exponentiated! This matrix is $rows x $cols")
+        }
+        val toReturn: Matrix<R, C> =
+            Matrix(SimpleMatrix(rows, cols))
+        WPIMathJNI.exp(
+            storage.ddrm.data,
+            this.rows,
+            exponent,
+            storage.ddrm.data
+        )
+        return toReturn
+    }
 
     fun elementPower(b: Double): Matrix<R, C> {
         return Matrix(storage.elementPower(b))
