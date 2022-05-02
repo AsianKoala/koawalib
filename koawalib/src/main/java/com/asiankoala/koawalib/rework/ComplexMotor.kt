@@ -1,44 +1,32 @@
 package com.asiankoala.koawalib.rework
 
-import com.asiankoala.koawalib.control.motion.MotionConstraints
 import com.asiankoala.koawalib.control.motion.MotionProfile
 import com.asiankoala.koawalib.control.motion.MotionState
 import com.asiankoala.koawalib.hardware.motor.KMotor
 import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.math.VOLTAGE_CONSTANT
-import com.asiankoala.koawalib.math.assertPositive
+import com.asiankoala.koawalib.math.cos
+import com.asiankoala.koawalib.math.epsilonNotEqual
 import com.asiankoala.koawalib.subsystem.odometry.KEncoder
 import com.qualcomm.robotcore.util.ElapsedTime
 import kotlin.math.absoluteValue
 import kotlin.math.sign
 
 @Suppress("unused")
-abstract class ComplexMotor(
-    settings: ComplexMotorSettings,
-    var kS: Double,
-    var kV: Double,
-    var kA: Double,
-    var constraints: MotionConstraints,
-    var allowedPositionError: Double,
-    var allowedVelocityError: Double = Double.POSITIVE_INFINITY,
-    var disabledPosition: Double? = null,
+class ComplexMotor(
+    val settings: ComplexMotorSettings,
 ) : KMotor(settings.name) {
     var output = 0.0; private set
     var voltage = 0.0; private set
-    var isCompletelyDisabled = false
 
     val encoder = KEncoder(this, settings.ticksPerUnit, settings.isRevEncoder)
     val controller = PIDController(settings._kP, settings._kI, settings._kD)
     var setpointMotionState: MotionState = MotionState(); private set
     var pidOutput = 0.0; private set
-    var isPIDEnabled = false
 
     var batteryScaledOutput = 0.0; private set
-    var isUsingVoltageFF = false
     private val voltageSensor = hardwareMap.voltageSensor.iterator().next()
-    abstract val calculateFeedforward: Double
     var ffOutput = 0.0; private set
-    var isFFEnabled = false
 
     var motionTimer = ElapsedTime(); private set
     var currentMotionProfile: MotionProfile? = null; private set
@@ -48,19 +36,19 @@ abstract class ComplexMotor(
 
     private fun isInDisabledZone(): Boolean {
         // if we don't have a disabled position or still in motion
-        if (disabledPosition == null) return false
+        if (settings.disabledPosition == null) return false
         // if our setpoint isn't in the deadzone
-        if ((setpointMotionState.x - disabledPosition!!).absoluteValue > allowedPositionError) return false
+        if ((setpointMotionState.x - settings.disabledPosition!!).absoluteValue > settings.allowedPositionError) return false
 
-        return isAtTarget(disabledPosition!!)
+        return isAtTarget(settings.disabledPosition!!)
     }
 
     fun isAtTarget(target: Double = finalTargetMotionState!!.x): Boolean {
-        return (encoder.pos - target).absoluteValue < allowedPositionError
+        return (encoder.pos - target).absoluteValue < settings.allowedPositionError
     }
 
     fun isVelocityAtTarget(target: Double = finalTargetMotionState!!.v): Boolean {
-        return (encoder.vel - target).absoluteValue < allowedVelocityError
+        return (encoder.vel - target).absoluteValue < settings.allowedVelocityError
     }
 
     fun isCompletelyFinished(): Boolean {
@@ -69,13 +57,13 @@ abstract class ComplexMotor(
 
     val enableVoltageFF: ComplexMotor
         get() {
-            isUsingVoltageFF = true
+            settings.isUsingVoltageFF = true
             return this
         }
 
     val disableVoltageFF: ComplexMotor
         get() {
-            isUsingVoltageFF = false
+            settings.isUsingVoltageFF = false
             return this
         }
 
@@ -84,7 +72,7 @@ abstract class ComplexMotor(
         motionTimer.reset()
         val startState = MotionState(encoder.pos, encoder.vel)
         val endState = MotionState(x, v)
-        val profile = MotionProfile(startState, endState, constraints)
+        val profile = MotionProfile(startState, endState, settings.constraints)
 
         currentMotionProfile = profile
         currentMotionState = startState
@@ -117,21 +105,22 @@ abstract class ComplexMotor(
 
         pidOutput = controller.update(encoder.pos)
 
-        val rawFFOutput = kS * setpointMotionState.v.sign +
-            kV * setpointMotionState.v +
-            kA * setpointMotionState.a +
-            calculateFeedforward
+        val rawFFOutput = settings.kS * setpointMotionState.v.sign +
+                settings.kV * setpointMotionState.v +
+                settings.kA * setpointMotionState.a +
+                settings.kG +
+                if(settings.kCos epsilonNotEqual 0.0) settings.kCos * encoder.pos.cos else 0.0
 
         ffOutput = rawFFOutput / VOLTAGE_CONSTANT
 
-        val realPIDOutput = if (isPIDEnabled) pidOutput else 0.0
-        val realFFOutput = if (isFFEnabled) ffOutput else 0.0
+        val realPIDOutput = if (settings.isPIDEnabled) pidOutput else 0.0
+        val realFFOutput = if (settings.isFFEnabled) ffOutput else 0.0
 
         output = realPIDOutput + realFFOutput
 
         super.power = when {
-            isCompletelyDisabled || isInDisabledZone() -> 0.0
-            isUsingVoltageFF -> {
+            settings.isCompletelyDisabled || isInDisabledZone() -> 0.0
+            settings.isUsingVoltageFF -> {
                 voltage = voltageSensor.voltage
                 batteryScaledOutput = output * (12.0 / voltage)
                 batteryScaledOutput
@@ -139,16 +128,5 @@ abstract class ComplexMotor(
 
             else -> output
         }
-    }
-
-    init {
-        assertPositive(kS)
-        assertPositive(kV)
-        assertPositive(kA)
-        assertPositive(constraints.vMax)
-        assertPositive(constraints.aMax)
-        assertPositive(constraints.dMax)
-        assertPositive(allowedPositionError)
-        assertPositive((allowedVelocityError))
     }
 }
