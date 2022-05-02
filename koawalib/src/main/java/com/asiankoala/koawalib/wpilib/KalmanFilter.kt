@@ -1,18 +1,15 @@
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
-package edu.wpi.first.math.estimator
+package com.asiankoala.koawalib.wpilib
 
-import com.asiankoala.koawalib.wpilib.Discretization.discretizeAQTaylor
-import com.asiankoala.koawalib.wpilib.Discretization.discretizeR
-import com.asiankoala.koawalib.wpilib.Nat
-import com.asiankoala.koawalib.wpilib.Num
+import com.asiankoala.koawalib.wpilib.system.Discretization.discretizeAQTaylor
+import com.asiankoala.koawalib.wpilib.system.Discretization.discretizeR
 import com.asiankoala.koawalib.wpilib.Numbers.N1
+import com.asiankoala.koawalib.wpilib.system.LinearSystem
 import edu.wpi.first.math.Drake
 import edu.wpi.first.math.MathSharedStore
-import edu.wpi.first.math.Matrix
 import edu.wpi.first.math.StateSpaceUtil
-import edu.wpi.first.math.system.LinearSystem
 
 /**
  * A Kalman filter combines predictions from a model and measurements to give an estimate of the
@@ -31,15 +28,15 @@ import edu.wpi.first.math.system.LinearSystem
  * https://file.tavsys.net/control/controls-engineering-in-frc.pdf chapter 9 "Stochastic control
  * theory".
  */
-class KalmanFilter<States : Num?, Inputs : Num?, Outputs : Num?>(
+class KalmanFilter<States : Num, Inputs : Num, Outputs : Num>(
     private val m_states: Nat<States>,
     outputs: Nat<Outputs>?,
     plant: LinearSystem<States, Inputs, Outputs>,
-    stateStdDevs: Matrix<States, N1?>?,
-    measurementStdDevs: Matrix<Outputs, N1?>?,
+    stateStdDevs: Matrix<States, N1>,
+    measurementStdDevs: Matrix<Outputs, N1>,
     dtSeconds: Double
 ) {
-    private val m_plant: LinearSystem<States, Inputs, Outputs>
+    private val m_plant: LinearSystem<States, Inputs, Outputs> = plant
 
     /** The steady-state Kalman gain matrix.  */
     private val m_K: Matrix<States, Outputs>
@@ -66,7 +63,7 @@ class KalmanFilter<States : Num?, Inputs : Num?, Outputs : Num?>(
      * @return the element (i, j) of the steady-state Kalman gain matrix K.
      */
     fun getK(row: Int, col: Int): Double {
-        return m_K.get(row, col)
+        return m_K[row, col]
     }
 
     /**
@@ -76,7 +73,7 @@ class KalmanFilter<States : Num?, Inputs : Num?, Outputs : Num?>(
      * @param value Value for element of x-hat.
      */
     fun setXhat(row: Int, value: Double) {
-        m_xHat.set(row, 0, value)
+        m_xHat!!.set(row, 0, value)
     }
     /**
      * Returns the state estimate x-hat.
@@ -101,7 +98,7 @@ class KalmanFilter<States : Num?, Inputs : Num?, Outputs : Num?>(
      * @return the state estimate x-hat at i.
      */
     fun getXhat(row: Int): Double {
-        return m_xHat.get(row, 0)
+        return m_xHat!!.get(row, 0)
     }
 
     /**
@@ -110,8 +107,8 @@ class KalmanFilter<States : Num?, Inputs : Num?, Outputs : Num?>(
      * @param u New control input from controller.
      * @param dtSeconds Timestep for prediction.
      */
-    fun predict(u: Matrix<Inputs, N1?>?, dtSeconds: Double) {
-        m_xHat = m_plant.calculateX(m_xHat, u, dtSeconds)
+    fun predict(u: Matrix<Inputs, N1>, dtSeconds: Double) {
+        m_xHat = m_plant.calculateX(m_xHat!!, u, dtSeconds)
     }
 
     /**
@@ -138,7 +135,6 @@ class KalmanFilter<States : Num?, Inputs : Num?, Outputs : Num?>(
      * @param dtSeconds Nominal discretization timestep.
      */
     init {
-        m_plant = plant
         val contQ: Unit = StateSpaceUtil.makeCovarianceMatrix(m_states, stateStdDevs)
         val contR: Unit = StateSpaceUtil.makeCovarianceMatrix(outputs, measurementStdDevs)
         val (discA, discQ) = discretizeAQTaylor<States>(plant.getA(), contQ, dtSeconds)

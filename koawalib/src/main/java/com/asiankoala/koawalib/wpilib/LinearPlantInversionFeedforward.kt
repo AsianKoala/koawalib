@@ -3,7 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 package edu.wpi.first.math.controller
 
-import com.asiankoala.koawalib.wpilib.Discretization.discretizeAB
+import com.asiankoala.koawalib.wpilib.system.Discretization.discretizeAB
 import com.asiankoala.koawalib.wpilib.Num
 import com.asiankoala.koawalib.wpilib.Numbers.N1
 import edu.wpi.first.math.Matrix

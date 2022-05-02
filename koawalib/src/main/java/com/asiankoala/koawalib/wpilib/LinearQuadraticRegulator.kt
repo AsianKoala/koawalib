@@ -3,7 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 package edu.wpi.first.math.controller
 
-import com.asiankoala.koawalib.wpilib.Discretization.discretizeAB
+import com.asiankoala.koawalib.wpilib.system.Discretization.discretizeAB
 import com.asiankoala.koawalib.wpilib.Nat
 import com.asiankoala.koawalib.wpilib.Num
 import com.asiankoala.koawalib.wpilib.Numbers.N1
@@ -258,10 +258,10 @@ class LinearQuadraticRegulator<States : Num?, Inputs : Num?, Outputs : Num?> {
      * @param dtSeconds Discretization timestep in seconds.
      * @param inputDelaySeconds Input time delay in seconds.
      */
-    fun latencyCompensate(
-        plant: LinearSystem<States, Inputs, Outputs>, dtSeconds: Double, inputDelaySeconds: Double
-    ) {
-        val (discA, discB) = discretizeAB<States, Inputs>(plant.getA(), plant.getB(), dtSeconds)
-        m_K = m_K.times(discA.minus(discB.times<Num>(m_K)).pow(inputDelaySeconds / dtSeconds))
-    }
+//    fun latencyCompensate(
+//        plant: LinearSystem<States, Inputs, Outputs>, dtSeconds: Double, inputDelaySeconds: Double
+//    ) {
+//        val (discA, discB) = discretizeAB<States, Inputs>(plant.getA(), plant.getB(), dtSeconds)
+//        m_K = m_K.times(discA.minus(discB.times<Num>(m_K)).pow(inputDelaySeconds / dtSeconds))
+//    }
 }

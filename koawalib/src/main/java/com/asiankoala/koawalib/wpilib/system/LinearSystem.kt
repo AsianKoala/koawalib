@@ -1,8 +1,10 @@
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
-package com.asiankoala.koawalib.wpilib
+package com.asiankoala.koawalib.wpilib.system
 
+import com.asiankoala.koawalib.wpilib.Matrix
+import com.asiankoala.koawalib.wpilib.Num
 import com.asiankoala.koawalib.wpilib.Numbers.N1
 import kotlin.Int
 import kotlin.String
@@ -115,9 +117,9 @@ class LinearSystem<States : Num, Inputs : Num, Outputs : Num>(
      * @return the updated x.
      */
     fun calculateX(
-        x: Matrix<States, N1?>?, clampedU: Matrix<Inputs, N1?>?, dtSeconds: kotlin.Double
+        x: Matrix<States, N1>, clampedU: Matrix<Inputs, N1>, dtSeconds: kotlin.Double
     ): Matrix<States, N1> {
-        val discABpair: Unit = Discretization.discretizeAB(m_A, m_B, dtSeconds)
+        val discABpair = Discretization.discretizeAB(m_A, m_B, dtSeconds)
         return discABpair.getFirst().times(x).plus(discABpair.getSecond().times(clampedU))
     }
 

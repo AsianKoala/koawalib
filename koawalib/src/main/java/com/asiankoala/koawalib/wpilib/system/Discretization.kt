@@ -1,8 +1,10 @@
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
-package com.asiankoala.koawalib.wpilib
+package com.asiankoala.koawalib.wpilib.system
 
+import com.asiankoala.koawalib.wpilib.Matrix
+import com.asiankoala.koawalib.wpilib.Num
 import org.ejml.simple.SimpleMatrix
 
 object Discretization {
@@ -33,18 +35,18 @@ object Discretization {
     fun <States : Num, Inputs : Num> discretizeAB(
         contA: Matrix<States, States>, contB: Matrix<States, Inputs>, dtSeconds: Double
     ): Pair<Matrix<States, States>, Matrix<States, Inputs>> {
-        val scaledA: Unit = contA.times(dtSeconds)
-        val scaledB: Unit = contB.times(dtSeconds)
-        val states: Int = contA.getNumRows()
-        val inputs: Int = contB.getNumCols()
+        val scaledA = contA.times(dtSeconds)
+        val scaledB = contB.times(dtSeconds)
+        val states = contA.rows
+        val inputs = contB.cols
         val M = Matrix(SimpleMatrix(states + inputs, states + inputs))
         M.assignBlock(0, 0, scaledA)
-        M.assignBlock(0, scaledA.getNumCols(), scaledB)
+        M.assignBlock(0, scaledA.cols, scaledB)
         val phi: Unit = M.exp()
         val discA: Matrix<States, States> = Matrix<States, States>(SimpleMatrix(states, states))
         val discB: Matrix<States, Inputs> = Matrix<States, Inputs>(SimpleMatrix(states, inputs))
         discA.extractFrom(0, 0, phi)
-        discB.extractFrom(0, contB.getNumRows(), phi)
+        discB.extractFrom(0, contB.rows, phi)
         return Pair(discA, discB)
     }
 
