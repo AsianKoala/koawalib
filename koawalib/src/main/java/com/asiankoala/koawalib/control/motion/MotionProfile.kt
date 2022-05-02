@@ -47,10 +47,13 @@ class MotionProfile(
         cruiseTime =
             (deltaX - accelState.integrate(accelTime) - deccelState.integrate(deccelTime)) / constraints.vMax
 
-        // TOOD()
         if (cruiseTime < 0) {
-            constraints.aMax = max(constraints.aMax, constraints.dMax)
-            constraints.dMax = constraints.aMax
+            cruiseTime = 0.0
+            if(constraints.aMax.absoluteValue > constraints.dMax.absoluteValue) {
+                constraints.aMax = constraints.dMax.absoluteValue
+            } else {
+                constraints.dMax = constraints.aMax.absoluteValue
+            }
             accelTime = sqrt(endState.x.absoluteValue / constraints.aMax.absoluteValue)
             deccelTime = sqrt(endState.x.absoluteValue / constraints.dMax.absoluteValue)
             val newAccelEndState = accelState.calculate(accelTime)
