@@ -33,9 +33,9 @@ data class ComplexMotorSettings(
         assertPositive(kS)
         assertPositive(kV)
         assertPositive(kA)
-        assertPositive(constraints.vMax)
-        assertPositive(constraints.aMax)
-        assertPositive(constraints.dMax)
+        assertPositive(constraints.cruiseVel)
+        assertPositive(constraints.accel)
+        assertPositive(constraints.deccel)
         assertPositive(allowedPositionError)
         assertPositive((allowedVelocityError))
     }

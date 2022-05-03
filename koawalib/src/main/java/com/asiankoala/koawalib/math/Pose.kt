@@ -50,6 +50,6 @@ class Pose(
      * String of x, y, and heading in degrees
      */
     override fun toString(): String {
-        return String.format("%.2f, %.2f, %.2f", x, y, heading.degrees)
+        return String.format("%.2f, %.2f, %.2f°", x, y, heading.degrees)
     }
 }

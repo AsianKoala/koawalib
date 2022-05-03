@@ -90,7 +90,7 @@ class ComplexMotor(
             when {
                 currentMotionProfile == null -> Logger.logError("MUST BE FOLLOWING MOTION PROFILE")
 
-                secIntoProfile > currentMotionProfile!!.profileDuration -> {
+                secIntoProfile > currentMotionProfile!!.duration -> {
                     isFollowingProfile = false
                     currentMotionProfile = null
                     setpointMotionState = finalTargetMotionState!!

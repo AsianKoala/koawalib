@@ -3,6 +3,7 @@ package com.asiankoala.koawalib.gvf
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.geometry.Vector2d
 import com.acmerobotics.roadrunner.path.Path
+import com.asiankoala.koawalib.control.motion.MotionProfile
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.Vector
 import com.asiankoala.koawalib.math.angleWrap
@@ -24,8 +25,9 @@ import kotlin.math.sign
  *  @param errorMap error map to transform normal displacement error
  *  @property isFinished path finish state
  */
-class GVFController(
+class MPGVFController(
     private val path: Path,
+    private val profile: MotionProfile,
     private val kN: Double,
     private val kOmega: Double,
     private val kTheta: Double,
@@ -49,6 +51,8 @@ class GVFController(
         val error = displacementVec.norm() * orientation.sign
         return tangentVec - normalVec * kN * errorMap.invoke(error)
     }
+
+//    private fun velAt(pose: Pose2d): Vector2
 
     /**
      * @param currPose current pose of robot
@@ -82,6 +86,9 @@ class GVFController(
         translationalPower /= max(1.0, thetaWeight)
 
         val rotated = translationalPower.rotated(PI / 2.0 - pose.heading).toVec()
-        return Pose(rotated, angularOutput)
+
+
+
+        TODO()
     }
 }

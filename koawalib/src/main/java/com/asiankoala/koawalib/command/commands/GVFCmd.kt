@@ -18,7 +18,7 @@ class GVFCmd(
     private val controller = GVFController(path, kN, kOmega, kTheta, kF, epsilon, errorMap)
 
     override fun execute() {
-        drive.powers = controller.update(drive.pose).second
+        drive.powers = controller.update(drive.pose)
     }
 
     override fun end() {

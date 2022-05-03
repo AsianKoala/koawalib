@@ -11,22 +11,20 @@ import kotlin.math.pow
  * @param a acceleration of system
  */
 data class MotionState(
-    val x: Double = 0.0,
-    val v: Double = 0.0,
-    val a: Double = 0.0
+    var x: Double = 0.0,
+    var v: Double = 0.0,
+    var a: Double = 0.0
 ) {
     /**
      * Calculate a new motion state by integrating constant acceleration
-     * @param dt time
+     * @param t time
      */
-    fun calculate(dt: Double): MotionState {
-        return MotionState(x + v * dt + 0.5 * a * dt.pow(2), v + a * dt, a)
-    }
+    operator fun get(t: Double) = MotionState(x + v * t + 0.5 * a * t.pow(2), v + a * t, a)
 
     /**
      * Take a definite integral of the motion state to calculate distance
      */
-    fun integrate(dt: Double): Double {
-        return (v * dt + 0.5 * a * dt.pow(2)).absoluteValue
+    fun integrate(t: Double): Double {
+        return (v * t + 0.5 * a * t.pow(2)).absoluteValue
     }
 }
