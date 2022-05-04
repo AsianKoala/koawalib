@@ -68,33 +68,12 @@ val Double.angleWrap: Double
         return wrapped
     }
 
-fun clipToLine(start: Vector, end: Vector, robot: Vector): Vector {
-    var startX = start.x
-    var startY = start.y
-
-    if (start.x == end.x)
-        startX += 0.001
-
-    if (start.y == end.y)
-        startY += 0.001
-
-    val mStart = Vector(startX, startY)
-
-    val m1 = (end.y - mStart.y) / (end.x - mStart.x)
-    val m2 = -1.0 / m1
-    val xClip = (-m2 * robot.x + robot.y + m1 * mStart.x - mStart.y) / (m1 - m2)
-    val yClip = m1 * (xClip - mStart.x) + mStart.y
-    return Vector(xClip, yClip)
+fun project(v: Vector, onto: Vector): Vector {
+    return onto * ((v dot onto) / (onto dot onto))
 }
 
-fun extendLine(firstVector: Vector, secondVector: Vector, distance: Double): Vector {
-    val lineAngle = (secondVector - firstVector).angle
-    val length = secondVector.dist(firstVector)
-    val extendedLineLength = length + distance
-
-    val extendedX = lineAngle.cos * extendedLineLength + firstVector.x
-    val extendedY = lineAngle.sin * extendedLineLength + firstVector.y
-    return Vector(extendedX, extendedY)
+fun extendLine(start: Vector, end: Vector, d: Double): Vector {
+    return end + Vector(d).rotate((end - start).angle)
 }
 
 /**
@@ -109,19 +88,20 @@ fun lineCircleIntersection(
     center: Vector,
     startVector: Vector,
     endVector: Vector,
-    radius: Double
+    r: Double
 ): List<Vector> {
     val start = startVector - center
     val end = endVector - center
     val deltas = end - start
-    val d = start.x * end.y - end.x * start.y
-    val discriminant = radius.pow(2) * deltas.norm.pow(2) - d.pow(2)
+    val dr = deltas.norm
+    val D = start cross end
+    val discriminant = r * r * dr * dr - D * D
 
     // discriminant = 0 for 1 intersection, >0 for 2
     val intersections = ArrayList<Vector>()
-    val xLeft = d * deltas.y
-    val yLeft = -d * deltas.x
-    val xRight: Double = stupidSign(deltas.y) * deltas.x * sqrt(discriminant)
+    val xLeft = D * deltas.y
+    val yLeft = -D * deltas.x
+    val xRight = stupidSign(deltas.y) * deltas.x * sqrt(discriminant)
     val yRight = deltas.y.absoluteValue * sqrt(discriminant)
     val div = deltas.norm.pow(2)
     if (discriminant == 0.0) {
