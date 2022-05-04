@@ -74,6 +74,4 @@ object VectorFun {
         val bottomRight = SimpleMatrix(2,2,true, br)
         return SimpleMatrix(2,2,true, doubleArrayOf(topLeft.determinant(), topRight.determinant(), bottomLeft.determinant(), bottomRight.determinant())).determinant()
     }
-
-
 }
