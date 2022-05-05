@@ -39,17 +39,17 @@ fun cubicScaling(k: Double, x: Double): Double {
 }
 
 fun inputModulus(input: Double, minimumInput: Double, maximumInput: Double): Double {
-    var input = input
+    var inp = input
     val modulus = maximumInput - minimumInput
 
     // Wrap input if it's above the maximum input
-    val numMax = ((input - minimumInput) / modulus).toInt()
-    input -= numMax * modulus
+    val numMax = ((inp - minimumInput) / modulus).toInt()
+    inp -= numMax * modulus
 
     // Wrap input if it's below the minimum input
-    val numMin = ((input - maximumInput) / modulus).toInt()
-    input -= numMin * modulus
-    return input
+    val numMin = ((inp - maximumInput) / modulus).toInt()
+    inp -= numMin * modulus
+    return inp
 }
 
 fun stupidSign(a: Double): Int = if (a > 0) 1 else -1

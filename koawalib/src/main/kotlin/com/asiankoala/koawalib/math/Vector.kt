@@ -18,26 +18,14 @@ data class Vector(
     val norm get() = hypot(x, y)
     val angle get() = atan2(y, x)
 
-    infix fun dot(other: Vector): Double {
-        return other.x * this.x + other.y * this.y
-    }
-
-    infix fun cross(other: Vector): Double {
-        return x * other.y - y * other.x
-    }
+    infix fun dot(other: Vector): Double = other.x * this.x + other.y * this.y
+    infix fun cross(other: Vector): Double = x * other.y - y * other.x
+    infix fun dist(other: Vector): Double = (this - other).norm
 
     fun rotate(angle: Double) = Vector(
         x * angle.cos - y * angle.sin,
         x * angle.sin + y * angle.cos
     )
-
-    fun dist(other: Vector): Double {
-        return sqrt(this dot other)
-    }
-
-    fun vec(): Vector2d {
-        return Vector2d(x, y)
-    }
 
     operator fun plus(vector: Vector) = Vector(x + vector.x, y + vector.y)
     operator fun minus(vector: Vector) = Vector(x - vector.x, y - vector.y)

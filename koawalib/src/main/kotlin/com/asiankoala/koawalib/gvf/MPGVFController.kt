@@ -89,6 +89,6 @@ class MPGVFController(
 
 
 
-        TODO()
+        return Pose(rotated, angularOutput)
     }
 }

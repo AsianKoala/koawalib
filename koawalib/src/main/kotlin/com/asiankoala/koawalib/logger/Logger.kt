@@ -84,17 +84,19 @@ object Logger {
      * @param message string to add
      */
     fun addTelemetryLine(message: String) {
-        if (telemetry == null) {
-            val nullStr = "LogManager telemetry is null"
-            logError(nullStr)
-        } else {
-            telemetry!!.addLine(message)
-            if (config.isLoggingTelemetry) {
-                logDebug(message)
-            }
+        if(config.isTelemetryEnabled) {
+            if (telemetry == null) {
+                val nullStr = "LogManager telemetry is null"
+                logError(nullStr)
+            } else {
+                telemetry!!.addLine(message)
+                if (config.isLoggingTelemetry) {
+                    logDebug(message)
+                }
 
-            if (config.isDashboardEnabled) {
-                packet.addLine(message)
+                if (config.isDashboardEnabled) {
+                    packet.addLine(message)
+                }
             }
         }
     }

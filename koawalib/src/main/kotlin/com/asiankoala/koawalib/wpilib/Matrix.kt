@@ -1,9 +1,7 @@
 package com.asiankoala.koawalib.wpilib
 
-import android.R
 import com.asiankoala.koawalib.math.d
 import com.asiankoala.koawalib.wpilib.Numbers.N1
-import org.checkerframework.checker.units.qual.C
 import org.ejml.dense.row.CommonOps_DDRM
 import org.ejml.dense.row.MatrixFeatures_DDRM
 import org.ejml.dense.row.NormOps_DDRM
