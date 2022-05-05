@@ -8,14 +8,6 @@ import com.asiankoala.koawalib.subsystem.Subsystem
  * @param requirements subsystem requirements
  */
 class LoopCmd(
-    private val action: () -> Unit = {},
+    private val action: () -> Unit,
     vararg requirements: Subsystem
-) : Cmd() {
-    override fun execute() {
-        action.invoke()
-    }
-
-    init {
-        addRequirements(*requirements)
-    }
-}
+) : LoopUntilCmd(action, { false }, *requirements)
