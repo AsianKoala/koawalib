@@ -2,7 +2,7 @@ package com.asiankoala.koawalib.gamepad
 
 import com.asiankoala.koawalib.gamepad.functionality.Button
 import com.asiankoala.koawalib.util.Periodic
-import com.asiankoala.koawalib.wpilib.filter.Debouncer
+import com.asiankoala.koawalib.wpilib.Debouncer
 
 class KTrigger(private val triggerState: () -> Double) : Button(), Periodic {
     private var threshold = 0.3
