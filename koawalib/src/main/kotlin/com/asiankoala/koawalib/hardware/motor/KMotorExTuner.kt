@@ -1,4 +1,4 @@
-package com.asiankoala.koawalib.rework
+package com.asiankoala.koawalib.hardware.motor
 
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.config.Config
@@ -24,8 +24,9 @@ import com.asiankoala.koawalib.gamepad.functionality.Button
  * 8. Now tune your PID gains with the PID Tuner. If you choose to change your motion constraints, you may need to revisit this opmode.
  */
 @Config
-abstract class ComplexMotorTuner : KOpMode() {
-    abstract val motor: ComplexMotor
+@Suppress("unused")
+abstract class KMotorExTuner : KOpMode() {
+    abstract val motor: KMotorEx
     abstract val zeroPosition: Double
     abstract val toTargetButton: Button
     abstract val toHomeButton: Button

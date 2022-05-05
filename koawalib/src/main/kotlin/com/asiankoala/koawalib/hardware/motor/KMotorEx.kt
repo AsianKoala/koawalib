@@ -1,215 +1,145 @@
 package com.asiankoala.koawalib.hardware.motor
 
-import com.acmerobotics.roadrunner.control.PIDFController
-import com.acmerobotics.roadrunner.profile.MotionProfile
-import com.acmerobotics.roadrunner.profile.MotionProfileGenerator
-import com.acmerobotics.roadrunner.profile.MotionState
-import com.asiankoala.koawalib.command.KScheduler
-import com.asiankoala.koawalib.command.commands.LoopCmd
-import com.asiankoala.koawalib.control.FeedforwardConstants
-import com.asiankoala.koawalib.control.MotorControlType
-import com.asiankoala.koawalib.control.PIDConstants
+import com.asiankoala.koawalib.control.PIDController
+import com.asiankoala.koawalib.control.motion.MotionProfile
+import com.asiankoala.koawalib.control.motion.MotionState
 import com.asiankoala.koawalib.logger.Logger
+import com.asiankoala.koawalib.math.VOLTAGE_CONSTANT
 import com.asiankoala.koawalib.math.cos
+import com.asiankoala.koawalib.math.epsilonNotEqual
 import com.asiankoala.koawalib.subsystem.odometry.KEncoder
 import com.qualcomm.robotcore.util.ElapsedTime
 import kotlin.math.absoluteValue
+import kotlin.math.sign
 
-/**
- * Extended motor implementation. Supports open-loop control, PID+feedforward, and motion profiling
- * @see KMotorExConfig
- */
 @Suppress("unused")
-class KMotorEx(val config: KMotorExConfig) : KMotor(config.name) {
-    val encoder = KEncoder(this, config.ticksPerUnit, config.isRevEncoder)
+class KMotorEx(
+    val settings: KMotorExSettings,
+) : KMotor(settings.name) {
+    var output = 0.0; private set
+    var voltage = 0.0; private set
 
-    private var controller = PIDFController(
-        config.pid.asCoeffs,
-        config.ff.kV,
-        config.ff.kA,
-        config.ff.kStatic,
-        config.ff.kF
-    )
+    val encoder = KEncoder(this, settings.ticksPerUnit, settings.isRevEncoder)
+    val controller = PIDController(settings._kP, settings._kI, settings._kD)
+    var pidOutput = 0.0; private set
 
-    private var output = 0.0
-    private var motionTimer = ElapsedTime()
-    private var currentMotionProfile: MotionProfile? = null
-    private var currentMotionState: MotionState? = null
-    private var isFollowingProfile = false
+    var batteryScaledOutput = 0.0; private set
+    private val voltageSensor = hardwareMap.voltageSensor.iterator().next()
+    var ffOutput = 0.0; private set
 
-    /**
-     * Return if abs(error) < position epsilon
-     */
-    val isAtTarget: Boolean
+    var motionTimer = ElapsedTime(); private set
+    var currentMotionProfile: MotionProfile? = null; private set
+    var setpointMotionState: MotionState = MotionState(); private set
+    var currentMotionState: MotionState? = null; private set
+    var finalTargetMotionState: MotionState? = null; private set
+    var isFollowingProfile = false; private set
+
+    private fun isInDisabledZone(): Boolean {
+        // if we don't have a disabled position or still in motion
+        if (settings.disabledPosition == null) return false
+        // if our setpoint isn't in the deadzone
+        if ((setpointMotionState.x - settings.disabledPosition!!).absoluteValue > settings.allowedPositionError) return false
+
+        return isAtTarget(settings.disabledPosition!!)
+    }
+
+    fun isAtTarget(target: Double = finalTargetMotionState!!.x): Boolean {
+        return (encoder.pos - target).absoluteValue < settings.allowedPositionError
+    }
+
+    fun isVelocityAtTarget(target: Double = finalTargetMotionState!!.v): Boolean {
+        return (encoder.vel - target).absoluteValue < settings.allowedVelocityError
+    }
+
+    fun isCompletelyFinished(): Boolean {
+        return !isFollowingProfile && isAtTarget() && isVelocityAtTarget()
+    }
+
+    val enableVoltageFF: KMotorEx
         get() {
-            return (encoder.pos - controller.targetPosition).absoluteValue < config.positionEpsilon
+            settings.isUsingVoltageFF = true
+            return this
         }
 
-    private fun isHomed(): Boolean {
-        val hasHomePosition = !config.homePositionToDisable.isNaN()
-        val isTargetingHomePosition = (controller.targetPosition - config.homePositionToDisable).absoluteValue < config.positionEpsilon
-        val isAtHomePosition = (config.homePositionToDisable - encoder.pos).absoluteValue < config.positionEpsilon
-        return hasHomePosition && isTargetingHomePosition && isAtHomePosition
+    val disableVoltageFF: KMotorEx
+        get() {
+            settings.isUsingVoltageFF = false
+            return this
+        }
+
+    fun setTarget(x: Double, v: Double = 0.0) {
+        controller.reset()
+        motionTimer.reset()
+
+        if(settings.constraints == null) {
+            settings.isMotionProfiled = false
+            isFollowingProfile = false
+            finalTargetMotionState = MotionState(x, 0.0, 0.0)
+        } else {
+            val startState = MotionState(encoder.pos, encoder.vel)
+            val endState = MotionState(x, v)
+            val profile = MotionProfile(startState, endState, settings.constraints!!)
+
+            currentMotionProfile = profile
+            currentMotionState = startState
+            finalTargetMotionState = endState
+            isFollowingProfile = true
+        }
     }
 
-    private fun PIDFController.targetMotionState(state: MotionState) {
-        targetPosition = state.x
-        targetVelocity = state.v
-        targetAcceleration = state.a
-    }
-
-    private fun getControllerOutput(): Double {
-        return controller.update(encoder.pos) +
-            config.ff.kCos * controller.targetPosition.cos +
-            config.ff.kTargetF(controller.targetPosition) +
-            config.ff.kG
-    }
-
-    internal fun update() {
+    fun update() {
         encoder.update()
 
-        if (config.controlType != MotorControlType.OPEN_LOOP) {
+        if (isFollowingProfile) {
+            if(settings.isMotionProfiled) {
+                val secIntoProfile = motionTimer.seconds()
 
-            if (config.controlType == MotorControlType.MOTION_PROFILE && isFollowingProfile) {
                 when {
-                    currentMotionProfile == null -> Logger.logError("MUST BE FOLLOWING A MOTION PROFILE !!!!")
+                    currentMotionProfile == null -> Logger.logError("MUST BE FOLLOWING MOTION PROFILE")
 
-                    motionTimer.seconds() > currentMotionProfile!!.duration() -> {
+                    secIntoProfile > currentMotionProfile!!.duration -> {
                         isFollowingProfile = false
                         currentMotionProfile = null
-                        currentMotionState = null
+                        setpointMotionState = finalTargetMotionState!!
                     }
 
                     else -> {
-                        currentMotionState = currentMotionProfile!![motionTimer.seconds()]
-                        controller.targetMotionState(currentMotionState!!)
+                        setpointMotionState = currentMotionProfile!![secIntoProfile]
+                        controller.target = setpointMotionState.x
+                        currentMotionState = MotionState(encoder.pos, encoder.vel, setpointMotionState.a)
                     }
                 }
-            }
-
-            output = if (isHomed()) {
-                0.0
             } else {
-                getControllerOutput()
+                controller.target = finalTargetMotionState!!.x
+                currentMotionState = MotionState(encoder.pos, encoder.vel, encoder.accel)
             }
         }
 
-        Logger.addTelemetryData("$deviceName output power", output)
-        this.power = output
-    }
 
-    /**
-     * Set PID controller target
-     * @param target target setpoint of the pid controller
-     */
-    fun setPIDTarget(target: Double) {
-        controller.reset()
-        controller.targetPosition = target
-    }
+        pidOutput = controller.update(encoder.pos)
 
-    /**
-     * Follow a motion profile
-     * @param motionProfile motion profile to follow
-     */
-    fun followMotionProfile(motionProfile: MotionProfile) {
-        currentMotionProfile = motionProfile
-        isFollowingProfile = true
-        controller.reset()
-        motionTimer.reset()
-    }
+        val rawFFOutput = settings.kS * setpointMotionState.v.sign +
+                settings.kV * setpointMotionState.v +
+                settings.kA * setpointMotionState.a +
+                settings.kG +
+                if(settings.kCos epsilonNotEqual 0.0) settings.kCos * encoder.pos.cos else 0.0
 
-    /**
-     * Follow a motion profile created from a start and end state
-     * @param startState start state of profile
-     * @param endState end state of the profile
-     */
-    fun followMotionProfile(startState: MotionState, endState: MotionState) {
-        val motionProfile = MotionProfileGenerator.generateSimpleMotionProfile(
-            startState,
-            endState,
-            config.maxVelocity,
-            config.maxAcceleration,
-            0.0
-        )
+        ffOutput = rawFFOutput / VOLTAGE_CONSTANT
 
-        followMotionProfile(motionProfile)
-    }
+        val realPIDOutput = if (settings.isPIDEnabled) pidOutput else 0.0
+        val realFFOutput = if (settings.isFFEnabled) ffOutput else 0.0
 
-    /**
-     * Follow a motion profile from a start position to target position, assuming 0 velocity in start and end state
-     * @param startPosition start position of the profile
-     * @param endPosition end position of the profile
-     */
-    fun followMotionProfile(startPosition: Double, endPosition: Double) {
-        followMotionProfile(MotionState(startPosition, 0.0), MotionState(endPosition, 0.0))
-    }
+        output = realPIDOutput + realFFOutput
 
-    /**
-     * Follow a motion profile from a target position. Assumes current position is the start position and 0 velocity at start/end state
-     * @param targetPosition end position of the motion profile
-     */
-    fun followMotionProfile(targetPosition: Double) {
-        followMotionProfile(encoder.pos, targetPosition)
-    }
+        super.power = when {
+            settings.isCompletelyDisabled || isInDisabledZone() -> 0.0
+            settings.isUsingVoltageFF -> {
+                voltage = voltageSensor.voltage
+                batteryScaledOutput = output * (12.0 / voltage)
+                batteryScaledOutput
+            }
 
-    fun setPIDConstants(constants: PIDConstants) {
-        config.pid = constants
-        val oldTarget = controller.targetPosition
-        controller = PIDFController(
-            config.pid.asCoeffs,
-            config.ff.kV,
-            config.ff.kA,
-            config.ff.kStatic,
-            config.ff.kF
-        )
-        controller.reset()
-        setPIDTarget(oldTarget)
-    }
-
-    fun build(): KMotorEx = this
-
-    init {
-        if (!config.lowerBound.isNaN() && !config.upperBound.isNaN()) {
-            controller.setInputBounds(config.lowerBound, config.upperBound)
-        }
-
-        controller.reset()
-        KScheduler.schedule(LoopCmd(this::update))
-    }
-
-    companion object {
-        fun createMotor(
-            name: String,
-            ticksPerUnit: Double,
-            isRevEncoder: Boolean,
-            controlType: MotorControlType,
-
-            pid: PIDConstants,
-            ff: FeedforwardConstants,
-
-            positionEpsilon: Double,
-            homePositionToDisable: Double = Double.NaN,
-            lowerBound: Double = Double.NaN,
-            upperBound: Double = Double.NaN,
-            maxVelocity: Double = Double.NaN,
-            maxAcceleration: Double = Double.NaN,
-
-        ): KMotorEx {
-            return KMotorEx(
-                KMotorExConfig(
-                    name,
-                    ticksPerUnit,
-                    isRevEncoder,
-                    controlType,
-                    pid,
-                    ff,
-                    positionEpsilon,
-                    homePositionToDisable,
-                    lowerBound, upperBound,
-                    maxVelocity,
-                    maxAcceleration
-                )
-            )
+            else -> output
         }
     }
 }

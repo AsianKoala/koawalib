@@ -1,4 +1,4 @@
-package com.asiankoala.koawalib.wpilib.filter
+package com.asiankoala.koawalib.wpilib
 
 import com.acmerobotics.roadrunner.util.NanoClock
 
