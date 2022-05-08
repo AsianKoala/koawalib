@@ -143,13 +143,15 @@ class MPGVFController(
             return clamp(target * kF + error * kP, -1.0, 1.0)
         }
 
-        val xOutput = fp(robotCentricTarget.x, robotCentricErrors.x, vecKf, vecKp)
-        val yOutput = fp(robotCentricTarget.y, robotCentricErrors.y, vecKf, vecKp)
-        val headingOutput = fp(robotCentricTarget.heading, robotCentricErrors.heading, headingKf, headingKp)
-        val outputVec = Pose(xOutput, yOutput, headingOutput)
+        // black magic
+        val outputRC = Pose(
+            robotCentricTarget.asList.subList(0,2)
+                .mapIndexed { i, t -> fp(t, robotCentricErrors.asList[i], vecKf, vecKp)} +
+                    fp(robotCentricTarget.heading, robotCentricErrors.heading, headingKf, headingKp)
+        )
 
         val outputSpeeds = Speeds()
-        outputSpeeds.setRobotCentric(outputVec, lastPose.heading)
+        outputSpeeds.setRobotCentric(outputRC, lastPose.heading)
 
         return outputSpeeds
     }
