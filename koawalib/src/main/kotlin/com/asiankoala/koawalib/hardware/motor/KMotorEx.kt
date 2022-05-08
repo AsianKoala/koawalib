@@ -90,6 +90,12 @@ class KMotorEx(
     fun update() {
         encoder.update()
 
+        controller.apply {
+            kP = settings._kP
+            kI = settings._kI
+            kD = settings._kD
+        }
+
         if (isFollowingProfile) {
             if(settings.isMotionProfiled) {
                 val secIntoProfile = motionTimer.seconds()

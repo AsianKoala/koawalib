@@ -42,6 +42,9 @@ abstract class KMotorExTuner : KOpMode() {
         if (!kA.isNaN()) motor.settings.kA = kA else kA = motor.settings.kA
         if (!kG.isNaN()) motor.settings.kG = kG else kG = motor.settings.kG
         if (!kCos.isNaN()) motor.settings.kCos = kCos else kCos = motor.settings.kCos
+        if (!kP.isNaN()) motor.settings._kP = kP else kP = motor.settings._kP
+        if (!kI.isNaN()) motor.settings._kI = kI else kI = motor.settings._kI
+        if (!kD.isNaN()) motor.settings._kD = kD else kD = motor.settings._kD
     }
 
     override fun mInit() {
@@ -68,5 +71,8 @@ abstract class KMotorExTuner : KOpMode() {
         @JvmField var kA: Double = Double.NaN
         @JvmField var kG: Double = Double.NaN
         @JvmField var kCos: Double = Double.NaN
+        @JvmField var kP: Double = Double.NaN
+        @JvmField var kI: Double = Double.NaN
+        @JvmField var kD: Double = Double.NaN
     }
 }
