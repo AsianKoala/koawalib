@@ -19,6 +19,7 @@ class Pose(
     constructor(p: Pose2d) : this(p.x, p.y, p.heading)
 
     val vec get() = Vector(x, y)
+    internal val asList get() = listOf(x, y, heading)
 
     fun toPose2d(): Pose2d {
         return Pose2d(x, y, heading)

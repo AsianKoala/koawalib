@@ -17,6 +17,8 @@ data class Vector(
 
     val norm get() = hypot(x, y)
     val angle get() = atan2(y, x)
+    val asList get() = listOf(x, y)
+    val unit get() = this / norm
 
     infix fun dot(other: Vector): Double = other.x * this.x + other.y * this.y
     infix fun cross(other: Vector): Double = x * other.y - y * other.x
@@ -37,5 +39,7 @@ data class Vector(
 
     companion object {
         fun unitFromAngle(angle: Double): Vector = Vector(angle.cos, angle.sin)
+        fun unitX() = Vector(x = 1.0)
+        fun unitY() = Vector(y = 1.0)
     }
 }

@@ -68,4 +68,13 @@ class VectorTest {
         assert(v1.angle, 45.0.radians)
         assert(v2.angle, (45.0 + 180.0).radians.angleWrap)
     }
+
+    @Test
+    fun testAsList() {
+        val v = Vector(1.0, 2.0)
+        val arr = listOf(1.0, 2.0)
+        val asList = v.asList
+        assert(v.x, asList[0])
+        assert(v.y, asList[1])
+    }
 }

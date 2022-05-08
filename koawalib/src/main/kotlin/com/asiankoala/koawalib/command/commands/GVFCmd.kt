@@ -1,7 +1,7 @@
 package com.asiankoala.koawalib.command.commands
 
 import com.acmerobotics.roadrunner.path.Path
-import com.asiankoala.koawalib.gvf.GVFController
+import com.asiankoala.koawalib.gvf.SimpleGVFController
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.subsystem.drive.KMecanumOdoDrive
 
@@ -15,7 +15,7 @@ class GVFCmd(
     epsilon: Double,
     errorMap: (Double) -> Double = { it }
 ) : Cmd() {
-    private val controller = GVFController(path, kN, kOmega, kTheta, kF, epsilon, errorMap)
+    private val controller = SimpleGVFController(path, kN, kOmega, kTheta, kF, epsilon, errorMap)
 
     override fun execute() {
         drive.powers = controller.update(drive.pose)
