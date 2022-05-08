@@ -2,6 +2,7 @@ package com.asiankoala.koawalib.hardware
 
 import com.qualcomm.robotcore.hardware.HardwareDevice
 import com.qualcomm.robotcore.hardware.HardwareMap
+import com.qualcomm.robotcore.hardware.VoltageSensor
 
 /**
  * Hardware device that utilizes the hardware map
@@ -17,5 +18,7 @@ abstract class KDevice<T : HardwareDevice>(protected val deviceName: String) {
 
     companion object {
         lateinit var hardwareMap: HardwareMap
+        internal var lastVoltage = Double.NaN
+        internal lateinit var voltageSensor: VoltageSensor
     }
 }

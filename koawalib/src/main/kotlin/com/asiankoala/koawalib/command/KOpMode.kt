@@ -16,7 +16,7 @@ import com.qualcomm.robotcore.util.ElapsedTime
  * The template opmode for utilizing koawalib. DO NOT OVERRIDE runOpMode(). Iterative OpMode's init, init loop, start, and loop functions have been
  * implemented with mInit(), mInitLoop(), mStart(), mLoop(), mStop()
  */
-@Suppress("unused")
+//@Suppress("unused")
 abstract class KOpMode : LinearOpMode() {
     protected val driver: KGamepad by lazy { KGamepad(gamepad1) }
     protected val gunner: KGamepad by lazy { KGamepad(gamepad2) }
@@ -35,11 +35,13 @@ abstract class KOpMode : LinearOpMode() {
         Logger.telemetry = telemetry
         Logger.config = LoggerConfig()
         KScheduler.resetScheduler()
+        KScheduler
         Logger.addErrorCommand()
 
         KDevice.hardwareMap = hardwareMap
         hubs = hardwareMap.getAll(LynxModule::class.java)
         hubs.forEach { it.bulkCachingMode = LynxModule.BulkCachingMode.MANUAL }
+        KDevice.voltageSensor = hardwareMap.voltageSensor.iterator().next()
 
         opModeTimer.reset()
         Logger.logInfo("opmode set up")
@@ -57,6 +59,14 @@ abstract class KOpMode : LinearOpMode() {
         telemetry.addData("loop ms", dt)
     }
 
+    private fun checkIfVoltageSensorNeeded() {
+
+    }
+
+    private fun updateVoltageReading() {
+
+    }
+
     private val mainStateMachine: StateMachine<OpModeState> = StateMachineBuilder<OpModeState>()
         .universal(KScheduler::run)
         .universal(Logger::update)
@@ -67,6 +77,7 @@ abstract class KOpMode : LinearOpMode() {
         .onEnter(::mInit)
         .transition { true }
         .state(OpModeState.INIT_LOOP)
+        .onEnter(::checkIfVoltageSensorNeeded)
         .loop(::mInitLoop)
         .transition(::isStarted)
         .state(OpModeState.START)

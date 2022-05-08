@@ -16,6 +16,12 @@ open class SequentialGroup(vararg cmds: Cmd) : Cmd(), Group {
         this.cmds.addAll(cmds)
     }
 
+    override val currentCmdNames: List<String>
+        get() {
+            if(idx !in cmds.indices) return listOf("none")
+            return listOf(cmds[idx].name)
+        }
+
     override fun initialize() {
         idx = 0
         cmds[0].initialize()

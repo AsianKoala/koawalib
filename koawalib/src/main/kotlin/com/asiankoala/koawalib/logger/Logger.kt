@@ -38,7 +38,7 @@ object Logger {
     }
 
     internal fun update() {
-        toLog.forEach { Log.println(it.priority, tag, it.formattedMessage) }
+        toLog.forEach { logCount++; Log.println(it.priority, tag, it.formattedMessage) }
         toLog.clear()
 //        val iterator = condenseMap.iterator()
 

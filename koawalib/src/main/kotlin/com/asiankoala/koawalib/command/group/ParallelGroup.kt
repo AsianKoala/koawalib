@@ -1,6 +1,7 @@
 package com.asiankoala.koawalib.command.group
 
 import com.asiankoala.koawalib.command.commands.Cmd
+import com.asiankoala.koawalib.util.disjoint
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -18,7 +19,7 @@ open class ParallelGroup(private val endCond: (Map<Cmd, Boolean>) -> Boolean = {
         }
 
         cmds.forEach {
-            if (!Collections.disjoint(it.requirements, requirements)) {
+            if (!(it.requirements disjoint requirements)) {
                 throw IllegalStateException("Multiple commands in a parallel group cannot require the same subsystems")
             }
 
@@ -26,6 +27,9 @@ open class ParallelGroup(private val endCond: (Map<Cmd, Boolean>) -> Boolean = {
             requirements.addAll(it.requirements)
         }
     }
+
+    override val currentCmdNames: List<String>
+        get() = cmdMap.keys.map { it.name }
 
     override fun initialize() {
         for (entry in cmdMap.entries) {

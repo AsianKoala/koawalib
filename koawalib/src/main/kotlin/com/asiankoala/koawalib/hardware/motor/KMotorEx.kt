@@ -20,7 +20,7 @@ class KMotorEx(
     var voltage = 0.0; private set
 
     val encoder = KEncoder(this, settings.ticksPerUnit, settings.isRevEncoder)
-    val controller = PIDController(settings._kP, settings._kI, settings._kD)
+    val controller = PIDController(settings.pid.kP, settings.pid.kI, settings.pid.kD)
     var pidOutput = 0.0; private set
 
     var batteryScaledOutput = 0.0; private set
@@ -47,23 +47,19 @@ class KMotorEx(
         return (encoder.pos - target).absoluteValue < settings.allowedPositionError
     }
 
-    fun isVelocityAtTarget(target: Double = finalTargetMotionState!!.v): Boolean {
-        return (encoder.vel - target).absoluteValue < settings.allowedVelocityError
-    }
-
     fun isCompletelyFinished(): Boolean {
-        return !isFollowingProfile && isAtTarget() && isVelocityAtTarget()
+        return !isFollowingProfile && isAtTarget()
     }
 
     val enableVoltageFF: KMotorEx
         get() {
-            settings.isUsingVoltageFF = true
+            settings.isVoltageCorrected = true
             return this
         }
 
     val disableVoltageFF: KMotorEx
         get() {
-            settings.isUsingVoltageFF = false
+            settings.isVoltageCorrected = false
             return this
         }
 
@@ -91,9 +87,9 @@ class KMotorEx(
         encoder.update()
 
         controller.apply {
-            kP = settings._kP
-            kI = settings._kI
-            kD = settings._kD
+            kP = settings.pid.kP
+            kI = settings.pid.kI
+            kD = settings.pid.kD
         }
 
         if (isFollowingProfile) {
@@ -124,22 +120,22 @@ class KMotorEx(
 
         pidOutput = controller.update(encoder.pos)
 
-        val rawFFOutput = settings.kS * setpointMotionState.v.sign +
-                settings.kV * setpointMotionState.v +
-                settings.kA * setpointMotionState.a +
-                settings.kG +
-                if(settings.kCos epsilonNotEqual 0.0) settings.kCos * encoder.pos.cos else 0.0
+        val rawFFOutput = settings.ff.kS * setpointMotionState.v.sign +
+                settings.ff.kV * setpointMotionState.v +
+                settings.ff.kA * setpointMotionState.a +
+                settings.ff.kG +
+                if(settings.ff.kCos epsilonNotEqual 0.0) settings.ff.kCos * encoder.pos.cos else 0.0
 
         ffOutput = rawFFOutput / VOLTAGE_CONSTANT
 
-        val realPIDOutput = if (settings.isPIDEnabled) pidOutput else 0.0
-        val realFFOutput = if (settings.isFFEnabled) ffOutput else 0.0
+        val realPIDOutput = if (settings.disabledSettings.isPIDDisabled) 0.0 else pidOutput
+        val realFFOutput = if (settings.disabledSettings.isFFDisabled) 0.0 else ffOutput
 
         output = realPIDOutput + realFFOutput
 
         super.power = when {
-            settings.isCompletelyDisabled || isInDisabledZone() -> 0.0
-            settings.isUsingVoltageFF -> {
+            settings.disabledSettings.isCompletelyDisabled || isInDisabledZone() -> 0.0
+            settings.isVoltageCorrected -> {
                 voltage = voltageSensor.voltage
                 batteryScaledOutput = output * (12.0 / voltage)
                 batteryScaledOutput

@@ -1,12 +1,17 @@
 package com.asiankoala.koawalib.command
 
 import com.asiankoala.koawalib.command.commands.*
+import com.asiankoala.koawalib.command.group.Group
 import com.asiankoala.koawalib.command.group.ParallelGroup
+import com.asiankoala.koawalib.hardware.KDevice
 import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.subsystem.Subsystem
 import com.asiankoala.koawalib.util.OpModeState
+import com.asiankoala.koawalib.util.disjoint
 import java.util.*
 import kotlin.collections.ArrayDeque
+import kotlin.collections.HashMap
+import kotlin.collections.LinkedHashSet
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
@@ -23,8 +28,10 @@ object KScheduler {
     private val subsystems: MutableMap<Subsystem, Cmd?> = LinkedHashMap()
     private val toSchedule: MutableList<Cmd> = ArrayDeque()
     private val toCancel: MutableList<Cmd> = ArrayDeque()
+    private val deviceRegistry: MutableMap<String, KDevice<*>> = HashMap()
 
-    private val allMaps = listOf<MutableMap<*, *>>(scheduledCmdReqs, subsystems)
+    private val allCollections = listOf(scheduledCmds, scheduledCmdReqs, subsystems, toSchedule, toCancel, deviceRegistry)
+    private val allMaps = listOf<MutableMap<*, *>>(scheduledCmdReqs, subsystems, deviceRegistry)
     private val allLists = listOf<MutableList<*>>(scheduledCmds, toCancel, toSchedule, toCancel)
 
     private var amountOfWatchdogs = 0
@@ -35,6 +42,14 @@ object KScheduler {
         allMaps.forEach(MutableMap<*, *>::clear)
         allLists.forEach(MutableList<*>::clear)
         amountOfWatchdogs = 0
+
+        allCollections.forEach {
+            if(it is Collection<*>) {
+                if(it.isNotEmpty()) throw Exception("collection not empty on init")
+            } else if(it is Map<*, *>) {
+                if(it.isNotEmpty()) throw Exception("collection not empty on init")
+            }
+        }
     }
 
     private fun initCommand(cmd: Cmd, cRequirements: Set<Subsystem>) {
@@ -45,7 +60,7 @@ object KScheduler {
     }
 
     private fun Cmd.scheduleThis() {
-        if (Collections.disjoint(scheduledCmdReqs.keys, requirements)) {
+        if (scheduledCmdReqs.keys disjoint requirements) {
             initCommand(this, requirements)
             Logger.logDebug("command ${this.name}: Command disjoint with scheduledRequirementKeys")
         } else {
@@ -78,25 +93,15 @@ object KScheduler {
 
     internal fun run() {
         Logger.logDebug("CommandScheduler entered run()")
-        Logger.logDebug("amount of scheduled commands before run(): ${scheduledCmds.size + toSchedule.size}")
 
         toSchedule.forEach { it.scheduleThis() }
 
-        // todo fix canceling
-        // todo fix canceling
-        // todo fix canceling
-        // todo fix canceling
-        // todo fix canceling
-        // todo fix canceling
         toCancel.forEach { it.cancelThis() }
 
         subsystems.forEach { (k, v) ->
-            if (!scheduledCmdReqs.containsKey(k) && v != null && Collections.disjoint(
-                    scheduledCmdReqs.keys, v.requirements
-                )
-            ) {
+            // if subsystem not required by any command, has a non-null default command, and
+            if (!scheduledCmdReqs.containsKey(k) && v != null && scheduledCmdReqs.keys disjoint v.requirements)
                 v.execute()
-            }
         }
 
         toSchedule.clear()
@@ -109,25 +114,29 @@ object KScheduler {
             Logger.logDebug("$i: ${subsystem.name}")
         }
 
-        Logger.logDebug("number of commands (excluding watchdog): ${scheduledCmds.size - amountOfWatchdogs}")
-
-        val iterator = scheduledCmds.iterator()
-        while (iterator.hasNext()) {
-            val command = iterator.next()
-
+        val toRemove = LinkedHashSet<Cmd>()
+        scheduledCmds.forEach {
+            val command = it
             command.execute()
 
             if (command !is Watchdog && command !is LoopCmd && command !is ParallelGroup) {
-                Logger.logDebug("${command.name} executed")
+                if(command is Group) {
+                    Logger.logInfo("group ${command.name} with cmd(s) ${command.currentCmdNames} executed")
+                } else {
+                    Logger.logInfo("cmd ${command.name} executed")
+                }
             }
 
             if (command.isFinished) {
                 command.end()
-                Logger.logDebug("command ${command.name} finished")
-                iterator.remove()
+                if(command !is InstantCmd) Logger.logDebug("command ${command.name} finished")
+                toRemove.add(command)
                 scheduledCmdReqs.keys.removeAll(command.requirements)
             }
+
         }
+
+        scheduledCmds.removeAll(toRemove)
     }
 
     private fun scheduleForState(state: OpModeState, cmd: Cmd) {

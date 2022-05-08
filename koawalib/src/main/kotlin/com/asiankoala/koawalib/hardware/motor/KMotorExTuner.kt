@@ -37,19 +37,19 @@ abstract class KMotorExTuner : KOpMode() {
     private var packet = TelemetryPacket()
 
     protected open fun updateMotorFFGains() {
-        if (!kS.isNaN()) motor.settings.kS = kS else kS = motor.settings.kS
-        if (!kV.isNaN()) motor.settings.kV = kV else kV = motor.settings.kV
-        if (!kA.isNaN()) motor.settings.kA = kA else kA = motor.settings.kA
-        if (!kG.isNaN()) motor.settings.kG = kG else kG = motor.settings.kG
-        if (!kCos.isNaN()) motor.settings.kCos = kCos else kCos = motor.settings.kCos
-        if (!kP.isNaN()) motor.settings._kP = kP else kP = motor.settings._kP
-        if (!kI.isNaN()) motor.settings._kI = kI else kI = motor.settings._kI
-        if (!kD.isNaN()) motor.settings._kD = kD else kD = motor.settings._kD
+        if (!kS.isNaN()) motor.settings.ff.kS = kS else kS = motor.settings.ff.kS
+        if (!kV.isNaN()) motor.settings.ff.kV = kV else kV = motor.settings.ff.kV
+        if (!kA.isNaN()) motor.settings.ff.kA = kA else kA = motor.settings.ff.kA
+        if (!kG.isNaN()) motor.settings.ff.kG = kG else kG = motor.settings.ff.kG
+        if (!kCos.isNaN()) motor.settings.ff.kCos = kCos else kCos = motor.settings.ff.kCos
+        if (!kP.isNaN()) motor.settings.pid.kP = kP else kP = motor.settings.pid.kP
+        if (!kI.isNaN()) motor.settings.pid.kI = kI else kI = motor.settings.pid.kI
+        if (!kD.isNaN()) motor.settings.pid.kD = kD else kD = motor.settings.pid.kD
     }
 
     override fun mInit() {
-        motor.settings.isPIDEnabled = false
-        motor.settings.isFFEnabled = true
+        motor.settings.disabledSettings.isPIDDisabled = true
+        motor.settings.disabledSettings.isFFDisabled = false
         motor.encoder.zero(zeroPosition)
         updateMotorFFGains()
         toTargetButton.onPress(InstantCmd({ motor.setTarget(targetPosition) }))

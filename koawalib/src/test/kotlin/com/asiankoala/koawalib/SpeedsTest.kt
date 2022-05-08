@@ -51,4 +51,15 @@ class SpeedsTest {
         val expected = Pose(Vector.unitY() * powers.vec.norm, 1.0)
         assert(expected.asList, robotCentric.asList)
     }
+
+    @Test
+    fun testWheelGet() {
+        val heading = 90.0.radians
+        val powers = Pose(y = 1.0)
+        val speeds = Speeds()
+        speeds.setFieldCentric(powers)
+        val wheels = speeds.getWheels(heading)
+        val expected = listOf(1.0, 1.0, 1.0, 1.0)
+        assert(wheels, expected)
+    }
 }
