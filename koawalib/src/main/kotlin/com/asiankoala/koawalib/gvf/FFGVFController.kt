@@ -1,12 +1,12 @@
 package com.asiankoala.koawalib.gvf
 
-import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.geometry.Vector2d
 import com.acmerobotics.roadrunner.path.Path
 import com.asiankoala.koawalib.gvf.GVFUtil.toVec
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.Vector
 import com.asiankoala.koawalib.math.angleWrap
+import com.asiankoala.koawalib.math.degrees
 import com.asiankoala.koawalib.util.Speeds
 import kotlin.math.PI
 import kotlin.math.absoluteValue
@@ -24,17 +24,24 @@ import kotlin.math.max
  *  @param errorMap error map to transform normal displacement error
  *  @property isFinished path finish state
  */
-class SimpleGVFController(
+class FFGVFController(
     path: Path,
     kN: Double,
     kOmega: Double,
+    private val kTheta: Double,
     private val kF: Double,
+    private val kLookahead: Double? = null,
     epsilon: Double,
     errorMap: (Double) -> Double = { it },
 ) : GVFController(path, kN, kOmega, epsilon, errorMap) {
 
     override fun headingControl(gvfVec: Vector2d): Pair<Double, Double> {
-        val desiredHeading = gvfVec.angle()
+        var desiredHeading = gvfVec.angle()
+
+        if(kLookahead != null) {
+            val lookaheadS = lastS + kLookahead
+            desiredHeading = (path[lookaheadS].vec() - path[lastS].vec()).angle()
+        }
         val headingError = (desiredHeading - lastPose.heading).angleWrap
         return Pair(kOmega * headingError, headingError)
     }
@@ -50,6 +57,8 @@ class SimpleGVFController(
         if (isFinished) translationalPower = absoluteVector
         if (translationalPower.norm() > 1.0) translationalPower /= translationalPower.norm()
 
+        val thetaWeight = headingError.degrees.absoluteValue / kTheta
+        translationalPower /= max(1.0, thetaWeight)
         return translationalPower
     }
 

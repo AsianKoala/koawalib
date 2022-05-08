@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.util.NanoClock
 import com.acmerobotics.roadrunner.util.epsilonEquals
 import com.asiankoala.koawalib.hardware.motor.KMotor
 import com.asiankoala.koawalib.logger.Logger
+import com.asiankoala.koawalib.math.estimateDerivative
 import com.qualcomm.robotcore.util.MovingStatistics
 import kotlin.math.abs
 import kotlin.math.max
@@ -113,21 +114,6 @@ class KEncoder(
                 real += sign(estimate - real) * CPS_STEP
             }
             return real
-        }
-
-        private fun estimateDerivative(estimates: List<Pair<Double, Double>>): Pair<Double, Boolean> {
-            if (estimates.size < 2) {
-                return Pair(0.0, false)
-            }
-
-            val oldIndex = max(0, estimates.size - LOOK_BEHIND - 1)
-            val oldPosition = estimates[oldIndex]
-            val currPosition = estimates[estimates.size - 1]
-            val scalar = (currPosition.first - oldPosition.first)
-
-            if (scalar epsilonEquals 0.0) Logger.logError("failed encoder derivative")
-
-            return Pair((currPosition.second - oldPosition.second) / scalar, true)
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.asiankoala.koawalib.math
 
+import com.acmerobotics.roadrunner.util.epsilonEquals
 import com.asiankoala.koawalib.logger.Logger
 import kotlin.math.*
 
@@ -112,4 +113,19 @@ fun lineCircleIntersection(
         intersections.add(Vector((xLeft - xRight) / div, (yLeft - yRight) / div))
     }
     return intersections.map { it + center }
+}
+
+fun estimateDerivative(estimates: List<Pair<Double, Double>>, LOOK_BEHIND: Int = 1): Pair<Double, Boolean> {
+    if (estimates.size < 2) {
+        return Pair(0.0, false)
+    }
+
+    val oldIndex = max(0, estimates.size - LOOK_BEHIND - 1)
+    val oldPosition = estimates[oldIndex]
+    val currPosition = estimates[estimates.size - 1]
+    val scalar = (currPosition.first - oldPosition.first)
+
+    if (scalar epsilonEquals 0.0) Logger.logError("failed derivative")
+
+    return Pair((currPosition.second - oldPosition.second) / scalar, true)
 }
