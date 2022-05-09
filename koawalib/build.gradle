@@ -44,7 +44,7 @@ afterEvaluate {
                 from components.release
                 groupId = 'com.github.asiankoala'
                 artifactId = 'koawalib'
-                version = '0.0.6'
+                version = '1.0.0'
             }
         }
     }

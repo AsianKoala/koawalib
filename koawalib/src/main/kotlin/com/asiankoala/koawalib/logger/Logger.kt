@@ -21,7 +21,6 @@ object Logger {
     internal val priorityList = listOf("NONE", "NONE", "VERBOSE", "DEBUG", "INFO", "WARN", "ERROR", "WTF")
     private var errors = 0
     private var warnings = 0
-    private var condenseMap = HashMap<String, LogData>()
     private val tag = "KOAWALIB"
     private val dashboard = FtcDashboard.getInstance()
     private var packet = TelemetryPacket()
