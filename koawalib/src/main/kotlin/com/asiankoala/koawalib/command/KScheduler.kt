@@ -28,7 +28,7 @@ object KScheduler {
     private val subsystems: MutableMap<Subsystem, Cmd?> = LinkedHashMap()
     private val toSchedule: MutableList<Cmd> = ArrayDeque()
     private val toCancel: MutableList<Cmd> = ArrayDeque()
-    private val deviceRegistry: MutableMap<String, KDevice<*>> = HashMap()
+    internal val deviceRegistry: MutableMap<String, KDevice<*>> = HashMap()
 
     private val allCollections = listOf(scheduledCmds, scheduledCmdReqs, subsystems, toSchedule, toCancel, deviceRegistry)
     private val allMaps = listOf<MutableMap<*, *>>(scheduledCmdReqs, subsystems, deviceRegistry)
@@ -257,5 +257,9 @@ object KScheduler {
      */
     fun scheduleForStart(cmd: Cmd) {
         scheduleForState(OpModeState.START, cmd)
+    }
+
+    fun registerDevices(vararg devices: KDevice<*>) {
+        deviceRegistry.putAll(devices.map { Pair(it.deviceName, it) })
     }
 }

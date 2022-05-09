@@ -17,7 +17,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry
 object Logger {
     var config = LoggerConfig()
     internal var telemetry: Telemetry? = null
-    internal var logCount = 0
+    internal var logCount = 0; private set
     internal val priorityList = listOf("NONE", "NONE", "VERBOSE", "DEBUG", "INFO", "WARN", "ERROR", "WTF")
     private var errors = 0
     private var warnings = 0
@@ -28,44 +28,23 @@ object Logger {
     private val toLog = ArrayList<LogData>()
 
     private fun log(message: String, priority: Int) {
-//        if (message in condenseMap.keys) {
-//            condenseMap[message]!!.updatedThisLoop = true
-//        } else {
-//            condenseMap[message] = LogData(message, priority)
-//        }
+        if(!config.isLogging) return
         toLog.add(LogData(message, priority))
     }
 
-    internal fun update() {
-        toLog.forEach { logCount++; Log.println(it.priority, tag, it.formattedMessage) }
-        toLog.clear()
-//        val iterator = condenseMap.iterator()
+    internal fun reset() {
+        logCount = 0
+        errors = 0
+        warnings = 0
+    }
 
-//        if (errors > config.maxErrorCount) {
-//            logError("error overflow")
-//        }
-//
-//        while (iterator.hasNext()) {
-//            val data = iterator.next().value
-//            if (!data.updatedThisLoop) {
-//                logCount++
-//                Log.println(data.priority, tag, data.formattedMessage)
-//
-//                if (config.isPrinting) {
-//                    println(data.printString)
-//                }
-//
-//                iterator.remove()
-//            } else {
-//                data.condenseCount++
-//                data.updatedThisLoop = false
-//            }
-//        }
-//
-//        if (config.isDashboardEnabled) {
-//            dashboard.sendTelemetryPacket(packet)
-//            packet = TelemetryPacket()
-//        }
+    internal fun update() {
+        toLog.forEach {
+            logCount++
+            Log.println(it.priority, tag, it.formattedMessage)
+            if(config.isPrinting) println(it.printString)
+        }
+        toLog.clear()
     }
 
     internal fun addErrorCommand() {
@@ -89,10 +68,6 @@ object Logger {
                 logError(nullStr)
             } else {
                 telemetry!!.addLine(message)
-                if (config.isLoggingTelemetry) {
-                    logDebug(message)
-                }
-
                 if (config.isDashboardEnabled) {
                     packet.addLine(message)
                 }

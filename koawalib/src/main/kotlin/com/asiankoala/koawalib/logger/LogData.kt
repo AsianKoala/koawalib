@@ -7,9 +7,7 @@ internal data class LogData(
     val message: String,
     val priority: Int,
 ) {
-    var condenseCount = 0
-    var updatedThisLoop = false
-    val formattedMessage get() = "%-10s repeated %-10s %s".format(Logger.logCount, condenseCount, message)
+    val formattedMessage get() = "%-10s %s".format(Logger.logCount, message)
     val printString
         get() = "${Logger.priorityList[priority]} \t $message".withColor(
             when (priority) {

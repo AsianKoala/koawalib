@@ -5,7 +5,7 @@ package com.asiankoala.koawalib.wpilib
 
 /** Holds the constants for a DC motor.  */
 @Suppress("unused")
-class BrushedDCMotor(
+internal class Motor(
     val nominalVoltageVolts: Double,
     val stallTorqueNewtonMeters: Double,
     val stallCurrentAmps: Double,
@@ -28,7 +28,7 @@ class BrushedDCMotor(
     }
 
     companion object {
-        private fun createGoMotor(kgCm: Double, rpm: Double) = BrushedDCMotor(
+        private fun createGoMotor(kgCm: Double, rpm: Double) = Motor(
             12.0, Units.kgCmToNewtonMeters(kgCm), 9.2, 0.25, Units.rotationsPerMinuteToRadiansPerSecond(rpm)
         )
 

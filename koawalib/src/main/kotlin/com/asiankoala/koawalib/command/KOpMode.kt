@@ -3,11 +3,13 @@ package com.asiankoala.koawalib.command
 import com.asiankoala.koawalib.command.commands.LoopCmd
 import com.asiankoala.koawalib.gamepad.KGamepad
 import com.asiankoala.koawalib.hardware.KDevice
+import com.asiankoala.koawalib.hardware.motor.KMotorEx
 import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.logger.LoggerConfig
 import com.asiankoala.koawalib.statemachine.StateMachine
 import com.asiankoala.koawalib.statemachine.StateMachineBuilder
 import com.asiankoala.koawalib.util.OpModeState
+import com.asiankoala.koawalib.util.containsBy
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.util.ElapsedTime
@@ -31,11 +33,10 @@ abstract class KOpMode : LinearOpMode() {
     private fun setup() {
         KScheduler.opModeInstance = this
 
-        Logger.logCount = 0
+        Logger.reset()
         Logger.telemetry = telemetry
         Logger.config = LoggerConfig()
         KScheduler.resetScheduler()
-        KScheduler
         Logger.addErrorCommand()
 
         KDevice.hardwareMap = hardwareMap
@@ -48,10 +49,10 @@ abstract class KOpMode : LinearOpMode() {
     }
 
     private fun schedulePeriodics() {
-        LoopCmd(driver::periodic).withName("driver gamepad periodic").schedule()
-        LoopCmd(gunner::periodic).withName("gunner gamepad periodic").schedule()
-        LoopCmd({ hubs.forEach(LynxModule::clearBulkCache) }).withName("clear bulk data periodic").schedule()
-        LoopCmd(::handleLoopMsTelemetry).withName("loop ms telemetry periodic").schedule()
+        + LoopCmd(driver::periodic).withName("driver gamepad periodic")
+        + LoopCmd(gunner::periodic).withName("gunner gamepad periodic")
+        + LoopCmd({ hubs.forEach(LynxModule::clearBulkCache) }).withName("clear bulk data periodic")
+        + LoopCmd(::handleLoopMsTelemetry).withName("loop ms telemetry periodic")
     }
 
     private fun handleLoopMsTelemetry() {
@@ -60,11 +61,9 @@ abstract class KOpMode : LinearOpMode() {
     }
 
     private fun checkIfVoltageSensorNeeded() {
-
-    }
-
-    private fun updateVoltageReading() {
-
+        if(KScheduler.deviceRegistry.values.filterIsInstance<KMotorEx>().containsBy({ it.settings.isVoltageCorrected }, true))
+            + LoopCmd({ KDevice.lastVoltageRead = KDevice.voltageSensor.voltage })
+            
     }
 
     private val mainStateMachine: StateMachine<OpModeState> = StateMachineBuilder<OpModeState>()
@@ -75,6 +74,7 @@ abstract class KOpMode : LinearOpMode() {
         .onEnter(::setup)
         .onEnter(::schedulePeriodics)
         .onEnter(::mInit)
+        .onEnter(::checkIfVoltageSensorNeeded)
         .transition { true }
         .state(OpModeState.INIT_LOOP)
         .onEnter(::checkIfVoltageSensorNeeded)
