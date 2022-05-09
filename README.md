@@ -1,5 +1,5 @@
 ## koawalib
-koawalib is a general purpose FTC library written in Kotlin. Shoutout to [wpilib](https://github.com/wpilibsuite/allwpilib) for inspiration.
+koawalib is a general purpose FTC library written in Kotlin, inspired by [@wpilib](https://github.com/wpilibsuite/allwpilib)
 
 ## Installation
 - Add the following lines before the ```dependencies``` block in ```/TeamCode/build.gradle```
@@ -9,14 +9,13 @@ repositories {
   maven { url = 'https://jitpack.io' }
 }
 ```
-- Then add this line to your ```dependencies``` block, where "0.0.16" is the newest release tag
+- Then add this line to your ```dependencies``` block, where "1.0.0" is a release tag
 ```
-implementation 'com.github.AsianKoala:koawalib:0.0.16'
+implementation 'com.github.AsianKoala:koawalib:1.0.0'
 ```
 
 - ### Snapshot
   - If you wish to have the most recent commit of the repository rather than a release, consider using a snapshot.
-     Snapshots are not guaranteed to work or even be stable, but they will be the most up to date.
   - To use the snapshot version, first add this code block. This changes the default gradle caching time settings.
     ```
     configurations.all {
@@ -32,9 +31,13 @@ implementation 'com.github.AsianKoala:koawalib:0.0.16'
     ```
     implementation 'com.github.AsianKoala:koawalib:COMMIT-HASH"
     ```
+  - If for some reason you want to use the dev branch, which has the newest features but no guarantee on stability, add this line
+    ```
+    implementation 'com.github.AsianKoala:koawalib:dev-SNAPSHOT"
+    ```
 
 
 ## Usage
+[FTC team 2Σ's offseason repo](https://github.com/two-sigma/offseason)  
+[koawalib docs](https://asiankoala.github.io/koawalib/)  
 [koawalib-quickstart](https://github.com/AsianKoala/koawalib_quickstart)  
-[docs](https://asiankoala.github.io/koawalib/)  
-[my freight frenzy repo](https://github.com/14607/FF-Private/tree/master/TeamCode/src/main/java/asiankoala/ftc2021)
