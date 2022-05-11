@@ -20,11 +20,4 @@ data class MotionState(
      * @param t time
      */
     operator fun get(t: Double) = MotionState(x + v * t + 0.5 * a * t.pow(2), v + a * t, a)
-
-    /**
-     * Take a definite integral of the motion state to calculate distance
-     */
-    fun integrate(t: Double): Double {
-        return (v * t + 0.5 * a * t.pow(2)).absoluteValue
-    }
 }

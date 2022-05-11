@@ -24,11 +24,10 @@ class PIDController(
 
     private var prevTime = Double.NaN
     private var positionError = 0.0
-    private var velocityError = 0.0
+    private var posErrorDeriv = 0.0
     private var prevError = 0.0
     private var sumError = 0.0
-    var position = Double.NaN
-        private set
+    private var position = Double.NaN
 
     var target = Double.NaN
 
@@ -43,8 +42,8 @@ class PIDController(
         }
     }
 
-    fun isAtTarget(positionEpsilon: Double, velocityEpsilon: Double = Double.POSITIVE_INFINITY): Boolean {
-        return positionError.absoluteValue < positionEpsilon && velocityError.absoluteValue < velocityEpsilon
+    fun isAtTarget(positionEpsilon: Double): Boolean {
+        return positionError.absoluteValue < positionEpsilon
     }
 
     fun enableContinuousInput(min: Double, max: Double) {
@@ -64,8 +63,8 @@ class PIDController(
         maxIntegral = maxInt
     }
 
-    fun update(measured: Double): Double {
-        position = measured
+    fun update(pos: Double): Double {
+        position = pos
         updateError()
         return if (prevTime.isNaN()) {
             prevTime = clock.seconds()
@@ -73,7 +72,7 @@ class PIDController(
         } else {
             val dt = clock.seconds() - prevTime
 
-            velocityError = (positionError - prevError) / dt
+            posErrorDeriv = (positionError - prevError) / dt
 
             if (kI epsilonNotEqual 0.0) {
                 sumError = clamp(
@@ -83,7 +82,7 @@ class PIDController(
                 )
             }
 
-            kP * positionError + kI * sumError + kD * velocityError
+            kP * positionError + kI * sumError + kD * posErrorDeriv
         }
     }
 

@@ -2,7 +2,7 @@ package com.asiankoala.koawalib.hardware.sensor
 
 import com.asiankoala.koawalib.hardware.KDevice
 import com.asiankoala.koawalib.util.Periodic
-import com.asiankoala.koawalib.util.RateLimit
+import com.asiankoala.koawalib.util.RateLimiter
 import com.qualcomm.robotcore.hardware.DistanceSensor
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 
@@ -11,20 +11,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
  */
 @Suppress("unused")
 class KDistanceSensor(name: String) : KDevice<DistanceSensor>(name), Periodic {
-    private var rateLimiter = RateLimit(50.0)
-
-    var rateLimit
-        get() = rateLimiter.rateLimitMs
-        set(value) {
-            rateLimiter.rateLimitMs = value
-        }
+    private var rateLimiter = RateLimiter(50.0) { lastRead = device.getDistance(DistanceUnit.MM) }
 
     var lastRead = Double.NaN
         private set
 
-    override fun periodic() {
-        if(rateLimiter.isSafeToUpdate()) {
-            lastRead = device.getDistance(DistanceUnit.MM)
-        }
-    }
+    override fun periodic() = rateLimiter.periodic()
 }

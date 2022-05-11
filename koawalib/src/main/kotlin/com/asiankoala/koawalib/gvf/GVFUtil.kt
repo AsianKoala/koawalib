@@ -7,7 +7,7 @@ import com.asiankoala.koawalib.math.Vector
 import kotlin.math.PI
 import kotlin.math.sign
 
-object GVFUtil {
+internal object GVFUtil {
     fun Vector2d.toVec() = Vector(this.x, this.y)
 
     fun gvfVecAt(path: Path, pose: Pose2d, s: Double, kN: Double, errorMap: (Double) -> Double): Vector2d {

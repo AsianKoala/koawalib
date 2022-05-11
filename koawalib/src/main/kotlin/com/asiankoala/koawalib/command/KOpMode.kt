@@ -67,7 +67,7 @@ abstract class KOpMode : LinearOpMode() {
     }
 
     private val mainStateMachine: StateMachine<OpModeState> = StateMachineBuilder<OpModeState>()
-        .universal(KScheduler::run)
+        .universal(KScheduler::update)
         .universal(Logger::update)
         .universal(telemetry::update)
         .state(OpModeState.INIT)

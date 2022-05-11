@@ -11,21 +11,19 @@ import org.firstinspires.ftc.robotcore.external.Telemetry
  * Logger sends log reports to logcat detailing details of a running opmode. Also serves to format driver station telemetry
  * @property config Logger Config
  */
-// TODO Fix logger condensation
-// TODO FIX THIS STUPUID SHIT ALREADY ITS BEEN BROKEN FOR HALF A YEAR
 @Suppress("unused")
 object Logger {
-    var config = LoggerConfig()
+    private const val tag = "KOAWALIB"
+    private val dashboard = FtcDashboard.getInstance()
+    private val toLog = ArrayList<LogData>()
+    private var packet = TelemetryPacket()
+    private var errors = 0
+    private var warnings = 0
     internal var telemetry: Telemetry? = null
     internal var logCount = 0; private set
     internal val priorityList = listOf("NONE", "NONE", "VERBOSE", "DEBUG", "INFO", "WARN", "ERROR", "WTF")
-    private var errors = 0
-    private var warnings = 0
-    private val tag = "KOAWALIB"
-    private val dashboard = FtcDashboard.getInstance()
-    private var packet = TelemetryPacket()
+    var config = LoggerConfig()
 
-    private val toLog = ArrayList<LogData>()
 
     private fun log(message: String, priority: Int) {
         if(!config.isLogging) return
@@ -36,6 +34,8 @@ object Logger {
         logCount = 0
         errors = 0
         warnings = 0
+        toLog.clear()
+        packet = TelemetryPacket()
     }
 
     internal fun update() {

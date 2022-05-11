@@ -10,8 +10,8 @@ import com.qualcomm.robotcore.hardware.VoltageSensor
  * @param deviceName config name of device
  */
 @Suppress("UNCHECKED_CAST")
-abstract class KDevice<T : HardwareDevice>(val deviceName: String) {
-    protected val device: T = hardwareMap[HardwareDevice::class.java as Class<T>, deviceName]
+abstract class KDevice<T : HardwareDevice>(val deviceName: String, test: Boolean = false) {
+    protected val device: T = if(!test) hardwareMap[HardwareDevice::class.java as Class<T>, deviceName] else TestHardwareDevice() as T
 
     override fun toString(): String {
         return deviceName

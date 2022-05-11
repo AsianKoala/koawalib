@@ -1,6 +1,5 @@
-package com.asiankoala.koawalib
+package com.asiankoala.koawalib.util
 
-import com.asiankoala.koawalib.util.containsBy
 import kotlin.test.Test
 
 class ExtensionsTest {

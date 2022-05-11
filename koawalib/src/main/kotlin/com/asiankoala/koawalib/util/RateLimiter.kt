@@ -4,7 +4,7 @@ import com.acmerobotics.roadrunner.util.NanoClock
 import com.qualcomm.robotcore.util.MovingStatistics
 
 @Suppress("unused")
-class Discretize(private val timestep: Double, private val func: () -> Unit) : Periodic {
+class RateLimiter(private val timestep: Double, private val func: () -> Unit) : Periodic {
     private val clock = NanoClock.system()
     private var lastDiscreteTime = clock.seconds()
     private var dtStats = MovingStatistics(10)

@@ -7,6 +7,8 @@ import kotlin.math.absoluteValue
 import kotlin.math.max
 
 abstract class Odometry : DeviceSubsystem() {
+    internal data class TimePose(val pose: Pose, val timestamp: Long = System.currentTimeMillis())
+
     abstract fun updateTelemetry()
     abstract fun reset()
     private val prevRobotRelativePositions: ArrayList<TimePose> = ArrayList()

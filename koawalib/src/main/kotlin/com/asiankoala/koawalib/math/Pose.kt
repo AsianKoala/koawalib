@@ -9,7 +9,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d
  * @param heading heading, in radians
  * @property vec vector made from [x] and [y]
  */
-class Pose(
+data class Pose(
     val x: Double = 0.0,
     val y: Double = 0.0,
     val heading: Double = 0.0

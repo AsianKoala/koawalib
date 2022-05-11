@@ -62,7 +62,6 @@ object KScheduler {
     private fun Cmd.scheduleThis() {
         if (scheduledCmdReqs.keys disjoint requirements) {
             initCommand(this, requirements)
-            Logger.logDebug("command ${this.name}: Command disjoint with scheduledRequirementKeys")
         } else {
             Logger.logWarning("command ${this.name}: Command overlap scheduledRequirementKeys")
 
@@ -91,17 +90,16 @@ object KScheduler {
         toSchedule.remove(this)
     }
 
-    internal fun run() {
-        Logger.logDebug("CommandScheduler entered run()")
-
+    internal fun update() {
         toSchedule.forEach { it.scheduleThis() }
-
         toCancel.forEach { it.cancelThis() }
 
         subsystems.forEach { (k, v) ->
             // if subsystem not required by any command, has a non-null default command, and
-            if (!scheduledCmdReqs.containsKey(k) && v != null && scheduledCmdReqs.keys disjoint v.requirements)
+            if (!scheduledCmdReqs.containsKey(k) && v != null && scheduledCmdReqs.keys disjoint v.requirements) {
                 v.execute()
+                Logger.logDebug("subsystem ${k.name} default cmd executed")
+            }
         }
 
         toSchedule.clear()
@@ -109,8 +107,8 @@ object KScheduler {
 
         subsystems.keys.forEach(Subsystem::periodic)
 
-        Logger.logDebug("required subsystems before running commands:")
         scheduledCmdReqs.keys.forEachIndexed { i, subsystem ->
+            if(i==0) Logger.logDebug("required subsystems before running commands:")
             Logger.logDebug("$i: ${subsystem.name}")
         }
 
@@ -188,12 +186,8 @@ object KScheduler {
      * @param cmd the default command
      */
     fun setDefaultCommand(subsystem: Subsystem, cmd: Cmd) {
-        if (!cmd.requirements.contains(subsystem)) {
-            Logger.logError("command ${cmd.name}: default commands must require subsystem")
-        }
-
-        if (cmd.requirements.size != 1) {
-            Logger.logError("command ${cmd.name}: default commands must only require one subsystem")
+        if (cmd.requirements.size != 1 || subsystem !in cmd.requirements) {
+            Logger.logError("command ${cmd.name}: default commands must require only subsystem ${subsystem.name}")
         }
 
         if (cmd.isFinished) {

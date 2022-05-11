@@ -139,6 +139,7 @@ abstract class Cmd {
     }
 
     operator fun unaryPlus() = schedule()
+    operator fun unaryMinus() = cancel()
 
     /**
      * Schedule command. Syntax sugar for [KScheduler.schedule]
