@@ -7,6 +7,7 @@ data class KMotorExSettings(
     val ticksPerUnit: Double,
     val isRevEncoder: Boolean,
     var allowedPositionError: Double,
+    var startingPosition: Double,
     var isMotionProfiled: Boolean,
     var isVoltageCorrected: Boolean,
     var pid: PIDSettings,

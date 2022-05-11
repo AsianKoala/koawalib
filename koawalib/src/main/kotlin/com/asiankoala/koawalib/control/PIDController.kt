@@ -4,7 +4,9 @@ import com.acmerobotics.roadrunner.util.NanoClock
 import com.asiankoala.koawalib.math.clamp
 import com.asiankoala.koawalib.math.epsilonNotEqual
 import com.asiankoala.koawalib.math.inputModulus
+import kotlin.math.abs
 import kotlin.math.absoluteValue
+import kotlin.math.sign
 
 /**
  * ENCODER IS NOT AUTO UPDATED IN THIS CLASS
@@ -15,79 +17,109 @@ class PIDController(
     var kI: Double,
     var kD: Double,
 ) {
-    private val clock = NanoClock.system()
-    private var minIntegral = -1.0
-    private var maxIntegral = 1.0
-    private var isContinuous = false
-    private var minInput = Double.NaN
-    private var maxInput = Double.NaN
+    private var clock = NanoClock.system()
+    private var errorSum: Double = 0.0
+    private var lastUpdateTimestamp: Double = Double.NaN
 
-    private var prevTime = Double.NaN
-    private var positionError = 0.0
-    private var posErrorDeriv = 0.0
-    private var prevError = 0.0
-    private var sumError = 0.0
-    private var position = Double.NaN
+    private var inputBounded: Boolean = false
+    private var minInput: Double = 0.0
+    private var maxInput: Double = 0.0
 
-    var target = Double.NaN
+    private var outputBounded: Boolean = false
+    private var minOutput: Double = 0.0
+    private var maxOutput: Double = 0.0
 
-    private fun updateError() {
-        prevError = positionError
+    /**
+     * Target position (that is, the controller setpoint).
+     */
+    var targetPosition: Double = 0.0
 
-        positionError = if (isContinuous) {
-            val errorBound = (maxInput - minInput) / 2.0
-            inputModulus(target - position, -errorBound, errorBound)
-        } else {
-            target - position
+    /**
+     * Target velocity.
+     */
+    var targetVelocity: Double = 0.0
+
+    /**
+     * Target acceleration.
+     */
+    var targetAcceleration: Double = 0.0
+
+    /**
+     * Error computed in the last call to [update].
+     */
+    var lastError: Double = 0.0
+        private set
+
+    /**
+     * Sets bound on the input of the controller. The min and max values are considered modularly-equivalent (that is,
+     * the input wraps around).
+     *
+     * @param min minimum input
+     * @param max maximum input
+     */
+    fun setInputBounds(min: Double, max: Double) {
+        if (min < max) {
+            inputBounded = true
+            minInput = min
+            maxInput = max
         }
     }
 
-    fun isAtTarget(positionEpsilon: Double): Boolean {
-        return positionError.absoluteValue < positionEpsilon
+    /**
+     * Sets bounds on the output of the controller.
+     *
+     * @param min minimum output
+     * @param max maximum output
+     */
+    fun setOutputBounds(min: Double, max: Double) {
+        if (min < max) {
+            outputBounded = true
+            minOutput = min
+            maxOutput = max
+        }
     }
 
-    fun enableContinuousInput(min: Double, max: Double) {
-        isContinuous = true
-        minInput = min
-        maxInput = max
+    private fun getPositionError(measuredPosition: Double): Double {
+        var error = targetPosition - measuredPosition
+        if (inputBounded) {
+            val inputRange = maxInput - minInput
+            while (abs(error) > inputRange / 2.0) {
+                error -= sign(error) * inputRange
+            }
+        }
+        return error
     }
 
-    fun disableContinuousInput() {
-        isContinuous = false
-        minInput = Double.NaN
-        maxInput = Double.NaN
-    }
-
-    fun setIntegratorRange(minInt: Double, maxInt: Double) {
-        minIntegral = minInt
-        maxIntegral = maxInt
-    }
-
-    fun update(pos: Double): Double {
-        position = pos
-        updateError()
-        return if (prevTime.isNaN()) {
-            prevTime = clock.seconds()
+    @JvmOverloads
+    fun update(
+        measuredPosition: Double,
+        measuredVelocity: Double? = null
+    ): Double {
+        val currentTimestamp = clock.seconds()
+        val error = getPositionError(measuredPosition)
+        return if (lastUpdateTimestamp.isNaN()) {
+            lastError = error
+            lastUpdateTimestamp = currentTimestamp
             0.0
         } else {
-            val dt = clock.seconds() - prevTime
+            val dt = currentTimestamp - lastUpdateTimestamp
+            errorSum += 0.5 * (error + lastError) * dt
+            val errorDeriv = (error - lastError) / dt
 
-            posErrorDeriv = (positionError - prevError) / dt
+            lastError = error
+            lastUpdateTimestamp = currentTimestamp
 
-            if (kI epsilonNotEqual 0.0) {
-                sumError = clamp(
-                    sumError + positionError * dt,
-                    minIntegral / kI,
-                    maxIntegral / kI
-                )
-            }
-
-            kP * positionError + kI * sumError + kD * posErrorDeriv
+            kP * error + kI * errorSum +
+                    kD * (measuredVelocity?.let { targetVelocity - it } ?: errorDeriv)
         }
     }
 
+    /**
+     * Reset the controller's integral sum.
+     */
     fun reset() {
-        sumError = 0.0
-        prevError = 0.0
+        errorSum = 0.0
+        lastError = 0.0
+        lastUpdateTimestamp = Double.NaN
     }
 }

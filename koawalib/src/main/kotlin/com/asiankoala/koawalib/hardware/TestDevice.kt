@@ -2,7 +2,7 @@ package com.asiankoala.koawalib.hardware
 
 import com.qualcomm.robotcore.hardware.HardwareDevice
 
-internal class TestHardwareDevice : HardwareDevice {
+internal open class TestDevice : HardwareDevice {
     override fun getManufacturer(): HardwareDevice.Manufacturer =
         HardwareDevice.Manufacturer.Unknown
 
@@ -17,4 +17,3 @@ internal class TestHardwareDevice : HardwareDevice {
     override fun close() {}
 }
 
-internal class TestDevice(name: String) : KDevice<TestHardwareDevice>(name, test = true)

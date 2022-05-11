@@ -12,6 +12,7 @@ import com.asiankoala.koawalib.util.OpModeState
 import com.asiankoala.koawalib.util.containsBy
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+import com.qualcomm.robotcore.hardware.VoltageSensor
 import com.qualcomm.robotcore.util.ElapsedTime
 
 /**
@@ -30,6 +31,8 @@ abstract class KOpMode : LinearOpMode() {
     private var opModeTimer = ElapsedTime()
     private lateinit var hubs: List<LynxModule>
 
+    private lateinit var voltageSensor: VoltageSensor
+
     private fun setup() {
         KScheduler.opModeInstance = this
 
@@ -42,7 +45,7 @@ abstract class KOpMode : LinearOpMode() {
         KDevice.hardwareMap = hardwareMap
         hubs = hardwareMap.getAll(LynxModule::class.java)
         hubs.forEach { it.bulkCachingMode = LynxModule.BulkCachingMode.MANUAL }
-        KDevice.voltageSensor = hardwareMap.voltageSensor.iterator().next()
+        voltageSensor = hardwareMap.voltageSensor.iterator().next()
 
         opModeTimer.reset()
         Logger.logInfo("opmode set up")
@@ -62,7 +65,7 @@ abstract class KOpMode : LinearOpMode() {
 
     private fun checkIfVoltageSensorNeeded() {
         if (KScheduler.deviceRegistry.values.filterIsInstance<KMotorEx>().containsBy({ it.settings.isVoltageCorrected }, true))
-            + LoopCmd({ KDevice.lastVoltageRead = KDevice.voltageSensor.voltage })
+            + LoopCmd({ KDevice.lastVoltageRead = voltageSensor.voltage })
     }
 
     private val mainStateMachine: StateMachine<OpModeState> = StateMachineBuilder<OpModeState>()

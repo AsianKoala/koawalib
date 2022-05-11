@@ -4,7 +4,6 @@ import com.asiankoala.koawalib.control.PIDController
 import com.asiankoala.koawalib.control.motion.MotionProfile
 import com.asiankoala.koawalib.control.motion.MotionState
 import com.asiankoala.koawalib.logger.Logger
-import com.asiankoala.koawalib.math.VOLTAGE_CONSTANT
 import com.asiankoala.koawalib.math.cos
 import com.asiankoala.koawalib.math.epsilonNotEqual
 import com.asiankoala.koawalib.subsystem.odometry.KEncoder
@@ -17,21 +16,19 @@ class KMotorEx(
     val settings: KMotorExSettings,
 ) : KMotor(settings.name) {
     var output = 0.0; private set
-    var voltage = 0.0; private set
 
-    val encoder = KEncoder(this, settings.ticksPerUnit, settings.isRevEncoder)
+    val encoder = KEncoder(this, settings.ticksPerUnit, settings.isRevEncoder).zero(settings.startingPosition)
     val controller = PIDController(settings.pid.kP, settings.pid.kI, settings.pid.kD)
     var pidOutput = 0.0; private set
 
     var batteryScaledOutput = 0.0; private set
-    private val voltageSensor = hardwareMap.voltageSensor.iterator().next()
     var ffOutput = 0.0; private set
 
-    var motionTimer = ElapsedTime(); private set
+    val motionTimer = ElapsedTime()
     var currentMotionProfile: MotionProfile? = null; private set
-    var setpointMotionState: MotionState = MotionState(); private set
-    var currentMotionState: MotionState? = null; private set
-    var finalTargetMotionState: MotionState? = null; private set
+    var currentMotionState: MotionState = MotionState(settings.startingPosition); private set
+    var setpointMotionState: MotionState = MotionState(settings.startingPosition); private set
+    var finalTargetMotionState: MotionState = MotionState(settings.startingPosition); private set
     var isFollowingProfile = false; private set
 
     private fun isInDisabledZone(): Boolean {
@@ -67,19 +64,15 @@ class KMotorEx(
         controller.reset()
         motionTimer.reset()
 
-        if (settings.constraints == null) {
-            settings.isMotionProfiled = false
-            isFollowingProfile = false
+        isFollowingProfile = if (settings.constraints == null && !settings.isMotionProfiled) {
             finalTargetMotionState = MotionState(x, 0.0, 0.0)
+            false
         } else {
-            val startState = MotionState(encoder.pos, encoder.vel)
-            val endState = MotionState(x, v)
-            val profile = MotionProfile(startState, endState, settings.constraints!!)
-
-            currentMotionProfile = profile
-            currentMotionState = startState
-            finalTargetMotionState = endState
-            isFollowingProfile = true
+            currentMotionState = MotionState(encoder.pos, encoder.vel)
+            finalTargetMotionState = MotionState(x, v)
+            currentMotionProfile = MotionProfile(currentMotionState,
+                finalTargetMotionState, settings.constraints!!)
+            true
         }
     }
 
@@ -92,40 +85,37 @@ class KMotorEx(
             kD = settings.pid.kD
         }
 
+        currentMotionState = MotionState(encoder.pos, encoder.vel, encoder.accel)
+
         if (isFollowingProfile) {
-            if (settings.isMotionProfiled) {
-                val secIntoProfile = motionTimer.seconds()
+            if(!settings.isMotionProfiled) Logger.logError("subsystem not motion profiled")
+            if(currentMotionProfile == null) Logger.logError("MUST BE FOLLOWING MOTION PROFILE")
 
-                when {
-                    currentMotionProfile == null -> Logger.logError("MUST BE FOLLOWING MOTION PROFILE")
+            val secIntoProfile = motionTimer.seconds()
 
-                    secIntoProfile > currentMotionProfile!!.duration -> {
-                        isFollowingProfile = false
-                        currentMotionProfile = null
-                        setpointMotionState = finalTargetMotionState!!
-                    }
-
-                    else -> {
-                        setpointMotionState = currentMotionProfile!![secIntoProfile]
-                        controller.target = setpointMotionState.x
-                        currentMotionState = MotionState(encoder.pos, encoder.vel, setpointMotionState.a)
-                    }
-                }
+            controller.targetPosition = if(secIntoProfile > currentMotionProfile!!.duration) {
+                isFollowingProfile = false
+                currentMotionProfile = null
+                setpointMotionState = finalTargetMotionState
+                finalTargetMotionState.x
             } else {
-                controller.target = finalTargetMotionState!!.x
-                currentMotionState = MotionState(encoder.pos, encoder.vel, encoder.accel)
+                setpointMotionState = currentMotionProfile!![secIntoProfile]
+                controller.targetVelocity = setpointMotionState.v
+                controller.targetAcceleration = setpointMotionState.a
+                setpointMotionState.x
             }
+        } else {
+            controller.targetPosition = finalTargetMotionState.x
         }
 
-        pidOutput = controller.update(encoder.pos)
+        pidOutput = controller.update(currentMotionState.x,
+            if(settings.isMotionProfiled && isFollowingProfile) currentMotionState.v else null)
 
-        val rawFFOutput = settings.ff.kS * setpointMotionState.v.sign +
+        ffOutput = settings.ff.kS * setpointMotionState.v.sign +
             settings.ff.kV * setpointMotionState.v +
             settings.ff.kA * setpointMotionState.a +
             settings.ff.kG +
             if (settings.ff.kCos epsilonNotEqual 0.0) settings.ff.kCos * encoder.pos.cos else 0.0
-
-        ffOutput = rawFFOutput / VOLTAGE_CONSTANT
 
         val realPIDOutput = if (settings.disabledSettings.isPIDDisabled) 0.0 else pidOutput
         val realFFOutput = if (settings.disabledSettings.isFFDisabled) 0.0 else ffOutput
@@ -135,8 +125,7 @@ class KMotorEx(
         super.power = when {
             settings.disabledSettings.isCompletelyDisabled || isInDisabledZone() -> 0.0
             settings.isVoltageCorrected -> {
-                voltage = voltageSensor.voltage
-                batteryScaledOutput = output * (12.0 / voltage)
+                batteryScaledOutput = output * (12.0 / lastVoltageRead)
                 batteryScaledOutput
             }
 
