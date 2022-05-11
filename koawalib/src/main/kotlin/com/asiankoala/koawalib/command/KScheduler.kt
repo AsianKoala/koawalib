@@ -44,10 +44,10 @@ object KScheduler {
         amountOfWatchdogs = 0
 
         allCollections.forEach {
-            if(it is Collection<*>) {
-                if(it.isNotEmpty()) throw Exception("collection not empty on init")
-            } else if(it is Map<*, *>) {
-                if(it.isNotEmpty()) throw Exception("collection not empty on init")
+            if (it is Collection<*>) {
+                if (it.isNotEmpty()) throw Exception("collection not empty on init")
+            } else if (it is Map<*, *>) {
+                if (it.isNotEmpty()) throw Exception("collection not empty on init")
             }
         }
     }
@@ -108,7 +108,7 @@ object KScheduler {
         subsystems.keys.forEach(Subsystem::periodic)
 
         scheduledCmdReqs.keys.forEachIndexed { i, subsystem ->
-            if(i==0) Logger.logDebug("required subsystems before running commands:")
+            if (i == 0) Logger.logDebug("required subsystems before running commands:")
             Logger.logDebug("$i: ${subsystem.name}")
         }
 
@@ -118,7 +118,7 @@ object KScheduler {
             command.execute()
 
             if (command !is Watchdog && command !is LoopCmd && command !is ParallelGroup) {
-                if(command is Group) {
+                if (command is Group) {
                     Logger.logInfo("group ${command.name} with cmd(s) ${command.currentCmdNames} executed")
                 } else {
                     Logger.logInfo("cmd ${command.name} executed")
@@ -127,11 +127,10 @@ object KScheduler {
 
             if (command.isFinished) {
                 command.end()
-                if(command !is InstantCmd) Logger.logDebug("command ${command.name} finished")
+                if (command !is InstantCmd) Logger.logDebug("command ${command.name} finished")
                 toRemove.add(command)
                 scheduledCmdReqs.keys.removeAll(command.requirements)
             }
-
         }
 
         scheduledCmds.removeAll(toRemove)

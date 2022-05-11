@@ -1,6 +1,5 @@
 package com.asiankoala.koawalib.control.motion
 
-import kotlin.math.absoluteValue
 import kotlin.math.pow
 
 /**

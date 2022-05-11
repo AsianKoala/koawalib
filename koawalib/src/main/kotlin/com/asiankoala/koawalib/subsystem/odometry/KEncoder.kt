@@ -1,13 +1,11 @@
 package com.asiankoala.koawalib.subsystem.odometry
 
 import com.acmerobotics.roadrunner.util.NanoClock
-import com.acmerobotics.roadrunner.util.epsilonEquals
 import com.asiankoala.koawalib.hardware.motor.KMotor
 import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.math.estimateDerivative
 import com.qualcomm.robotcore.util.MovingStatistics
 import kotlin.math.abs
-import kotlin.math.max
 import kotlin.math.sign
 
 // @Suppress("unused")

@@ -1,6 +1,5 @@
 package com.asiankoala.koawalib.math
 
-import com.acmerobotics.roadrunner.geometry.Vector2d
 import kotlin.math.*
 
 /**

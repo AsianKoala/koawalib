@@ -4,7 +4,6 @@ import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.geometry.Vector2d
 import com.acmerobotics.roadrunner.path.Path
 import com.asiankoala.koawalib.math.Pose
-import com.asiankoala.koawalib.math.Vector
 import com.asiankoala.koawalib.util.Speeds
 
 abstract class GVFController(

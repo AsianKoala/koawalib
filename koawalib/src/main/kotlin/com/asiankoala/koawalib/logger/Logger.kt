@@ -24,9 +24,8 @@ object Logger {
     internal val priorityList = listOf("NONE", "NONE", "VERBOSE", "DEBUG", "INFO", "WARN", "ERROR", "WTF")
     var config = LoggerConfig()
 
-
     private fun log(message: String, priority: Int) {
-        if(!config.isLogging) return
+        if (!config.isLogging) return
         toLog.add(LogData(message, priority))
     }
 
@@ -42,7 +41,7 @@ object Logger {
         toLog.forEach {
             logCount++
             Log.println(it.priority, tag, it.formattedMessage)
-            if(config.isPrinting) println(it.printString)
+            if (config.isPrinting) println(it.printString)
         }
         toLog.clear()
     }
@@ -62,7 +61,7 @@ object Logger {
      * @param message string to add
      */
     fun addTelemetryLine(message: String) {
-        if(config.isTelemetryEnabled) {
+        if (config.isTelemetryEnabled) {
             if (telemetry == null) {
                 val nullStr = "LogManager telemetry is null"
                 logError(nullStr)

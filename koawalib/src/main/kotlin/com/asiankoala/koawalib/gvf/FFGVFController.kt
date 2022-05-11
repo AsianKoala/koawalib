@@ -4,7 +4,6 @@ import com.acmerobotics.roadrunner.geometry.Vector2d
 import com.acmerobotics.roadrunner.path.Path
 import com.asiankoala.koawalib.gvf.GVFUtil.toVec
 import com.asiankoala.koawalib.math.Pose
-import com.asiankoala.koawalib.math.Vector
 import com.asiankoala.koawalib.math.angleWrap
 import com.asiankoala.koawalib.math.degrees
 import com.asiankoala.koawalib.util.Speeds
@@ -38,7 +37,7 @@ class FFGVFController(
     override fun headingControl(gvfVec: Vector2d): Pair<Double, Double> {
         var desiredHeading = gvfVec.angle()
 
-        if(kLookahead != null) {
+        if (kLookahead != null) {
             val lookaheadS = lastS + kLookahead
             desiredHeading = (path[lookaheadS].vec() - path[lastS].vec()).angle()
         }

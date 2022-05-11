@@ -18,8 +18,10 @@ class GVFCmd(
     private val controller = SimpleGVFController(path, kN, kOmega, kF, epsilon, errorMap)
 
     override fun execute() {
-        drive.powers = controller.update(drive.pose,
-            Speeds().apply { setRobotCentric(drive.vel, drive.pose.heading) })
+        drive.powers = controller.update(
+            drive.pose,
+            Speeds().apply { setRobotCentric(drive.vel, drive.pose.heading) }
+        )
             .getRobotCentric(drive.pose.heading)
     }
 

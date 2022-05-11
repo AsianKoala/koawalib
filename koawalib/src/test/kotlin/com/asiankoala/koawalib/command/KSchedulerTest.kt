@@ -3,9 +3,7 @@ package com.asiankoala.koawalib.command
 import com.asiankoala.koawalib.command.commands.Cmd
 import com.asiankoala.koawalib.command.commands.InstantCmd
 import com.asiankoala.koawalib.command.commands.WaitCmd
-import com.asiankoala.koawalib.hardware.KDevice
 import com.asiankoala.koawalib.hardware.TestDevice
-import com.asiankoala.koawalib.hardware.TestHardwareDevice
 import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.subsystem.DeviceSubsystem
 import com.asiankoala.koawalib.testPeriodic
@@ -17,9 +15,9 @@ internal class KSchedulerTest {
     @Test
     fun testScheduler() {
         testReset()
-        + InstantCmd({ Logger.logInfo("meow")})
+        + InstantCmd({ Logger.logInfo("meow") })
         testPeriodic()
-        + InstantCmd({ Logger.logInfo("hi")})
+        + InstantCmd({ Logger.logInfo("hi") })
         testPeriodic()
     }
 

@@ -22,9 +22,8 @@ internal fun testReset() {
 }
 
 internal fun testPeriodic(t: Int = 10) {
-    for(i in 0 until t) {
+    for (i in 0 until t) {
         KScheduler.update()
         Logger.update()
     }
 }
-

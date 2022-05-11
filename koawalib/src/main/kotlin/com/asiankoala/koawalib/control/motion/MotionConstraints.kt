@@ -12,4 +12,3 @@ data class MotionConstraints(
     var accel: Double,
     var deccel: Double = -accel,
 )
-

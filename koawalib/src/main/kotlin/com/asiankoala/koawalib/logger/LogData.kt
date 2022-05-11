@@ -9,7 +9,7 @@ internal data class LogData(
     val message: String,
     val priority: Int,
 ) {
-    private val dateString =  Calendar.getInstance().time.format("HH:mm:ss.SSS")
+    private val dateString = Calendar.getInstance().time.format("HH:mm:ss.SSS")
 
     val formattedMessage get() = "%-10s %s".format(Logger.logCount, message)
     val printString

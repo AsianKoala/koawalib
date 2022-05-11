@@ -1,16 +1,13 @@
 package com.asiankoala.koawalib.gvf
 
-import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.geometry.Vector2d
 import com.acmerobotics.roadrunner.path.Path
 import com.asiankoala.koawalib.gvf.GVFUtil.toVec
 import com.asiankoala.koawalib.math.Pose
-import com.asiankoala.koawalib.math.Vector
 import com.asiankoala.koawalib.math.angleWrap
 import com.asiankoala.koawalib.util.Speeds
 import kotlin.math.PI
 import kotlin.math.absoluteValue
-import kotlin.math.max
 
 /**
  *  Guided Vector Field follower

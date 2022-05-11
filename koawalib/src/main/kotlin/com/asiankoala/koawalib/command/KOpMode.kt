@@ -18,7 +18,7 @@ import com.qualcomm.robotcore.util.ElapsedTime
  * The template opmode for utilizing koawalib. DO NOT OVERRIDE runOpMode(). Iterative OpMode's init, init loop, start, and loop functions have been
  * implemented with mInit(), mInitLoop(), mStart(), mLoop(), mStop()
  */
-//@Suppress("unused")
+// @Suppress("unused")
 abstract class KOpMode : LinearOpMode() {
     protected val driver: KGamepad by lazy { KGamepad(gamepad1) }
     protected val gunner: KGamepad by lazy { KGamepad(gamepad2) }
@@ -61,9 +61,8 @@ abstract class KOpMode : LinearOpMode() {
     }
 
     private fun checkIfVoltageSensorNeeded() {
-        if(KScheduler.deviceRegistry.values.filterIsInstance<KMotorEx>().containsBy({ it.settings.isVoltageCorrected }, true))
+        if (KScheduler.deviceRegistry.values.filterIsInstance<KMotorEx>().containsBy({ it.settings.isVoltageCorrected }, true))
             + LoopCmd({ KDevice.lastVoltageRead = KDevice.voltageSensor.voltage })
-            
     }
 
     private val mainStateMachine: StateMachine<OpModeState> = StateMachineBuilder<OpModeState>()

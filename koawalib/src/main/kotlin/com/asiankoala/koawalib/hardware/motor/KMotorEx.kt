@@ -67,7 +67,7 @@ class KMotorEx(
         controller.reset()
         motionTimer.reset()
 
-        if(settings.constraints == null) {
+        if (settings.constraints == null) {
             settings.isMotionProfiled = false
             isFollowingProfile = false
             finalTargetMotionState = MotionState(x, 0.0, 0.0)
@@ -93,7 +93,7 @@ class KMotorEx(
         }
 
         if (isFollowingProfile) {
-            if(settings.isMotionProfiled) {
+            if (settings.isMotionProfiled) {
                 val secIntoProfile = motionTimer.seconds()
 
                 when {
@@ -117,14 +117,13 @@ class KMotorEx(
             }
         }
 
-
         pidOutput = controller.update(encoder.pos)
 
         val rawFFOutput = settings.ff.kS * setpointMotionState.v.sign +
-                settings.ff.kV * setpointMotionState.v +
-                settings.ff.kA * setpointMotionState.a +
-                settings.ff.kG +
-                if(settings.ff.kCos epsilonNotEqual 0.0) settings.ff.kCos * encoder.pos.cos else 0.0
+            settings.ff.kV * setpointMotionState.v +
+            settings.ff.kA * setpointMotionState.a +
+            settings.ff.kG +
+            if (settings.ff.kCos epsilonNotEqual 0.0) settings.ff.kCos * encoder.pos.cos else 0.0
 
         ffOutput = rawFFOutput / VOLTAGE_CONSTANT
 
