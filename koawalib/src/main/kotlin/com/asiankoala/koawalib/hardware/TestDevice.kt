@@ -16,4 +16,3 @@ internal open class TestDevice : HardwareDevice {
 
     override fun close() {}
 }
-

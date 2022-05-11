@@ -1,11 +1,7 @@
 package com.asiankoala.koawalib.control
 
 import com.acmerobotics.roadrunner.util.NanoClock
-import com.asiankoala.koawalib.math.clamp
-import com.asiankoala.koawalib.math.epsilonNotEqual
-import com.asiankoala.koawalib.math.inputModulus
 import kotlin.math.abs
-import kotlin.math.absoluteValue
 import kotlin.math.sign
 
 /**
@@ -110,7 +106,7 @@ class PIDController(
             lastUpdateTimestamp = currentTimestamp
 
             kP * error + kI * errorSum +
-                    kD * (measuredVelocity?.let { targetVelocity - it } ?: errorDeriv)
+                kD * (measuredVelocity?.let { targetVelocity - it } ?: errorDeriv)
         }
     }
 

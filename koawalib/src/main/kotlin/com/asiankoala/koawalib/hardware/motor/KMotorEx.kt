@@ -70,8 +70,10 @@ class KMotorEx(
         } else {
             currentMotionState = MotionState(encoder.pos, encoder.vel)
             finalTargetMotionState = MotionState(x, v)
-            currentMotionProfile = MotionProfile(currentMotionState,
-                finalTargetMotionState, settings.constraints!!)
+            currentMotionProfile = MotionProfile(
+                currentMotionState,
+                finalTargetMotionState, settings.constraints!!
+            )
             true
         }
     }
@@ -88,12 +90,12 @@ class KMotorEx(
         currentMotionState = MotionState(encoder.pos, encoder.vel, encoder.accel)
 
         if (isFollowingProfile) {
-            if(!settings.isMotionProfiled) Logger.logError("subsystem not motion profiled")
-            if(currentMotionProfile == null) Logger.logError("MUST BE FOLLOWING MOTION PROFILE")
+            if (!settings.isMotionProfiled) Logger.logError("subsystem not motion profiled")
+            if (currentMotionProfile == null) Logger.logError("MUST BE FOLLOWING MOTION PROFILE")
 
             val secIntoProfile = motionTimer.seconds()
 
-            controller.targetPosition = if(secIntoProfile > currentMotionProfile!!.duration) {
+            controller.targetPosition = if (secIntoProfile > currentMotionProfile!!.duration) {
                 isFollowingProfile = false
                 currentMotionProfile = null
                 setpointMotionState = finalTargetMotionState
@@ -108,8 +110,10 @@ class KMotorEx(
             controller.targetPosition = finalTargetMotionState.x
         }
 
-        pidOutput = controller.update(currentMotionState.x,
-            if(settings.isMotionProfiled && isFollowingProfile) currentMotionState.v else null)
+        pidOutput = controller.update(
+            currentMotionState.x,
+            if (settings.isMotionProfiled && isFollowingProfile) currentMotionState.v else null
+        )
 
         ffOutput = settings.ff.kS * setpointMotionState.v.sign +
             settings.ff.kV * setpointMotionState.v +

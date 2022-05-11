@@ -11,7 +11,7 @@ internal class TestMotor : TestDevice(), DcMotor {
     private var direction = DcMotorSimple.Direction.FORWARD
     private var mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
     private var zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
-    
+
     override fun setDirection(direction: DcMotorSimple.Direction) {
         this.direction = direction
     }
