@@ -38,7 +38,6 @@ abstract class KOpMode : LinearOpMode() {
 
         Logger.reset()
         Logger.telemetry = telemetry
-        Logger.config = LoggerConfig()
         KScheduler.resetScheduler()
         Logger.addErrorCommand()
 

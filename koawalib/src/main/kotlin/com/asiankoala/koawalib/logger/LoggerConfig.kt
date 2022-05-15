@@ -10,13 +10,11 @@ package com.asiankoala.koawalib.logger
  * @param maxWarningCount warnings until bad stuff happens
  */
 data class LoggerConfig(
-    var isLogging: Boolean = true,
-    var isPrinting: Boolean = false,
-    var isDebugging: Boolean = true,
-    var isDashboardEnabled: Boolean = false,
-    var isTelemetryEnabled: Boolean = true,
-//    var maxErrorCount: Int = 1,
-//    var maxWarningCount: Int = 1,
+    var isLogging: Boolean,
+    var isPrinting: Boolean,
+    var isDebugging: Boolean,
+    var isDashboardEnabled: Boolean,
+    var isTelemetryEnabled: Boolean,
 ) {
     companion object {
         val PRINT_CONFIG = LoggerConfig(
@@ -48,6 +46,14 @@ data class LoggerConfig(
             isPrinting = false,
             isDebugging = false,
             isDashboardEnabled = true,
+            isTelemetryEnabled = true
+        )
+
+        val SIMPLE_CONFIG = LoggerConfig(
+            isLogging = true,
+            isPrinting = false,
+            isDebugging = false,
+            isDashboardEnabled = false,
             isTelemetryEnabled = true
         )
     }

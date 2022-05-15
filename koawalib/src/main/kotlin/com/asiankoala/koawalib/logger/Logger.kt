@@ -22,7 +22,7 @@ object Logger {
     internal var telemetry: Telemetry? = null
     internal var logCount = 0; private set
     internal val priorityList = listOf("NONE", "NONE", "VERBOSE", "DEBUG", "INFO", "WARN", "ERROR", "WTF")
-    var config = LoggerConfig()
+    var config = LoggerConfig.SIMPLE_CONFIG
 
     private fun log(message: String, priority: Int) {
         if (!config.isLogging) return
@@ -35,6 +35,7 @@ object Logger {
         warnings = 0
         toLog.clear()
         packet = TelemetryPacket()
+        config = LoggerConfig.SIMPLE_CONFIG
     }
 
     internal fun update() {
@@ -44,16 +45,21 @@ object Logger {
             if (config.isPrinting) println(it.printString)
         }
         toLog.clear()
+
+        if(config.isDashboardEnabled) {
+            dashboard.sendTelemetryPacket(packet)
+            packet = TelemetryPacket()
+        }
     }
 
     internal fun addErrorCommand() {
-        LoopCmd({ addTelemetryData("error count", errors) }).withName("error counter").schedule()
+        + LoopCmd({ addTelemetryData("warning count", warnings)}).withName("warning counter")
+        + LoopCmd({ addTelemetryData("error count", errors) }).withName("error counter")
     }
 
     fun addVar(name: String, data: Any?) {
-        if (config.isDashboardEnabled) {
-            packet.put(name, data)
-        }
+        if(!config.isDashboardEnabled) return
+        packet.put(name, data)
     }
 
     /**
@@ -61,17 +67,9 @@ object Logger {
      * @param message string to add
      */
     fun addTelemetryLine(message: String) {
-        if (config.isTelemetryEnabled) {
-            if (telemetry == null) {
-                val nullStr = "LogManager telemetry is null"
-                logError(nullStr)
-            } else {
-                telemetry!!.addLine(message)
-                if (config.isDashboardEnabled) {
-                    packet.addLine(message)
-                }
-            }
-        }
+        if(!config.isTelemetryEnabled) return
+        if(telemetry == null) return
+        telemetry!!.addLine(message)
     }
 
     /**
@@ -88,6 +86,7 @@ object Logger {
      * @param message logger message to send
      */
     fun logDebug(message: String) {
+        if(!config.isLogging) return
         if (!config.isDebugging) return
         log(message, Log.DEBUG)
     }
@@ -106,6 +105,7 @@ object Logger {
      * @param message logger message to send
      */
     fun logInfo(message: String) {
+        if(!config.isLogging) return
         log(message, Log.INFO)
     }
 
@@ -123,6 +123,7 @@ object Logger {
      * @param message logger message to send
      */
     fun logWarning(message: String) {
+        if(!config.isLogging) return
         warnings++
         log("WARNING: $message", Log.WARN)
     }
@@ -141,6 +142,7 @@ object Logger {
      * @param message string
      */
     fun logError(message: String) {
+        if(!config.isLogging) return
         errors++
         log("ERROR: $message", Log.ERROR)
     }

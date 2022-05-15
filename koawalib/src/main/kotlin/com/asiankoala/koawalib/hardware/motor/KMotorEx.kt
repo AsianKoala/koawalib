@@ -40,7 +40,7 @@ class KMotorEx(
         return isAtTarget(settings.disabledPosition!!)
     }
 
-    fun isAtTarget(target: Double = finalTargetMotionState!!.x): Boolean {
+    fun isAtTarget(target: Double = finalTargetMotionState.x): Boolean {
         return (encoder.pos - target).absoluteValue < settings.allowedPositionError
     }
 
