@@ -1,6 +1,7 @@
 package com.asiankoala.koawalib.hardware.motor
 
 import com.asiankoala.koawalib.control.PIDController
+import com.asiankoala.koawalib.control.ProfiledPIDController
 import com.asiankoala.koawalib.control.motion.MotionProfile
 import com.asiankoala.koawalib.control.motion.MotionState
 import com.asiankoala.koawalib.logger.Logger
@@ -42,10 +43,6 @@ class KMotorEx(
 
     fun isAtTarget(target: Double = finalTargetMotionState.x): Boolean {
         return (encoder.pos - target).absoluteValue < settings.allowedPositionError
-    }
-
-    fun isCompletelyFinished(): Boolean {
-        return !isFollowingProfile && isAtTarget()
     }
 
     val enableVoltageFF: KMotorEx
@@ -94,7 +91,6 @@ class KMotorEx(
             if (currentMotionProfile == null) Logger.logError("MUST BE FOLLOWING MOTION PROFILE")
 
             val secIntoProfile = motionTimer.seconds()
-
             controller.targetPosition = if (secIntoProfile > currentMotionProfile!!.duration) {
                 isFollowingProfile = false
                 currentMotionProfile = null
@@ -119,7 +115,7 @@ class KMotorEx(
             settings.ff.kV * setpointMotionState.v +
             settings.ff.kA * setpointMotionState.a +
             settings.ff.kG +
-            if (settings.ff.kCos epsilonNotEqual 0.0) settings.ff.kCos * encoder.pos.cos else 0.0
+                (settings.ff.kCos?.times(encoder.pos.cos) ?: 0.0)
 
         val realPIDOutput = if (settings.disabledSettings.isPIDDisabled) 0.0 else pidOutput
         val realFFOutput = if (settings.disabledSettings.isFFDisabled) 0.0 else ffOutput
@@ -132,7 +128,6 @@ class KMotorEx(
                 batteryScaledOutput = output * (12.0 / lastVoltageRead)
                 batteryScaledOutput
             }
-
             else -> output
         }
     }

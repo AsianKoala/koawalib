@@ -4,9 +4,6 @@ import com.acmerobotics.roadrunner.util.NanoClock
 import kotlin.math.abs
 import kotlin.math.sign
 
-/**
- * ENCODER IS NOT AUTO UPDATED IN THIS CLASS
- */
 @Suppress("unused")
 class PIDController(
     var kP: Double,

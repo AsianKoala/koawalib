@@ -4,7 +4,7 @@ import com.acmerobotics.roadrunner.util.NanoClock
 import com.qualcomm.robotcore.util.MovingStatistics
 
 @Suppress("unused")
-class RateLimiter(private val timestep: Double, private val func: () -> Unit) : Periodic {
+class RateLimiter(private val timestepSec: Double, private val func: () -> Unit) : Periodic {
     private val clock = NanoClock.system()
     private var lastDiscreteTime = clock.seconds()
     private var dtStats = MovingStatistics(10)
@@ -13,7 +13,7 @@ class RateLimiter(private val timestep: Double, private val func: () -> Unit) : 
         val sec = clock.seconds()
         val dt = sec - lastDiscreteTime
         dtStats.add(dt)
-        if (sec - lastDiscreteTime > timestep || dtStats.mean > 1.5 * timestep) {
+        if (sec - lastDiscreteTime > timestepSec || dtStats.mean > 1.5 * timestepSec) {
             func.invoke()
             lastDiscreteTime = sec
         }

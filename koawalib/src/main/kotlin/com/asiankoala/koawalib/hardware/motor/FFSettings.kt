@@ -5,5 +5,5 @@ data class FFSettings(
     var kV: Double = 0.0,
     var kA: Double = 0.0,
     var kG: Double = 0.0,
-    var kCos: Double = 0.0,
+    var kCos: Double? = null,
 )
