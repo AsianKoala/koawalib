@@ -1,4 +1,4 @@
-package com.asiankoala.koawalib.control.motion
+package com.asiankoala.koawalib.control.profile
 
 import kotlin.math.pow
 

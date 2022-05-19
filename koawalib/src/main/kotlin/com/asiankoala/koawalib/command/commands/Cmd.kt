@@ -13,6 +13,9 @@ import com.asiankoala.koawalib.subsystem.Subsystem
  * Commands contain a list of subsystem "requirements", preventing multiple subsystems accessing a command simultaneously.
  * All commands are scheduled and ran through the CommandScheduler.
  * @see KScheduler
+ *
+ * // todo: if photon stuff works introduce freq limiter for cmds
+ *
  */
 abstract class Cmd {
     private var _name: String? = null

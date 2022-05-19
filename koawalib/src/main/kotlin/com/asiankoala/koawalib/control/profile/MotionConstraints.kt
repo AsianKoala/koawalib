@@ -1,4 +1,4 @@
-package com.asiankoala.koawalib.control.motion
+package com.asiankoala.koawalib.control.profile
 
 /**
  * Motion Constraints specify limits of motion of a system

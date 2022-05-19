@@ -1,4 +1,4 @@
-package com.asiankoala.koawalib.control.motion
+package com.asiankoala.koawalib.control.profile
 
 import com.asiankoala.koawalib.math.absMin
 import kotlin.math.absoluteValue
