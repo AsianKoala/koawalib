@@ -41,7 +41,7 @@ abstract class KMotorExTuner : KOpMode() {
         if (!kV.isNaN()) motor.settings.ff.kV = kV else kV = motor.settings.ff.kV
         if (!kA.isNaN()) motor.settings.ff.kA = kA else kA = motor.settings.ff.kA
         if (!kG.isNaN()) motor.settings.ff.kG = kG else kG = motor.settings.ff.kG
-        if (!kCos.isNaN()) motor.settings.ff.kCos = kCos else kCos = motor.settings.ff.kCos
+//        if (!kCos.isNaN()) motor.settings.ff.kCos = kCos else kCos = motor.settings.ff.kCos
         if (!kP.isNaN()) motor.settings.pid.kP = kP else kP = motor.settings.pid.kP
         if (!kI.isNaN()) motor.settings.pid.kI = kI else kI = motor.settings.pid.kI
         if (!kD.isNaN()) motor.settings.pid.kD = kD else kD = motor.settings.pid.kD

@@ -36,7 +36,7 @@ object KScheduler {
 
     private var amountOfWatchdogs = 0
 
-    internal lateinit var opModeInstance: KOpMode
+    internal lateinit var stateReceiver: () -> OpModeState
 
     internal fun resetScheduler() {
         allMaps.forEach(MutableMap<*, *>::clear)
@@ -137,7 +137,7 @@ object KScheduler {
     }
 
     private fun scheduleForState(state: OpModeState, cmd: Cmd) {
-        schedule(cmd.waitUntil { opModeInstance.opmodeState == state })
+        schedule(cmd.waitUntil { stateReceiver.invoke() == state })
     }
 
     /**

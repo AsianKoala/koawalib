@@ -34,7 +34,7 @@ abstract class KOpMode : LinearOpMode() {
     private lateinit var voltageSensor: VoltageSensor
 
     private fun setup() {
-        KScheduler.opModeInstance = this
+        KScheduler.stateReceiver = { opmodeState }
 
         Logger.reset()
         Logger.telemetry = telemetry
