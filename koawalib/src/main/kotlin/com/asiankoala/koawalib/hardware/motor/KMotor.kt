@@ -1,8 +1,10 @@
 package com.asiankoala.koawalib.hardware.motor
 
+import com.asiankoala.koawalib.control.motor.MotorController
 import com.asiankoala.koawalib.hardware.KDevice
 import com.asiankoala.koawalib.math.d
 import com.asiankoala.koawalib.math.epsilonNotEqual
+import com.asiankoala.koawalib.subsystem.odometry.KEncoder
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
@@ -15,6 +17,9 @@ import kotlin.math.absoluteValue
  */
 open class KMotor(name: String) : KDevice<DcMotorEx>(name) {
     private var powerMultiplier = 1.0
+
+    var isVoltageCorrected = false
+        private set
 
     /**
      * raw motor position (ticks, no offset)
@@ -29,20 +34,21 @@ open class KMotor(name: String) : KDevice<DcMotorEx>(name) {
     var power: Double = 0.0
         set(value) {
             var clipped = Range.clip(value, -1.0, 1.0) * powerMultiplier
+            if(isVoltageCorrected) clipped *= (12.0 / lastVoltageRead)
             if (clipped epsilonNotEqual field && (clipped == 0.0 || clipped.absoluteValue == 1.0 || (clipped - field).absoluteValue > 0.005)) {
                 field = clipped
                 device.power = clipped
             }
         }
 
-    private var zeroPowerBehavior: DcMotor.ZeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
-        set(value) {
+    var zeroPowerBehavior: DcMotor.ZeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
+        private set(value) {
             device.zeroPowerBehavior = value
             field = value
         }
 
-    private var direction: DcMotorSimple.Direction = DcMotorSimple.Direction.FORWARD
-        set(value) {
+    var direction: DcMotorSimple.Direction = DcMotorSimple.Direction.FORWARD
+        private set(value) {
             powerMultiplier = if (value == DcMotorSimple.Direction.FORWARD) {
                 1.0
             } else {

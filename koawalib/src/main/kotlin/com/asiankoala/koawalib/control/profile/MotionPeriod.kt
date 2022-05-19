@@ -1,4 +1,4 @@
-package com.asiankoala.koawalib.control.motion
+package com.asiankoala.koawalib.control.profile
 
 data class MotionPeriod(
     var startState: MotionState,

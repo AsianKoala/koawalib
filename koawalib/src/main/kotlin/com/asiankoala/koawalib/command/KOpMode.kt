@@ -3,6 +3,7 @@ package com.asiankoala.koawalib.command
 import com.asiankoala.koawalib.command.commands.LoopCmd
 import com.asiankoala.koawalib.gamepad.KGamepad
 import com.asiankoala.koawalib.hardware.KDevice
+import com.asiankoala.koawalib.hardware.motor.KMotor
 import com.asiankoala.koawalib.hardware.motor.KMotorEx
 import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.logger.LoggerConfig
@@ -63,8 +64,11 @@ abstract class KOpMode : LinearOpMode() {
     }
 
     private fun checkIfVoltageSensorNeeded() {
-        if (KScheduler.deviceRegistry.values.filterIsInstance<KMotorEx>().containsBy({ it.settings.isVoltageCorrected }, true))
+        if (KScheduler.deviceRegistry.values
+                .filterIsInstance<KMotor>()
+                .containsBy({ it.isVoltageCorrected }, true)) {
             + LoopCmd({ KDevice.lastVoltageRead = voltageSensor.voltage })
+        }
     }
 
     private val mainStateMachine: StateMachine<OpModeState> = StateMachineBuilder<OpModeState>()
