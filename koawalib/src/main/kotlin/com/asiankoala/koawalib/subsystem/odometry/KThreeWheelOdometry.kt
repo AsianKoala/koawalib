@@ -1,5 +1,6 @@
 package com.asiankoala.koawalib.subsystem.odometry
 
+import com.asiankoala.koawalib.hardware.motor.KEncoder
 import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.angleWrap

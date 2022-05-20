@@ -3,7 +3,7 @@ package com.asiankoala.koawalib.control.motor
 import com.acmerobotics.roadrunner.control.PIDFController
 import com.asiankoala.koawalib.control.controller.PIDGains
 import com.asiankoala.koawalib.control.profile.MotionState
-import com.asiankoala.koawalib.subsystem.odometry.KEncoder
+import com.asiankoala.koawalib.hardware.motor.KEncoder
 
 internal abstract class MotorController(
     pidGains: PIDGains,
@@ -21,11 +21,11 @@ internal abstract class MotorController(
         ffGains.kS
     )
 
-    var output = 0.0
+    var output = 0.0; protected set
     protected var currentState = MotionState(encoder.pos)
     protected var targetState = MotionState(encoder.pos)
 
-    internal fun updateEncoder() {
+    fun updateEncoder() {
         encoder.update()
         currentState = MotionState(encoder.pos, encoder.vel)
     }

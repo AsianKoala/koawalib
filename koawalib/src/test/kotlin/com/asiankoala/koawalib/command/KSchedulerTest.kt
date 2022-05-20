@@ -3,13 +3,11 @@ package com.asiankoala.koawalib.command
 import com.asiankoala.koawalib.command.commands.Cmd
 import com.asiankoala.koawalib.command.commands.InstantCmd
 import com.asiankoala.koawalib.command.commands.WaitCmd
-import com.asiankoala.koawalib.hardware.TestDevice
 import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.subsystem.DeviceSubsystem
 import com.asiankoala.koawalib.testPeriodic
 import com.asiankoala.koawalib.testReset
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 internal class KSchedulerTest {
     @Test

@@ -2,8 +2,7 @@ package com.asiankoala.koawalib.control.motor
 
 import com.asiankoala.koawalib.control.controller.PIDGains
 import com.asiankoala.koawalib.control.profile.MotionState
-import com.asiankoala.koawalib.math.cos
-import com.asiankoala.koawalib.subsystem.odometry.KEncoder
+import com.asiankoala.koawalib.hardware.motor.KEncoder
 import kotlin.math.absoluteValue
 
 internal class PositionMotorController(
@@ -23,7 +22,7 @@ internal class PositionMotorController(
     override fun update() {
         output = controller.update(currentState.x, currentState.v) + ff.calc(currentState.x)
 
-        if(disabledPosition.shouldDisable(targetState.x, currentState.x)) {
+        if (disabledPosition.shouldDisable(targetState.x, currentState.x)) {
             output = 0.0
         }
     }

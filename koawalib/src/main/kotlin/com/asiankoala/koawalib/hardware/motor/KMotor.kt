@@ -10,7 +10,6 @@ import com.asiankoala.koawalib.control.profile.MotionConstraints
 import com.asiankoala.koawalib.hardware.KDevice
 import com.asiankoala.koawalib.math.d
 import com.asiankoala.koawalib.math.epsilonNotEqual
-import com.asiankoala.koawalib.subsystem.odometry.KEncoder
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
@@ -21,36 +20,28 @@ import kotlin.math.absoluteValue
  * The koawalib standard open-loop motor. Default settings are zeroPowerBehavior: float and direction: forward
  * @see KMotorEx for closed-loop control
  */
-open class KMotor(name: String) : KDevice<DcMotorEx>(name) {
+class KMotor(name: String) : KDevice<DcMotorEx>(name) {
     private var powerMultiplier = 1.0
+    private var disabled = false
+    internal var isVoltageCorrected = false; private set
 
-    internal var isVoltageCorrected = false
-        private set
-
-    // overall control
     private var mode = MotorControlModes.OPEN_LOOP
-    lateinit var encoder: KEncoder; private set
     private lateinit var controller: MotorController
+    private var encoderCreated = false
+    private lateinit var encoder: KEncoder; private set
 
-    /**
-     * raw motor position (ticks, no offset)
-     */
     internal val rawMotorPosition get() = device.currentPosition.d
-
-    /**
-     * raw motor velocity (ticks)
-     */
     internal val rawMotorVelocity get() = device.velocity
 
     internal fun update() {
-        if(mode == MotorControlModes.OPEN_LOOP) return
+        if (mode == MotorControlModes.OPEN_LOOP) return
 
         controller.updateEncoder()
         controller.update()
 
         var rawOutput = controller.output
 
-        if(isVoltageCorrected) {
+        if (isVoltageCorrected) {
             rawOutput *= (12.0 / lastVoltageRead)
         }
 
@@ -60,21 +51,21 @@ open class KMotor(name: String) : KDevice<DcMotorEx>(name) {
     var power: Double = 0.0
         set(value) {
             var clipped = Range.clip(value, -1.0, 1.0) * powerMultiplier
-            if(isVoltageCorrected) clipped *= (12.0 / lastVoltageRead)
+            if (isVoltageCorrected) clipped *= (12.0 / lastVoltageRead)
             if (clipped epsilonNotEqual field && (clipped == 0.0 || clipped.absoluteValue == 1.0 || (clipped - field).absoluteValue > 0.005)) {
                 field = clipped
                 device.power = clipped
             }
         }
 
-    var zeroPowerBehavior: DcMotor.ZeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
-        private set(value) {
+    private var zeroPowerBehavior: DcMotor.ZeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
+        set(value) {
             device.zeroPowerBehavior = value
             field = value
         }
 
-    var direction: DcMotorSimple.Direction = DcMotorSimple.Direction.FORWARD
-        private set(value) {
+    private var direction: DcMotorSimple.Direction = DcMotorSimple.Direction.FORWARD
+        set(value) {
             powerMultiplier = if (value == DcMotorSimple.Direction.FORWARD) {
                 1.0
             } else {
@@ -119,47 +110,97 @@ open class KMotor(name: String) : KDevice<DcMotorEx>(name) {
             return this
         }
 
-    fun withPositionControl(ticksPerUnit: Double, isRevEncoder: Boolean, pidGains: PIDGains, ffGains: FFGains,
-                       allowedPositionError: Double, disabledPosition: DisabledPosition = DisabledPosition.NONE): KMotor {
+    fun createEncoder(ticksPerUnit: Double, isRevEncoder: Boolean): KMotor {
+        encoder = KEncoder(this, ticksPerUnit, isRevEncoder)
+        encoderCreated = true
+        return this
+    }
+
+    fun zero(newPosition: Double): KMotor {
+        if (!encoderCreated) throw Exception("encoder has not been created yet")
+        return this
+    }
+
+    val reverseEncoder: KMotor
+        get() {
+            encoder.reverse
+            return this
+        }
+
+    val pos: Double
+        get() {
+            if (!encoderCreated) throw Exception("encoder has not been created yet")
+            return encoder.pos
+        }
+
+    val vel: Double
+        get() {
+            if (!encoderCreated) throw Exception("encoder has not been created yet")
+            return encoder.vel
+        }
+
+    val accel: Double
+        get() {
+            if (!encoderCreated) throw Exception("encoder has not been created yet")
+            return encoder.accel
+        }
+
+    fun withPositionControl(
+        ticksPerUnit: Double,
+        isRevEncoder: Boolean,
+        pidGains: PIDGains,
+        ffGains: FFGains,
+        allowedPositionError: Double,
+        disabledPosition: DisabledPosition = DisabledPosition.NONE
+    ): KMotor {
         mode = MotorControlModes.POSITION
         encoder = KEncoder(this, ticksPerUnit, isRevEncoder)
         controller = PositionMotorController(encoder, pidGains, ffGains, allowedPositionError, disabledPosition)
         return this
     }
 
-    fun withVelocityControl(ticksPerUnit: Double, isRevEncoder: Boolean,
-                       pidGains: PIDGains, kF: Double, allowedVelocityError: Double): KMotor {
+    fun withVelocityControl(
+        ticksPerUnit: Double,
+        isRevEncoder: Boolean,
+        pidGains: PIDGains,
+        kF: Double,
+        allowedVelocityError: Double
+    ): KMotor {
         mode = MotorControlModes.VELOCITY
         encoder = KEncoder(this, ticksPerUnit, isRevEncoder)
         controller = VelocityMotorController(encoder, pidGains, kF, allowedVelocityError)
         return this
     }
 
-    fun withMotionProfileControl(ticksPerUnit: Double, isRevEncoder: Boolean, pidGains: PIDGains, ffGains: FFGains, constraints: MotionConstraints,
-                                 allowedPositionError: Double, disabledPosition: DisabledPosition = DisabledPosition.NONE): KMotor {
+    fun withMotionProfileControl(
+        pidGains: PIDGains,
+        ffGains: FFGains,
+        constraints: MotionConstraints,
+        allowedPositionError: Double,
+        disabledPosition: DisabledPosition = DisabledPosition.NONE
+    ): KMotor {
         mode = MotorControlModes.MOTION_PROFILE
-        encoder = KEncoder(this, ticksPerUnit, isRevEncoder)
         controller = MotionProfileMotorController(encoder, pidGains, ffGains, constraints, allowedPositionError, disabledPosition)
         return this
     }
 
     fun setTargetPosition(x: Double) {
-        if(mode != MotorControlModes.POSITION) throw Exception("motor must be position controlled")
+        if (mode != MotorControlModes.POSITION) throw Exception("motor must be position controlled")
         controller.setTargetPosition(x)
     }
 
     fun setTargetVelocity(v: Double) {
-        if(mode != MotorControlModes.VELOCITY) throw Exception("motor must be velocity controlled")
+        if (mode != MotorControlModes.VELOCITY) throw Exception("motor must be velocity controlled")
         controller.setTargetVelocity(v)
     }
 
     fun setProfileTarget(x: Double, v: Double = 0.0) {
-        if(mode != MotorControlModes.MOTION_PROFILE) throw Exception("motor must be motion profiled")
+        if (mode != MotorControlModes.MOTION_PROFILE) throw Exception("motor must be motion profiled")
         controller.setProfileTarget(x, v)
     }
 
     fun isAtTarget(): Boolean {
-        if(mode == MotorControlModes.OPEN_LOOP) throw Exception("motor must not be open loop")
+        if (mode == MotorControlModes.OPEN_LOOP) throw Exception("motor must not be open loop")
         return controller.isAtTarget()
     }
 
@@ -167,11 +208,27 @@ open class KMotor(name: String) : KDevice<DcMotorEx>(name) {
         + LoopCmd(this::update)
     }
 
+    fun enable() {
+        power = 0.0
+        disabled = false
+        if (mode != MotorControlModes.OPEN_LOOP) {
+            encoder.enable()
+        }
+    }
+
+    fun disable() {
+        power = 0.0
+        disabled = true
+        if (mode != MotorControlModes.OPEN_LOOP) {
+            encoder.disable()
+        }
+    }
+
     init {
         device.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         device.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
 
-        if(mode != MotorControlModes.OPEN_LOOP) {
+        if (mode != MotorControlModes.OPEN_LOOP) {
             forceScheduleUpdate()
         }
     }

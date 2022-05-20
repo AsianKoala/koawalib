@@ -1,10 +1,10 @@
 package com.asiankoala.koawalib.control.controller
 
 import com.acmerobotics.roadrunner.control.PIDFController
+import com.asiankoala.koawalib.control.motor.FFGains
 import com.asiankoala.koawalib.control.profile.MotionConstraints
 import com.asiankoala.koawalib.control.profile.MotionProfile
 import com.asiankoala.koawalib.control.profile.MotionState
-import com.asiankoala.koawalib.control.motor.FFGains
 import com.asiankoala.koawalib.math.cos
 import com.qualcomm.robotcore.util.ElapsedTime
 import kotlin.math.sign
@@ -49,10 +49,10 @@ class ProfiledPIDController(
 
         val pidOutput = controller.update(position, velocity)
         val ffOutput = ff.kS * setpoint.v.sign +
-                ff.kV * setpoint.v +
-                ff.kA * setpoint.a +
-                (ff.kCos?.times(position.cos) ?: 0.0) +
-                ff.kG
+            ff.kV * setpoint.v +
+            ff.kA * setpoint.a +
+            (ff.kCos?.times(position.cos) ?: 0.0) +
+            ff.kG
 
         return pidOutput + ffOutput
     }

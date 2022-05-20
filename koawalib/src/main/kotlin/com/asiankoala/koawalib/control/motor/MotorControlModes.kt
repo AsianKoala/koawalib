@@ -6,4 +6,3 @@ enum class MotorControlModes {
     MOTION_PROFILE,
     VELOCITY
 }
-

@@ -1,7 +1,6 @@
 package com.asiankoala.koawalib.math
 
 import com.acmerobotics.roadrunner.util.epsilonEquals
-import com.asiankoala.koawalib.logger.Logger
 import kotlin.math.*
 
 const val EPSILON = 1e-6
@@ -74,7 +73,7 @@ fun project(v: Vector, onto: Vector): Vector {
 }
 
 fun extendLine(start: Vector, end: Vector, d: Double): Vector {
-    return end + Vector.fromPolar(d, (end-start).angle)
+    return end + Vector.fromPolar(d, (end - start).angle)
 }
 
 /**

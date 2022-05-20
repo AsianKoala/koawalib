@@ -63,8 +63,9 @@ abstract class KOpMode : LinearOpMode() {
 
     private fun checkIfVoltageSensorNeeded() {
         if (KScheduler.deviceRegistry.values
-                .filterIsInstance<KMotor>()
-                .containsBy({ it.isVoltageCorrected }, true)) {
+            .filterIsInstance<KMotor>()
+            .containsBy({ it.isVoltageCorrected }, true)
+        ) {
             + LoopCmd({ KDevice.lastVoltageRead = voltageSensor.voltage })
         }
     }

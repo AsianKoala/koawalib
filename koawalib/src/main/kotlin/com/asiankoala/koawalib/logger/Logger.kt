@@ -44,18 +44,18 @@ object Logger {
         }
         toLog.clear()
 
-        if(config.isDashboardEnabled) {
+        if (config.isDashboardEnabled) {
             dashboard.sendTelemetryPacket(packet)
             packet = TelemetryPacket()
         }
     }
 
     internal fun addErrorCommand() {
-        + LoopCmd({ addTelemetryData("warning count", warnings)}).withName("warning counter")
+        + LoopCmd({ addTelemetryData("warning count", warnings) }).withName("warning counter")
     }
 
     fun addVar(name: String, data: Any?) {
-        if(!config.isDashboardEnabled) return
+        if (!config.isDashboardEnabled) return
         packet.put(name, data)
     }
 
@@ -64,8 +64,8 @@ object Logger {
      * @param message string to add
      */
     fun addTelemetryLine(message: String) {
-        if(!config.isTelemetryEnabled) return
-        if(telemetry == null) return
+        if (!config.isTelemetryEnabled) return
+        if (telemetry == null) return
         telemetry!!.addLine(message)
     }
 
@@ -83,7 +83,7 @@ object Logger {
      * @param message logger message to send
      */
     fun logDebug(message: String) {
-        if(!config.isLogging) return
+        if (!config.isLogging) return
         if (!config.isDebugging) return
         log(message, Log.DEBUG)
     }
@@ -102,7 +102,7 @@ object Logger {
      * @param message logger message to send
      */
     fun logInfo(message: String) {
-        if(!config.isLogging) return
+        if (!config.isLogging) return
         log(message, Log.INFO)
     }
 
@@ -120,7 +120,7 @@ object Logger {
      * @param message logger message to send
      */
     fun logWarning(message: String) {
-        if(!config.isLogging) return
+        if (!config.isLogging) return
         warnings++
         log("WARNING: $message", Log.WARN)
     }

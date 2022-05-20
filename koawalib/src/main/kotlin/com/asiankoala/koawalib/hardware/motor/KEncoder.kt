@@ -1,7 +1,6 @@
-package com.asiankoala.koawalib.subsystem.odometry
+package com.asiankoala.koawalib.hardware.motor
 
 import com.acmerobotics.roadrunner.util.NanoClock
-import com.asiankoala.koawalib.hardware.motor.KMotor
 import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.math.estimateDerivative
 import com.qualcomm.robotcore.util.MovingStatistics
@@ -37,7 +36,7 @@ class KEncoder(
             prevPos[prevPos.size - 2].second
         ) / ticksPerUnit
 
-    val reversed: KEncoder
+    val reverse: KEncoder
         get() {
             multiplier *= -1.0
             return this
@@ -80,7 +79,7 @@ class KEncoder(
         return this
     }
 
-    fun update() {
+    internal fun update() {
         if (!disabled) {
             val seconds = clock.seconds()
             _pos = motor.rawMotorPosition
