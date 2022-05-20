@@ -58,7 +58,7 @@ abstract class KOpMode : LinearOpMode() {
 
     private fun handleLoopMsTelemetry() {
         val dt = System.currentTimeMillis() - prevLoopTime
-        telemetry.addData("loop ms", dt)
+        telemetry.addData("hz", 1000.0 / dt)
     }
 
     private fun checkIfVoltageSensorNeeded() {
