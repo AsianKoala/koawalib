@@ -4,9 +4,7 @@ import com.asiankoala.koawalib.command.commands.LoopCmd
 import com.asiankoala.koawalib.gamepad.KGamepad
 import com.asiankoala.koawalib.hardware.KDevice
 import com.asiankoala.koawalib.hardware.motor.KMotor
-import com.asiankoala.koawalib.hardware.motor.KMotorEx
 import com.asiankoala.koawalib.logger.Logger
-import com.asiankoala.koawalib.logger.LoggerConfig
 import com.asiankoala.koawalib.statemachine.StateMachine
 import com.asiankoala.koawalib.statemachine.StateMachineBuilder
 import com.asiankoala.koawalib.util.OpModeState

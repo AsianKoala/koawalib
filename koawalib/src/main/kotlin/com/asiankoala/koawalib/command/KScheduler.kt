@@ -186,11 +186,11 @@ object KScheduler {
      */
     fun setDefaultCommand(subsystem: Subsystem, cmd: Cmd) {
         if (cmd.requirements.size != 1 || subsystem !in cmd.requirements) {
-            Logger.logError("command ${cmd.name}: default commands must require only subsystem ${subsystem.name}")
+            throw Exception("command ${cmd.name}: default commands must require only subsystem ${subsystem.name}")
         }
 
         if (cmd.isFinished) {
-            Logger.logError("command ${cmd.name}: default commands must not end")
+            throw Exception("command ${cmd.name}: default commands must not end")
         }
 
         Logger.logInfo("set default command of ${subsystem.name} to ${cmd.name}")

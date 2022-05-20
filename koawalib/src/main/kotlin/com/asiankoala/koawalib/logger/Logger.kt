@@ -17,7 +17,6 @@ object Logger {
     private val dashboard = FtcDashboard.getInstance()
     private val toLog = ArrayList<LogData>()
     private var packet = TelemetryPacket()
-    private var errors = 0
     private var warnings = 0
     internal var telemetry: Telemetry? = null
     internal var logCount = 0; private set
@@ -31,7 +30,6 @@ object Logger {
 
     internal fun reset() {
         logCount = 0
-        errors = 0
         warnings = 0
         toLog.clear()
         packet = TelemetryPacket()
@@ -54,7 +52,6 @@ object Logger {
 
     internal fun addErrorCommand() {
         + LoopCmd({ addTelemetryData("warning count", warnings)}).withName("warning counter")
-        + LoopCmd({ addTelemetryData("error count", errors) }).withName("error counter")
     }
 
     fun addVar(name: String, data: Any?) {
@@ -135,25 +132,6 @@ object Logger {
      */
     fun logWarning(message: String, data: Any?) {
         logWarning(getDataString(message, data))
-    }
-
-    /**
-     * Sends an error message to Logger, and throws an exception if too many errors
-     * @param message string
-     */
-    fun logError(message: String) {
-        if(!config.isLogging) return
-        errors++
-        log("ERROR: $message", Log.ERROR)
-    }
-
-    /**
-     * Syntax sugar for [logError]
-     * @param message caption of data
-     * @param data data to add
-     */
-    fun logError(message: String, data: Any?) {
-        logError(getDataString(message, data))
     }
 
     private fun getDataString(message: String, data: Any?): String {

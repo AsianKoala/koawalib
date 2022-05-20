@@ -32,7 +32,7 @@ fun clamp(x: Double, a: Double, b: Double): Double {
 }
 
 fun assertPositive(value: Double) {
-    if (value.sign < 0.0) Logger.logError("value $value must be positive")
+    if (value.sign < 0.0) throw Exception("value $value must be positive")
 }
 
 fun cubicScaling(k: Double, x: Double): Double {
@@ -74,7 +74,7 @@ fun project(v: Vector, onto: Vector): Vector {
 }
 
 fun extendLine(start: Vector, end: Vector, d: Double): Vector {
-    return end + Vector(d).rotate((end - start).angle)
+    return end + Vector.fromPolar(d, (end-start).angle)
 }
 
 /**
@@ -125,7 +125,7 @@ fun estimateDerivative(estimates: List<Pair<Double, Double>>, LOOK_BEHIND: Int =
     val currPosition = estimates[estimates.size - 1]
     val scalar = (currPosition.first - oldPosition.first)
 
-    if (scalar epsilonEquals 0.0) Logger.logError("failed derivative")
+    if (scalar epsilonEquals 0.0) throw Exception("failed derivative")
 
     return Pair((currPosition.second - oldPosition.second) / scalar, true)
 }

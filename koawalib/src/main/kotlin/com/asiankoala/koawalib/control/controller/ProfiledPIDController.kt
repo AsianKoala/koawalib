@@ -1,18 +1,17 @@
 package com.asiankoala.koawalib.control.controller
 
-import com.acmerobotics.roadrunner.control.PIDCoefficients
 import com.acmerobotics.roadrunner.control.PIDFController
 import com.asiankoala.koawalib.control.profile.MotionConstraints
 import com.asiankoala.koawalib.control.profile.MotionProfile
 import com.asiankoala.koawalib.control.profile.MotionState
-import com.asiankoala.koawalib.hardware.motor.FFSettings
+import com.asiankoala.koawalib.control.motor.FFGains
 import com.asiankoala.koawalib.math.cos
 import com.qualcomm.robotcore.util.ElapsedTime
 import kotlin.math.sign
 
 class ProfiledPIDController(
     var pid: PIDGains,
-    var ff: FFSettings,
+    var ff: FFGains,
     var constraints: MotionConstraints
 ) {
     private val controller = PIDFController(

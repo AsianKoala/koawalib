@@ -35,4 +35,8 @@ data class Vector(
     operator fun unaryMinus() = this * -1.0
 
     override fun toString() = String.format("%.2f, %.2f", x, y)
+
+    companion object {
+        fun fromPolar(mag: Double, angle: Double) = Vector(mag).rotate(angle)
+    }
 }

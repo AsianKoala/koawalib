@@ -25,54 +25,55 @@ import com.asiankoala.koawalib.gamepad.functionality.Button
  */
 @Config
 @Suppress("unused")
-abstract class KMotorExTuner : KOpMode() {
-    abstract val motor: KMotorEx
-    abstract val zeroPosition: Double
-    abstract val toTargetButton: Button
-    abstract val toHomeButton: Button
-    abstract val homePosition: Double
-    abstract val targetPosition: Double
-
-    private val dashboard = FtcDashboard.getInstance()
-    private var packet = TelemetryPacket()
-
-    protected open fun updateMotorFFGains() {
-        if (!kS.isNaN()) motor.settings.ff.kS = kS else kS = motor.settings.ff.kS
-        if (!kV.isNaN()) motor.settings.ff.kV = kV else kV = motor.settings.ff.kV
-        if (!kA.isNaN()) motor.settings.ff.kA = kA else kA = motor.settings.ff.kA
-        if (!kG.isNaN()) motor.settings.ff.kG = kG else kG = motor.settings.ff.kG
-//        if (!kCos.isNaN()) motor.settings.ff.kCos = kCos else kCos = motor.settings.ff.kCos
-        if (!kP.isNaN()) motor.settings.pid.kP = kP else kP = motor.settings.pid.kP
-        if (!kI.isNaN()) motor.settings.pid.kI = kI else kI = motor.settings.pid.kI
-        if (!kD.isNaN()) motor.settings.pid.kD = kD else kD = motor.settings.pid.kD
-    }
-
-    override fun mInit() {
-        motor.settings.disabledSettings.isPIDDisabled = true
-        motor.settings.disabledSettings.isFFDisabled = false
-        motor.encoder.zero(zeroPosition)
-        updateMotorFFGains()
-        toTargetButton.onPress(InstantCmd({ motor.setTarget(targetPosition) }))
-        toHomeButton.onPress(InstantCmd({ motor.setTarget(homePosition) }))
-    }
-
-    override fun mLoop() {
-        updateMotorFFGains()
-        motor.update()
-        packet.put("measured velocity", motor.encoder.vel)
-        packet.put("target velocity", motor.setpointMotionState.v)
-        dashboard.sendTelemetryPacket(packet)
-        packet = TelemetryPacket()
-    }
-
-    companion object {
-        @JvmField var kS: Double = Double.NaN
-        @JvmField var kV: Double = Double.NaN
-        @JvmField var kA: Double = Double.NaN
-        @JvmField var kG: Double = Double.NaN
-        @JvmField var kCos: Double = Double.NaN
-        @JvmField var kP: Double = Double.NaN
-        @JvmField var kI: Double = Double.NaN
-        @JvmField var kD: Double = Double.NaN
-    }
+@Deprecated("unusable for now with KMotorEx removal")
+internal abstract class KMotorExTuner : KOpMode() {
+//    abstract val motor: KMotor
+//    abstract val zeroPosition: Double
+//    abstract val toTargetButton: Button
+//    abstract val toHomeButton: Button
+//    abstract val homePosition: Double
+//    abstract val targetPosition: Double
+//
+//    private val dashboard = FtcDashboard.getInstance()
+//    private var packet = TelemetryPacket()
+//
+//    protected open fun updateMotorFFGains() {
+//        if (!kS.isNaN()) motor.settings.ff.kS = kS else kS = motor.settings.ff.kS
+//        if (!kV.isNaN()) motor.settings.ff.kV = kV else kV = motor.settings.ff.kV
+//        if (!kA.isNaN()) motor.settings.ff.kA = kA else kA = motor.settings.ff.kA
+//        if (!kG.isNaN()) motor.settings.ff.kG = kG else kG = motor.settings.ff.kG
+////        if (!kCos.isNaN()) motor.settings.ff.kCos = kCos else kCos = motor.settings.ff.kCos
+//        if (!kP.isNaN()) motor.settings.pid.kP = kP else kP = motor.settings.pid.kP
+//        if (!kI.isNaN()) motor.settings.pid.kI = kI else kI = motor.settings.pid.kI
+//        if (!kD.isNaN()) motor.settings.pid.kD = kD else kD = motor.settings.pid.kD
+//    }
+//
+//    override fun mInit() {
+//        motor.settings.disabledSettings.isPIDDisabled = true
+//        motor.settings.disabledSettings.isFFDisabled = false
+//        motor.encoder.zero(zeroPosition)
+//        updateMotorFFGains()
+//        toTargetButton.onPress(InstantCmd({ motor.setTarget(targetPosition) }))
+//        toHomeButton.onPress(InstantCmd({ motor.setTarget(homePosition) }))
+//    }
+//
+//    override fun mLoop() {
+//        updateMotorFFGains()
+//        motor.update()
+//        packet.put("measured velocity", motor.encoder.vel)
+//        packet.put("target velocity", motor.setpointMotionState.v)
+//        dashboard.sendTelemetryPacket(packet)
+//        packet = TelemetryPacket()
+//    }
+//
+//    companion object {
+//        @JvmField var kS: Double = Double.NaN
+//        @JvmField var kV: Double = Double.NaN
+//        @JvmField var kA: Double = Double.NaN
+//        @JvmField var kG: Double = Double.NaN
+//        @JvmField var kCos: Double = Double.NaN
+//        @JvmField var kP: Double = Double.NaN
+//        @JvmField var kI: Double = Double.NaN
+//        @JvmField var kD: Double = Double.NaN
+//    }
 }

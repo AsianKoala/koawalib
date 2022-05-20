@@ -69,7 +69,6 @@ class VectorTest {
     @Test
     fun testAsList() {
         val v = Vector(1.0, 2.0)
-        val arr = listOf(1.0, 2.0)
         val asList = v.asList
         com.asiankoala.koawalib.assert(v.x, asList[0])
         com.asiankoala.koawalib.assert(v.y, asList[1])
