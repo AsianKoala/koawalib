@@ -19,6 +19,7 @@ import kotlin.math.absoluteValue
 /**
  * The koawalib standard open-loop motor. Default settings are zeroPowerBehavior: float and direction: forward
  * @see KMotorEx for closed-loop control
+ * todo: when first motor command is called, refresh motor encoder
  */
 class KMotor(name: String) : KDevice<DcMotorEx>(name) {
     private var powerMultiplier = 1.0
@@ -116,8 +117,15 @@ class KMotor(name: String) : KDevice<DcMotorEx>(name) {
         return this
     }
 
+    fun withEncoder(toPair: KEncoder): KMotor {
+        encoder = toPair
+        encoderCreated = true
+        return this
+    }
+
     fun zero(newPosition: Double): KMotor {
         if (!encoderCreated) throw Exception("encoder has not been created yet")
+        encoder.zero(newPosition)
         return this
     }
 
@@ -146,28 +154,22 @@ class KMotor(name: String) : KDevice<DcMotorEx>(name) {
         }
 
     fun withPositionControl(
-        ticksPerUnit: Double,
-        isRevEncoder: Boolean,
         pidGains: PIDGains,
         ffGains: FFGains,
         allowedPositionError: Double,
         disabledPosition: DisabledPosition = DisabledPosition.NONE
     ): KMotor {
         mode = MotorControlModes.POSITION
-        encoder = KEncoder(this, ticksPerUnit, isRevEncoder)
         controller = PositionMotorController(encoder, pidGains, ffGains, allowedPositionError, disabledPosition)
         return this
     }
 
     fun withVelocityControl(
-        ticksPerUnit: Double,
-        isRevEncoder: Boolean,
         pidGains: PIDGains,
         kF: Double,
         allowedVelocityError: Double
     ): KMotor {
         mode = MotorControlModes.VELOCITY
-        encoder = KEncoder(this, ticksPerUnit, isRevEncoder)
         controller = VelocityMotorController(encoder, pidGains, kF, allowedVelocityError)
         return this
     }
@@ -184,12 +186,12 @@ class KMotor(name: String) : KDevice<DcMotorEx>(name) {
         return this
     }
 
-    fun setTargetPosition(x: Double) {
+    fun setPositionTarget(x: Double) {
         if (mode != MotorControlModes.POSITION) throw Exception("motor must be position controlled")
         controller.setTargetPosition(x)
     }
 
-    fun setTargetVelocity(v: Double) {
+    fun setVelocityTarget(v: Double) {
         if (mode != MotorControlModes.VELOCITY) throw Exception("motor must be velocity controlled")
         controller.setTargetVelocity(v)
     }

@@ -37,6 +37,7 @@ object Logger {
     }
 
     internal fun update() {
+        if(!config.isLogging) return
         toLog.forEach {
             logCount++
             Log.println(it.priority, tag, it.formattedMessage)

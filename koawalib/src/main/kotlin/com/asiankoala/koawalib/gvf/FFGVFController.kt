@@ -2,7 +2,6 @@ package com.asiankoala.koawalib.gvf
 
 import com.acmerobotics.roadrunner.geometry.Vector2d
 import com.acmerobotics.roadrunner.path.Path
-import com.asiankoala.koawalib.gvf.GVFUtil.toVec
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.angleWrap
 import com.asiankoala.koawalib.math.degrees
@@ -34,8 +33,8 @@ class FFGVFController(
     errorMap: (Double) -> Double = { it },
 ) : GVFController(path, kN, kOmega, epsilon, errorMap) {
 
-    override fun headingControl(gvfVec: Vector2d): Pair<Double, Double> {
-        var desiredHeading = gvfVec.angle()
+    override fun headingControl(): Pair<Double, Double> {
+        var desiredHeading = lastGVFVec.angle()
 
         if (kLookahead != null) {
             val lookaheadS = lastS + kLookahead
@@ -45,9 +44,9 @@ class FFGVFController(
         return Pair(kOmega * headingError, headingError)
     }
 
-    override fun vectorControl(gvfVec: Vector2d, headingError: Double): Vector2d {
+    override fun vectorControl(): Vector2d {
         val projectedDisplacement = (lastS - path.length()).absoluteValue
-        var translationalPower = gvfVec * (projectedDisplacement / kF)
+        var translationalPower = lastGVFVec * (projectedDisplacement / kF)
 
         val absoluteDisplacement = path.end().vec() - lastPose.vec()
         isFinished = projectedDisplacement < epsilon && absoluteDisplacement.norm() < epsilon
@@ -56,7 +55,7 @@ class FFGVFController(
         if (isFinished) translationalPower = absoluteVector
         if (translationalPower.norm() > 1.0) translationalPower /= translationalPower.norm()
 
-        val thetaWeight = headingError.degrees.absoluteValue / kTheta
+        val thetaWeight = lastHeadingError.degrees.absoluteValue / kTheta
         translationalPower /= max(1.0, thetaWeight)
         return translationalPower
     }
@@ -69,13 +68,17 @@ class FFGVFController(
             path.fastProject(lastPose.vec(), lastS)
         }
 
-        val vectorFieldResult = GVFUtil.gvfVecAt(path, lastPose, lastS, kN, errorMap)
+        val vectorFieldResult = gvfVecAt(lastPose, lastS)
 
-        val headingResult = headingControl(vectorFieldResult)
+        lastGVFVec = vectorFieldResult
+
+        val headingResult = headingControl()
         val angularOutput = headingResult.first
         val headingError = headingResult.second
 
-        val vectorResult = vectorControl(vectorFieldResult, headingError)
+        lastHeadingError = headingError
+
+        val vectorResult = vectorControl()
 
         val rotated = vectorResult.rotated(PI / 2.0 - lastPose.heading).toVec()
         val speeds = Speeds()

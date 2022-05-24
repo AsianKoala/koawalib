@@ -70,17 +70,29 @@ abstract class KOpMode : LinearOpMode() {
         }
     }
 
+    private fun updateTelemetryIfAvailable() {
+        if(Logger.config.isTelemetryEnabled) {
+            telemetry.update()
+        }
+    }
+
+    private fun checkIfTelemetryNeeded() {
+        if(!Logger.config.isTelemetryEnabled) {
+            telemetry.msTransmissionInterval = 10000
+        }
+    }
+
     private val mainStateMachine: StateMachine<OpModeState> = StateMachineBuilder<OpModeState>()
         .universal(KScheduler::update)
         .universal(Logger::update)
-        .universal(telemetry::update)
+        .universal(::updateTelemetryIfAvailable)
         .state(OpModeState.INIT)
         .onEnter(::setup)
         .onEnter(::schedulePeriodics)
         .onEnter(::mInit)
-        .onEnter(::checkIfVoltageSensorNeeded)
         .transition { true }
         .state(OpModeState.INIT_LOOP)
+        .onEnter(::checkIfTelemetryNeeded)
         .onEnter(::checkIfVoltageSensorNeeded)
         .loop(::mInitLoop)
         .transition(::isStarted)
