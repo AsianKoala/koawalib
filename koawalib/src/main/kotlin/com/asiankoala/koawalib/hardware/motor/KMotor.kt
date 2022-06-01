@@ -34,7 +34,9 @@ class KMotor(name: String) : KDevice<DcMotorEx>(name) {
     internal val rawMotorPosition get() = device.currentPosition.d
     internal val rawMotorVelocity get() = device.velocity
 
-    internal fun update() {
+    private val cmd = LoopCmd(this::update).withName("$name motor")
+
+    private fun update() {
         if (mode == MotorControlModes.OPEN_LOOP) return
 
         controller.updateEncoder()
@@ -117,13 +119,13 @@ class KMotor(name: String) : KDevice<DcMotorEx>(name) {
         return this
     }
 
-    fun withEncoder(toPair: KEncoder): KMotor {
+    fun pairEncoder(toPair: KEncoder): KMotor {
         encoder = toPair
         encoderCreated = true
         return this
     }
 
-    fun zero(newPosition: Double): KMotor {
+    fun zero(newPosition: Double = 0.0): KMotor {
         if (!encoderCreated) throw Exception("encoder has not been created yet")
         encoder.zero(newPosition)
         return this
@@ -206,10 +208,6 @@ class KMotor(name: String) : KDevice<DcMotorEx>(name) {
         return controller.isAtTarget()
     }
 
-    fun forceScheduleUpdate() {
-        + LoopCmd(this::update)
-    }
-
     fun enable() {
         power = 0.0
         disabled = false
@@ -226,12 +224,20 @@ class KMotor(name: String) : KDevice<DcMotorEx>(name) {
         }
     }
 
+    fun schedule() {
+        + cmd
+    }
+
+    fun cancel() {
+        - cmd
+    }
+
     init {
         device.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         device.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
 
         if (mode != MotorControlModes.OPEN_LOOP) {
-            forceScheduleUpdate()
+            schedule()
         }
     }
 }

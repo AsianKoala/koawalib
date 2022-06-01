@@ -31,5 +31,8 @@ class SwerveTest {
     fun testVelocity() {
         val currentMotor1 = project(fullTranslation, motor1)
         val currentMotor2 = project(fullTranslation, motor2)
+
+        val sum = currentMotor1 + currentMotor2
+        val velocity = sum.x
     }
 }
