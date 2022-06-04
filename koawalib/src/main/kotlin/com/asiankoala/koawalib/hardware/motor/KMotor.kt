@@ -21,45 +21,16 @@ import kotlin.math.absoluteValue
  * @see KMotorEx for closed-loop control
  * todo: when first motor command is called, refresh motor encoder
  */
-class KMotor(name: String) : KDevice<DcMotorEx>(name) {
+@Suppress("unused")
+class KMotor private constructor(name: String) : KDevice<DcMotorEx>(name) {
     private var powerMultiplier = 1.0
     private var disabled = false
-    internal var isVoltageCorrected = false; private set
 
     private var mode = MotorControlModes.OPEN_LOOP
     private lateinit var controller: MotorController
-    private var encoderCreated = false
-    private lateinit var encoder: KEncoder; private set
-
-    internal val rawMotorPosition get() = device.currentPosition.d
-    internal val rawMotorVelocity get() = device.velocity
+    private lateinit var encoder: KEncoder
 
     private val cmd = LoopCmd(this::update).withName("$name motor")
-
-    private fun update() {
-        if (mode == MotorControlModes.OPEN_LOOP) return
-
-        controller.updateEncoder()
-        controller.update()
-
-        var rawOutput = controller.output
-
-        if (isVoltageCorrected) {
-            rawOutput *= (12.0 / lastVoltageRead)
-        }
-
-        this.power = rawOutput
-    }
-
-    var power: Double = 0.0
-        set(value) {
-            var clipped = Range.clip(value, -1.0, 1.0) * powerMultiplier
-            if (isVoltageCorrected) clipped *= (12.0 / lastVoltageRead)
-            if (clipped epsilonNotEqual field && (clipped == 0.0 || clipped.absoluteValue == 1.0 || (clipped - field).absoluteValue > 0.005)) {
-                field = clipped
-                device.power = clipped
-            }
-        }
 
     private var zeroPowerBehavior: DcMotor.ZeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
         set(value) {
@@ -77,115 +48,43 @@ class KMotor(name: String) : KDevice<DcMotorEx>(name) {
             field = value
         }
 
-    /**
-     * Return this motor with brake mode
-     */
-    val brake: KMotor
-        get() {
-            zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
-            return this
+    internal var isVoltageCorrected = false; private set
+    internal val rawMotorPosition get() = device.currentPosition.d
+    internal val rawMotorVelocity get() = device.velocity
+
+    var power: Double = 0.0
+        set(value) {
+            var clipped = Range.clip(value, -1.0, 1.0) * powerMultiplier
+            if (isVoltageCorrected) clipped *= (12.0 / lastVoltageRead)
+            if (clipped epsilonNotEqual field && (clipped == 0.0 || clipped.absoluteValue == 1.0 || (clipped - field).absoluteValue > 0.005)) {
+                field = clipped
+                device.power = clipped
+            }
         }
 
-    /**
-     * Return this motor with float mode
-     */
-    val float: KMotor
-        get() {
-            zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
-            return this
+    val pos: Double get() = encoder.pos
+
+    val vel: Double get() = encoder.vel
+
+    val accel: Double get() = encoder.accel
+
+    private fun update() {
+        if (mode == MotorControlModes.OPEN_LOOP) return
+
+        controller.updateEncoder()
+        controller.update()
+
+        var rawOutput = controller.output
+
+        if (isVoltageCorrected) {
+            rawOutput *= (12.0 / lastVoltageRead)
         }
 
-    /**
-     * Return this motor with direction forward
-     */
-    val forward: KMotor
-        get() {
-            direction = DcMotorSimple.Direction.FORWARD
-            return this
-        }
-
-    /**
-     * Return this motor with direction backward
-     */
-    val reverse: KMotor
-        get() {
-            direction = DcMotorSimple.Direction.REVERSE
-            return this
-        }
-
-    fun createEncoder(ticksPerUnit: Double, isRevEncoder: Boolean): KMotor {
-        encoder = KEncoder(this, ticksPerUnit, isRevEncoder)
-        encoderCreated = true
-        return this
+        this.power = rawOutput
     }
 
-    fun pairEncoder(toPair: KEncoder): KMotor {
-        encoder = toPair
-        encoderCreated = true
-        return this
-    }
-
-    fun zero(newPosition: Double = 0.0): KMotor {
-        if (!encoderCreated) throw Exception("encoder has not been created yet")
+    fun zero(newPosition: Double = 0.0) {
         encoder.zero(newPosition)
-        return this
-    }
-
-    val reverseEncoder: KMotor
-        get() {
-            encoder.reverse
-            return this
-        }
-
-    val pos: Double
-        get() {
-            if (!encoderCreated) throw Exception("encoder has not been created yet")
-            return encoder.pos
-        }
-
-    val vel: Double
-        get() {
-            if (!encoderCreated) throw Exception("encoder has not been created yet")
-            return encoder.vel
-        }
-
-    val accel: Double
-        get() {
-            if (!encoderCreated) throw Exception("encoder has not been created yet")
-            return encoder.accel
-        }
-
-    fun withPositionControl(
-        pidGains: PIDGains,
-        ffGains: FFGains,
-        allowedPositionError: Double,
-        disabledPosition: DisabledPosition = DisabledPosition.NONE
-    ): KMotor {
-        mode = MotorControlModes.POSITION
-        controller = PositionMotorController(encoder, pidGains, ffGains, allowedPositionError, disabledPosition)
-        return this
-    }
-
-    fun withVelocityControl(
-        pidGains: PIDGains,
-        kF: Double,
-        allowedVelocityError: Double
-    ): KMotor {
-        mode = MotorControlModes.VELOCITY
-        controller = VelocityMotorController(encoder, pidGains, kF, allowedVelocityError)
-        return this
-    }
-
-    fun withMotionProfileControl(
-        pidGains: PIDGains,
-        ffGains: FFGains,
-        constraints: MotionConstraints,
-        allowedPositionError: Double,
-        disabledPosition: DisabledPosition = DisabledPosition.NONE
-    ): KMotor {
-        mode = MotorControlModes.MOTION_PROFILE
-        controller = MotionProfileMotorController(encoder, pidGains, ffGains, constraints, allowedPositionError, disabledPosition)
-        return this
     }
 
     fun setPositionTarget(x: Double) {
@@ -238,6 +137,112 @@ class KMotor(name: String) : KDevice<DcMotorEx>(name) {
 
         if (mode != MotorControlModes.OPEN_LOOP) {
             schedule()
+        }
+    }
+
+    class MotorBuilder(name: String) {
+        private val instance = KMotor(name)
+        private var encoderCreated = false
+
+        /**
+         * Return this motor with brake mode
+         */
+        val brake: MotorBuilder
+            get() {
+                instance.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
+                return this
+            }
+
+        /**
+         * Return this motor with float mode
+         */
+        val float: MotorBuilder
+            get() {
+                instance.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
+                return this
+            }
+
+        /**
+         * Return this motor with direction forward
+         */
+        val forward: MotorBuilder
+            get() {
+                instance.direction = DcMotorSimple.Direction.FORWARD
+                return this
+            }
+
+        /**
+         * Return this motor with direction reversed
+         */
+        val reverse: MotorBuilder
+            get() {
+                instance.direction = DcMotorSimple.Direction.REVERSE
+                return this
+            }
+
+        fun createEncoder(ticksPerUnit: Double, isRevEncoder: Boolean): MotorBuilder {
+            instance.encoder = KEncoder(instance, ticksPerUnit, isRevEncoder)
+            encoderCreated = true
+            return this
+        }
+
+        fun pairEncoder(toPair: KEncoder): MotorBuilder {
+            instance.encoder = toPair
+            encoderCreated = true
+            return this
+        }
+
+        fun zero(newPosition: Double = 0.0): MotorBuilder {
+            if (!encoderCreated) throw Exception("encoder has not been created yet")
+            instance.encoder.zero(newPosition)
+            return this
+        }
+
+        val reverseEncoder: MotorBuilder
+            get() {
+                instance.encoder.reverse
+                return this
+            }
+
+        fun withPositionControl(
+            pidGains: PIDGains,
+            ffGains: FFGains,
+            allowedPositionError: Double,
+            disabledPosition: DisabledPosition = DisabledPosition.NONE
+        ): MotorBuilder {
+            instance.mode = MotorControlModes.POSITION
+            instance.controller = PositionMotorController(instance.encoder, pidGains, ffGains, allowedPositionError, disabledPosition)
+            return this
+        }
+
+        fun withVelocityControl(
+            pidGains: PIDGains,
+            kF: Double,
+            allowedVelocityError: Double
+        ): MotorBuilder {
+            instance.mode = MotorControlModes.VELOCITY
+            instance.controller = VelocityMotorController(instance.encoder, pidGains, kF, allowedVelocityError)
+            return this
+        }
+
+        fun withMotionProfileControl(
+            pidGains: PIDGains,
+            ffGains: FFGains,
+            constraints: MotionConstraints,
+            allowedPositionError: Double,
+            disabledPosition: DisabledPosition = DisabledPosition.NONE
+        ): MotorBuilder {
+            instance.mode = MotorControlModes.MOTION_PROFILE
+            instance.controller = MotionProfileMotorController(instance.encoder, pidGains, ffGains, constraints, allowedPositionError, disabledPosition)
+            return this
+        }
+
+        fun build(): KMotor {
+            if(!encoderCreated && instance.mode != MotorControlModes.OPEN_LOOP) {
+                throw Exception()
+            }
+
+            return instance
         }
     }
 }
