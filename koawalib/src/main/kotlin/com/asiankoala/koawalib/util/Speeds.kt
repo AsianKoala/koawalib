@@ -30,7 +30,7 @@ class Speeds {
     }
 
     fun setWheels(wheels: List<Double>, heading: Double) {
-        val (fl, bl, br, fr) = wheels
+        val (_, bl, br, fr) = wheels
         val x = (br - fr) / 2
         val h = (fr - bl) / 2
         val y = br - x - h

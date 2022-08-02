@@ -1,5 +1,6 @@
 package com.asiankoala.koawalib.control.motor
 
+import com.asiankoala.koawalib.control.controller.Bounds
 import com.asiankoala.koawalib.control.controller.PIDGains
 import com.asiankoala.koawalib.control.profile.MotionConstraints
 import com.asiankoala.koawalib.control.profile.MotionProfile
@@ -14,7 +15,7 @@ internal class MotionProfileMotorController(
     private val ff: FFGains,
     private val constraints: MotionConstraints,
     private val allowedPositionError: Double,
-    private val disabledPosition: DisabledPosition
+    private val disabledPosition: DisabledPosition,
 ) : MotorController(pid, ff, encoder) {
     private var profile: MotionProfile? = null
     private val timer = ElapsedTime()
@@ -41,7 +42,7 @@ internal class MotionProfileMotorController(
 
         output = controller.update(currentState.x, currentState.v) + ff.calc(currentState.x)
 
-        if (disabledPosition.shouldDisable(targetState.x, currentState.x)) {
+        if (disabledPosition.shouldDisable(targetState.x, currentState.x, allowedPositionError)) {
             output = 0.0
         }
     }

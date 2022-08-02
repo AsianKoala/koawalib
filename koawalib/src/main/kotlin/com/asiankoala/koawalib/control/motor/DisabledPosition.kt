@@ -5,14 +5,13 @@ import kotlin.math.absoluteValue
 
 class DisabledPosition(
     private val position: Double,
-    private val epsilon: Double,
 ) {
     internal var enabled: Boolean = true
-    fun shouldDisable(target: Double, current: Double): Boolean {
+    fun shouldDisable(target: Double, current: Double, epsilon: Double): Boolean {
         return enabled && target epsilonEquals position && (current - position).absoluteValue < epsilon
     }
 
     companion object {
-        val NONE = DisabledPosition(0.0, 0.0).apply { enabled = false }
+        val NONE = DisabledPosition(0.0).apply { enabled = false }
     }
 }

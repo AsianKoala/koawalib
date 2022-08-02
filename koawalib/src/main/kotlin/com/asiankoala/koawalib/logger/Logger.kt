@@ -51,7 +51,7 @@ object Logger {
         }
     }
 
-    internal fun addErrorCommand() {
+    internal fun addWarningCountCommand() {
         + LoopCmd({ addTelemetryData("warning count", warnings) }).withName("warning counter")
     }
 

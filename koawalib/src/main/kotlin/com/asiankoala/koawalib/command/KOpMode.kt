@@ -23,6 +23,7 @@ abstract class KOpMode : LinearOpMode() {
     protected val driver: KGamepad by lazy { KGamepad(gamepad1) }
     protected val gunner: KGamepad by lazy { KGamepad(gamepad2) }
 
+    // let this be public for user opmodes
     var opmodeState = OpModeState.INIT
         private set
 
@@ -38,7 +39,7 @@ abstract class KOpMode : LinearOpMode() {
         Logger.reset()
         Logger.telemetry = telemetry
         KScheduler.resetScheduler()
-        Logger.addErrorCommand()
+        Logger.addWarningCountCommand()
 
         KDevice.hardwareMap = hardwareMap
         hubs = hardwareMap.getAll(LynxModule::class.java)
@@ -66,26 +67,27 @@ abstract class KOpMode : LinearOpMode() {
             .filterIsInstance<KMotor>()
             .containsBy({ it.isVoltageCorrected }, true)
         ) {
-            + LoopCmd({ KDevice.lastVoltageRead = voltageSensor.voltage })
+            + LoopCmd({ KDevice.lastVoltageRead = voltageSensor.voltage }).withName("voltage sensor periodic")
         }
     }
 
-    private fun updateTelemetryIfAvailable() {
+    private fun updateTelemetryIfEnabled() {
         if(Logger.config.isTelemetryEnabled) {
             telemetry.update()
         }
     }
 
+    // TODO: have a "competition mode" where this is run automatically
     private fun checkIfTelemetryNeeded() {
         if(!Logger.config.isTelemetryEnabled) {
-            telemetry.msTransmissionInterval = 10000
+            telemetry.msTransmissionInterval = 100000
         }
     }
 
     private val mainStateMachine: StateMachine<OpModeState> = StateMachineBuilder<OpModeState>()
         .universal(KScheduler::update)
         .universal(Logger::update)
-        .universal(::updateTelemetryIfAvailable)
+        .universal(::updateTelemetryIfEnabled)
         .state(OpModeState.INIT)
         .onEnter(::setup)
         .onEnter(::schedulePeriodics)

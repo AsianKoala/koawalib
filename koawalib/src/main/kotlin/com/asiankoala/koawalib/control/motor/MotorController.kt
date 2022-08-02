@@ -1,6 +1,7 @@
 package com.asiankoala.koawalib.control.motor
 
 import com.acmerobotics.roadrunner.control.PIDFController
+import com.asiankoala.koawalib.control.controller.Bounds
 import com.asiankoala.koawalib.control.controller.PIDGains
 import com.asiankoala.koawalib.control.profile.MotionState
 import com.asiankoala.koawalib.hardware.motor.KEncoder
@@ -9,6 +10,7 @@ internal abstract class MotorController(
     pidGains: PIDGains,
     ffGains: FFGains,
     private val encoder: KEncoder,
+    bounds: Bounds = Bounds()
 ) {
     protected abstract fun setTarget(requestedState: MotionState)
     abstract fun isAtTarget(): Boolean
@@ -19,7 +21,11 @@ internal abstract class MotorController(
         ffGains.kV,
         ffGains.kA,
         ffGains.kS
-    )
+    ).apply {
+        if(bounds.isBounded) {
+            this.setInputBounds(bounds.lowerBound!!, bounds.upperBound!!)
+        }
+    }
 
     var output = 0.0; protected set
     protected var currentState = MotionState(encoder.pos)
