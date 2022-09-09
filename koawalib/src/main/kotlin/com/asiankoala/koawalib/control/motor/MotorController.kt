@@ -5,6 +5,7 @@ import com.asiankoala.koawalib.control.controller.Bounds
 import com.asiankoala.koawalib.control.controller.PIDGains
 import com.asiankoala.koawalib.control.profile.MotionState
 import com.asiankoala.koawalib.hardware.motor.KEncoder
+import com.asiankoala.koawalib.logger.Logger
 
 internal abstract class MotorController(
     pidGains: PIDGains,
@@ -24,6 +25,7 @@ internal abstract class MotorController(
     ).apply {
         if(bounds.isBounded) {
             this.setInputBounds(bounds.lowerBound!!, bounds.upperBound!!)
+            Logger.logInfo("set bounds")
         }
     }
 

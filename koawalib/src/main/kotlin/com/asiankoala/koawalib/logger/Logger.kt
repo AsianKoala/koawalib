@@ -98,6 +98,8 @@ object Logger {
         logDebug(getDataString(message, data))
     }
 
+    // note to neil: use logInfo on init stuff since that runs only once (obviously)
+    // logInfo shouldn't be used on repeated stuff e.g. anything that is in main loop
     /**
      * Sends an info message to logger
      * @param message logger message to send

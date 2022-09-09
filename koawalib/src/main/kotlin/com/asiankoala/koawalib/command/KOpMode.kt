@@ -55,6 +55,7 @@ abstract class KOpMode : LinearOpMode() {
         + LoopCmd(gunner::periodic).withName("gunner gamepad periodic")
         + LoopCmd({ hubs.forEach(LynxModule::clearBulkCache) }).withName("clear bulk data periodic")
         + LoopCmd(::handleLoopMsTelemetry).withName("loop ms telemetry periodic")
+        Logger.logInfo("periodics scheduled")
     }
 
     private fun handleLoopMsTelemetry() {
@@ -68,6 +69,7 @@ abstract class KOpMode : LinearOpMode() {
             .containsBy({ it.isVoltageCorrected }, true)
         ) {
             + LoopCmd({ KDevice.lastVoltageRead = voltageSensor.voltage }).withName("voltage sensor periodic")
+            Logger.logInfo("Voltage read scheduled")
         }
     }
 
@@ -92,6 +94,7 @@ abstract class KOpMode : LinearOpMode() {
         .onEnter(::setup)
         .onEnter(::schedulePeriodics)
         .onEnter(::mInit)
+        .onEnter { Logger.logInfo("fully initialized, entering init loop") }
         .transition { true }
         .state(OpModeState.INIT_LOOP)
         .onEnter(::checkIfTelemetryNeeded)
