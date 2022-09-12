@@ -6,6 +6,10 @@ import com.asiankoala.koawalib.util.Periodic
 
 interface Subsystem : Periodic {
 
+    /**
+     * periodic() is always run no matter what Command the Subsystem is currently using
+     * defaultCommand runs whenever no Command is requiring this subsystem
+     */
     override fun periodic() {
     }
 

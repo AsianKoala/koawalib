@@ -33,6 +33,11 @@ abstract class KOpMode : LinearOpMode() {
 
     private lateinit var voltageSensor: VoltageSensor
 
+    private fun secondaryLoop() {
+        opmodeState = mainStateMachine.state
+        prevLoopTime = System.currentTimeMillis()
+    }
+
     private fun setup() {
         KScheduler.stateReceiver = { opmodeState }
 
@@ -70,6 +75,8 @@ abstract class KOpMode : LinearOpMode() {
         ) {
             + LoopCmd({ KDevice.lastVoltageRead = voltageSensor.voltage }).withName("voltage sensor periodic")
             Logger.logInfo("Voltage read scheduled")
+        } else {
+            Logger.logInfo("Voltage sensor not enabled")
         }
     }
 
@@ -84,6 +91,7 @@ abstract class KOpMode : LinearOpMode() {
         if(!Logger.config.isTelemetryEnabled) {
             telemetry.msTransmissionInterval = 100000
         }
+        Logger.logInfo("Telemetry not enabled")
     }
 
     private val mainStateMachine: StateMachine<OpModeState> = StateMachineBuilder<OpModeState>()
@@ -120,8 +128,7 @@ abstract class KOpMode : LinearOpMode() {
 
         while (mainStateMachine.running) {
             mainStateMachine.update()
-            opmodeState = mainStateMachine.state
-            prevLoopTime = System.currentTimeMillis()
+            secondaryLoop()
         }
     }
 

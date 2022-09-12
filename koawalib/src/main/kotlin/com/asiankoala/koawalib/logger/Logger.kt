@@ -41,8 +41,8 @@ object Logger {
         toLog.forEach {
             logCount++
             Log.println(it.priority, tag, it.formattedMessage)
-            if (config.isPrinting) println(it.printString)
         }
+
         toLog.clear()
 
         if (config.isDashboardEnabled) {
@@ -62,6 +62,7 @@ object Logger {
 
     /**
      * Add telemetry line to phone. If config.isLoggingTelemetry, it will log the message as a debug
+     * ******NOTE***** that this ignores isLogging
      * @param message string to add
      */
     fun addTelemetryLine(message: String) {

@@ -94,8 +94,11 @@ object KScheduler {
         toSchedule.forEach { it.scheduleThis() }
         toCancel.forEach { it.cancelThis() }
 
+        // @TODO maybe subsytem periodics should be ran before default commands?
+        // need to think about this some more
         subsystems.forEach { (k, v) ->
-            // if subsystem not required by any command, has a non-null default command, and
+            // if subsystem not required by any command, has a non-null default command, and no
+            // scheduled commands have requirements that match the default commands requirements
             if (!scheduledCmdReqs.containsKey(k) && v != null && scheduledCmdReqs.keys disjoint v.requirements) {
                 v.execute()
                 Logger.logDebug("subsystem ${k.name} default cmd executed")
@@ -107,10 +110,11 @@ object KScheduler {
 
         subsystems.keys.forEach(Subsystem::periodic)
 
-        scheduledCmdReqs.keys.forEachIndexed { i, subsystem ->
-            if (i == 0) Logger.logDebug("required subsystems before running commands:")
-            Logger.logDebug("$i: ${subsystem.name}")
-        }
+        // is this logging really needed? // @TODO
+//        scheduledCmdReqs.keys.forEachIndexed { i, subsystem ->
+//            if (i == 0) Logger.logDebug("required subsystems before running commands:")
+//            Logger.logDebug("$i: ${subsystem.name}")
+//        }
 
         val toRemove = LinkedHashSet<Cmd>()
         scheduledCmds.forEach {
@@ -119,9 +123,9 @@ object KScheduler {
 
             if (command !is Watchdog && command !is LoopCmd && command !is ParallelGroup) {
                 if (command is Group) {
-                    Logger.logInfo("group ${command.name} with cmd(s) ${command.currentCmdNames} executed")
+                    Logger.logDebug("group ${command.name} with cmd(s) ${command.currentCmdNames} executed")
                 } else {
-                    Logger.logInfo("cmd ${command.name} executed")
+                    Logger.logDebug("cmd ${command.name} executed")
                 }
             }
 

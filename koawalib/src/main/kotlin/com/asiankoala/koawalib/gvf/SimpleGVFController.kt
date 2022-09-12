@@ -32,7 +32,8 @@ class SimpleGVFController(
     override fun headingControl(): Pair<Double, Double> {
         val desiredHeading = lastGVFVec.angle()
         val headingError = (desiredHeading - lastPose.heading).angleWrap
-        return Pair(kOmega * headingError, headingError)
+        val result = kOmega * headingError
+        return Pair(result, headingError)
     }
 
     override fun vectorControl(): Vector2d {
