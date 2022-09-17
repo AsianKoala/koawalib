@@ -4,6 +4,7 @@ import com.asiankoala.koawalib.command.commands.LoopCmd
 import com.asiankoala.koawalib.control.motor.*
 import com.asiankoala.koawalib.control.motor.MotorController
 import com.asiankoala.koawalib.hardware.KDevice
+import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.math.d
 import com.asiankoala.koawalib.math.epsilonNotEqual
 import com.qualcomm.robotcore.hardware.DcMotor
@@ -133,6 +134,14 @@ class KMotor internal constructor(name: String) : KDevice<DcMotorEx>(name) {
 
         if (mode != MotorControlModes.OPEN_LOOP) {
             schedule()
+            val information = "name: $name" +
+                    "mode: $mode" +
+                    "direction: $direction" +
+                    "zeroPowerBehavior: $zeroPowerBehavior" +
+                    "isVoltageCorrected: $isVoltageCorrected"
+            Logger.logInfo("scheduled motor with information: " +
+                    information
+            )
         }
     }
 

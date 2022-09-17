@@ -1,10 +1,10 @@
 package com.asiankoala.koawalib.subsystem.intake
 
 import com.asiankoala.koawalib.hardware.motor.KMotor
-import com.asiankoala.koawalib.subsystem.DeviceSubsystem
+import com.asiankoala.koawalib.subsystem.Subsystem
 
 @Suppress("unused")
-open class KIntake(private val motor: KMotor, private val MAX_POWER: Double) : DeviceSubsystem() {
+open class KIntake(private val motor: KMotor, private val MAX_POWER: Double) : Subsystem() {
 
     fun turnOn() {
         motor.power = MAX_POWER

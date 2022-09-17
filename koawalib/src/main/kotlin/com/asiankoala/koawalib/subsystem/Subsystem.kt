@@ -4,14 +4,13 @@ import com.asiankoala.koawalib.command.KScheduler
 import com.asiankoala.koawalib.command.commands.Cmd
 import com.asiankoala.koawalib.util.Periodic
 
-interface Subsystem : Periodic {
+abstract class Subsystem : Periodic {
 
     /**
      * periodic() is always run no matter what Command the Subsystem is currently using
      * defaultCommand runs whenever no Command is requiring this subsystem
      */
-    override fun periodic() {
-    }
+    override fun periodic() {}
 
     fun setDefaultCommand(cmd: Cmd) {
         KScheduler.setDefaultCommand(this, cmd)
@@ -34,4 +33,8 @@ interface Subsystem : Periodic {
     }
 
     val name: String get() = this.javaClass.simpleName
+
+    init {
+        register()
+    }
 }

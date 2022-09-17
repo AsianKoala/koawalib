@@ -2,11 +2,11 @@ package com.asiankoala.koawalib.subsystem.odometry
 
 import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.math.*
-import com.asiankoala.koawalib.subsystem.DeviceSubsystem
+import com.asiankoala.koawalib.subsystem.Subsystem
 import kotlin.math.absoluteValue
 import kotlin.math.max
 
-abstract class Odometry : DeviceSubsystem() {
+abstract class Odometry : Subsystem() {
     internal data class TimePose(val pose: Pose, val timestamp: Long = System.currentTimeMillis())
 
     abstract fun updateTelemetry()
