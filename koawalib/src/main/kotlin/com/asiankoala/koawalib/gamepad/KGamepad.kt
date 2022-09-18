@@ -35,6 +35,18 @@ class KGamepad(private val gamepad: Gamepad) : Periodic {
     val dpadLeft = KButton { gamepad.dpad_left }
     val dpadRight = KButton { gamepad.dpad_right }
 
+    fun rumble(rumbleEffect: Gamepad.RumbleEffect) {
+        gamepad.runRumbleEffect(rumbleEffect)
+    }
+
+    fun rumble(duration: Int) {
+        gamepad.rumble(duration)
+    }
+
+    fun rumbleBlips(num: Int) {
+        gamepad.rumbleBlips(num)
+    }
+
     private val periodics: Array<Periodic> = arrayOf(
         a, b, x, y, start, back, leftBumper, rightBumper,
         leftTrigger, rightTrigger, leftStick, rightStick, dpadUp, dpadDown, dpadLeft, dpadRight
