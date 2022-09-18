@@ -20,13 +20,13 @@ import kotlin.math.absoluteValue
  */
 @Suppress("unused")
 class KMotor internal constructor(name: String) : KDevice<DcMotorEx>(name) {
-    private var powerMultiplier = 1.0
-    private var disabled = false
+    lateinit var encoder: KEncoder
 
     internal var mode = MotorControlModes.OPEN_LOOP
     internal lateinit var controller: MotorController
-    internal lateinit var encoder: KEncoder
 
+    private var powerMultiplier = 1.0
+    private var disabled = false
     private val cmd = LoopCmd(this::update).withName("$name motor")
 
     internal var zeroPowerBehavior: DcMotor.ZeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
@@ -79,11 +79,7 @@ class KMotor internal constructor(name: String) : KDevice<DcMotorEx>(name) {
 
         this.power = rawOutput
     }
-
-    fun zero(newPosition: Double = 0.0) {
-        encoder.zero(newPosition)
-    }
-
+    
     fun setPositionTarget(x: Double) {
         if (mode != MotorControlModes.POSITION) throw Exception("motor must be position controlled")
         controller.setTargetPosition(x)
