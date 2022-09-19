@@ -20,23 +20,21 @@ import com.qualcomm.robotcore.util.ElapsedTime
  */
 // @Suppress("unused")
 abstract class KOpMode : LinearOpMode() {
+    var opmodeState = OpModeState.INIT
+        private set
+
     protected val driver: KGamepad by lazy { KGamepad(gamepad1) }
     protected val gunner: KGamepad by lazy { KGamepad(gamepad2) }
 
     // let this be public for user opmodes
-    var opmodeState = OpModeState.INIT
-        private set
-
-    private var prevLoopTime = System.currentTimeMillis()
     private var opModeTimer = ElapsedTime()
+
+    protected val opModeTime get() = opModeTimer.seconds()
+
+    private var loopTimer = ElapsedTime()
     private lateinit var hubs: List<LynxModule>
 
     private lateinit var voltageSensor: VoltageSensor
-
-    private fun secondaryLoop() {
-        opmodeState = mainStateMachine.state
-        prevLoopTime = System.currentTimeMillis()
-    }
 
     private fun setup() {
         KScheduler.stateReceiver = { opmodeState }
@@ -64,8 +62,10 @@ abstract class KOpMode : LinearOpMode() {
     }
 
     private fun handleLoopMsTelemetry() {
-        val dt = System.currentTimeMillis() - prevLoopTime
+        val dt = loopTimer.milliseconds()
+        loopTimer.reset()
         telemetry.addData("hz", 1000.0 / dt)
+        telemetry.addData("loop time", dt)
     }
 
     private fun checkIfVoltageSensorNeeded() {
@@ -87,11 +87,12 @@ abstract class KOpMode : LinearOpMode() {
     }
 
     // TODO: have a "competition mode" where this is run automatically
+    // TODO: this can be if Logger has a competition config
     private fun checkIfTelemetryNeeded() {
         if(!Logger.config.isTelemetryEnabled) {
             telemetry.msTransmissionInterval = 100000
+            Logger.logInfo("Telemetry disabled")
         }
-        Logger.logInfo("Telemetry not enabled")
     }
 
     private val mainStateMachine: StateMachine<OpModeState> = StateMachineBuilder<OpModeState>()
@@ -128,7 +129,7 @@ abstract class KOpMode : LinearOpMode() {
 
         while (mainStateMachine.running) {
             mainStateMachine.update()
-            secondaryLoop()
+            opmodeState = mainStateMachine.state
         }
     }
 
