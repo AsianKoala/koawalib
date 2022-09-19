@@ -37,6 +37,7 @@ class KNewOdometry(
     }
 
     override fun periodic() {
+        rrOdo.update()
         pose = Pose(rrOdo.poseEstimate)
     }
 }
