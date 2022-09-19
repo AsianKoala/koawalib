@@ -25,7 +25,7 @@ class KEncoder(
     private val accelStats = MovingStatistics(5)
     private var disabled = false
 
-    val pos get() = (_pos + offset) * multiplier / ticksPerUnit
+    val pos get() = (_pos + offset) / ticksPerUnit
 
     val vel get() = velStats.mean / ticksPerUnit
 
@@ -62,7 +62,7 @@ class KEncoder(
     }
 
     private fun internalReset() {
-        _pos = motor.rawMotorPosition
+        _pos = motor.rawMotorPosition * multiplier
         prevPos.clear()
         prevPos.add(Pair(clock.seconds(), _pos))
         prevPos.add(Pair(clock.seconds() - 1e6, _pos))
