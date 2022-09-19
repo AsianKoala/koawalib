@@ -3,6 +3,7 @@ package com.asiankoala.koawalib.subsystem.odometry
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.localization.ThreeTrackingWheelLocalizer
 import com.asiankoala.koawalib.hardware.motor.KEncoder
+import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.math.Pose
 
 class KNewOdometry(
@@ -12,6 +13,8 @@ class KNewOdometry(
     private val TRACK_WIDTH: Double,
     private val PERP_TRACKER: Double
 ) : Odometry() {
+    private var encoders = listOf(leftEncoder, rightEncoder, auxEncoder)
+
     private val rrOdo = object : ThreeTrackingWheelLocalizer(
         listOf(
             Pose2d(0.0, TRACK_WIDTH / 2, 0.0),
@@ -29,14 +32,19 @@ class KNewOdometry(
     }
 
     override fun updateTelemetry() {
-
+        Logger.addTelemetryData("start pose", startPose)
+        Logger.addTelemetryData("curr pose", pose)
+        Logger.addTelemetryData("left encoder", leftEncoder.pos)
+        Logger.addTelemetryData("right encoder", rightEncoder.pos)
+        Logger.addTelemetryData("aux encoder", auxEncoder.pos)
     }
 
     override fun reset() {
-
+        encoders.forEach(KEncoder::zero)
     }
 
     override fun periodic() {
+        encoders.forEach(KEncoder::zero)
         rrOdo.update()
         pose = Pose(rrOdo.poseEstimate)
     }

@@ -13,7 +13,6 @@ abstract class Odometry : Subsystem() {
     abstract fun reset()
     private val prevRobotRelativePositions: ArrayList<TimePose> = ArrayList()
     private var robotRelativeMovement: Pose = Pose()
-    var shouldReset = true
     var pose = Pose()
         protected set
 

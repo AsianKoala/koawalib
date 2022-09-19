@@ -23,9 +23,7 @@ class KTwoWheelOdometry(
     }
 
     override fun reset() {
-        lastAngle = getHeading()
         encoders.forEach(KEncoder::zero)
-        shouldReset = false
     }
 
     override fun updateTelemetry() {
@@ -44,10 +42,6 @@ class KTwoWheelOdometry(
     override fun periodic() {
         encoders.forEach(KEncoder::update)
         imu.periodic()
-
-        if (shouldReset) {
-            reset()
-        }
 
         val newAngle = getHeading()
         val angleIncrement = (newAngle - lastAngle).angleWrap

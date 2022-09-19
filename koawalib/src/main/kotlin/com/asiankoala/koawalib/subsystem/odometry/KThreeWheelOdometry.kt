@@ -35,11 +35,6 @@ class KThreeWheelOdometry(
 
     override fun periodic() {
         encoders.forEach(KEncoder::update)
-        if (shouldReset) {
-            encoders.forEach(KEncoder::zero)
-            shouldReset = false
-            return
-        }
 
         val newAngle = (((rightEncoder.pos - leftEncoder.pos) / TRACK_WIDTH) + startPose.heading).angleWrap
 
