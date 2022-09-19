@@ -44,7 +44,7 @@ class KNewOdometry(
     }
 
     override fun periodic() {
-        encoders.forEach(KEncoder::zero)
+        encoders.forEach(KEncoder::update)
         rrOdo.update()
         pose = Pose(rrOdo.poseEstimate)
     }
