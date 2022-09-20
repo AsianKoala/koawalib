@@ -16,10 +16,6 @@ open class KMecanumOdoDrive(
     override val pose get() = odometry.pose
     override val vel get() = odometry.velocity
 
-    fun setStartPose(pose: Pose) {
-        odometry.startPose = pose
-    }
-
     override fun periodic() {
         super.periodic()
 

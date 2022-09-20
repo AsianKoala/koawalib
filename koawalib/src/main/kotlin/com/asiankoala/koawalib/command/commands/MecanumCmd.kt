@@ -4,12 +4,17 @@ import com.asiankoala.koawalib.gamepad.functionality.Stick
 import com.asiankoala.koawalib.math.*
 import com.asiankoala.koawalib.subsystem.drive.KMecanumDrive
 import com.asiankoala.koawalib.util.Alliance
+import kotlin.math.max
+import kotlin.math.pow
+import kotlin.math.sign
 
 /**
  * TeleOp drive control command
  * vector drive power is calculated with the function:
- * f(x) = scalar * ((1-k)x+kx^3)
- * e.g. xPower = xScalar * ((1-xCubic) * leftStick.x + xCubic * leftStick.x^3)
+ * f(x) = max(0, s * x * (kx^3 - k + 1)) * sgn(x)
+ * e.g. xPower = max(0, xScalar * leftStick.x * (xCubic * leftStick.x ^ 3 - xCubic + 1)
+ * see the desmos graph for an understanding of it
+ * @see <a href="https://www.desmos.com/calculator/r8hanh49bk">https://www.desmos.com/calculator/r8hanh49bk</a>
  * If not using field centric drive, leave everything after rScalar as default
  *
  * @param drive KMecanumDrive reference
@@ -31,18 +36,22 @@ class MecanumCmd(
     private val drive: KMecanumDrive,
     private val leftStick: Stick,
     private val rightStick: Stick,
-    private val xCubic: Double = 1.0,
-    private val yCubic: Double = 1.0,
-    private val rCubic: Double = 1.0,
     private val xScalar: Double = 1.0,
     private val yScalar: Double = 1.0,
     private val rScalar: Double = 1.0,
+    private val xCubic: Double = 1.0,
+    private val yCubic: Double = 1.0,
+    private val rCubic: Double = 1.0,
     private val alliance: Alliance = Alliance.BLUE,
     private val isTranslationFieldCentric: Boolean = false,
     private val isHeadingFieldCentric: Boolean = false,
     private val heading: () -> Double = { Double.NaN },
-    private val fieldCentricHeadingScalar: Double = 90.0.radians
+    private val fieldCentricHeadingScalar: Double = 90.0.radians,
 ) : Cmd() {
+
+    private fun transferFunction(s: Double, k: Double, x: Double): Double {
+        return max(0.0, s * x * (k * x.pow(3) - k + 1) ) * x.sign
+    }
 
     /**
      * Sets scaled power to mecanum drive
@@ -52,12 +61,12 @@ class MecanumCmd(
         val yRaw = -leftStick.ySupplier.invoke()
         val rRaw = -rightStick.xSupplier.invoke()
 
-        val xScaled = cubicScaling(xCubic, xRaw) * xScalar
-        val yScaled = cubicScaling(yCubic, yRaw) * yScalar
-        val rScaled = cubicScaling(rCubic, rRaw) * rScalar
+        val xOutput = transferFunction(xScalar, xCubic, xRaw)
+        val yOutput = transferFunction(yScalar, yCubic, yRaw)
+        val rOutput = transferFunction(rScalar, rCubic, rRaw)
 
         val final = if (isTranslationFieldCentric) {
-            val translationVector = Vector(xScaled, yScaled)
+            val translationVector = Vector(xOutput, yOutput)
             val headingInvoked = heading.invoke()
             val rotatedTranslation = translationVector.rotate(-heading.invoke() + if (alliance == Alliance.RED) 180.0.radians else 0.0)
 
@@ -68,12 +77,12 @@ class MecanumCmd(
 
                 rLockScaled
             } else {
-                rScaled
+                rOutput
             }
 
             Pose(rotatedTranslation, turn)
         } else {
-            Pose(xScaled, yScaled, rScaled)
+            Pose(xOutput, yOutput, rOutput)
         }
 
         drive.powers = final

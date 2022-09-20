@@ -1,5 +1,6 @@
 package com.asiankoala.koawalib.gamepad
 
+import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.math.d
 import com.asiankoala.koawalib.util.Periodic
 import com.qualcomm.robotcore.hardware.Gamepad
@@ -39,8 +40,8 @@ class KGamepad(private val gamepad: Gamepad) : Periodic {
         gamepad.runRumbleEffect(rumbleEffect)
     }
 
-    fun rumble(duration: Int) {
-        gamepad.rumble(duration)
+    fun rumble(durationMs: Int) {
+        gamepad.rumble(durationMs)
     }
 
     fun rumbleBlips(num: Int) {

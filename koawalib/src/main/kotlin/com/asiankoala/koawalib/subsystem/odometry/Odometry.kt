@@ -6,22 +6,15 @@ import com.asiankoala.koawalib.subsystem.Subsystem
 import kotlin.math.absoluteValue
 import kotlin.math.max
 
-abstract class Odometry : Subsystem() {
+abstract class Odometry(protected val startPose: Pose) : Subsystem() {
     internal data class TimePose(val pose: Pose, val timestamp: Long = System.currentTimeMillis())
 
     abstract fun updateTelemetry()
     abstract fun reset()
     private val prevRobotRelativePositions: ArrayList<TimePose> = ArrayList()
     private var robotRelativeMovement: Pose = Pose()
-    var pose = Pose()
+    var pose = startPose
         protected set
-
-    var startPose: Pose = Pose()
-        set(value) {
-            pose = value
-            field = value
-            Logger.logInfo("set start pose to $value")
-        }
 
     val velocity: Pose
         get() {

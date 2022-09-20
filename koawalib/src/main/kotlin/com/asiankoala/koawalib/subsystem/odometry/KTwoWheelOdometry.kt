@@ -12,7 +12,8 @@ class KTwoWheelOdometry(
     private val auxEncoder: KEncoder,
     private val TRACK_WIDTH: Double,
     private val PERP_TRACKER: Double,
-) : Odometry() {
+    startPose: Pose,
+) : Odometry(startPose) {
     private val encoders = listOf(leftEncoder, auxEncoder)
     private var accumulatedAuxPrediction = 0.0
     private var accumRWheel = 0.0

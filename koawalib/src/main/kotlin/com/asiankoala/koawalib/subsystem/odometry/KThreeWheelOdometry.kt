@@ -13,9 +13,9 @@ class KThreeWheelOdometry(
     private val auxEncoder: KEncoder,
     private val TRACK_WIDTH: Double,
     private val PERP_TRACKER: Double,
-) : Odometry() {
+    startPose: Pose,
+) : Odometry(startPose) {
     private var encoders = listOf(leftEncoder, rightEncoder, auxEncoder)
-    private var accumulatedHeading = 0.0
     private var accumulatedAuxPrediction = 0.0
     private var accumulatedAux = 0.0
 
@@ -25,7 +25,6 @@ class KThreeWheelOdometry(
         Logger.addTelemetryData("left encoder", leftEncoder.pos)
         Logger.addTelemetryData("right encoder", rightEncoder.pos)
         Logger.addTelemetryData("aux encoder", auxEncoder.pos)
-        Logger.addTelemetryData("accumulated heading", accumulatedHeading.degrees)
         Logger.addTelemetryData("delta tracker", accumulatedAux - accumulatedAuxPrediction)
     }
 
@@ -42,7 +41,6 @@ class KThreeWheelOdometry(
         val auxPredicted = headingDelta * PERP_TRACKER
         val auxDelta = auxEncoder.delta - auxPredicted
 
-        accumulatedHeading += headingDelta.absoluteValue
         accumulatedAuxPrediction += auxPredicted.absoluteValue
         accumulatedAux += auxEncoder.delta.absoluteValue
 

@@ -39,6 +39,7 @@ class KEncoder(
     val reverse: KEncoder
         get() {
             multiplier *= -1.0
+            Logger.logInfo("encoder associated with ${motor.deviceName} reversed")
             return this
         }
 
@@ -82,7 +83,7 @@ class KEncoder(
     internal fun update() {
         if (!disabled) {
             val seconds = clock.seconds()
-            _pos = motor.rawMotorPosition
+            _pos = motor.rawMotorPosition * multiplier
             prevPos.add(Pair(seconds, _pos))
             attemptVelUpdate()
             prevVel.add(Pair(seconds, _vel))

@@ -11,15 +11,14 @@ class KNewOdometry(
     private val rightEncoder: KEncoder,
     private val auxEncoder: KEncoder,
     private val TRACK_WIDTH: Double,
-    private val PERP_TRACKER: Double
-) : Odometry() {
-    private var encoders = listOf(leftEncoder, rightEncoder, auxEncoder)
-
+    private val PERP_TRACKER: Double,
+    startPose: Pose
+) : Odometry(startPose) { private var encoders = listOf(leftEncoder, rightEncoder, auxEncoder)
     private val rrOdo = object : ThreeTrackingWheelLocalizer(
         listOf(
             Pose2d(0.0, TRACK_WIDTH / 2, 0.0),
             Pose2d(0.0, -TRACK_WIDTH / 2, 0.0),
-            Pose2d(PERP_TRACKER, 0.0, Math.toRadians(90.0))
+            Pose2d(PERP_TRACKER, 0.0, Math.toRadians(180.0))
         )
     ) {
         override fun getWheelPositions(): List<Double> {
@@ -47,5 +46,10 @@ class KNewOdometry(
         encoders.forEach(KEncoder::update)
         rrOdo.update()
         pose = Pose(rrOdo.poseEstimate)
+    }
+
+    init {
+        rrOdo.poseEstimate = pose.toPose2d()
+        Logger.logInfo("set rr pose (${rrOdo.poseEstimate}) to $pose")
     }
 }
