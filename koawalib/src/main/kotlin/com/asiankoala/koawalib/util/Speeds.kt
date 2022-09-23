@@ -4,6 +4,7 @@ import com.asiankoala.koawalib.math.Pose
 import kotlin.math.PI
 
 class Speeds {
+    // internally field centric
     private var internalSpeed = Pose()
 
     private fun Pose.convert(h: Double) = Pose(this.vec.rotate(PI / 2.0 - h), heading)

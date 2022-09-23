@@ -11,10 +11,10 @@ open class KMecanumOdoDrive(
     br: KMotor,
     private val odometry: Odometry,
     private val shouldTelemetryOdo: Boolean
-) : KMecanumDrive(fl, bl, fr, br), LocalizedDrive {
+) : KMecanumDrive(fl, bl, fr, br) {
 
-    override val pose get() = odometry.pose
-    override val vel get() = odometry.velocity
+    val pose get() = odometry.pose
+    val vel get() = odometry.velocity
 
     override fun periodic() {
         super.periodic()

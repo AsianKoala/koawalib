@@ -16,14 +16,6 @@ abstract class Subsystem : Periodic {
         KScheduler.setDefaultCommand(this, cmd)
     }
 
-    fun getDefaultCommand(): Cmd {
-        return KScheduler.getDefaultCommand(this)
-    }
-
-    fun getCurrentCommand(): Cmd? {
-        return KScheduler.requiring(this)
-    }
-
     fun register() {
         KScheduler.registerSubsystem(this)
     }

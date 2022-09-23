@@ -1,6 +1,7 @@
-package com.asiankoala.koawalib.util
+package com.asiankoala.koawalib.control.filter
 
 import com.acmerobotics.roadrunner.util.NanoClock
+import com.asiankoala.koawalib.util.Periodic
 import com.qualcomm.robotcore.util.MovingStatistics
 
 @Suppress("unused")
