@@ -3,7 +3,7 @@ package com.asiankoala.koawalib.hardware.sensor
 import com.asiankoala.koawalib.hardware.KDevice
 import com.asiankoala.koawalib.util.Periodic
 import com.asiankoala.koawalib.util.RateLimiter
-import com.asiankoala.koawalib.wpilib.Units
+import com.asiankoala.koawalib.util.Units
 import com.qualcomm.robotcore.hardware.DistanceSensor
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 

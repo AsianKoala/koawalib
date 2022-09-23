@@ -79,7 +79,7 @@ class MotorFactory(name: String) {
         ffGains: FFGains,
         allowedPositionError: Double,
         disabledPosition: DisabledPosition = DisabledPosition.NONE,
-        bounds: Bounds,
+        bounds: Bounds = Bounds(),
     ): MotorFactory {
         instance.mode = MotorControlModes.POSITION
         instance.controller = PositionMotorController(instance.encoder, pidGains, ffGains, allowedPositionError, disabledPosition, bounds)
@@ -102,6 +102,7 @@ class MotorFactory(name: String) {
         constraints: MotionConstraints,
         allowedPositionError: Double,
         disabledPosition: DisabledPosition = DisabledPosition.NONE,
+        bounds: Bounds = Bounds()
     ): MotorFactory {
         instance.mode = MotorControlModes.MOTION_PROFILE
         instance.controller = MotionProfileMotorController(instance.encoder, pidGains, ffGains, constraints, allowedPositionError, disabledPosition)

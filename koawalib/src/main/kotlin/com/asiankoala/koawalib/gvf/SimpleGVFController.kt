@@ -10,12 +10,12 @@ import kotlin.math.absoluteValue
 
 /**
  *  Guided Vector Field follower
- *  Uses roadrunner path generation internally
+ *  Uses roadrunner path generation internally cause im lazy
  *  @link https://arxiv.org/pdf/1610.04391.pdf
  *  @param path roadrunner path
  *  @param kN normal path attraction
  *  @param kOmega heading weight
- *  @param kF end displacement weight
+ *  @param kF end param weight
  *  @param epsilon allowed absolute and projected error
  *  @param errorMap error map to transform normal displacement error
  *  @property isFinished path finish state
@@ -37,16 +37,15 @@ class SimpleGVFController(
     }
 
     override fun vectorControl(): Vector2d {
-        val projectedDisplacement = (lastS - path.length()).absoluteValue
-        var translationalPower = lastGVFVec * (projectedDisplacement / kF)
+        val paramTillEnd = (lastS - path.length()).absoluteValue
+        var translationalPower = lastGVFVec * (paramTillEnd / kF)
+        if(paramTillEnd < kF) translationalPower /= kF
 
-        val absoluteDisplacement = path.end().vec() - lastPose.vec()
-        isFinished = projectedDisplacement < epsilon && absoluteDisplacement.norm() < epsilon
-        val absoluteVector = absoluteDisplacement * (projectedDisplacement / kF)
+        val endRVector = path.end().vec() - lastPose.vec()
+        isFinished = paramTillEnd < epsilon && endRVector.norm() < epsilon
+        if(isFinished) return Vector2d()
 
-        if (isFinished) translationalPower = absoluteVector
         if (translationalPower.norm() > 1.0) translationalPower /= translationalPower.norm()
-
         return translationalPower
     }
 

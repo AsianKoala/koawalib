@@ -1,4 +1,4 @@
-package com.asiankoala.koawalib.wpilib
+package com.asiankoala.koawalib.util
 
 import com.acmerobotics.roadrunner.util.NanoClock
 
@@ -6,6 +6,8 @@ import com.acmerobotics.roadrunner.util.NanoClock
  * @see https://github.com/wpilibsuite/allwpilib/blob/main/wpimath/src/main/java/edu/wpi/first/math/filter/Debouncer.java
  * A simple debounce filter for boolean streams. Requires that the boolean change value from
  * baseline for a specified period of time before the filtered value changes.
+ *
+ * note: ported from wpilib
  */
 @Suppress("unused")
 class Debouncer @JvmOverloads constructor(

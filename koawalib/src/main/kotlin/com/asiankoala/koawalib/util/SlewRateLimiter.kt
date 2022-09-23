@@ -1,13 +1,14 @@
-package com.asiankoala.koawalib.wpilib
+package com.asiankoala.koawalib.util
 
 import com.acmerobotics.roadrunner.util.NanoClock
 import com.asiankoala.koawalib.math.clamp
 
 /**
- * @see https://github.com/wpilibsuite/allwpilib/blob/main/wpimath/src/main/java/edu/wpi/first/math/filter/SlewRateLimiter.java
  * A class that limits the rate of change of an input value. Useful for implementing voltage,
  * setpoint, and/or output ramps. A slew-rate limit is most appropriate when the quantity being
- * controlled is a velocity or a voltage; when controlling a position, consider using a [ ] instead.
+ * controlled is a velocity or a voltage
+ *
+ * note: ported from wpilib
  */
 class SlewRateLimiter @JvmOverloads constructor(
     private val m_rateLimit: Double,
@@ -42,15 +43,4 @@ class SlewRateLimiter @JvmOverloads constructor(
         m_prevVal = value
         m_prevTime = NanoClock.system().seconds()
     }
-    /**
-     * Creates a new SlewRateLimiter with the given rate limit and initial value.
-     *
-     * @param m_rateLimit The rate-of-change limit, in units per second.
-     * @param m_prevVal The initial value of the input.
-     */
-    /**
-     * Creates a new SlewRateLimiter with the given rate limit and an initial value of zero.
-     *
-     * @param rateLimit The rate-of-change limit, in units per second.
-     */
 }

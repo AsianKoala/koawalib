@@ -29,8 +29,6 @@ abstract class KOpMode : LinearOpMode() {
     // let this be public for user opmodes
     private var opModeTimer = ElapsedTime()
 
-    protected val opModeTime get() = opModeTimer.seconds()
-
     private var loopTimer = ElapsedTime()
     private lateinit var hubs: List<LynxModule>
 
@@ -92,6 +90,8 @@ abstract class KOpMode : LinearOpMode() {
         if(!Logger.config.isTelemetryEnabled) {
             telemetry.msTransmissionInterval = 100000
             Logger.logInfo("Telemetry disabled")
+        } else {
+            telemetry.msTransmissionInterval = 250
         }
     }
 
