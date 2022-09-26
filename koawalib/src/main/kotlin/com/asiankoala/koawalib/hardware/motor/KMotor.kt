@@ -3,6 +3,7 @@ package com.asiankoala.koawalib.hardware.motor
 import com.asiankoala.koawalib.command.commands.LoopCmd
 import com.asiankoala.koawalib.control.motor.*
 import com.asiankoala.koawalib.control.motor.MotorController
+import com.asiankoala.koawalib.control.profile.MotionState
 import com.asiankoala.koawalib.hardware.KDevice
 import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.math.d
@@ -14,20 +15,34 @@ import com.qualcomm.robotcore.util.Range
 import kotlin.math.absoluteValue
 
 /**
- * The koawalib standard open-loop motor. Default settings are zeroPowerBehavior: float and direction: forward
- * @see KMotorEx for closed-loop control
  * todo: when first motor command is called, refresh motor encoder
+ * above might already be fixed?
+ * todo: figure out voltage control
  */
 @Suppress("unused")
 class KMotor internal constructor(name: String) : KDevice<DcMotorEx>(name) {
     lateinit var encoder: KEncoder
-
     internal var mode = MotorControlModes.OPEN_LOOP
     internal lateinit var controller: MotorController
 
     private var powerMultiplier = 1.0
     private var disabled = false
     private val cmd = LoopCmd(this::update).withName("$name motor")
+
+    private fun update() {
+        if (mode == MotorControlModes.OPEN_LOOP) return
+
+        controller.updateEncoder()
+        controller.update()
+
+        var rawOutput = controller.output
+
+        if (isVoltageCorrected) {
+            rawOutput *= (12.0 / lastVoltageRead)
+        }
+
+        this.power = rawOutput
+    }
 
     internal var zeroPowerBehavior: DcMotor.ZeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
         set(value) {
@@ -59,30 +74,19 @@ class KMotor internal constructor(name: String) : KDevice<DcMotorEx>(name) {
             }
         }
 
+    val setpoint: MotionState get() = (controller as MotionProfileMotorController).setpoint
+    val currState: MotionState get() = controller.currentState
+
     val pos: Double get() = encoder.pos
 
     val vel: Double get() = encoder.vel
 
     val accel: Double get() = encoder.accel
 
-    private fun update() {
-        if (mode == MotorControlModes.OPEN_LOOP) return
-
-        controller.updateEncoder()
-        controller.update()
-
-        var rawOutput = controller.output
-
-        if (isVoltageCorrected) {
-            rawOutput *= (12.0 / lastVoltageRead)
-        }
-
-        this.power = rawOutput
-    }
-
     fun setPositionTarget(x: Double) {
         if (mode != MotorControlModes.POSITION) throw Exception("motor must be position controlled")
         controller.setTargetPosition(x)
+        Logger.logInfo("set motor $deviceName's position target to $x")
     }
 
     fun setVelocityTarget(v: Double) {
@@ -106,6 +110,7 @@ class KMotor internal constructor(name: String) : KDevice<DcMotorEx>(name) {
         if (mode != MotorControlModes.OPEN_LOOP) {
             encoder.enable()
         }
+        cmd.schedule()
     }
 
     fun disable() {
@@ -114,31 +119,11 @@ class KMotor internal constructor(name: String) : KDevice<DcMotorEx>(name) {
         if (mode != MotorControlModes.OPEN_LOOP) {
             encoder.disable()
         }
-    }
-
-    fun schedule() {
-        + cmd
-    }
-
-    fun cancel() {
-        - cmd
+        cmd.cancel()
     }
 
     init {
         device.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         device.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
-
-        if (mode != MotorControlModes.OPEN_LOOP) {
-            schedule()
-            val information = "name: $name" +
-                    "mode: $mode" +
-                    "direction: $direction" +
-                    "zeroPowerBehavior: $zeroPowerBehavior" +
-                    "isVoltageCorrected: $isVoltageCorrected"
-            Logger.logInfo("scheduled motor with information: " +
-                    information
-            )
-        }
     }
-
 }

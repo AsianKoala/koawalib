@@ -30,8 +30,8 @@ internal abstract class MotorController(
     }
 
     var output = 0.0; protected set
-    protected var currentState = MotionState(encoder.pos)
-    protected var targetState = MotionState(encoder.pos)
+    var currentState = MotionState(encoder.pos)
+    internal var targetState = MotionState(encoder.pos)
 
     fun updateEncoder() {
         encoder.update()

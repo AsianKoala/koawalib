@@ -6,5 +6,7 @@ data class MotionPeriod(
 ) {
     val endState get() = startState[dt]
 
+    val dx = endState.x - startState.x
+
     operator fun get(t: Double) = startState[t]
 }

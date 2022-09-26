@@ -1,6 +1,7 @@
 package com.asiankoala.koawalib.subsystem.drive
 
 import com.asiankoala.koawalib.hardware.motor.KMotor
+import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.subsystem.Subsystem
 import kotlin.math.absoluteValue
@@ -16,10 +17,10 @@ open class KMecanumDrive(
     var powers = Pose()
 
     protected open fun processPowers(drivePowers: Pose): List<Double> {
-        val fl = drivePowers.y + drivePowers.x - drivePowers.heading
-        val bl = drivePowers.y - drivePowers.x - drivePowers.heading
-        val br = drivePowers.y + drivePowers.x + drivePowers.heading
-        val fr = drivePowers.y - drivePowers.x + drivePowers.heading
+        val fl = drivePowers.y + drivePowers.x + drivePowers.heading
+        val bl = drivePowers.y - drivePowers.x + drivePowers.heading
+        val br = drivePowers.y + drivePowers.x - drivePowers.heading
+        val fr = drivePowers.y - drivePowers.x - drivePowers.heading
         return listOf(fl, bl, br, fr)
     }
 

@@ -6,6 +6,7 @@ import com.asiankoala.koawalib.control.profile.MotionConstraints
 import com.asiankoala.koawalib.control.profile.MotionProfile
 import com.asiankoala.koawalib.control.profile.MotionState
 import com.asiankoala.koawalib.hardware.motor.KEncoder
+import com.asiankoala.koawalib.logger.Logger
 import com.qualcomm.robotcore.util.ElapsedTime
 import kotlin.math.absoluteValue
 
@@ -19,13 +20,15 @@ internal class MotionProfileMotorController(
 ) : MotorController(pid, ff, encoder) {
     private var profile: MotionProfile? = null
     private val timer = ElapsedTime()
-    private var setpoint = MotionState(currentState.x)
+    var setpoint = MotionState(currentState.x)
 
     override fun setTarget(requestedState: MotionState) {
         controller.reset()
         timer.reset()
         targetState = requestedState
         profile = MotionProfile(currentState, targetState, constraints)
+        Logger.logInfo("created profile with startState", currentState)
+        Logger.logInfo("created profile with endState", targetState)
     }
 
     override fun isAtTarget(): Boolean = profile?.let {
@@ -40,10 +43,12 @@ internal class MotionProfileMotorController(
             targetAcceleration = setpoint.a
         }
 
-        output = controller.update(currentState.x, currentState.v) + ff.calc(currentState.x)
+        output = controller.update(currentState.x, currentState.v) + ff.calc(setpoint.x)
+        Logger.logInfo("profile output", output)
 
         if (disabledPosition.shouldDisable(targetState.x, currentState.x, allowedPositionError)) {
             output = 0.0
+            Logger.addTelemetryLine("controller disabled")
         }
     }
 }

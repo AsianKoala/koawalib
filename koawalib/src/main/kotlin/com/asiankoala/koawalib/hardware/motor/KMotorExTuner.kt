@@ -19,7 +19,7 @@ import com.asiankoala.koawalib.command.KOpMode
  * 7. Increase kA until the measured velocity approximately resembles the slope of the acceleration/deceleration
  * 8. Now tune your PID gains with the PID Tuner. If you choose to change your motion constraints, you may need to revisit this opmode.
  */
-@Config
+//@Config
 @Suppress("unused")
 @Deprecated("unusable for now with KMotorEx removal")
 internal abstract class KMotorExTuner : KOpMode() {
@@ -40,8 +40,7 @@ internal abstract class KMotorExTuner : KOpMode() {
 //        if (!kG.isNaN()) motor.settings.ff.kG = kG else kG = motor.settings.ff.kG
 // //        if (!kCos.isNaN()) motor.settings.ff.kCos = kCos else kCos = motor.settings.ff.kCos
 //        if (!kP.isNaN()) motor.settings.pid.kP = kP else kP = motor.settings.pid.kP
-//        if (!kI.isNaN()) motor.settings.pid.kI = kI else kI = motor.settings.pid.kI
-//        if (!kD.isNaN()) motor.settings.pid.kD = kD else kD = motor.settings.pid.kD
+//        if (!kI.isNaN()) motor.settings.pid.kI = kI else kI = motor.settings.pid.kI //        if (!kD.isNaN()) motor.settings.pid.kD = kD else kD = motor.settings.pid.kD
 //    }
 //
 //    override fun mInit() {

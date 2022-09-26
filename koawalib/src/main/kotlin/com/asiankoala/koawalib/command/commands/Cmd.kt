@@ -27,11 +27,6 @@ abstract class Cmd {
     open val isFinished: Boolean get() = false
 
     /**
-     * Whether the command is currently scheduled. Syntax sugar for [KScheduler.isScheduled]
-     */
-    val isScheduled: Boolean get() = KScheduler.isScheduled(this)
-
-    /**
      * The name of the command
      */
     val name: String get() = _name ?: this.javaClass.simpleName
@@ -98,7 +93,7 @@ abstract class Cmd {
      * @param seconds amount of seconds to pause following this command
      * @return SequentialCommandGroup with this command -> WaitCommand
      */
-    fun pauseFor(seconds: Double): Cmd {
+    fun andThenWait(seconds: Double): Cmd {
         return SequentialGroup(this, WaitCmd(seconds))
     }
 
@@ -142,7 +137,6 @@ abstract class Cmd {
     }
 
     operator fun unaryPlus() = schedule()
-    operator fun unaryMinus() = cancel()
 
     /**
      * Schedule command. Syntax sugar for [KScheduler.schedule]

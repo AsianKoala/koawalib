@@ -7,6 +7,7 @@ import com.asiankoala.koawalib.control.motor.MotionProfileMotorController
 import com.asiankoala.koawalib.control.motor.PositionMotorController
 import com.asiankoala.koawalib.control.motor.VelocityMotorController
 import com.asiankoala.koawalib.control.profile.MotionConstraints
+import com.asiankoala.koawalib.logger.Logger
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 
@@ -53,12 +54,7 @@ class MotorFactory(name: String) {
     fun createEncoder(ticksPerUnit: Double, isRevEncoder: Boolean): MotorFactory {
         instance.encoder = KEncoder(instance, ticksPerUnit, isRevEncoder)
         encoderCreated = true
-        return this
-    }
-
-    fun pairEncoder(toPair: KEncoder): MotorFactory {
-        instance.encoder = toPair
-        encoderCreated = true
+        Logger.logInfo("encoder created in associating with motor ${instance.deviceName}")
         return this
     }
 
@@ -102,7 +98,6 @@ class MotorFactory(name: String) {
         constraints: MotionConstraints,
         allowedPositionError: Double,
         disabledPosition: DisabledPosition = DisabledPosition.NONE,
-        bounds: Bounds = Bounds()
     ): MotorFactory {
         instance.mode = MotorControlModes.MOTION_PROFILE
         instance.controller = MotionProfileMotorController(instance.encoder, pidGains, ffGains, constraints, allowedPositionError, disabledPosition)
@@ -113,6 +108,20 @@ class MotorFactory(name: String) {
         if(!encoderCreated && instance.mode != MotorControlModes.OPEN_LOOP) {
             throw Exception()
         }
+
+        if (instance.mode != MotorControlModes.OPEN_LOOP) {
+            instance.enable()
+            val information = "\n" +
+                    "name: ${instance.deviceName}\n" +
+                    "mode: ${instance.mode}\n" +
+                    "direction: ${instance.direction}\n" +
+                    "zeroPowerBehavior: ${instance.zeroPowerBehavior}\n" +
+                    "isVoltageCorrected: ${instance.isVoltageCorrected}\n"
+            Logger.logInfo("scheduled motor with information: " +
+                    information
+            )
+        }
+
         return instance
     }
 }

@@ -10,5 +10,5 @@ package com.asiankoala.koawalib.control.profile
 data class MotionConstraints(
     var cruiseVel: Double,
     var accel: Double,
-    var deccel: Double = -accel,
+    var deccel: Double = accel,
 )

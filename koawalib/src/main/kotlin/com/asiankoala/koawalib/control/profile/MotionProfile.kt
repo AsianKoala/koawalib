@@ -1,7 +1,9 @@
 package com.asiankoala.koawalib.control.profile
 
+import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.math.absMin
 import kotlin.math.absoluteValue
+import kotlin.math.pow
 import kotlin.math.sqrt
 
 /**
@@ -38,15 +40,19 @@ class MotionProfile(
             startState.copy(a = constraints.accel),
             ((constraints.cruiseVel - startState.v) / constraints.accel).absoluteValue
         )
-        deccelPeriod = MotionPeriod(
-            endState.copy(v = constraints.cruiseVel, a = -constraints.deccel),
-            ((endState.v - constraints.cruiseVel) / constraints.deccel).absoluteValue
-        )
+
+        val deccelTime = (endState.v - constraints.cruiseVel).absoluteValue / constraints.cruiseVel
+        val deccelDx = endState.v * -deccelTime + 0.5 * constraints.deccel * deccelTime.pow(2)
+
         cruisePeriod = MotionPeriod(
-            accelPeriod.endState.copy(a = 0.0),
-            (endState.x / constraints.cruiseVel).absoluteValue - (accelPeriod.dt + deccelPeriod.dt) / 2.0
+            accelPeriod.endState.copy(v = constraints.cruiseVel, a = 0.0),
+            (endState.x - startState.x - accelPeriod.dx - deccelDx) / constraints.cruiseVel
         )
-        deccelPeriod.startState.x = cruisePeriod.endState.x
+
+        deccelPeriod = MotionPeriod(
+            cruisePeriod.endState.copy(a = -constraints.deccel),
+            deccelTime
+        )
 
         if (cruisePeriod.dt < 0.0) {
             cruisePeriod.dt = 0.0
@@ -59,5 +65,20 @@ class MotionProfile(
 
         duration = accelPeriod.dt + cruisePeriod.dt + deccelPeriod.dt
         periods = listOf(accelPeriod, cruisePeriod, deccelPeriod)
+
+//        Logger.logInfo("dt 1", accelPeriod.dt)
+//        Logger.logInfo("dt 2", cruisePeriod.dt)
+//        Logger.logInfo("dt 3", deccelPeriod.dt)
+//        Logger.logInfo("duration", duration)
+//        Logger.logInfo("accel dx", accelPeriod.dx)
+//        Logger.logInfo("cruise dx", cruisePeriod.dx)
+//        Logger.logInfo("deccel dx", deccelDx)
+//        Logger.logInfo("total int", accelPeriod.dx + cruisePeriod.dx + deccelPeriod.dx)
+//        Logger.logInfo("accel start", accelPeriod.startState)
+//        Logger.logInfo("accel end", accelPeriod.endState)
+//        Logger.logInfo("cruise start", cruisePeriod.startState)
+//        Logger.logInfo("cruise end", cruisePeriod.endState)
+//        Logger.logInfo("deccel start", deccelPeriod.startState)
+//        Logger.logInfo("deccel end", deccelPeriod.endState)
     }
 }

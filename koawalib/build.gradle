@@ -84,7 +84,7 @@ dependencies {
     testImplementation 'org.jetbrains.kotlin:kotlin-test'
 
     implementation 'org.apache.commons:commons-math3:3.6.1'
-    implementation 'com.acmerobotics.dashboard:dashboard:0.4.3'
+    implementation 'com.acmerobotics.dashboard:dashboard:0.4.5'
     implementation 'com.acmerobotics.roadrunner:core:0.5.4'
 
 

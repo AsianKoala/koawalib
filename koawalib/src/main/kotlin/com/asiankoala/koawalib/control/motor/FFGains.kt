@@ -1,6 +1,8 @@
 package com.asiankoala.koawalib.control.motor
 
+import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.math.cos
+import com.asiankoala.koawalib.math.radians
 
 data class FFGains(
     var kS: Double = 0.0,
@@ -9,7 +11,9 @@ data class FFGains(
     var kG: Double = 0.0,
     var kCos: Double? = null,
 ) {
-    fun calc(pos: Double): Double {
-        return kG + (kCos?.times(pos.cos) ?: 0.0)
+    fun calc(targetX: Double): Double {
+        val armFF = kCos?.times(targetX.radians.cos) ?: 0.0
+        Logger.addTelemetryData("arm ff", armFF)
+        return kG + armFF
     }
 }
