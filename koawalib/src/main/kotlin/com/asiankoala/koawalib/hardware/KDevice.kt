@@ -9,8 +9,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap
  * @param deviceName config name of device
  */
 @Suppress("UNCHECKED_CAST")
-abstract class KDevice<T : HardwareDevice>(val deviceName: String, isTestDevice: Boolean = false) {
-    protected val device: T = if (!isTestDevice) hardwareMap[HardwareDevice::class.java as Class<T>, deviceName] else TestDevice() as T
+abstract class KDevice<T : HardwareDevice>(val deviceName: String) {
+    protected val device: T = hardwareMap[HardwareDevice::class.java as Class<T>, deviceName]
 
     override fun toString(): String {
         return deviceName

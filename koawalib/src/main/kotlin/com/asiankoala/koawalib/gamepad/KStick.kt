@@ -1,11 +1,12 @@
 package com.asiankoala.koawalib.gamepad
 
 import com.asiankoala.koawalib.gamepad.functionality.Stick
+import com.asiankoala.koawalib.util.KDouble
 
 class KStick(
-    private val stickXAxis: KAxis,
-    private val stickYAxis: KAxis,
-    private val stickButton: KButton
+    private val stickXAxis: KDouble,
+    private val stickYAxis: KDouble,
+    private val stickButton: KButton,
 ) : Stick {
     override fun periodic() {
         stickButton.periodic()

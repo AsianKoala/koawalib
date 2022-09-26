@@ -1,7 +1,6 @@
 package com.asiankoala.koawalib.subsystem.drive
 
 import com.asiankoala.koawalib.hardware.motor.KMotor
-import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.subsystem.odometry.Odometry
 
 open class KMecanumOdoDrive(

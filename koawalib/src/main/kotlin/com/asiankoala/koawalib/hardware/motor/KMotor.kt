@@ -14,11 +14,6 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.util.Range
 import kotlin.math.absoluteValue
 
-/**
- * todo: when first motor command is called, refresh motor encoder
- * above might already be fixed?
- * todo: figure out voltage control
- */
 @Suppress("unused")
 class KMotor internal constructor(name: String) : KDevice<DcMotorEx>(name) {
     lateinit var encoder: KEncoder
@@ -60,7 +55,7 @@ class KMotor internal constructor(name: String) : KDevice<DcMotorEx>(name) {
             field = value
         }
 
-    internal var isVoltageCorrected = false; private set
+    internal var isVoltageCorrected = false
     internal val rawMotorPosition get() = device.currentPosition.d
     internal val rawMotorVelocity get() = device.velocity
 
@@ -74,8 +69,21 @@ class KMotor internal constructor(name: String) : KDevice<DcMotorEx>(name) {
             }
         }
 
-    val setpoint: MotionState get() = (controller as MotionProfileMotorController).setpoint
-    val currState: MotionState get() = controller.currentState
+    val setpoint: MotionState get() {
+        if (mode != MotorControlModes.MOTION_PROFILE) {
+            throw Exception("controller not motion profile controller")
+        } else {
+            return (controller as MotionProfileMotorController).setpoint
+        }
+    }
+
+    val currState: MotionState get() {
+        if (mode == MotorControlModes.OPEN_LOOP) {
+            throw Exception("controller not closed loop")
+        } else {
+            return controller.currentState
+        }
+    }
 
     val pos: Double get() = encoder.pos
 

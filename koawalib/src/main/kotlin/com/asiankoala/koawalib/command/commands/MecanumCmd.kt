@@ -50,7 +50,7 @@ class MecanumCmd(
 ) : Cmd() {
 
     private fun transferFunction(s: Double, k: Double, x: Double): Double {
-        return max(0.0, s * x * (k * x.pow(3) - k + 1) ) * x.sign
+        return max(0.0, s * x * (k * x.pow(3) - k + 1)) * x.sign
     }
 
     /**

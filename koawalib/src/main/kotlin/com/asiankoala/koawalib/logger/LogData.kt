@@ -1,7 +1,7 @@
 package com.asiankoala.koawalib.logger
 
 import android.util.Log
-import com.asiankoala.koawalib.util.Colors
+import com.asiankoala.koawalib.util.internal.Colors
 import java.text.SimpleDateFormat
 import java.util.*
 

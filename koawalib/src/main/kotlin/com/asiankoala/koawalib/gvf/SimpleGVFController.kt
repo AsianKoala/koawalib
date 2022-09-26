@@ -2,14 +2,10 @@ package com.asiankoala.koawalib.gvf
 
 import com.acmerobotics.roadrunner.geometry.Vector2d
 import com.acmerobotics.roadrunner.path.Path
-import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.angleWrap
 import com.asiankoala.koawalib.math.degrees
-import com.asiankoala.koawalib.math.radians
 import com.asiankoala.koawalib.util.Speeds
-import kotlin.math.PI
-import kotlin.math.absoluteValue
 
 /**
  *  Guided Vector Field follower
@@ -34,11 +30,10 @@ class SimpleGVFController(
 ) : GVFController(path, kN, kOmega, epsilon, errorMap) {
 
     override fun headingControl(): Pair<Double, Double> {
-        val desiredHeading = lastTangentVec.angle() // TODO: don't be a bitch
-//        val desiredHeading = lastGVFVec.angle() // TODO: don't be a bitch
+        // note to neil: just leave this gvf controller untouched since it works
+        // and instead go work on ff gvf controller
+        val desiredHeading = lastTangentVec.angle()
         val headingError = (desiredHeading - lastPose.heading).angleWrap.degrees
-        Logger.logInfo("target heading", desiredHeading.degrees)
-        Logger.logInfo("curr heading", lastPose.heading.degrees)
         val result = kOmega * headingError
         return Pair(result, headingError)
     }
@@ -46,11 +41,11 @@ class SimpleGVFController(
     override fun vectorControl(): Vector2d {
         val paramTillEnd = path.length() - lastS
         var translationalPower = (lastGVFVec / lastGVFVec.norm()) * kS
-        if(paramTillEnd < kF) translationalPower /= kF
+        if (paramTillEnd < kF) translationalPower /= kF
 
         val endRVector = path.end().vec() - lastPose.vec()
         isFinished = paramTillEnd < epsilon && endRVector.norm() < epsilon
-        if(isFinished) return Vector2d()
+        if (isFinished) return Vector2d()
 
         if (translationalPower.norm() > 1.0) translationalPower /= translationalPower.norm()
         return translationalPower
@@ -71,8 +66,6 @@ class SimpleGVFController(
         val headingResult = headingControl()
         val angularOutput = headingResult.first
         val headingError = headingResult.second
-
-        Logger.logInfo("gvf", lastGVFVec / lastGVFVec.norm())
 
         lastHeadingError = headingError
 

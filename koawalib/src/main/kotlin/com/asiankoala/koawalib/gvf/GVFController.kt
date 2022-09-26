@@ -3,7 +3,6 @@ package com.asiankoala.koawalib.gvf
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.geometry.Vector2d
 import com.acmerobotics.roadrunner.path.Path
-import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.Vector
 import com.asiankoala.koawalib.util.Speeds
@@ -44,10 +43,6 @@ abstract class GVFController(
         val displacementVec = projected - pose.vec()
         val orientation = displacementVec.toVec() cross tangentVec.toVec()
         val error = displacementVec.norm() * orientation.sign
-        Logger.logInfo("pose", pose)
-        Logger.logInfo("projected", projected)
-        Logger.logInfo("tangent", tangentVec)
-        Logger.logInfo("error", error)
         return tangentVec - normalVec * kN * errorMap.invoke(error)
     }
 }

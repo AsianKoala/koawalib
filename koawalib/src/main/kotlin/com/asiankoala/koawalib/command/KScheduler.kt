@@ -256,7 +256,14 @@ object KScheduler {
         scheduleForState(OpModeState.START, cmd)
     }
 
+    /**
+     * Register a device with KScheduler
+     * @see KScheduler
+     */
     fun registerDevices(vararg devices: KDevice<*>) {
-        deviceRegistry.putAll(devices.map { Pair(it.deviceName, it) })
+        devices.forEach {
+            Logger.logInfo("registered device ${it.deviceName}")
+            deviceRegistry[it.deviceName] = it
+        }
     }
 }

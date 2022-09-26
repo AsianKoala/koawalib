@@ -2,7 +2,6 @@ package com.asiankoala.koawalib.command.commands
 
 import com.acmerobotics.roadrunner.path.Path
 import com.asiankoala.koawalib.gvf.SimpleGVFController
-import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.subsystem.drive.KMecanumOdoDrive
 import com.asiankoala.koawalib.util.Speeds
@@ -20,14 +19,10 @@ class GVFCmd(
     private val controller = SimpleGVFController(path, kN, kOmega, kF, kS, epsilon, errorMap)
 
     override fun execute() {
-        val output = controller.update(
+        drive.powers = controller.update(
             drive.pose,
             Speeds().apply { setRobotCentric(drive.vel, drive.pose.heading) }
         ).getRobotCentric(drive.pose.heading)
-
-        Logger.logInfo("output powers: ${output.rawString()}\n")
-
-        drive.powers = output
     }
 
     override fun end() {

@@ -1,20 +1,19 @@
 package com.asiankoala.koawalib.control.filter
 
-import com.acmerobotics.roadrunner.util.NanoClock
+import com.asiankoala.koawalib.math.d
 import com.asiankoala.koawalib.util.Periodic
 import com.qualcomm.robotcore.util.MovingStatistics
 
 @Suppress("unused")
-class RateLimiter(private val timestepSec: Double, private val func: () -> Unit) : Periodic {
-    private val clock = NanoClock.system()
-    private var lastDiscreteTime = clock.seconds()
+class RateLimiter(private val timestepMS: Double, private val func: () -> Unit) : Periodic {
+    private var lastDiscreteTime = System.currentTimeMillis()
     private var dtStats = MovingStatistics(10)
 
     override fun periodic() {
-        val sec = clock.seconds()
+        val sec = System.currentTimeMillis()
         val dt = sec - lastDiscreteTime
-        dtStats.add(dt)
-        if (sec - lastDiscreteTime > timestepSec || dtStats.mean > 1.5 * timestepSec) {
+        dtStats.add(dt.d)
+        if (sec - lastDiscreteTime > timestepMS || dtStats.mean > 1.5 * timestepMS) {
             func.invoke()
             lastDiscreteTime = sec
         }

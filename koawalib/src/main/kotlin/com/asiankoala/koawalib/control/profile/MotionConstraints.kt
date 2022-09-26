@@ -8,7 +8,7 @@ package com.asiankoala.koawalib.control.profile
  * @param deccel max deceleration
  */
 data class MotionConstraints(
-    var cruiseVel: Double,
-    var accel: Double,
-    var deccel: Double = accel,
+    val cruiseVel: Double,
+    val accel: Double,
+    val deccel: Double = accel,
 )

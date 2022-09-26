@@ -51,6 +51,18 @@ class MotorFactory(name: String) {
             return this
         }
 
+    /**
+     * Return this motor with voltage correction
+     */
+    val voltageCorrected: MotorFactory
+        get() {
+            instance.isVoltageCorrected = true
+            return this
+        }
+
+    /**
+     * Created an encoder association with this motor
+     */
     fun createEncoder(ticksPerUnit: Double, isRevEncoder: Boolean): MotorFactory {
         instance.encoder = KEncoder(instance, ticksPerUnit, isRevEncoder)
         encoderCreated = true
@@ -58,18 +70,27 @@ class MotorFactory(name: String) {
         return this
     }
 
+    /**
+     * Zero the encoder associated with this motor
+     */
     fun zero(newPosition: Double = 0.0): MotorFactory {
         if (!encoderCreated) throw Exception("encoder has not been created yet")
         instance.encoder.zero(newPosition)
         return this
     }
 
+    /**
+     * Reverse the encoder associated with this motor
+     */
     val reverseEncoder: MotorFactory
         get() {
             instance.encoder.reverse
             return this
         }
 
+    /**
+     * Enable position PID control in the motor
+     */
     fun withPositionControl(
         pidGains: PIDGains,
         ffGains: FFGains,
@@ -82,6 +103,9 @@ class MotorFactory(name: String) {
         return this
     }
 
+    /**
+     * Enable velocity PID control in the motor
+     */
     fun withVelocityControl(
         pidGains: PIDGains,
         kF: Double,
@@ -92,6 +116,9 @@ class MotorFactory(name: String) {
         return this
     }
 
+    /**
+     * Enable motion profile control in the motor
+     */
     fun withMotionProfileControl(
         pidGains: PIDGains,
         ffGains: FFGains,
@@ -104,20 +131,24 @@ class MotorFactory(name: String) {
         return this
     }
 
+    /**
+     * Build the motor from the motor factory
+     */
     fun build(): KMotor {
-        if(!encoderCreated && instance.mode != MotorControlModes.OPEN_LOOP) {
+        if (!encoderCreated && instance.mode != MotorControlModes.OPEN_LOOP) {
             throw Exception()
         }
 
         if (instance.mode != MotorControlModes.OPEN_LOOP) {
             instance.enable()
             val information = "\n" +
-                    "name: ${instance.deviceName}\n" +
-                    "mode: ${instance.mode}\n" +
-                    "direction: ${instance.direction}\n" +
-                    "zeroPowerBehavior: ${instance.zeroPowerBehavior}\n" +
-                    "isVoltageCorrected: ${instance.isVoltageCorrected}\n"
-            Logger.logInfo("scheduled motor with information: " +
+                "name: ${instance.deviceName}\n" +
+                "mode: ${instance.mode}\n" +
+                "direction: ${instance.direction}\n" +
+                "zeroPowerBehavior: ${instance.zeroPowerBehavior}\n" +
+                "isVoltageCorrected: ${instance.isVoltageCorrected}\n"
+            Logger.logInfo(
+                "scheduled motor with information: " +
                     information
             )
         }

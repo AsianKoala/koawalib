@@ -27,7 +27,7 @@ data class LoggerConfig(
             isLogging = false,
             isDebugging = false,
             isDashboardEnabled = false,
-            isTelemetryEnabled = true,
+            isTelemetryEnabled = false,
         )
 
         // for FTCDashboard

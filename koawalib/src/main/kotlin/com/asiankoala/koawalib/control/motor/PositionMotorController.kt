@@ -25,7 +25,6 @@ internal class PositionMotorController(
 
     override fun update() {
         output = controller.update(currentState.x, currentState.v) + ff.calc(targetState.x)
-        Logger.addTelemetryData("controller output", output)
 
         if (disabledPosition.shouldDisable(targetState.x, currentState.x, allowedPositionError)) {
             output = 0.0

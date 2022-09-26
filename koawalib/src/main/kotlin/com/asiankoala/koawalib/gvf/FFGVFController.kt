@@ -11,18 +11,10 @@ import kotlin.math.absoluteValue
 import kotlin.math.max
 
 /**
- *  Guided Vector Field follower
- *  Uses roadrunner path generation internally
- *  @link https://arxiv.org/pdf/1610.04391.pdf
- *  @param path roadrunner path
- *  @param kN normal path attraction
- *  @param kOmega heading weight
- *  @param kF end displacement weight
- *  @param epsilon allowed absolute and projected error
- *  @param errorMap error map to transform normal displacement error
- *  @property isFinished path finish state
+ * this doesn't work for now so just making it internal till i can fix it
+ * also todo: need to figure out better heading management
  */
-class FFGVFController(
+internal class FFGVFController(
     path: Path,
     kN: Double,
     kOmega: Double,

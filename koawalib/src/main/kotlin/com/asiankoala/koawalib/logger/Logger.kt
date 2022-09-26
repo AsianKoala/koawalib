@@ -10,6 +10,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry
 /**
  * Logger sends log reports to logcat detailing details of a running opmode. Also serves to format driver station telemetry
  * @property config Logger Config
+ * todo: introduce a bare min telemetry
  */
 @Suppress("unused")
 object Logger {
@@ -37,7 +38,7 @@ object Logger {
     }
 
     internal fun update() {
-        if(!config.isLogging) return
+        if (!config.isLogging) return
         toLog.forEach {
             logCount++
             Log.println(it.priority, tag, it.formattedMessage)

@@ -1,6 +1,5 @@
 package com.asiankoala.koawalib.control.profile
 
-import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.math.absMin
 import kotlin.math.absoluteValue
 import kotlin.math.pow
@@ -12,7 +11,6 @@ import kotlin.math.sqrt
  * @param endState end state of profile
  * @param constraints constraints the profile must obey
  */
-// TODO: test if works on real robot
 class MotionProfile(
     startState: MotionState,
     private val endState: MotionState,
@@ -65,20 +63,5 @@ class MotionProfile(
 
         duration = accelPeriod.dt + cruisePeriod.dt + deccelPeriod.dt
         periods = listOf(accelPeriod, cruisePeriod, deccelPeriod)
-
-//        Logger.logInfo("dt 1", accelPeriod.dt)
-//        Logger.logInfo("dt 2", cruisePeriod.dt)
-//        Logger.logInfo("dt 3", deccelPeriod.dt)
-//        Logger.logInfo("duration", duration)
-//        Logger.logInfo("accel dx", accelPeriod.dx)
-//        Logger.logInfo("cruise dx", cruisePeriod.dx)
-//        Logger.logInfo("deccel dx", deccelDx)
-//        Logger.logInfo("total int", accelPeriod.dx + cruisePeriod.dx + deccelPeriod.dx)
-//        Logger.logInfo("accel start", accelPeriod.startState)
-//        Logger.logInfo("accel end", accelPeriod.endState)
-//        Logger.logInfo("cruise start", cruisePeriod.startState)
-//        Logger.logInfo("cruise end", cruisePeriod.endState)
-//        Logger.logInfo("deccel start", deccelPeriod.startState)
-//        Logger.logInfo("deccel end", deccelPeriod.endState)
     }
 }

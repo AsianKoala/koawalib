@@ -1,6 +1,5 @@
 package com.asiankoala.koawalib.subsystem.odometry
 
-import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.math.*
 import com.asiankoala.koawalib.subsystem.Subsystem
 import kotlin.math.absoluteValue

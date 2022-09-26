@@ -3,19 +3,18 @@ koawalib is a general purpose FTC library written in Kotlin, inspired by [@wpili
 
 ## Installation
 #### Easy Way (creating a new repo)
-Go to [the template repo](https://github.com/AsianKoala/koawalib-template) and fork it.
+Go to [the template repo](https://github.com/AsianKoala/koawalib-template) and fork/clone it.
 
-#### Hard Way (adding koawalib to your own repo)
+#### Hard Way (adding koawalib to your existing repo)
 - Add the following lines before the ```dependencies``` block in ```/TeamCode/build.gradle```
 ```
 repositories {
-  maven { url = 'https://maven.brott.dev/' }
   maven { url = 'https://www.jitpack.io' }
 }
 ```
-- Then add this line to your ```dependencies``` block, where "1.0.0" is a release tag
+- Then add this line to your ```dependencies``` block, where "1.1.0" is a release tag
 ```
-implementation 'com.github.AsianKoala:koawalib:1.0.0'
+implementation 'com.github.AsianKoala:koawalib:1.1.0'
 ```
 
 - #### Snapshot
@@ -31,12 +30,7 @@ implementation 'com.github.AsianKoala:koawalib:1.0.0'
     ```
     implementation 'com.github.AsianKoala:koawalib:master-SNAPSHOT'
     ```
-  - If for some reason you want to use the dev branch, add this line
-    ```
-    implementation 'com.github.AsianKoala:koawalib:dev-SNAPSHOT"
-    ```
 
-
-## Usage
+## Example Usage
 [my personal code repo](https://github.com/ftc-noteam/PP-Public)  
 [koawalib docs](https://asiankoala.github.io/koawalib/)  

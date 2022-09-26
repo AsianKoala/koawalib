@@ -59,6 +59,7 @@ val Double.cos get() = cos(this)
 
 val Int.d get() = this.toDouble()
 val Float.d get() = this.toDouble()
+val Long.d get() = this.toDouble()
 
 val Double.angleWrap: Double
     get() {

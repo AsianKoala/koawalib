@@ -23,15 +23,15 @@ internal abstract class MotorController(
         ffGains.kA,
         ffGains.kS
     ).apply {
-        if(bounds.isBounded) {
+        if (bounds.isBounded) {
             this.setInputBounds(bounds.lowerBound!!, bounds.upperBound!!)
             Logger.logInfo("set bounds")
         }
     }
 
     var output = 0.0; protected set
-    var currentState = MotionState(encoder.pos)
-    internal var targetState = MotionState(encoder.pos)
+    var targetState = MotionState(encoder.pos); protected set
+    var currentState = MotionState(encoder.pos); private set
 
     fun updateEncoder() {
         encoder.update()
