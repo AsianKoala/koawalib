@@ -9,6 +9,11 @@ import org.apache.commons.math3.linear.MatrixUtils
 import org.apache.commons.math3.linear.RealMatrix
 import kotlin.math.*
 
+/**
+ * in case it wasn't obvious, this is my fork of
+ * the rr path generation system
+ */
+
 val coeffMatrix: RealMatrix = MatrixUtils.createRealMatrix(
     arrayOf(
         doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0, 1.0),
