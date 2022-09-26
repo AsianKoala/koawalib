@@ -490,24 +490,6 @@ $dokka.location:com.asiankoala.koawalib.util/Speeds/getWheels/#kotlin.Double/Poi
 $dokka.location:com.asiankoala.koawalib.util/Speeds/setFieldCentric/#com.asiankoala.koawalib.math.Pose/PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-speeds/set-field-centric.html
 $dokka.location:com.asiankoala.koawalib.util/Speeds/setRobotCentric/#com.asiankoala.koawalib.math.Pose#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-speeds/set-robot-centric.html
 $dokka.location:com.asiankoala.koawalib.util/Speeds/setWheels/#kotlin.collections.List[kotlin.Double]#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-speeds/set-wheels.html
-$dokka.location:com.asiankoala.koawalib.util/Units///PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-units/index.html
-$dokka.location:com.asiankoala.koawalib.util/Units/degreesToRadians/#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-units/degrees-to-radians.html
-$dokka.location:com.asiankoala.koawalib.util/Units/degreesToRotations/#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-units/degrees-to-rotations.html
-$dokka.location:com.asiankoala.koawalib.util/Units/feetToMeters/#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-units/feet-to-meters.html
-$dokka.location:com.asiankoala.koawalib.util/Units/inchesToMeters/#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-units/inches-to-meters.html
-$dokka.location:com.asiankoala.koawalib.util/Units/kgCmToNewtonMeters/#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-units/kg-cm-to-newton-meters.html
-$dokka.location:com.asiankoala.koawalib.util/Units/kilogramsToLbs/#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-units/kilograms-to-lbs.html
-$dokka.location:com.asiankoala.koawalib.util/Units/lbsToKilograms/#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-units/lbs-to-kilograms.html
-$dokka.location:com.asiankoala.koawalib.util/Units/metersToFeet/#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-units/meters-to-feet.html
-$dokka.location:com.asiankoala.koawalib.util/Units/metersToInches/#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-units/meters-to-inches.html
-$dokka.location:com.asiankoala.koawalib.util/Units/millisecondsToSeconds/#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-units/milliseconds-to-seconds.html
-$dokka.location:com.asiankoala.koawalib.util/Units/radiansPerSecondToRotationsPerMinute/#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-units/radians-per-second-to-rotations-per-minute.html
-$dokka.location:com.asiankoala.koawalib.util/Units/radiansToDegrees/#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-units/radians-to-degrees.html
-$dokka.location:com.asiankoala.koawalib.util/Units/radiansToRotations/#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-units/radians-to-rotations.html
-$dokka.location:com.asiankoala.koawalib.util/Units/rotationsPerMinuteToRadiansPerSecond/#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-units/rotations-per-minute-to-radians-per-second.html
-$dokka.location:com.asiankoala.koawalib.util/Units/rotationsToDegrees/#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-units/rotations-to-degrees.html
-$dokka.location:com.asiankoala.koawalib.util/Units/rotationsToRadians/#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-units/rotations-to-radians.html
-$dokka.location:com.asiankoala.koawalib.util/Units/secondsToMilliseconds/#kotlin.Double/PointingToDeclaration/koawalib/com.asiankoala.koawalib.util/-units/seconds-to-milliseconds.html
 com.asiankoala.koawalib.command
 com.asiankoala.koawalib.command.commands
 com.asiankoala.koawalib.command.group
