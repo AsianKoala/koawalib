@@ -1,6 +1,6 @@
 package com.asiankoala.koawalib.command.commands
 
-import com.acmerobotics.roadrunner.path.Path
+import com.asiankoala.koawalib.gvf.Pathing
 import com.asiankoala.koawalib.gvf.SimpleGVFController
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.subsystem.drive.KMecanumOdoDrive
@@ -8,7 +8,7 @@ import com.asiankoala.koawalib.util.Speeds
 
 class GVFCmd(
     private val drive: KMecanumOdoDrive,
-    path: Path,
+    path: Pathing.Path,
     kN: Double,
     kOmega: Double,
     kF: Double,

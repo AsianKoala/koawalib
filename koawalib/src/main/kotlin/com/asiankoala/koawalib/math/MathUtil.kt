@@ -1,12 +1,12 @@
 package com.asiankoala.koawalib.math
 
-import com.acmerobotics.roadrunner.util.epsilonEquals
 import kotlin.math.*
 
 const val EPSILON = 1e-6
 const val TAU = 2 * PI
 const val VOLTAGE_CONSTANT = 12.0
 
+infix fun Double.epsilonEquals(other: Double) = (this - other).absoluteValue < EPSILON
 infix fun Double.epsilonNotEqual(other: Double) = (this - other).absoluteValue > EPSILON
 
 val Double.radians get() = Math.toRadians(this)

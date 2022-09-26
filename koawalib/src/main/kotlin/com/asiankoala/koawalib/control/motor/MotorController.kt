@@ -1,7 +1,7 @@
 package com.asiankoala.koawalib.control.motor
 
-import com.acmerobotics.roadrunner.control.PIDFController
 import com.asiankoala.koawalib.control.controller.Bounds
+import com.asiankoala.koawalib.control.controller.PIDFController
 import com.asiankoala.koawalib.control.controller.PIDGains
 import com.asiankoala.koawalib.control.profile.MotionState
 import com.asiankoala.koawalib.hardware.motor.KEncoder
@@ -18,7 +18,7 @@ internal abstract class MotorController(
     abstract fun update()
 
     protected val controller = PIDFController(
-        pidGains.coeffs,
+        pidGains,
         ffGains.kV,
         ffGains.kA,
         ffGains.kS

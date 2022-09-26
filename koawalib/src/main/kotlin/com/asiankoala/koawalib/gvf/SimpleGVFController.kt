@@ -1,8 +1,7 @@
 package com.asiankoala.koawalib.gvf
 
-import com.acmerobotics.roadrunner.geometry.Vector2d
-import com.acmerobotics.roadrunner.path.Path
 import com.asiankoala.koawalib.math.Pose
+import com.asiankoala.koawalib.math.Vector
 import com.asiankoala.koawalib.math.angleWrap
 import com.asiankoala.koawalib.math.degrees
 import com.asiankoala.koawalib.util.Speeds
@@ -20,7 +19,7 @@ import com.asiankoala.koawalib.util.Speeds
  *  @property isFinished path finish state
  */
 class SimpleGVFController(
-    path: Path,
+    path: Pathing.Path,
     kN: Double,
     kOmega: Double,
     private val kF: Double,
@@ -32,31 +31,31 @@ class SimpleGVFController(
     override fun headingControl(): Pair<Double, Double> {
         // note to neil: just leave this gvf controller untouched since it works
         // and instead go work on ff gvf controller
-        val desiredHeading = lastTangentVec.angle()
+        val desiredHeading = lastTangentVec.angle
         val headingError = (desiredHeading - lastPose.heading).angleWrap.degrees
         val result = kOmega * headingError
         return Pair(result, headingError)
     }
 
-    override fun vectorControl(): Vector2d {
+    override fun vectorControl(): Vector {
         val paramTillEnd = path.length() - lastS
-        var translationalPower = (lastGVFVec / lastGVFVec.norm()) * kS
+        var translationalPower = (lastGVFVec / lastGVFVec.norm) * kS
         if (paramTillEnd < kF) translationalPower /= kF
 
-        val endRVector = path.end().vec() - lastPose.vec()
-        isFinished = paramTillEnd < epsilon && endRVector.norm() < epsilon
-        if (isFinished) return Vector2d()
+        val endRVector = path.end().vec - lastPose.vec
+        isFinished = paramTillEnd < epsilon && endRVector.norm < epsilon
+        if (isFinished) return Vector()
 
-        if (translationalPower.norm() > 1.0) translationalPower /= translationalPower.norm()
+        if (translationalPower.norm > 1.0) translationalPower /= translationalPower.norm
         return translationalPower
     }
 
     override fun update(currPose: Pose, currVel: Speeds): Speeds {
-        lastPose = currPose.toPose2d()
+        lastPose = currPose
         lastS = if (lastS.isNaN()) {
-            path.project(lastPose.vec())
+            path.fastProject(lastPose.vec, path.length() * 0.1)
         } else {
-            path.fastProject(lastPose.vec(), lastS)
+            path.fastProject(lastPose.vec, lastS)
         }
 
         val vectorFieldResult = gvfVecAt(lastPose, lastS)
@@ -72,7 +71,7 @@ class SimpleGVFController(
         val vectorResult = vectorControl()
 
         val speeds = Speeds()
-        speeds.setFieldCentric(Pose(vectorResult.toVec(), angularOutput))
+        speeds.setFieldCentric(Pose(vectorResult, angularOutput))
         return speeds
     }
 }

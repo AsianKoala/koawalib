@@ -1,6 +1,5 @@
 package com.asiankoala.koawalib.control.controller
 
-import com.acmerobotics.roadrunner.control.PIDFController
 import com.asiankoala.koawalib.control.motor.FFGains
 import com.asiankoala.koawalib.control.profile.MotionConstraints
 import com.asiankoala.koawalib.control.profile.MotionProfile
@@ -15,7 +14,7 @@ class ProfiledPIDController(
     var constraints: MotionConstraints
 ) {
     private val controller = PIDFController(
-        pid.coeffs,
+        pid,
         ff.kV,
         ff.kA,
         ff.kS
