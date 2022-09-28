@@ -26,13 +26,16 @@ val coeffMatrix: RealMatrix = MatrixUtils.createRealMatrix(
 )
 
 object Pathing {
-    class QuinticPolynomial(
-        start: Double,
-        startDeriv: Double,
-        startSecondDeriv: Double,
-        end: Double,
-        endDeriv: Double,
-        endSecondDeriv: Double,
+
+    data class Differentiable(
+        val num: Double = 0.0,
+        val first: Double = 0.0,
+        val second: Double = 0.0,
+    )
+
+    class Quintic(
+        start: Differentiable,
+        end: Differentiable
     ) {
         private val a: Double
         private val b: Double
@@ -41,24 +44,27 @@ object Pathing {
         private val e: Double
         private val f: Double
 
-        operator fun get(t: Double) = (a * t + b) * (t * t * t * t) + c * (t * t * t) + d * (t * t) + e * t + f
-        fun deriv(t: Double) = (5 * a * t + 4 * b) * (t * t * t) + (3 * c * t + 2 * d) * t + e
-        fun secondDeriv(t: Double) = (20 * a * t + 12 * b) * (t * t) + 6 * c * t + 2 * d
-        fun thirdDeriv(t: Double) = (60 * a * t + 24 * b) * t + 6 * c
-
-        override fun toString() = String.format("%.5f*t^5+%.5f*t^4+%.5f*t^3+%.5f*t^2+%.5f*t+%.5f", a, b, c, d, e, f)
+        operator fun get(t: Double, d: Int): Double {
+            return when(d) {
+                0 -> (a * t + b) * (t * t * t * t) + c * (t * t * t) + d * (t * t) + e * t + f
+                1 -> (5 * a * t + 4 * b) * (t * t * t) + (3 * c * t + 2 * d) * t + e
+                2 -> (20 * a * t + 12 * b) * (t * t) + 6 * c * t + 2 * d
+                3 -> (60 * a * t + 24 * b) * t + 6 * c
+                else -> 0.0
+            }
+        }
 
         init {
             val target =
                 MatrixUtils.createRealMatrix(
                     arrayOf(
                         doubleArrayOf(
-                            start,
-                            startDeriv,
-                            startSecondDeriv,
-                            end,
-                            endDeriv,
-                            endSecondDeriv
+                            start.num,
+                            start.first,
+                            start.second,
+                            end.num,
+                            end.first,
+                            end.second
                         )
                     )
                 ).transpose()
@@ -108,14 +114,16 @@ object Pathing {
 
         fun tangentAngle(s: Double, t: Double = reparam(s)) = deriv(s, t).angle
         fun tangentAngleDeriv(s: Double, t: Double = reparam(s)): Double {
-            val deriv = deriv(s, t)
-            val secondDeriv = secondDeriv(s, t)
-            return deriv.x * secondDeriv.y - deriv.y * secondDeriv.x
+            return deriv(s, t) cross secondDeriv(s, t)
+//            val deriv = deriv(s, t)
+//            val secondDeriv = secondDeriv(s, t)
+//            return deriv.x * secondDeriv.y - deriv.y * secondDeriv.x
         }
         fun tangentAngleSecondDeriv(s: Double, t: Double = reparam(s)): Double {
-            val deriv = deriv(s, t)
-            val thirdDeriv = thirdDeriv(s, t)
-            return deriv.x * thirdDeriv.y - deriv.y * thirdDeriv.x
+            return deriv(s, t) cross thirdDeriv(s, t)
+//            val deriv = deriv(s, t)
+//            val thirdDeriv = thirdDeriv(s, t)
+//            return deriv.x * thirdDeriv.y - deriv.y * thirdDeriv.x
         }
         abstract fun length(): Double
         internal abstract fun reparam(s: Double): Double
@@ -126,30 +134,6 @@ object Pathing {
         internal abstract fun paramDeriv(t: Double): Double
         internal abstract fun paramSecondDeriv(t: Double): Double
         internal abstract fun paramThirdDeriv(t: Double): Double
-    }
-
-    abstract class HeadingInterpolator {
-        protected lateinit var curve: ParametricCurve
-
-        open fun init(curve: ParametricCurve) {
-            this.curve = curve
-        }
-
-        operator fun get(s: Double, t: Double = curve.reparam(s)) = internalGet(s, t)
-        fun deriv(s: Double, t: Double = curve.reparam(s)) = internalDeriv(s, t)
-        internal abstract fun internalGet(s: Double, t: Double): Double
-        internal abstract fun internalDeriv(s: Double, t: Double): Double
-        internal abstract fun internalSecondDeriv(s: Double, t: Double): Double
-    }
-
-    class TangentInterpolator constructor(
-        internal val offset: Double = 0.0
-    ) : HeadingInterpolator() {
-        override fun internalGet(s: Double, t: Double) = (offset + curve.tangentAngle(s, t)).angleWrap
-
-        override fun internalDeriv(s: Double, t: Double) = curve.tangentAngleDeriv(s, t)
-
-        override fun internalSecondDeriv(s: Double, t: Double) = curve.tangentAngleSecondDeriv(s, t)
     }
 
     class Knot constructor(
@@ -165,8 +149,6 @@ object Pathing {
             deriv: Vector = Vector(),
             secondDeriv: Vector = Vector()
         ) : this(pos.x, pos.y, deriv.x, deriv.y, secondDeriv.x, secondDeriv.y)
-
-        fun pos() = Vector(x, y)
     }
 
     class QuinticSpline(
@@ -176,8 +158,8 @@ object Pathing {
         private val maxSegmentLength: Double = 0.25,
         private val maxDepth: Int = 30
     ) : ParametricCurve() {
-        private val x: QuinticPolynomial = QuinticPolynomial(start.x, start.dx, start.d2x, end.x, end.dx, end.d2x)
-        private val y: QuinticPolynomial = QuinticPolynomial(start.y, start.dy, start.d2y, end.y, end.dy, end.d2y)
+        private val x: Quintic = Quintic(start.x, start.dx, start.d2x, end.x, end.dx, end.d2x)
+        private val y: Quintic = Quintic(start.y, start.dy, start.d2y, end.y, end.dy, end.d2y)
         private var length: Double = 0.0
         private val sSamples = mutableListOf(0.0)
         private val tSamples = mutableListOf(0.0)
@@ -296,16 +278,40 @@ object Pathing {
 
             val firstNumeratorSqrt = 2.0 * (deriv.x * secondDeriv.x + deriv.y * secondDeriv.y)
             val secondNumerator = secondDeriv.x * secondDeriv.x + secondDeriv.y * secondDeriv.y +
-                deriv.x * thirdDeriv.x + deriv.y * thirdDeriv.y
+                    deriv.x * thirdDeriv.x + deriv.y * thirdDeriv.y
 
             val denominator = deriv.x * deriv.x + deriv.y * deriv.y
             return firstNumeratorSqrt * firstNumeratorSqrt / denominator.pow(3.5) -
-                secondNumerator / denominator.pow(2.5)
+                    secondNumerator / denominator.pow(2.5)
         }
 
         override fun length() = length
         override fun toString() = "($x,$y)"
     }
+    abstract class HeadingInterpolator {
+        protected lateinit var curve: ParametricCurve
+
+        open fun init(curve: ParametricCurve) {
+            this.curve = curve
+        }
+
+        operator fun get(s: Double, t: Double = curve.reparam(s)) = internalGet(s, t)
+        fun deriv(s: Double, t: Double = curve.reparam(s)) = internalDeriv(s, t)
+        internal abstract fun internalGet(s: Double, t: Double): Double
+        internal abstract fun internalDeriv(s: Double, t: Double): Double
+        internal abstract fun internalSecondDeriv(s: Double, t: Double): Double
+    }
+
+    class TangentInterpolator constructor(
+        internal val offset: Double = 0.0
+    ) : HeadingInterpolator() {
+        override fun internalGet(s: Double, t: Double) = (offset + curve.tangentAngle(s, t)).angleWrap
+
+        override fun internalDeriv(s: Double, t: Double) = curve.tangentAngleDeriv(s, t)
+
+        override fun internalSecondDeriv(s: Double, t: Double) = curve.tangentAngleSecondDeriv(s, t)
+    }
+
 
     class PathSegment constructor(
         private val curve: ParametricCurve,
