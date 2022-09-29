@@ -1,11 +1,11 @@
 package com.asiankoala.koawalib.hardware.sensor
 
-import com.acmerobotics.roadrunner.util.NanoClock
 import com.asiankoala.koawalib.hardware.KDevice
 import com.asiankoala.koawalib.hardware.sensor.IMUUtil.remapAxes
 import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.math.angleWrap
 import com.asiankoala.koawalib.math.d
+import com.asiankoala.koawalib.util.NanoClock
 import com.asiankoala.koawalib.util.Periodic
 import com.qualcomm.hardware.bosch.BNO055IMU
 import com.qualcomm.hardware.bosch.BNO055IMUImpl

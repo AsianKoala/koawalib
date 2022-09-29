@@ -1,5 +1,5 @@
 package com.asiankoala.koawalib.util
 
-interface KBoolean {
+internal interface KBoolean {
     fun invokeBoolean(): Boolean
 }

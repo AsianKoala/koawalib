@@ -1,7 +1,5 @@
 package com.asiankoala.koawalib.math
 
-import com.acmerobotics.roadrunner.geometry.Pose2d
-
 /**
  * Represents robot's position and heading
  * @param x x position
@@ -16,15 +14,10 @@ data class Pose(
 ) {
     constructor(x: Int, y: Int, h: Int) : this(x.d, y.d, h.d)
     constructor(p: Vector, h: Double) : this(p.x, p.y, h)
-    constructor(p: Pose2d) : this(p.x, p.y, p.heading)
     constructor(l: List<Double>) : this(l[0], l[1], l[2])
 
     val vec get() = Vector(x, y)
     internal val asList get() = listOf(x, y, heading)
-
-    fun toPose2d(): Pose2d {
-        return Pose2d(x, y, heading)
-    }
 
     /**
      * Add two poses together, while wrapping the heading to [-pi, pi]

@@ -139,6 +139,20 @@ object Logger {
         logWarning(getDataString(message, data))
     }
 
+    fun addTimeInterval(name: String) {
+        timeIntervals[name] = TimeInterval()
+    }
+
+    fun startTimeInterval(name: String) {
+        timeIntervals[name]!!.start()
+    }
+
+    fun endTimeInterval(name: String) {
+        timeIntervals[name]!!.start()
+    }
+
+    fun getTimeInterval
+
     private fun getDataString(message: String, data: Any?): String {
         return "$message : $data"
     }
