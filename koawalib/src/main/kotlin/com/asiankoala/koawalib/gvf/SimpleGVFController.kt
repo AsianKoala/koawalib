@@ -30,7 +30,7 @@ class SimpleGVFController(
 
     override fun headingControl(): Pair<Double, Double> {
         // note to neil: just leave this gvf controller untouched since it works
-        // and instead go work on ff gvf controller
+        // need to find a better solution to the heading problem though..
         val desiredHeading = lastTangentVec.angle
         val headingError = (desiredHeading - lastPose.heading).angleWrap.degrees
         val result = kOmega * headingError

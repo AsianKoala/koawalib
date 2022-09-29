@@ -83,7 +83,7 @@ object Pathing2 {
     }
 
     // used to represent unknown parameter
-    abstract class Spline(
+    abstract class Parametric(
         private val x: DifferentiableFunction,
         private val y: DifferentiableFunction
     ) {
@@ -110,18 +110,19 @@ object Pathing2 {
                 }
             }
         }
-
     }
 
     class FlattenedCurve(
-        spline: Spline,
+        spline: Parametric,
         segmentCount: Int
-    ) : Spline {
+    ) : Parametric() {
         private var l = 0.0
         override val length: Double = l // todo: does this even work? xd
 
         val x: DifferentiableFunction
         val y: DifferentiableFunction
+
+        override
 
         init {
             val step = spline.length * (1.0 / segmentCount.d)
@@ -159,10 +160,10 @@ object Pathing2 {
         }
     }
 
-    class Curve(
+    class Spline(
         x: Quintic,
         y: Quintic,
-    ) : Spline(x, y) {
+    ) : Parametric(x, y) {
         // ok this shouldn't be t but FUCK idk whatever
         override operator fun get(t: Double): List<Vector> {
             TODO()
