@@ -1,7 +1,6 @@
 package com.asiankoala.koawalib.gvf
 
 import com.asiankoala.koawalib.math.Vector
-import com.asiankoala.koawalib.math.d
 import kotlin.math.pow
 
 object Pathing2 {
@@ -96,77 +95,32 @@ object Pathing2 {
         val start get() = this[0.0]
     }
 
-    class PiecewiseLinearFunction(
-        private val segments: List<Vector>
-    ) : DifferentiableFunction() {
-        // represent a line as difference of two vectors
-        override fun get(t: Double): DifferentiablePoint {
-            var running = 0.0
-            for(i in 1 until segments.size) {
-                val line = segments[i] - segments[i-1]
-                if(line.norm + running > t) {
-                    // my point is start + t * line
-                    return DifferentiablePoint(segments[i-1] + t * line)
-                }
-            }
-        }
-    }
-
-    class FlattenedCurve(
-        spline: Parametric,
-        segmentCount: Int
-    ) : Parametric() {
-        private var l = 0.0
-        override val length: Double = l // todo: does this even work? xd
-
-        val x: DifferentiableFunction
-        val y: DifferentiableFunction
-
-        override
-
-        init {
-            val step = spline.length * (1.0 / segmentCount.d)
-            val coordinates = mutableListOf(spline.start[0])
-            l = 0.0
-            for(i in 0..segmentCount) {
-                val t = i * step
-                val c = spline[t][0]
-                val prev = coordinates.last()
-                l += prev dist c
-                coordinates.add(c)
-            }
-        }
-    }
-
     /*
     see https://www.youtube.com/watch?v=unWguclP-Ds&list=PLC8FC40C714F5E60F&index=2
     and https://pomax.github.io/bezierinfo/#arclength
-    arc length is int 0->1 sqrt(f_x^2 + f_y^2) dt of course
-    work in progress kek
+    arc length is int 0->1 sqrt(f_x(t)^2 + f_y(t)^2) dt of course
+    Gaussian quadrature is derived on the interval [-1,1]
+    but changing it to [0,1] is arbitrarily easy
      */
-    class GuassianQuadrature(
-        private val steps: Int,
-        private val z: Double,
-        private val cTerms: List<Double>,
-        private val tTerms: List<Double>
-    ) {
-        fun indSum(i: Int): Double {
+    data class GaussianLegendreCoefficients(
+        val weight: Double,
+        val abscissa: Double
+    )
 
-        }
+    class GaussianQuadrature(
+        curve: Parametric,
+        vararg table: GaussianLegendreCoefficients
+    ) {
+        var length = 0.0
+            private set
 
         init {
-            require(steps == cTerms.size)
-            require(steps == tTerms.size)
+            for(coefficient in table) {
+                val t = 0.5 * (1.0 + coefficient.abscissa) // used for converting from [-1,1] to [0,1]
+                length += curve[t][1].norm * coefficient.weight
+            }
+            length *= 0.5
         }
     }
 
-    class Spline(
-        x: Quintic,
-        y: Quintic,
-    ) : Parametric(x, y) {
-        // ok this shouldn't be t but FUCK idk whatever
-        override operator fun get(t: Double): List<Vector> {
-            TODO()
-        }
-    }
 }
