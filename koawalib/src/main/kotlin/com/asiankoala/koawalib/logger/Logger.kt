@@ -14,15 +14,18 @@ import org.firstinspires.ftc.robotcore.external.Telemetry
  */
 @Suppress("unused")
 object Logger {
+    var config = LoggerConfig.SIMPLE_CONFIG
+    val timeIntervalManager = TimeIntervalManager()
+
+    internal var telemetry: Telemetry? = null
+    internal var logCount = 0; private set
+    internal val priorityList = listOf("NONE", "NONE", "VERBOSE", "DEBUG", "INFO", "WARN", "ERROR", "WTF")
+
     private const val tag = "KOAWALIB"
     private val dashboard = FtcDashboard.getInstance()
     private val toLog = ArrayList<LogData>()
     private var packet = TelemetryPacket()
     private var warnings = 0
-    internal var telemetry: Telemetry? = null
-    internal var logCount = 0; private set
-    internal val priorityList = listOf("NONE", "NONE", "VERBOSE", "DEBUG", "INFO", "WARN", "ERROR", "WTF")
-    var config = LoggerConfig.SIMPLE_CONFIG
 
     private fun log(message: String, priority: Int) {
         if (!config.isLogging) return
@@ -138,20 +141,6 @@ object Logger {
     fun logWarning(message: String, data: Any?) {
         logWarning(getDataString(message, data))
     }
-
-    fun addTimeInterval(name: String) {
-        timeIntervals[name] = TimeInterval()
-    }
-
-    fun startTimeInterval(name: String) {
-        timeIntervals[name]!!.start()
-    }
-
-    fun endTimeInterval(name: String) {
-        timeIntervals[name]!!.start()
-    }
-
-    fun getTimeInterval
 
     private fun getDataString(message: String, data: Any?): String {
         return "$message : $data"

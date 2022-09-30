@@ -1,6 +1,6 @@
-package com.asiankoala.koawalib.util.internal
+package com.asiankoala.koawalib.util
 
-internal abstract class NanoClock {
+abstract class NanoClock {
 
     companion object {
         /**
