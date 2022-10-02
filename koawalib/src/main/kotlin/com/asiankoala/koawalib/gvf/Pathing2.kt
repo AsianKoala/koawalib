@@ -2,10 +2,11 @@ package com.asiankoala.koawalib.gvf
 
 import com.asiankoala.koawalib.math.Vector
 import kotlin.math.pow
+import kotlin.math.atan2
+import kotlin.math.absoluteValue
 
 object Pathing2 {
-    data class DifferentiablePoint(
-        val zero: Double = 0.0,
+    data class DifferentiablePoint( val zero: Double = 0.0,
         val first: Double = 0.0,
         val second: Double = 0.0,
         val third: Double = 0.0
@@ -34,7 +35,7 @@ object Pathing2 {
         init {
             /**
              * https://www.wolframalpha.com/input?i=row+echelon+form+%5B%5B0%2C0%2C0%2C0%2C0%2Cf%2Cu%5D%2C%5B0%2C0%2C0%2C0%2Ce%2C0%2Cv%5D%2C%5B0%2C0%2C0%2C2d%2C0%2C0%2Cw%5D%2C%5Ba%2Cb%2Cc%2Cd%2Ce%2Cf%2Cx%5D%2C%5B5a%2C4b%2C3c%2C2d%2C1e%2C0%2Cy%5D%2C%5B20a%2C12b%2C6c%2C2d%2C0%2C0%2Cz%5D%5D
-             * tldr to find coeffs, just shove it into a row echelon form
+             * tldr to find coeffs, just shove it into row echelon form
              * and then just calc it
              */
 
@@ -74,26 +75,6 @@ object Pathing2 {
         }
     }
 
-    abstract class Parametric(
-        private val x: DifferentiableFunction,
-        private val y: DifferentiableFunction
-    ) {
-        open operator fun get(t: Double, n: Int = 0): Vector {
-            val xt = x[t]
-            val yt = y[t]
-            return when(n) {
-                1 -> Vector(xt.first, yt.first)
-                2 -> Vector(xt.second, yt.second)
-                3 -> Vector(xt.third, yt.third)
-                else -> Vector(xt.zero, yt.zero)
-            }
-        }
-
-        abstract val length: Double
-        val end get() = this[length]
-        val start get() = this[0.0]
-    }
-
     /*
     see https://www.youtube.com/watch?v=unWguclP-Ds&list=PLC8FC40C714F5E60F&index=2
     and https://pomax.github.io/bezierinfo/#arclength
@@ -122,7 +103,7 @@ object Pathing2 {
     }
 
     class GaussianQuadrature(
-        curve: Parametric,
+        curve: Spline,
         table: GaussianQuadratureTable
     ) {
         var length = 0.0
@@ -137,50 +118,261 @@ object Pathing2 {
         }
     }
 
-    open class Spline(
-        x: DifferentiableFunction,
-        y: DifferentiableFunction
-    ) : Parametric(x, y) {
-        private var _length: Double = 0.0
-        override val length: Double
-            get() = _length
+    // To actually create paths, we can't have splines parametrized on [0,1] with t,
+    // instead splines have to be parametrized according to arc length s.
+    // This problem is obvious when combining splines, cause t is completely
+    // arbitrary in different parts of a path (e.g.) for the first spline,
+    // t=1 might correspond to 10 inches of arc length, while t=1 at the
+    // another spline segment might correspond to 20 inches.
+    // Parametrizing is pretty simple itself (second week of multi var calc)
+    // 1. s(t) = int 0->t |r'(u)| du
+    // 2. t(s) = inverse function of s(t)
+    // 3. plug t(s) into r(t) (our spline)
+    // 4. r(t(s)) now is our give parametrized by arc length
+    // from here on out r((t(s)) will just be referred to as r(s) since its already reparamed
+    // Ryan (rbrott) talks about this in section 5 of his Quintic Splines for FTC paper
+    // r(s) obviously has different derivatives now, but they are fairly simple to find
+    // by just chain ruling stuff
+    // d/ds r(s) = 
+    // = d/ds (r(t(s)))
+    // = r'(t(s)) * t'(s)
+    // r'(t(s)) is just r'(t)
+    // = r'(t) * t'(s)
+    // t(s) is a pain to compute analytically, but since its an inverse to s(t),
+    // t'(s) = 1 / s'(t)
+    // so d/ds r(s) = r'(t) * (1 / s'(t))
+    // s'(t) = d/dt int 0->t |r'(u)| du
+    // = d/dt (|R'(t)| - |R'(0)|)
+    // = |r'(t)|
+    // so d/dt r(s) = r'(t) * (1 / |r'(t)|)
+    // this is cool and all, but we need a way to reparametrize from s->t still
+    // see https://github.com/GrappleRobotics/Pathfinder/blob/master/Pathfinder/src/include/grpl/pf/path/arc_parameterizer.h
+    //
+    // this arc class is used to reparametrize, also pulled from above link ^
+    // template <typename output_iterator_t>
+    // size_t parameterize(spline<2> &spline, output_iterator_t &&curve_begin, const size_t max_curve_count,
+    //                     double t_lo = 0, double t_hi = 1) {
+    //   _has_overrun = false;
+    //   if (max_curve_count <= 0) {
+    //     _has_overrun = true;
+    //     return 0;
+    //   }
+    //
+    //   double t_mid = (t_hi + t_lo) / 2.0;
+    //   double k_lo  = spline.curvature(t_lo);
+    //   double k_hi  = spline.curvature(t_hi);
+    //
+    //   augmented_arc2d arc{spline.position(t_lo), spline.position(t_mid), spline.position(t_hi), k_lo, k_hi};
+    //
+    //   bool subdivide = (fabs(k_hi - k_lo) > _max_delta_curvature) || (arc.length() > _max_arc_length);
+    //
+    //   if (subdivide) {
+    //     output_iterator_t head = curve_begin;
+    //
+    //     size_t len = parameterize(spline, head, max_curve_count, t_lo, t_mid);
+    //     len += parameterize(spline, head, max_curve_count - len, t_mid, t_hi);
+    //     return len;
+    //   } else {
+    //     arc.set_curvature(k_lo, k_hi);
+    //     *(curve_begin++) = arc;
+    //     return 1;
+    //   }
+    // }
+    // really need to make this class cleaner tbh
+    class Arc(
+        private val start: Vector,
+        private val mid: Vector,
+        private val end: Vector
+    ) {
+        var curvature: Double
+            private set 
+        val ref: Vector
+        val length: Double
+        val angleOffset: Double
+        private var curvatureSet = false
+        private var dkds = 0.0
+        private var tStart = 0.0
+        private var tEnd = 0.0
+        var dt = 0.0
+            private set
+
+        fun setCurvature(startK: Double, endK: Double) {
+            curvature = startK
+            dkds = (endK - startK) / length
+            curvatureSet = true
+        }
+
+        fun setT(tPair: Pair<Double, Double>) {
+            tStart = tPair.first
+            tEnd = tPair.second
+            dt = tEnd - tStart
+        }
+
+        fun getCorrectCurvature(s: Double): Double = curvature + s * dkds 
+        fun linearlyInterpolate(s: Double) = ref + (end - start) * (s / length))
+        fun interpolateSAlongT(s: Double) = tStart + dt * (s / length)
+
+        fun get(s: Double): Vector {
+            return if(curvature != 0.0) {
+                ref + Vector.fromPolar(1.0 / curvature, angleOffset + (s * curvature))
+            } else {
+                linearlyInterpolate(s)
+            }
+        }
 
         init {
-            val gaussianQ = GaussianQuadrature(this, FivePointGaussianLegendre())
-            _length = gaussianQ.length
-        }
-    }
+            val coeffMatrix = listOf(
+                listOf(2 * (start.x - end.x), 2 * (start.y - end.y)),
+                listOf(2 * (start.x - mid.x), 2 * (start.y - mid.y))
+            )
 
-    class SplineWithHeading(
-        x: DifferentiableFunction,
-        y: DifferentiableFunction
-    ) : Spline(x, y) {
-        fun heading(t: Double, n: Int): Double {
-            return when(n) {
-                0 -> this[t, 0].angle
-                else -> this[t, n].cross(this[t, n+1])
+            val coeffDet = coeffMatrix[0][0] * coeffMatrix[1][1] - coeffMatrix[0][1] * coeffMatrix[1][0] 
+
+            if(coeffDet == 0.0) {
+                curvature = 0.0
+                ref = start
+                val delta = end - start
+                length = delta.norm
+                angleOffset = atan2(delta.y, delta.x)
+            } else {
+                val sNN = start.normSq
+                val mNN = mid.normSq
+                val eNN = end.normSq
+                val rVec = Vector(sNN - eNN, sNN - mNN)
+                val inverse1 = Vector(coeffMatrix[1][1] / coeffDet, -coeffMatrix[0][1] / coeffDet)
+                val inverse2 = Vector(-coeffMatrix[1][0] / coeffDet, coeffMatrix[0][0] / coeffDet)
+                ref = Vector(inverse1.dot(rVec), inverse2.dot(rVec))
+                angleOffset = (start - ref).angle
+                val angle1 = (end - ref).angle
+                curvature = 1.0 / (start - ref).norm
+                length = (angle1 - angleOffset).absoluteValue / curvature
+                if(angle1 < angleOffset) curvature *= -1
             }
         }
     }
 
-    class Path(
-        private val splines: List<SplineWithHeading>
+
+    class Spline(
+        private val x: DifferentiableFunction,
+        private val y: DifferentiableFunction
     ) {
-        val length: Double = splines.sumOf { it.length }
+        private var _length = 0.0
+        private val arcs = mutableListOf<Arc>()
+        val length: Double get() = _length
 
-        fun s
+        operator fun get(t: Double, n: Int = 0): Vector {
+            val xt = x.get(t)
+            val yt = y.get(t)
+            return when(n) {
+                1 -> Vector(xt.first, yt.first)
+                2 -> Vector(xt.second, yt.second)
+                3 -> Vector(xt.third, yt.third)
+                else -> Vector(xt.zero, yt.zero)
+            }
+        }
+
+        // from multi: k = (a x v) / |v|^3
+        fun getK(t: Double) = this[t, 2].cross(this[t, 1]) / this[t, 1].norm.pow(3)
+
+        // now that we have our spline parametrized into arcs,
+        // we can find the corresponding t with s by iterating across
+        // our arc array and finding what iteration it is at
+        // ok this is a shitty name but like... is it really?
+        fun invArc(s: Double): Double {
+            if(s < 0) return 0.0
+            if(s > length) return 1.0
+            var arcLengthSum = 0.0
+            var intdt = 0.0
+            var its = 0
+            while arcLengthSum < s:
+                val workingarc = arcs[its]
+                if(arcLengthSum + workingarc.length > s) return intdt + workingarc.interpolateSAlongT(s)
+                arcLengthSum += workingarc.length
+                intdt += workingarc.dt
+                its += 1
+            throw Exception("i think ur pretty fucking bad a coding neil")
+        }
+
+
+        // s'(t) = d/dt int 0->t |r'(u)| du
+        // = |r'(t)|
+        // expand |r'(t)|
+        // s'(t) = |r'(t)|
+        // = norm(x'(t), y'(t))
+        // = sqrt(x'(t)^2 + y'(t)^2)
+        // take another deriv
+        // s''(t) = (1 / sqrt(x'(t)^2 + y'(t)^2)) * (2 * x'(t) * x''(t) + 2 * y'(t) * y''(t))
+        // ok lets try to simplify that xdddd
+        // 2 * x'(t) * x''(t) + 2 * y'(t) * y''(t) can factor 2 out
+        // = 2 * (x'(t) * x''(t) + y'(t) * y''(t)) last part of this is just tDeriv dot tDeriv2
+        // = 2 * tDeriv dot tDeriv2
+        // and that denom is just s'(t)
+        // s''(t) = (2 * tDeriv dot tDeriv2) / sDeriv(t)
+        // i dont want to take another fucking derivative 
+        fun sDeriv(t: Double, n: Int = 1): Double {
+            return when(n) {
+                1 -> this[t, 1].norm
+                2 -> (2 * this[t, 1].dot(this[t, 2])) / sDeriv(t) // recursion??? :face_with_raised_eyebrow:
+                else -> throw Exception("im lazy and didn't want to implement more derivatives")
+            }
+        }
+
+        fun deriv(s: Double, n: Int = 1): Vector {
+            val t = invArc(s)
+            return when(n) {
+                1 -> this[t, 1].unit
+                2 -> this[t, 2] * sDeriv(t).pow(2) + this[t, 1] * sDeriv(t, 2)
+                else -> throw Exception("im lazy and didn't implement more derivatives")
+            }
+        }
+
+        fun angle(s: Double, n: Int = 1): Double {
+            return when(n) {
+                1 -> deriv(s).angle
+                2 -> deriv(s).cross(deriv(s, 2))
+                else -> throw Exception("im lazy and didn't implement more derivatives")
+            }
+        }
+
+        val start get() = this[0.0]
+        val end get() = this[length]
+
+        init {
+                                    val tParams = ArrayDeque<Pair<Double, Double>>()
+            tParams.add(Pair(0.0, 1.0))
+            var its = 0
+            
+            while(tParams.isNotEmpty()) {
+                val curr = tParams.first()
+                tParams.removeFirst()
+
+                val midT = (curr.first + curr.second) / 2.0
+                val startV = this[curr.first]
+                val midV = this[midT]
+                val endV  = this[curr.second]
+                val klo = getK(curr.first)
+                val khi = getK(curr.second)
+                val dk = (khi - klo).absoluteValue
+                val arc = Arc(startV, midV, endV)
+                // we want to make our arcs as linear?ish as possible to have 
+                // a more accurate interpolation when param from s -> t
+                // might want to try adjusting 0.01 for curve or 1.0 for arc length later
+                val subdivide = dk > 0.01 || arc.length > 1.0
+                if(subdivide) {
+                    tParams.add(Pair(midT, curr.second))
+                    tParams.add(Pair(curr.first, midT))
+                } else {
+                    arc.setCurvature(klo, khi)
+                    arc.setT(curr)
+                    arcs.add(arc)
+                    _length += arc.length
+                    its++
+                }
+
+                if(its > 1000) {
+                    throw Exception("we fucked up")
+                }
+            }
+        }
     }
-}
-
-
-
-
-
-
-
-
-
-
-
-
 
