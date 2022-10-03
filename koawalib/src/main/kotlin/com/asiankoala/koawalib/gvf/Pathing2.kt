@@ -1,16 +1,32 @@
 package com.asiankoala.koawalib.gvf
 
 import com.asiankoala.koawalib.math.Vector
+import com.asiankoala.koawalib.math.Pose
 import kotlin.math.pow
 import kotlin.math.atan2
 import kotlin.math.absoluteValue
 
 object Pathing2 {
-    data class DifferentiablePoint( val zero: Double = 0.0,
+    data class DifferentiablePoint(
+        val zero: Double = 0.0,
         val first: Double = 0.0,
         val second: Double = 0.0,
         val third: Double = 0.0
     )
+
+    data class DifferentiablePoint2d(
+        val x: DifferentiablePoint,
+        val y: DifferentiablePoint
+    ) {
+        constructor(
+            zero: Vector = Vector(0.0, 0.0),
+            first: Vector = Vector(0.0, 0.0),
+            second: Vector = Vector(0.0, 0.0)
+        ) : this(
+            DifferentiablePoint(zero.x, first.x, second.x),
+            DifferentiablePoint(zero.y, first.y, second.y)
+        )
+    }
 
     abstract class DifferentiableFunction {
         abstract operator fun get(t: Double): DifferentiablePoint
@@ -326,16 +342,13 @@ object Pathing2 {
             }
         }
 
-        fun angle(s: Double, n: Int = 1): Double {
+        fun angle(s: Double, n: Int = 0): Double {
             return when(n) {
-                1 -> deriv(s).angle
-                2 -> deriv(s).cross(deriv(s, 2))
+                0 -> deriv(s).angle
+                1 -> deriv(s).cross(deriv(s, 2))
                 else -> throw Exception("im lazy and didn't implement more derivatives")
             }
         }
-
-        val start get() = this[0.0]
-        val end get() = this[length]
 
         init {
                                     val tParams = ArrayDeque<Pair<Double, Double>>()
@@ -372,6 +385,49 @@ object Pathing2 {
                 if(its > 1000) {
                     throw Exception("we fucked up")
                 }
+            }
+        }
+    }
+
+    class Path(
+        start: Pose,
+        vararg poses: Pose
+    ) {
+        private var _length = 0.0
+        private val splines = mutableListOf<Spline>()
+
+        val start get() = this[0.0]
+        val end get() = this[_length]
+
+        private fun find(s: Double): Pair<Double, Spline> {
+            if(s < 0.0) return Pair(0.0, splines[0])
+            if(s > _length) return Pair(_length, splines[0])
+            var accum = 0.0
+            for(spline in splines) {
+                if(accum + spline.length > s) {
+                    return Pair(s - accum, spline)
+                }
+            }
+            throw Exception("couldn't find shit bozo")
+        }
+
+        operator fun get(s: Double, n: Int = 0): Pose {
+            val ret = find(s)
+            if(n == 0) return Pose(ret.second[ret.second.invArc(s)], ret.second.angle(s))
+            else return Pose(ret.second.deriv(s), ret.second.angle(s, 1))
+        }
+
+        init {
+            var curr = start
+            for(target in poses) {
+                val r = curr.vec.dist(target.vec)
+                val s = DifferentiablePoint2d(curr.vec, Vector.fromPolar(r, curr.heading))
+                val e = DifferentiablePoint2d(target.vec, Vector.fromPolar(r, target.heading))
+                val xQuintic = Quintic(s.x, e.x)
+                val yQuintic = Quintic(s.y, e.y)
+                val spline = Spline(xQuintic, yQuintic)
+                splines.add(spline)
+                _length += spline.length
             }
         }
     }
