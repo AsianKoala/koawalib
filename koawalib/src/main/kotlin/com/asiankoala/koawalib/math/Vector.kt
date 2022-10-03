@@ -1,6 +1,8 @@
 package com.asiankoala.koawalib.math
 
-import kotlin.math.*
+import kotlin.math.atan2
+import kotlin.math.hypot
+import kotlin.math.pow
 
 /**
  * Represents 2D Vectors
@@ -15,6 +17,7 @@ data class Vector(
     constructor(v: Vector) : this(v.x, v.y)
 
     val norm get() = hypot(x, y)
+    val normSq get() = x.pow(2) + y.pow(2)
     val angle get() = atan2(y, x)
     val asList get() = listOf(x, y)
     val unit get() = this / norm

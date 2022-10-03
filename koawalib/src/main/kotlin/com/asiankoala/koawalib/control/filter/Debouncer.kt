@@ -1,6 +1,6 @@
 package com.asiankoala.koawalib.control.filter
 
-import com.acmerobotics.roadrunner.util.NanoClock
+import com.asiankoala.koawalib.util.NanoClock
 
 /**
  * @see https://github.com/wpilibsuite/allwpilib/blob/main/wpimath/src/main/java/edu/wpi/first/math/filter/Debouncer.java

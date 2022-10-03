@@ -1,8 +1,8 @@
 package com.asiankoala.koawalib.hardware.motor
 
-import com.acmerobotics.roadrunner.util.NanoClock
 import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.math.estimateDerivative
+import com.asiankoala.koawalib.util.NanoClock
 import com.qualcomm.robotcore.util.MovingStatistics
 import kotlin.math.abs
 import kotlin.math.sign

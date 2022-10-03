@@ -46,18 +46,23 @@ abstract class KOpMode(
         KScheduler.resetScheduler()
         Logger.addWarningCountCommand()
 
+        Logger.timeIntervalManager["HUB SETUP"].start()
         KDevice.hardwareMap = hardwareMap
         hubs = hardwareMap.getAll(LynxModule::class.java)
         hubs.forEach { it.bulkCachingMode = LynxModule.BulkCachingMode.MANUAL }
         voltageSensor = hardwareMap.voltageSensor.iterator().next()
+        Logger.timeIntervalManager["HUB SETUP"].end()
 
+        Logger.timeIntervalManager["PHOTON SETUP"].start()
         if (photonEnabled) {
             PhotonCore.enable()
             PhotonCore.experimental.setMaximumParallelCommands(maxParallelCommands)
         }
+        Logger.timeIntervalManager["PHOTON END"].end()
 
         opModeTimer.reset()
-        Logger.logInfo("opmode set up")
+        Logger.timeIntervalManager.log()
+        Logger.logInfo("OpMode set up")
     }
 
     private fun schedulePeriodics() {
@@ -107,9 +112,11 @@ abstract class KOpMode(
         .universal(Logger::update)
         .universal(::updateTelemetryIfEnabled)
         .state(OpModeState.INIT)
+        .onEnter { Logger.timeIntervalManager["INIT"].start() }
         .onEnter(::setup)
         .onEnter(::schedulePeriodics)
         .onEnter(::mInit)
+        .onEnter { Logger.timeIntervalManager["INIT"].end() }
         .onEnter { Logger.logInfo("fully initialized, entering init loop") }
         .transition { true }
         .state(OpModeState.INIT_LOOP)

@@ -1,7 +1,7 @@
 package com.asiankoala.koawalib.gamepad.functionality
 
-import com.asiankoala.koawalib.util.KBoolean
 import com.asiankoala.koawalib.util.Periodic
+import com.asiankoala.koawalib.util.internal.KBoolean
 
 /**
  * Button functionality

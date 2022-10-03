@@ -5,24 +5,29 @@ import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.asiankoala.koawalib.command.commands.LoopCmd
 import com.asiankoala.koawalib.logger.Logger.config
+import com.asiankoala.koawalib.util.internal.Colors
 import org.firstinspires.ftc.robotcore.external.Telemetry
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * Logger sends log reports to logcat detailing details of a running opmode. Also serves to format driver station telemetry
  * @property config Logger Config
- * todo: introduce a bare min telemetry
  */
 @Suppress("unused")
 object Logger {
+    var config = LoggerConfig.SIMPLE_CONFIG
+    val timeIntervalManager = TimeIntervalManager()
+
+    internal var telemetry: Telemetry? = null
+    internal var logCount = 0; private set
+    internal val priorityList = listOf("NONE", "NONE", "VERBOSE", "DEBUG", "INFO", "WARN", "ERROR", "WTF")
+
     private const val tag = "KOAWALIB"
     private val dashboard = FtcDashboard.getInstance()
     private val toLog = ArrayList<LogData>()
     private var packet = TelemetryPacket()
     private var warnings = 0
-    internal var telemetry: Telemetry? = null
-    internal var logCount = 0; private set
-    internal val priorityList = listOf("NONE", "NONE", "VERBOSE", "DEBUG", "INFO", "WARN", "ERROR", "WTF")
-    var config = LoggerConfig.SIMPLE_CONFIG
 
     private fun log(message: String, priority: Int) {
         if (!config.isLogging) return
@@ -141,5 +146,31 @@ object Logger {
 
     private fun getDataString(message: String, data: Any?): String {
         return "$message : $data"
+    }
+
+    private data class LogData(
+        val message: String,
+        val priority: Int,
+    ) {
+        private val dateString = Calendar.getInstance().time.format("HH:mm:ss.SSS")
+
+        val formattedMessage get() = "%-10s %s".format(logCount, message)
+        val printString
+            get() = "$dateString \t ${priorityList[priority]} \t $formattedMessage".withColor(
+                when (priority) {
+                    Log.DEBUG -> Colors.ANSI_CYAN
+                    Log.INFO -> Colors.ANSI_GREEN
+                    else -> Colors.ANSI_PURPLE
+                }
+            )
+
+        private fun Date.format(format: String, locale: Locale = Locale.getDefault()): String {
+            val formatter = SimpleDateFormat(format, locale)
+            return formatter.format(this)
+        }
+
+        private fun String.withColor(color: String): String {
+            return "$color$this${Colors.ANSI_RESET}"
+        }
     }
 }

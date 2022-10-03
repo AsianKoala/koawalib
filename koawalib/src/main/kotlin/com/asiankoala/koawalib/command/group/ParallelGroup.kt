@@ -2,8 +2,6 @@ package com.asiankoala.koawalib.command.group
 
 import com.asiankoala.koawalib.command.commands.Cmd
 import com.asiankoala.koawalib.util.disjoint
-import java.util.*
-import kotlin.collections.HashMap
 
 /**
  * CommandGroups are used to run multiple commands. To create a custom CommandGroup, extend this class

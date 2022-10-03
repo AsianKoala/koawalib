@@ -1,7 +1,8 @@
 package com.asiankoala.koawalib.hardware.motor
 
 import com.asiankoala.koawalib.command.commands.LoopCmd
-import com.asiankoala.koawalib.control.motor.*
+import com.asiankoala.koawalib.control.motor.MotionProfileMotorController
+import com.asiankoala.koawalib.control.motor.MotorControlModes
 import com.asiankoala.koawalib.control.motor.MotorController
 import com.asiankoala.koawalib.control.profile.MotionState
 import com.asiankoala.koawalib.hardware.KDevice

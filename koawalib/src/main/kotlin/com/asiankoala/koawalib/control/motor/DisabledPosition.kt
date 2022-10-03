@@ -1,6 +1,6 @@
 package com.asiankoala.koawalib.control.motor
 
-import com.acmerobotics.roadrunner.util.epsilonEquals
+import com.asiankoala.koawalib.math.epsilonEquals
 import kotlin.math.absoluteValue
 
 class DisabledPosition(
