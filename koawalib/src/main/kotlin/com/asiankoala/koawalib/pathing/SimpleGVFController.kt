@@ -5,6 +5,7 @@ import com.asiankoala.koawalib.math.Vector
 import com.asiankoala.koawalib.math.angleWrap
 import com.asiankoala.koawalib.math.degrees
 import com.asiankoala.koawalib.util.Speeds
+import kotlin.math.min
 
 /**
  *  Guided Vector Field follower
@@ -34,45 +35,24 @@ class SimpleGVFController(
     epsilon: Double,
     errorMap: (Double) -> Double = { it },
 ) : GVFController(path, kN, kOmega, epsilon, errorMap) {
-
     override fun headingControl(): Pair<Double, Double> {
-        val desiredHeading = lastTangentVec.angle
-        val headingError = (desiredHeading - lastPose.heading).angleWrap.degrees
+        val headingError = (tangent.angle - pose.heading).angleWrap.degrees
         val result = kOmega * headingError
         return Pair(result, headingError)
     }
 
     override fun vectorControl(): Vector {
-        val paramTillEnd = path.length - lastS
-        var translationalPower = (lastGVFVec / lastGVFVec.norm) * kS
-        if (paramTillEnd < kF) translationalPower /= kF
-
-        val endRVector = path.end.vec - lastPose.vec
-        isFinished = paramTillEnd < epsilon && endRVector.norm < epsilon
-        if (isFinished) return Vector()
-
-        if (translationalPower.norm > 1.0) translationalPower /= translationalPower.norm
-        return translationalPower
+        return gvfVec * kS * min(1.0, (path.length - s) / kF)
     }
 
-    override fun update(currPose: Pose, currVel: Speeds): Speeds {
-        lastPose = currPose
-        lastS = path.project(lastPose.vec, lastS)
-
-        val vectorFieldResult = gvfVecAt(lastPose, lastS)
-
-        lastGVFVec = vectorFieldResult
-
-        val headingResult = headingControl()
-        val angularOutput = headingResult.first
-        val headingError = headingResult.second
-
-        lastHeadingError = headingError
-
-        val vectorResult = vectorControl()
-
+    override fun process(currPose: Pose, currVel: Speeds): Speeds {
+        super.update(currPose, currVel)
         val speeds = Speeds()
-        speeds.setFieldCentric(Pose(vectorResult, angularOutput))
+        speeds.setFieldCentric(Pose(vectorResult, headingResult.first))
         return speeds
+    }
+
+    init {
+        require(kS <= 1.0)
     }
 }

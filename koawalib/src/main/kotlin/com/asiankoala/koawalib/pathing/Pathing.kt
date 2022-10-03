@@ -1,11 +1,11 @@
 package com.asiankoala.koawalib.pathing
 
-import com.asiankoala.koawalib.math.Vector
 import com.asiankoala.koawalib.math.Pose
+import com.asiankoala.koawalib.math.Vector
 import com.asiankoala.koawalib.math.clamp
-import kotlin.math.pow
-import kotlin.math.atan2
 import kotlin.math.absoluteValue
+import kotlin.math.atan2
+import kotlin.math.pow
 
 data class DifferentiablePoint(
     val zero: Double = 0.0,

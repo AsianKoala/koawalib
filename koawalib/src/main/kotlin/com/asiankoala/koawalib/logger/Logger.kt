@@ -9,7 +9,6 @@ import com.asiankoala.koawalib.util.internal.Colors
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 /**
  * Logger sends log reports to logcat detailing details of a running opmode. Also serves to format driver station telemetry

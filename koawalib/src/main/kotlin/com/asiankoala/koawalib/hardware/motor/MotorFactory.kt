@@ -3,9 +3,6 @@ package com.asiankoala.koawalib.hardware.motor
 import com.asiankoala.koawalib.control.controller.Bounds
 import com.asiankoala.koawalib.control.controller.PIDGains
 import com.asiankoala.koawalib.control.motor.*
-import com.asiankoala.koawalib.control.motor.MotionProfileMotorController
-import com.asiankoala.koawalib.control.motor.PositionMotorController
-import com.asiankoala.koawalib.control.motor.VelocityMotorController
 import com.asiankoala.koawalib.control.profile.MotionConstraints
 import com.asiankoala.koawalib.logger.Logger
 import com.qualcomm.robotcore.hardware.DcMotor
