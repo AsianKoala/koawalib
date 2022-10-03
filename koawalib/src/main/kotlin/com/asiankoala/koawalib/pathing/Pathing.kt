@@ -3,7 +3,6 @@ package com.asiankoala.koawalib.pathing
 import com.asiankoala.koawalib.math.Vector
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.clamp
-import com.asiankoala.koawalib.math.epsilonEquals
 import kotlin.math.pow
 import kotlin.math.atan2
 import kotlin.math.absoluteValue
@@ -430,16 +429,10 @@ class Path(
     if not, then add dot product to s
     since dot product literally just finds the amount vec a is parallel to vec b
      */
-    fun project(query: Vector, pGuess: Double): Double {
-        var s = pGuess
-        for(i in 0..200) {
-            val dot = (query - get(s).vec).dot(get(s, 1).vec)
-            if(dot epsilonEquals 0.0) return s
-            s += dot
-            if(s < 0.0) return 0.0
-            if(s > length) return length
+    fun project(p: Vector, pGuess: Double): Double {
+        return (1..10).fold(pGuess) { s, _ ->
+            clamp(s + (p - get(s).vec).dot(get(s, 1).vec), 0.0, length)
         }
-        return clamp(s, 0.0, length)
     }
 
     init {
