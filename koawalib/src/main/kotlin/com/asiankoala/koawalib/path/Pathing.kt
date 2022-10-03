@@ -44,6 +44,10 @@ class Quintic(
         )
     }
 
+    override fun toString(): String {
+        return "${coeffVec[0]}t^5 + ${coeffVec[1]}^4 + ${coeffVec[2]}t^3 + ${coeffVec[3]}t^2 + ${coeffVec[4]}t + ${coeffVec[5]}"
+    }
+
     init {
         /**
          * https://www.wolframalpha.com/input?i=row+echelon+form+%5B%5B0%2C0%2C0%2C0%2C0%2Cf%2Cu%5D%2C%5B0%2C0%2C0%2C0%2Ce%2C0%2Cv%5D%2C%5B0%2C0%2C0%2C2d%2C0%2C0%2Cw%5D%2C%5Ba%2Cb%2Cc%2Cd%2Ce%2Cf%2Cx%5D%2C%5B5a%2C4b%2C3c%2C2d%2C1e%2C0%2Cy%5D%2C%5B20a%2C12b%2C6c%2C2d%2C0%2C0%2Cz%5D%5D
@@ -73,7 +77,7 @@ class Quintic(
         // 2 = -(20u + 12v + 3w - 20x + 8y - z) / c
         // c = -(20u + 12v + 3w - 20x + 8y - z) / 2
         coeffVec[2] = -(20 * start.zero + 12 * start.first + 3 * start.second
-                - 20 * end.first + 8 * end.second - end.second) / 2.0
+                - 20 * end.zero + 8 * end.first - end.second) / 2.0
 
         // 2 = (30u + 16v + 3w -30x + 14y - 2z) / b
         // b = (30u + 16v + 3w -30x + 14y - 2z) / 2
@@ -285,7 +289,7 @@ class Spline(
     }
 
     // from multi: k = (a x v) / |v|^3
-    private fun getK(t: Double) = tGet(t, 2).cross(tGet(t, 1)) / tGet(t, 1).norm.pow(3)
+    fun getK(t: Double) = tGet(t, 2).cross(tGet(t, 1)) / tGet(t, 1).norm.pow(3)
 
     // now that we have our spline parametrized into arcs,
     // we can find the corresponding t with s by iterating across
@@ -300,6 +304,7 @@ class Spline(
             val workingArc = arcs[its]
             if(arcLengthSum + workingArc.length > s) {
                 val ds = arcLengthSum - s
+                val t = workingArc.interpolateSAlongT(ds)
                 return workingArc.interpolateSAlongT(ds)
             }
             arcLengthSum += workingArc.length
@@ -353,18 +358,17 @@ class Spline(
         val tParams = ArrayDeque<Pair<Double, Double>>()
         tParams.add(Pair(0.0, 1.0))
         var its = 0
-
         while(tParams.isNotEmpty()) {
-            val curr = tParams.first()
-            tParams.removeFirst()
-
+            val curr = tParams.removeFirst()
             val midT = (curr.first + curr.second) / 2.0
+
             val startV = tGet(curr.first)
-            val midV = tGet(midT)
             val endV  = tGet(curr.second)
-            val klo = getK(curr.first)
-            val khi = getK(curr.second)
-            val dk = (khi - klo).absoluteValue
+            val midV = tGet(midT)
+
+            val startK = getK(curr.first)
+            val endK = getK(curr.second)
+            val dk = (endK - startK).absoluteValue
             val arc = Arc(startV, midV, endV)
             // we want to make our arcs as linear?ish as possible to have
             // a more accurate interpolation when param from s -> t
@@ -374,7 +378,7 @@ class Spline(
                 tParams.add(Pair(midT, curr.second))
                 tParams.add(Pair(curr.first, midT))
             } else {
-                arc.setCurvature(klo, khi)
+                arc.setCurvature(startK, endK)
                 arc.setT(curr)
                 arcs.add(arc)
                 _length += arc.length
@@ -395,7 +399,7 @@ class Path(
     vararg poses: Pose
 ) {
     private var _length = 0.0
-    private val splines = mutableListOf<Spline>()
+    val splines = mutableListOf<Spline>()
 
     val start get() = this[0.0]
     val end get() = this[_length]
@@ -417,7 +421,7 @@ class Path(
     operator fun get(s: Double, n: Int = 0) = find(s).second[s, n]
 
     /*
-    stole this from rr
+    yoinked this from rr
     basically the way this works is
     take rVec from pose to proj (proj = get(s))
     this is ideally normal to the curve
