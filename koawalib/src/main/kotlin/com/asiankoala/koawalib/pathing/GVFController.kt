@@ -1,4 +1,4 @@
-package com.asiankoala.koawalib.gvf
+package com.asiankoala.koawalib.pathing
 
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.Vector
@@ -7,14 +7,14 @@ import kotlin.math.PI
 import kotlin.math.sign
 
 abstract class GVFController(
-    protected val path: Pathing.Path,
+    protected val path: Path,
     protected val kN: Double,
     protected val kOmega: Double,
     protected val epsilon: Double,
     protected val errorMap: (Double) -> Double = { it },
 ) {
     protected var lastPose: Pose = Pose()
-    protected var lastS: Double = Double.NaN
+    protected var lastS: Double = 0.0
     protected var lastGVFVec = Vector()
     protected var lastTangentVec = Vector()
     protected var lastHeadingError = 0.0
@@ -31,7 +31,7 @@ abstract class GVFController(
     abstract fun update(currPose: Pose, currVel: Speeds): Speeds
 
     protected fun gvfVecAt(pose: Pose, s: Double): Vector {
-        val tangentVec = path.deriv(s).vec
+        val tangentVec = path[s, 1].vec
         lastTangentVec = tangentVec
         val normalVec = tangentVec.rotate(PI / 2.0)
         val projected = path[s].vec

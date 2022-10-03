@@ -1,7 +1,7 @@
 package com.asiankoala.koawalib.command.commands
 
-import com.asiankoala.koawalib.gvf.Pathing
-import com.asiankoala.koawalib.gvf.SimpleGVFController
+import com.asiankoala.koawalib.pathing.Pathing
+import com.asiankoala.koawalib.pathing.SimpleGVFController
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.subsystem.drive.KMecanumOdoDrive
 import com.asiankoala.koawalib.util.Speeds
