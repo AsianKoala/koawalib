@@ -124,7 +124,7 @@ class GaussianQuadrature(
     init {
         for(coefficient in table.list) {
             val t = 0.5 * (1.0 + coefficient.abscissa) // used for converting from [-1,1] to [0,1]
-            length += curve[t, 1].norm * coefficient.weight
+            length += curve.tGet(t, 1).norm * coefficient.weight
         }
         length *= 0.5
     }
@@ -203,7 +203,8 @@ class Arc(
     val angleOffset: Double
     private var curvatureSet = false
     private var dkds = 0.0
-    private var tStart = 0.0
+    var tStart = 0.0
+        private set
     private var tEnd = 0.0
     var dt = 0.0
         private set
@@ -222,7 +223,7 @@ class Arc(
 
     fun getCorrectCurvature(s: Double): Double = curvature + s * dkds
     fun linearlyInterpolate(s: Double) = ref + (end - start) * (s / length)
-    fun interpolateSAlongT(s: Double) = tStart + dt * (s / length)
+    fun interpolateSAlongT(s: Double) = tStart + dt * ((s + length * 2) / length)
 
     fun get(s: Double): Vector {
         return if(curvature != 0.0) {
@@ -272,7 +273,7 @@ class Spline(
     private val arcs = mutableListOf<Arc>()
     val length: Double get() = _length
 
-    operator fun get(t: Double, n: Int = 0): Vector {
+    fun tGet(t: Double, n: Int = 0): Vector {
         val xt = x[t]
         val yt = y[t]
         return when(n) {
@@ -284,24 +285,25 @@ class Spline(
     }
 
     // from multi: k = (a x v) / |v|^3
-    fun getK(t: Double) = this[t, 2].cross(this[t, 1]) / this[t, 1].norm.pow(3)
+    private fun getK(t: Double) = tGet(t, 2).cross(tGet(t, 1)) / tGet(t, 1).norm.pow(3)
 
     // now that we have our spline parametrized into arcs,
     // we can find the corresponding t with s by iterating across
     // our arc array and finding what iteration it is at
     // ok this is a shitty name but like... is it really?
-    fun invArc(s: Double): Double {
+    private fun invArc(s: Double): Double {
         if(s < 0) return 0.0
         if(s > length) return 1.0
         var arcLengthSum = 0.0
-        var intdt = 0.0
         var its = 0
         while(arcLengthSum < s) {
-            val workingarc = arcs[its]
-            if(arcLengthSum + workingarc.length > s) return intdt + workingarc.interpolateSAlongT(s)
-            arcLengthSum += workingarc.length
-            intdt += workingarc.dt
-            its += 1
+            val workingArc = arcs[its]
+            if(arcLengthSum + workingArc.length > s) {
+                val ds = arcLengthSum - s
+                return workingArc.interpolateSAlongT(ds)
+            }
+            arcLengthSum += workingArc.length
+            its++
         }
         throw Exception("i think ur pretty fucking bad a coding neil")
     }
@@ -322,28 +324,28 @@ class Spline(
     // and that denom is just s'(t)
     // s''(t) = (2 * tDeriv dot tDeriv2) / sDeriv(t)
     // i dont want to take another fucking derivative
-    fun sDeriv(t: Double, n: Int = 1): Double {
+    private fun sDeriv(t: Double, n: Int = 1): Double {
         return when(n) {
-            1 -> this[t, 1].norm
-            2 -> (2 * this[t, 1].dot(this[t, 2])) / sDeriv(t) // recursion??? :face_with_raised_eyebrow:
-            else -> throw Exception("im lazy and didn't want to implement more derivatives")
+            1 -> tGet(t, 1).norm
+            2 -> (2 * tGet(t, 1).dot(tGet(t, 2))) / sDeriv(t) // recursion??? :face_with_raised_eyebrow:
+            else -> throw Exception("fuck you im not adding more derivatives :rage:")
         }
     }
 
-    fun deriv(s: Double, n: Int = 1): Vector {
+    private fun deriv(s: Double, n: Int = 1): Vector {
         val t = invArc(s)
         return when(n) {
-            1 -> this[t, 1].unit
-            2 -> this[t, 2] * sDeriv(t).pow(2) + this[t, 1] * sDeriv(t, 2)
-            else -> throw Exception("im lazy and didn't implement more derivatives")
+            1 -> this.tGet(t, 1).unit
+            2 -> this.tGet(t, 2) * sDeriv(t).pow(2) + tGet(t, 1) * sDeriv(t, 2)
+            else -> throw Exception("fuck you im not adding more derivatives :rage:")
         }
     }
 
-    fun angle(s: Double, n: Int = 0): Double {
-        return when(n) {
-            0 -> deriv(s).angle
-            1 -> deriv(s).cross(deriv(s, 2))
-            else -> throw Exception("im lazy and didn't implement more derivatives")
+    operator fun get(s: Double, n: Int = 0): Pose {
+        return when (n) {
+            0 -> Pose(tGet(invArc(s)), deriv(s).angle)
+            1 -> Pose(deriv(s), deriv(s).cross(deriv(s, 2)))
+            else -> throw Exception("fuck you im not adding more derivatives :rage:")
         }
     }
 
@@ -357,9 +359,9 @@ class Spline(
             tParams.removeFirst()
 
             val midT = (curr.first + curr.second) / 2.0
-            val startV = this[curr.first]
-            val midV = this[midT]
-            val endV  = this[curr.second]
+            val startV = tGet(curr.first)
+            val midV = tGet(midT)
+            val endV  = tGet(curr.second)
             val klo = getK(curr.first)
             val khi = getK(curr.second)
             val dk = (khi - klo).absoluteValue
@@ -383,6 +385,8 @@ class Spline(
                 throw Exception("we fucked up")
             }
         }
+
+        arcs.sortBy { it.tStart }
     }
 }
 
@@ -399,7 +403,7 @@ class Path(
 
     private fun find(s: Double): Pair<Double, Spline> {
         if(s < 0.0) return Pair(0.0, splines[0])
-        if(s > _length) return Pair(_length, splines[0])
+        if(s > _length) return Pair(_length, splines[splines.size-1])
         var accum = 0.0
         for(spline in splines) {
             if(accum + spline.length > s) {
@@ -410,14 +414,7 @@ class Path(
         throw Exception("couldn't find shit bozo")
     }
 
-    operator fun get(s: Double, n: Int = 0): Pose {
-        val ret = find(s)
-        return when(n) {
-            0 -> Pose(ret.second[ret.second.invArc(s)], ret.second.angle(s))
-            1 -> Pose(ret.second.deriv(s), ret.second.angle(s, 1))
-            else -> throw Exception("fuck you im not adding more derivatives :rage:")
-        }
-    }
+    operator fun get(s: Double, n: Int = 0) = find(s).second[s, n]
 
     /*
     stole this from rr
@@ -429,11 +426,7 @@ class Path(
     if not, then add dot product to s
     since dot product literally just finds the amount vec a is parallel to vec b
      */
-    fun project(p: Vector, pGuess: Double): Double {
-        return (1..10).fold(pGuess) { s, _ ->
-            clamp(s + (p - get(s).vec).dot(get(s, 1).vec), 0.0, length)
-        }
-    }
+    fun project(p: Vector, pGuess: Double) = (1..10).fold(pGuess) { s, _ ->  clamp(s + (p - get(s).vec).dot(get(s, 1).vec), 0.0, length) }
 
     init {
         var curr = start
@@ -452,4 +445,3 @@ class Path(
         }
     }
 }
-
