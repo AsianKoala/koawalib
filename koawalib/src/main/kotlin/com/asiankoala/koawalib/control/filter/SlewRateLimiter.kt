@@ -1,7 +1,7 @@
 package com.asiankoala.koawalib.control.filter
 
-import com.acmerobotics.roadrunner.util.NanoClock
 import com.asiankoala.koawalib.math.clamp
+import com.asiankoala.koawalib.util.NanoClock
 
 /**
  * A class that limits the rate of change of an input value. Useful for implementing voltage,

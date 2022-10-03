@@ -9,6 +9,7 @@ abstract class NanoClock {
         @JvmStatic
         fun system() = object : NanoClock() {
             override fun seconds() = System.nanoTime() / 1e9
+            override fun milliseconds() = System.nanoTime() / 1e6
         }
     }
 
@@ -16,4 +17,5 @@ abstract class NanoClock {
      * Returns the number of seconds since an arbitrary (yet consistent) origin.
      */
     abstract fun seconds(): Double
+    abstract fun milliseconds(): Double
 }

@@ -12,10 +12,10 @@ class PIDFController constructor(
     private val kA: Double = 0.0,
     private val kStatic: Double = 0.0,
     private val kF: (Double, Double?) -> Double = { _, _ -> 0.0 },
-    private val clock: NanoClock = NanoClock.system()
 ) {
     private var errorSum: Double = 0.0
     private var lastUpdateTimestamp: Double = Double.NaN
+    private val clock: NanoClock = NanoClock.system()
 
     private var inputBounded: Boolean = false
     private var minInput: Double = 0.0

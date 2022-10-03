@@ -21,7 +21,7 @@ import kotlin.collections.set
  * and handles them accordingly. Processing is done behind the scenes, so the main purpose of this class for the user
  * is to schedule commands, mainly using [KScheduler.schedule]
  */
-@Suppress("unused")
+//@Suppress("unused")
 object KScheduler {
     private val scheduledCmds: MutableList<Cmd> = ArrayList()
     private val scheduledCmdReqs: MutableMap<Subsystem, Cmd> = LinkedHashMap()
@@ -34,14 +34,11 @@ object KScheduler {
     private val allMaps = listOf<MutableMap<*, *>>(scheduledCmdReqs, subsystems, deviceRegistry)
     private val allLists = listOf<MutableList<*>>(scheduledCmds, toCancel, toSchedule, toCancel)
 
-    private var amountOfWatchdogs = 0
-
     internal lateinit var stateReceiver: () -> OpModeState
 
     internal fun resetScheduler() {
         allMaps.forEach(MutableMap<*, *>::clear)
         allLists.forEach(MutableList<*>::clear)
-        amountOfWatchdogs = 0
 
         allCollections.forEach {
             if (it is Collection<*>) {
@@ -94,11 +91,7 @@ object KScheduler {
         toSchedule.forEach { it.scheduleThis() }
         toCancel.forEach { it.cancelThis() }
 
-        // @TODO maybe subsytem periodics should be ran before default commands?
-        // need to think about this some more
         subsystems.forEach { (k, v) ->
-            // if subsystem not required by any command, has a non-null default command, and no
-            // scheduled commands have requirements that match the default commands requirements
             if (!scheduledCmdReqs.containsKey(k) && v != null && scheduledCmdReqs.keys disjoint v.requirements) {
                 v.execute()
                 Logger.logDebug("subsystem ${k.name} default cmd executed")
@@ -110,28 +103,13 @@ object KScheduler {
 
         subsystems.keys.forEach(Subsystem::periodic)
 
-        // is this logging really needed? // @TODO
-//        scheduledCmdReqs.keys.forEachIndexed { i, subsystem ->
-//            if (i == 0) Logger.logDebug("required subsystems before running commands:")
-//            Logger.logDebug("$i: ${subsystem.name}")
-//        }
-
         val toRemove = LinkedHashSet<Cmd>()
         scheduledCmds.forEach {
             val command = it
             command.execute()
 
-            if (command !is Watchdog && command !is LoopCmd && command !is ParallelGroup) {
-                if (command is Group) {
-                    Logger.logDebug("group ${command.name} with cmd(s) ${command.currentCmdNames} executed")
-                } else {
-                    Logger.logDebug("cmd ${command.name} executed")
-                }
-            }
-
             if (command.isFinished) {
                 command.end()
-                if (command !is InstantCmd) Logger.logDebug("command ${command.name} finished")
                 toRemove.add(command)
                 scheduledCmdReqs.keys.removeAll(command.requirements)
             }
@@ -140,9 +118,6 @@ object KScheduler {
         scheduledCmds.removeAll(toRemove)
     }
 
-    private fun scheduleForState(state: OpModeState, cmd: Cmd) {
-        schedule(cmd.waitUntil { stateReceiver.invoke() == state })
-    }
 
     /**
      * Schedule commands
@@ -153,6 +128,16 @@ object KScheduler {
             toSchedule.add(it)
             Logger.logDebug("added ${it.name} to toSchedule array")
         }
+    }
+
+
+    /**
+     * Schedule command for a state
+     * @param state state to start cmd
+     * @param cmd cmd to run when state reached
+     */
+    fun scheduleForState(state: OpModeState, cmd: Cmd) {
+        schedule(cmd.waitUntil { stateReceiver.invoke() == state })
     }
 
     /**
@@ -202,33 +187,6 @@ object KScheduler {
     }
 
     /**
-     * Get default command of a subsystem
-     * @param subsystem queried subsystem
-     * @return queried subsystem's default command
-     */
-    fun getDefaultCommand(subsystem: Subsystem): Cmd {
-        return subsystems[subsystem]!!
-    }
-
-    /**
-     * Get if commands are scheduled
-     * @param cmds queried commands
-     * @return if all commands are currently scheduled
-     */
-    fun isScheduled(vararg cmds: Cmd): Boolean {
-        return scheduledCmds.containsAll(cmds.toList())
-    }
-
-    /**
-     * Get the command that is requiring a subsystem
-     * @param subsystem queried subsystem
-     * @return the command that is requiring the queried subsystem, if it exists
-     */
-    fun requiring(subsystem: Subsystem): Cmd? {
-        return scheduledCmdReqs[subsystem]
-    }
-
-    /**
      * Schedule a watchdog
      * @see Watchdog
      * @param condition condition to schedule the watchdog's command
@@ -237,23 +195,6 @@ object KScheduler {
     fun scheduleWatchdog(condition: () -> Boolean, cmd: Cmd) {
         schedule(Watchdog(condition, cmd).withName(cmd.name))
         Logger.logInfo("added watchdog ${cmd.name}")
-        amountOfWatchdogs++
-    }
-
-    /**
-     * Schedule a command upon entering opmode init
-     * @param cmd command to be scheduled
-     */
-    fun scheduleForInit(cmd: Cmd) {
-        scheduleForState(OpModeState.INIT, cmd)
-    }
-
-    /**
-     * Schedule a command upon entering opmode start
-     * @param cmd command to be scheduled
-     */
-    fun scheduleForStart(cmd: Cmd) {
-        scheduleForState(OpModeState.START, cmd)
     }
 
     /**
