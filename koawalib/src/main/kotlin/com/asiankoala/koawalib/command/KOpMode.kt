@@ -5,6 +5,8 @@ import com.asiankoala.koawalib.gamepad.KGamepad
 import com.asiankoala.koawalib.hardware.KDevice
 import com.asiankoala.koawalib.hardware.motor.KMotor
 import com.asiankoala.koawalib.logger.Logger
+import com.asiankoala.koawalib.logger.TimeInterval
+import com.asiankoala.koawalib.logger.TimeIntervalManager
 import com.asiankoala.koawalib.util.OpModeState
 import com.asiankoala.koawalib.util.containsBy
 import com.asiankoala.koawalib.util.internal.statemachine.StateMachine
@@ -61,6 +63,7 @@ abstract class KOpMode(
         Logger.timeIntervalManager["PHOTON END"].end()
 
         opModeTimer.reset()
+        Logger.timeIntervalManager.log()
         Logger.logInfo("OpMode set up")
     }
 

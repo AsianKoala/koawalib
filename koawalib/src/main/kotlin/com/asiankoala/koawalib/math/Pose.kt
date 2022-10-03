@@ -17,22 +17,11 @@ data class Pose(
     constructor(l: List<Double>) : this(l[0], l[1], l[2])
 
     val vec get() = Vector(x, y)
-    internal val asList get() = listOf(x, y, heading)
 
     /**
      * Add two poses together, while wrapping the heading to [-pi, pi]
      */
     fun plusWrap(other: Pose) = Pose(x + other.x, y + other.y, (heading + other.heading).angleWrap)
-
-    /**
-     * Add two poses together, without wrapping
-     */
-    operator fun plus(other: Pose) = Pose(x + other.x, y + other.y, heading + other.heading)
-
-    /**
-     * Multiply pose by a scalar
-     */
-    operator fun times(scalar: Double) = Pose(x * scalar, y * scalar, heading * scalar)
 
     /**
      * String of x, y, and heading data
