@@ -1,4 +1,4 @@
-package com.asiankoala.koawalib.pathing
+package com.asiankoala.koawalib.path
 
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.Vector
@@ -15,6 +15,7 @@ import kotlin.math.min
  *  @param kN normal path attraction
  *  @param kOmega heading weight
  *  @param kF end param weight
+ *  @param kS raw scalar on translational power
  *  @param epsilon allowed absolute and projected error
  *  @param errorMap error map to transform normal displacement error
  *  @property isFinished path finish state
@@ -35,21 +36,14 @@ class SimpleGVFController(
     epsilon: Double,
     errorMap: (Double) -> Double = { it },
 ) : GVFController(path, kN, kOmega, epsilon, errorMap) {
-    override fun headingControl(): Pair<Double, Double> {
-        val headingError = (tangent.angle - pose.heading).angleWrap.degrees
-        val result = kOmega * headingError
-        return Pair(result, headingError)
+    override fun headingControl(vel: Speeds): Pair<Double, Double> {
+        val error = (tangent.angle - pose.heading).angleWrap.degrees
+        val result = kOmega * error
+        return Pair(result, error)
     }
 
-    override fun vectorControl(): Vector {
+    override fun vectorControl(vel: Speeds): Vector {
         return gvfVec * kS * min(1.0, (path.length - s) / kF)
-    }
-
-    override fun process(currPose: Pose, currVel: Speeds): Speeds {
-        super.update(currPose, currVel)
-        val speeds = Speeds()
-        speeds.setFieldCentric(Pose(vectorResult, headingResult.first))
-        return speeds
     }
 
     init {

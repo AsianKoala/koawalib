@@ -16,32 +16,6 @@ import java.util.*
  */
 @Suppress("unused")
 object Logger {
-    private data class LogData(
-        val message: String,
-        val priority: Int,
-    ) {
-        private val dateString = Calendar.getInstance().time.format("HH:mm:ss.SSS")
-
-        val formattedMessage get() = "%-10s %s".format(logCount, message)
-        val printString
-            get() = "$dateString \t ${priorityList[priority]} \t $formattedMessage".withColor(
-                when (priority) {
-                    Log.DEBUG -> Colors.ANSI_CYAN
-                    Log.INFO -> Colors.ANSI_GREEN
-                    else -> Colors.ANSI_PURPLE
-                }
-            )
-
-        private fun Date.format(format: String, locale: Locale = Locale.getDefault()): String {
-            val formatter = SimpleDateFormat(format, locale)
-            return formatter.format(this)
-        }
-
-        private fun String.withColor(color: String): String {
-            return "$color$this${Colors.ANSI_RESET}"
-        }
-    }
-
     var config = LoggerConfig.SIMPLE_CONFIG
     val timeIntervalManager = TimeIntervalManager()
 
@@ -172,5 +146,31 @@ object Logger {
 
     private fun getDataString(message: String, data: Any?): String {
         return "$message : $data"
+    }
+
+    private data class LogData(
+        val message: String,
+        val priority: Int,
+    ) {
+        private val dateString = Calendar.getInstance().time.format("HH:mm:ss.SSS")
+
+        val formattedMessage get() = "%-10s %s".format(logCount, message)
+        val printString
+            get() = "$dateString \t ${priorityList[priority]} \t $formattedMessage".withColor(
+                when (priority) {
+                    Log.DEBUG -> Colors.ANSI_CYAN
+                    Log.INFO -> Colors.ANSI_GREEN
+                    else -> Colors.ANSI_PURPLE
+                }
+            )
+
+        private fun Date.format(format: String, locale: Locale = Locale.getDefault()): String {
+            val formatter = SimpleDateFormat(format, locale)
+            return formatter.format(this)
+        }
+
+        private fun String.withColor(color: String): String {
+            return "$color$this${Colors.ANSI_RESET}"
+        }
     }
 }

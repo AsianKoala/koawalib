@@ -1,4 +1,4 @@
-package com.asiankoala.koawalib.pathing
+package com.asiankoala.koawalib.path
 
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.Vector
@@ -10,36 +10,37 @@ abstract class GVFController(
     protected val path: Path,
     protected val kN: Double,
     protected val kOmega: Double,
-    protected val epsilon: Double,
+    private val epsilon: Double,
     private val errorMap: (Double) -> Double = { it },
 ) {
+    var isFinished = false
+        private set
+
     protected var pose: Pose = Pose()
     protected var s: Double = 0.0
     protected var gvfVec = Vector()
     protected var tangent = Vector()
     protected var headingResult = Pair(0.0, 0.0)
-    protected var vectorResult = Vector()
-    
-    var isFinished = false
-        protected set
+    private var vectorResult = Vector()
 
-    abstract fun headingControl(): Pair<Double, Double>
-    abstract fun vectorControl(): Vector
-    abstract fun process(currPose: Pose, currVel: Speeds): Speeds
+    abstract fun headingControl(vel: Speeds): Pair<Double, Double>
+    abstract fun vectorControl(vel: Speeds): Vector
 
     /**
      * @param currPose current pose of robot
+     * @param currVel current vel of robot
      * @return robot relative x,y,omega powers
      */
     fun update(currPose: Pose, currVel: Speeds): Speeds {
         pose = currPose
         s = path.project(pose.vec, s)
         gvfVec = gvfVecAt(pose, s).unit
-        headingResult = headingControl()
-        vectorResult = vectorControl()
+        headingResult = headingControl(currVel)
+        vectorResult = vectorControl(currVel)
         isFinished = path.length - s < epsilon && pose.vec.dist(path.end.vec) < epsilon
-        if(isFinished) return Speeds()
-        return process(currPose, currVel)
+        val speeds = Speeds()
+        speeds.setFieldCentric(Pose(vectorResult, headingResult.first))
+        return speeds
     }
 
     private fun gvfVecAt(currPose: Pose, currS: Double): Vector {

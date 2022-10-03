@@ -1,4 +1,4 @@
-package com.asiankoala.koawalib.pathing
+package com.asiankoala.koawalib.path
 
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.Vector
