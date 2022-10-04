@@ -20,6 +20,7 @@ import com.qualcomm.robotcore.util.ElapsedTime
  * implemented with mInit(), mInitLoop(), mStart(), mLoop(), mStop()
  */
 // @Suppress("unused")
+// todo: Clean this class up
 abstract class KOpMode(
     private val photonEnabled: Boolean = false,
     private val maxParallelCommands: Int = 4
@@ -38,28 +39,36 @@ abstract class KOpMode(
 
     private lateinit var voltageSensor: VoltageSensor
 
-    private fun setup() {
+    private fun setupLib() {
+        Logger.timeIntervalManager["LIB SETUP"].start()
         KScheduler.stateReceiver = { opmodeState }
-
         Logger.reset()
         Logger.telemetry = telemetry
         KScheduler.resetScheduler()
         Logger.addWarningCountCommand()
+        Logger.timeIntervalManager["LIB SETUP"].end()
+    }
 
-        Logger.timeIntervalManager["HUB SETUP"].start()
+    private fun setupHardware() {
+        Logger.timeIntervalManager["HARDWARE SETUP"].start()
         KDevice.hardwareMap = hardwareMap
-        hubs = hardwareMap.getAll(LynxModule::class.java)
-        hubs.forEach { it.bulkCachingMode = LynxModule.BulkCachingMode.MANUAL }
-        voltageSensor = hardwareMap.voltageSensor.iterator().next()
-        Logger.timeIntervalManager["HUB SETUP"].end()
 
-        Logger.timeIntervalManager["PHOTON SETUP"].start()
-        if (photonEnabled) {
+        if(photonEnabled) {
             PhotonCore.enable()
-            PhotonCore.experimental.setMaximumParallelCommands(maxParallelCommands)
+            PhotonCore.CONTROL_HUB.bulkCachingMode = LynxModule.BulkCachingMode.MANUAL
+            PhotonCore.EXPANSION_HUB.bulkCachingMode = LynxModule.BulkCachingMode.MANUAL
+        } else {
+            hubs = hardwareMap.getAll(LynxModule::class.java)
+            hubs.forEach { it.bulkCachingMode = LynxModule.BulkCachingMode.MANUAL }
         }
-        Logger.timeIntervalManager["PHOTON END"].end()
 
+        voltageSensor = hardwareMap.voltageSensor.iterator().next()
+        Logger.timeIntervalManager["HARDWARE SETUP"].end()
+    }
+
+    private fun setup() {
+        setupLib()
+        setupHardware()
         opModeTimer.reset()
         Logger.timeIntervalManager.log()
         Logger.logInfo("OpMode set up")
@@ -68,9 +77,18 @@ abstract class KOpMode(
     private fun schedulePeriodics() {
         + LoopCmd(driver::periodic).withName("driver gamepad periodic")
         + LoopCmd(gunner::periodic).withName("gunner gamepad periodic")
-        + LoopCmd({ hubs.forEach(LynxModule::clearBulkCache) }).withName("clear bulk data periodic")
+        + LoopCmd(::handleBulkCaching).withName("clear bulk data periodic")
         + LoopCmd(::handleLoopMsTelemetry).withName("loop ms telemetry periodic")
         Logger.logInfo("periodics scheduled")
+    }
+
+    private fun handleBulkCaching() {
+        if(photonEnabled) {
+            PhotonCore.CONTROL_HUB.clearBulkCache()
+            PhotonCore.EXPANSION_HUB.clearBulkCache()
+        } else {
+            hubs.forEach(LynxModule::clearBulkCache)
+        }
     }
 
     private fun handleLoopMsTelemetry() {
