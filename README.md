@@ -1,5 +1,5 @@
 # koawalib
-koawalib is a general purpose FTC library written in Kotlin, inspired by [@wpilib](https://github.com/wpilibsuite/allwpilib)
+koawalib is a general purpose FTC library written in Kotlin
 
 ## Installation
 #### Easy Way (creating a new repo)
