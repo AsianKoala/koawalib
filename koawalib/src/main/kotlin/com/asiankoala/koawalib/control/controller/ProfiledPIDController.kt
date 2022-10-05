@@ -30,7 +30,7 @@ class ProfiledPIDController(
         motionTimer.reset()
         currentState = MotionState(current)
         targetState = MotionState(target)
-        profile = MotionProfile(
+        profile = MotionProfile.generateFromConstraints(
             currentState,
             targetState,
             constraints

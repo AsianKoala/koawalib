@@ -11,17 +11,9 @@ import kotlin.math.sqrt
  * @param endState end state of profile
  * @param constraints constraints the profile must obey
  */
-class MotionProfile(
-    startState: MotionState,
-    private val endState: MotionState,
-    constraints: MotionConstraints
-) {
-
-    private var accelPeriod: MotionPeriod
-    private var cruisePeriod: MotionPeriod
-    private var deccelPeriod: MotionPeriod
-    private val periods: List<MotionPeriod>
-
+class MotionProfile(vararg val periods: MotionPeriod) {
+    val startState: MotionState
+    val endState: MotionState
     val duration: Double
 
     operator fun get(t: Double): MotionState {
@@ -34,34 +26,42 @@ class MotionProfile(
     }
 
     init {
-        accelPeriod = MotionPeriod(
-            startState.copy(a = constraints.accel),
-            ((constraints.cruiseVel - startState.v) / constraints.accel).absoluteValue
-        )
+        duration = periods.sumOf { it.dt }
+        startState = periods[0].startState
+        endState = periods[periods.size-1].endState
+    }
 
-        val deccelTime = (endState.v - constraints.cruiseVel).absoluteValue / constraints.cruiseVel
-        val deccelDx = endState.v * -deccelTime + 0.5 * constraints.deccel * deccelTime.pow(2)
-
-        cruisePeriod = MotionPeriod(
-            accelPeriod.endState.copy(v = constraints.cruiseVel, a = 0.0),
-            (endState.x - startState.x - accelPeriod.dx - deccelDx) / constraints.cruiseVel
-        )
-
-        deccelPeriod = MotionPeriod(
-            cruisePeriod.endState.copy(a = -constraints.deccel),
-            deccelTime
-        )
-
-        if (cruisePeriod.dt < 0.0) {
-            cruisePeriod.dt = 0.0
-            accelPeriod = MotionPeriod(
-                accelPeriod.startState.copy(a = absMin(accelPeriod.startState.a, deccelPeriod.startState.a)),
-                sqrt(endState.x.absoluteValue / accelPeriod.startState.a)
+    companion object {
+        fun generateFromConstraints(startState: MotionState, endState: MotionState, constraints: MotionConstraints): MotionProfile {
+            var accelPeriod = MotionPeriod(
+                startState.copy(a = constraints.accel),
+                ((constraints.cruiseVel - startState.v) / constraints.accel).absoluteValue
             )
-            deccelPeriod = accelPeriod.copy(startState = accelPeriod.endState.copy(a = -accelPeriod.startState.a))
-        }
 
-        duration = accelPeriod.dt + cruisePeriod.dt + deccelPeriod.dt
-        periods = listOf(accelPeriod, cruisePeriod, deccelPeriod)
+            val deccelTime = (endState.v - constraints.cruiseVel).absoluteValue / constraints.cruiseVel
+            val deccelDx = endState.v * -deccelTime + 0.5 * constraints.deccel * deccelTime.pow(2)
+
+            val cruisePeriod = MotionPeriod(
+                accelPeriod.endState.copy(v = constraints.cruiseVel, a = 0.0),
+                (endState.x - startState.x - accelPeriod.dx - deccelDx) / constraints.cruiseVel
+            )
+
+            var deccelPeriod = MotionPeriod(
+                cruisePeriod.endState.copy(a = -constraints.deccel),
+                deccelTime
+            )
+
+            if (cruisePeriod.dt < 0.0) {
+                cruisePeriod.dt = 0.0
+                accelPeriod = MotionPeriod(
+                    accelPeriod.startState.copy(a = absMin(accelPeriod.startState.a, deccelPeriod.startState.a)),
+                    sqrt(endState.x.absoluteValue / accelPeriod.startState.a)
+                )
+                deccelPeriod = accelPeriod.copy(startState = accelPeriod.endState.copy(a = -accelPeriod.startState.a))
+            }
+
+            return MotionProfile(accelPeriod, cruisePeriod, deccelPeriod)
+        }
     }
 }
+
