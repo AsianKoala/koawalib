@@ -296,8 +296,8 @@ class Spline(
     // our arc array and finding what iteration it is at
     // ok this is a shitty name but like... is it really?
     private fun invArc(s: Double): Double {
-        if(s < 0) return 0.0
-        if(s > length) return 1.0
+        if(s <= 0) return 0.0
+        if(s >= length) return 1.0
         var arcLengthSum = 0.0
         var its = 0
         while(arcLengthSum < s) {
@@ -406,8 +406,8 @@ class Path(
     val length get() = _length
 
     private fun find(s: Double): Pair<Double, Spline> {
-        if(s < 0.0) return Pair(0.0, splines[0])
-        if(s > _length) return Pair(_length, splines[splines.size-1])
+        if(s <= 0.0) return Pair(0.0, splines[0])
+        if(s >= _length) return Pair(_length, splines[splines.size-1])
         var accum = 0.0
         for(spline in splines) {
             if(accum + spline.length > s) {
