@@ -399,17 +399,25 @@ class Spline(
     }
 }
 
+interface PathI {
+    val start: Pose
+    val end: Pose
+    val length: Double
+    fun project(p: Vector, pGuess: Double): Double
+    operator fun get(s: Double, n: Int = 0): Pose
+}
+
 class Path(
     vararg poses: Pose
-) {
+) : PathI {
     private var _length = 0.0
-    val splines = mutableListOf<Spline>()
+    private val splines = mutableListOf<Spline>()
 
-    val start get() = this[0.0]
-    val end get() = this[_length]
-    val length get() = _length
+    override val start get() = this[0.0]
+    override val end get() = this[_length]
+    override val length get() = _length
 
-    operator fun get(s: Double, n: Int = 0): Pose {
+    override operator fun get(s: Double, n: Int): Pose {
         if(s <= 0.0) return splines[0][0.0, n]
         if(s >= _length) return splines[splines.size-1][splines[splines.size-1].length, n]
         splines.fold(0.0) { acc, spline ->
@@ -431,7 +439,7 @@ class Path(
     if not, then add dot product to s
     since dot product literally just finds the amount vec a is parallel to vec b
      */
-    fun project(p: Vector, pGuess: Double) = (1..10).fold(pGuess) { s, _ ->  clamp(s + (p - get(s).vec).dot(get(s, 1).vec), 0.0, length) }
+    override fun project(p: Vector, pGuess: Double) = (1..10).fold(pGuess) { s, _ ->  clamp(s + (p - get(s).vec).dot(get(s, 1).vec), 0.0, length) }
 
     init {
         var curr = poses[0]
@@ -450,3 +458,4 @@ class Path(
         }
     }
 }
+

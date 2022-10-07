@@ -32,7 +32,7 @@ class MotionProfile(vararg val periods: MotionPeriod) {
     }
 
     companion object {
-        fun generateFromConstraints(startState: MotionState, endState: MotionState, constraints: MotionConstraints): MotionProfile {
+        fun generateTrapezoidal(startState: MotionState, endState: MotionState, constraints: MotionConstraints): MotionProfile {
             var accelPeriod = MotionPeriod(
                 startState.copy(a = constraints.accel),
                 ((constraints.cruiseVel - startState.v) / constraints.accel).absoluteValue

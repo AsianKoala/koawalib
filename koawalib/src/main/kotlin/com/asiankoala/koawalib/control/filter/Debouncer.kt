@@ -1,6 +1,6 @@
 package com.asiankoala.koawalib.control.filter
 
-import com.asiankoala.koawalib.util.NanoClock
+import com.asiankoala.koawalib.util.Clock
 
 /**
  * @see https://github.com/wpilibsuite/allwpilib/blob/main/wpimath/src/main/java/edu/wpi/first/math/filter/Debouncer.java
@@ -21,11 +21,11 @@ class Debouncer @JvmOverloads constructor(
     private var m_baseline = false
     private var m_prevTimeSeconds = 0.0
     private fun resetTimer() {
-        m_prevTimeSeconds = NanoClock.system().seconds()
+        m_prevTimeSeconds = Clock.seconds
     }
 
     private fun hasElapsed(): Boolean {
-        return NanoClock.system().seconds() - m_prevTimeSeconds >= m_debounceTimeSeconds
+        return Clock.seconds - m_prevTimeSeconds >= m_debounceTimeSeconds
     }
 
     /**

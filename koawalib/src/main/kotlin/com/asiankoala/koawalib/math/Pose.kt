@@ -12,9 +12,7 @@ data class Pose(
     val y: Double = 0.0,
     val heading: Double = 0.0
 ) {
-    constructor(x: Int, y: Int, h: Int) : this(x.d, y.d, h.d)
     constructor(p: Vector, h: Double) : this(p.x, p.y, h)
-    constructor(l: List<Double>) : this(l[0], l[1], l[2])
 
     val vec get() = Vector(x, y)
 

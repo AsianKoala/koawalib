@@ -1,19 +1,18 @@
 package com.asiankoala.koawalib.logger
 
-import com.asiankoala.koawalib.util.NanoClock
+import com.asiankoala.koawalib.util.Clock
 
 class TimeInterval {
     private var start = 0.0
     private var sum = 0.0
     private var its = 0
-    private val clock = NanoClock.system()
 
     fun start() {
-        start = clock.milliseconds()
+        start = Clock.milliseconds
     }
 
     fun end() {
-        val dt = clock.milliseconds() - start
+        val dt = Clock.milliseconds - start
         sum += dt
         its += 1
     }

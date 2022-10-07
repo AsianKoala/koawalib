@@ -95,6 +95,6 @@ class MPGVFController(
 
     init {
         require(kS <= 1.0)
-        profile = MotionProfile(MotionState(), MotionState(path.length), constraints)
+        profile = MotionProfile.generateTrapezoidal(MotionState(), MotionState(path.length), constraints)
     }
 }
