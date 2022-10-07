@@ -1,7 +1,7 @@
 package com.asiankoala.koawalib.control.filter
 
 import com.asiankoala.koawalib.math.clamp
-import com.asiankoala.koawalib.util.NanoClock
+import com.asiankoala.koawalib.util.Clock
 
 /**
  * A class that limits the rate of change of an input value. Useful for implementing voltage,
@@ -14,7 +14,7 @@ class SlewRateLimiter @JvmOverloads constructor(
     private val m_rateLimit: Double,
     private var m_prevVal: Double = 0.0
 ) {
-    private var m_prevTime: Double = NanoClock.system().seconds()
+    private var m_prevTime: Double = Clock.seconds
 
     /**
      * Filters the input to limit its slew rate.
@@ -23,7 +23,7 @@ class SlewRateLimiter @JvmOverloads constructor(
      * @return The filtered value, which will not change faster than the slew rate.
      */
     fun calculate(input: Double): Double {
-        val currentTime: Double = NanoClock.system().seconds()
+        val currentTime: Double = Clock.seconds
         val elapsedTime = currentTime - m_prevTime
         m_prevVal += clamp(
             input - m_prevVal,
@@ -41,6 +41,6 @@ class SlewRateLimiter @JvmOverloads constructor(
      */
     fun reset(value: Double) {
         m_prevVal = value
-        m_prevTime = NanoClock.system().seconds()
+        m_prevTime = Clock.seconds
     }
 }

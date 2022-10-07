@@ -2,7 +2,7 @@ package com.asiankoala.koawalib.hardware.motor
 
 import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.math.estimateDerivative
-import com.asiankoala.koawalib.util.NanoClock
+import com.asiankoala.koawalib.util.Clock
 import com.qualcomm.robotcore.util.MovingStatistics
 import kotlin.math.abs
 import kotlin.math.sign
@@ -13,7 +13,6 @@ class KEncoder(
     private val ticksPerUnit: Double,
     private val isRevEncoder: Boolean = false
 ) {
-    private var clock = NanoClock.system()
     private var offset = 0.0
     private var multiplier = 1.0
     private var _pos = 0.0
@@ -65,8 +64,8 @@ class KEncoder(
     private fun internalReset() {
         _pos = motor.rawMotorPosition * multiplier
         prevPos.clear()
-        prevPos.add(Pair(clock.seconds(), _pos))
-        prevPos.add(Pair(clock.seconds() - 1e6, _pos))
+        prevPos.add(Pair(Clock.seconds, _pos))
+        prevPos.add(Pair(Clock.seconds - 1e6, _pos))
         prevVel.clear()
         velStats.clear()
         accelStats.clear()
@@ -82,7 +81,7 @@ class KEncoder(
 
     internal fun update() {
         if (!disabled) {
-            val seconds = clock.seconds()
+            val seconds = Clock.seconds
             _pos = motor.rawMotorPosition * multiplier
             prevPos.add(Pair(seconds, _pos))
             attemptVelUpdate()

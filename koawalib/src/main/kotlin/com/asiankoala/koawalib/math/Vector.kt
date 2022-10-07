@@ -13,13 +13,9 @@ data class Vector(
     val x: Double = 0.0,
     val y: Double = 0.0
 ) {
-    constructor(x: Int, y: Int) : this(x.d, y.d)
-    constructor(v: Vector) : this(v.x, v.y)
-
     val norm get() = hypot(x, y)
     val normSq get() = x.pow(2) + y.pow(2)
     val angle get() = atan2(y, x)
-    val asList get() = listOf(x, y)
     val unit get() = this / norm
 
     infix fun dot(other: Vector): Double = other.x * this.x + other.y * this.y

@@ -26,7 +26,7 @@ internal class MotionProfileMotorController(
         controller.reset()
         timer.reset()
         targetState = requestedState
-        profile = MotionProfile(currentState, targetState, constraints)
+        profile = MotionProfile.generateTrapezoidal(currentState, targetState, constraints)
         Logger.logInfo("created profile with startState", currentState)
         Logger.logInfo("created profile with endState", targetState)
     }

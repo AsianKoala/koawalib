@@ -5,7 +5,7 @@ import com.asiankoala.koawalib.hardware.sensor.IMUUtil.remapAxes
 import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.math.angleWrap
 import com.asiankoala.koawalib.math.d
-import com.asiankoala.koawalib.util.NanoClock
+import com.asiankoala.koawalib.util.Clock
 import com.asiankoala.koawalib.util.Periodic
 import com.qualcomm.hardware.bosch.BNO055IMU
 import com.qualcomm.hardware.bosch.BNO055IMUImpl
@@ -23,8 +23,7 @@ class KIMU(name: String, axesOrder: AxesOrder, axesSigns: AxesSigns) : KDevice<B
     private val pitchOffset: Double
 
     private var isReadFresh = false
-    private var clock = NanoClock.system()
-    private var lastUpdateTime = clock.seconds()
+    private var lastUpdateTime = Clock.seconds
     private var lastHeading = 0.0
     private var lastPitch = 0.0
     private var lastRoll = 0.0
@@ -58,7 +57,7 @@ class KIMU(name: String, axesOrder: AxesOrder, axesSigns: AxesSigns) : KDevice<B
             pitchDelta = (_pitch - lastPitch).angleWrap
             rollDelta = (_roll - lastRoll).angleWrap
 
-            val currTime = clock.seconds()
+            val currTime = Clock.seconds
             val dt = currTime - lastUpdateTime
             _headingVel = (_heading - lastHeading) / dt
             _pitchVel = (_pitch - lastPitch) / dt

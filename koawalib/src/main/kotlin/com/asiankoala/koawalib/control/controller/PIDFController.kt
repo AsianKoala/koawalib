@@ -1,7 +1,7 @@
 package com.asiankoala.koawalib.control.controller
 
 import com.asiankoala.koawalib.math.epsilonEquals
-import com.asiankoala.koawalib.util.NanoClock
+import com.asiankoala.koawalib.util.Clock
 import kotlin.math.abs
 import kotlin.math.sign
 
@@ -15,7 +15,6 @@ class PIDFController constructor(
 ) {
     private var errorSum: Double = 0.0
     private var lastUpdateTimestamp: Double = Double.NaN
-    private val clock: NanoClock = NanoClock.system()
 
     private var inputBounded: Boolean = false
     private var minInput: Double = 0.0
@@ -72,7 +71,7 @@ class PIDFController constructor(
         measuredPosition: Double,
         measuredVelocity: Double? = null
     ): Double {
-        val currentTimestamp = clock.seconds()
+        val currentTimestamp = Clock.seconds
         val error = getPositionError(measuredPosition)
         return if (lastUpdateTimestamp.isNaN()) {
             lastError = error
