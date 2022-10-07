@@ -8,15 +8,13 @@ import com.asiankoala.koawalib.math.radians
 object Testing {
     @JvmStatic
     fun main(args: Array<String>) {
-        val t = Path(Pose(),
+        val t = Path(
+            Pose(),
             Pose(20.0, 20.0, 90.0.radians),
             Pose(36.0, 36.0, 0.0)
         )
-//        for(i in 0..t.length.toInt()) {
-//            println(t[i.d])
-//        }
-
-        println(t[0.0])
-        println(t[t.length])
+        for (i in 0..t.length.toInt()) {
+            println(t[i.d])
+        }
     }
 }

@@ -94,7 +94,7 @@ class Quintic(
 /*
 see https://www.youtube.com/watch?v=unWguclP-Ds&list=PLC8FC40C714F5E60F&index=2
 and https://pomax.github.io/bezierinfo/#arclength
-arc length is int 0->1 sqrt(f_x(t)^2 + f_y(t)^2) dt of course
+arc length is int 0->1 ||r'(t)|| dt of course
 Gaussian quadrature is derived on the interval [-1,1]
 but changing it to [0,1] is arbitrarily easy
  */
@@ -128,7 +128,7 @@ class GaussianQuadrature(
     init {
         for(coefficient in table.list) {
             val t = 0.5 * (1.0 + coefficient.abscissa) // used for converting from [-1,1] to [0,1]
-            length += curve.tGet(t, 1).norm * coefficient.weight
+            length += curve.rt(t, 1).norm * coefficient.weight
         }
         length *= 0.5
     }
@@ -238,6 +238,8 @@ class Arc(
     }
 
     init {
+        // ok manually calculating matrix determinants and inverses is hella cringe lmfao
+        // should prolly just use apache mat lib instead
         val coeffMatrix = listOf(
             listOf(2 * (start.x - end.x), 2 * (start.y - end.y)),
             listOf(2 * (start.x - mid.x), 2 * (start.y - mid.y))
@@ -277,7 +279,7 @@ class Spline(
     private val arcs = mutableListOf<Arc>()
     val length: Double get() = _length
 
-    fun tGet(t: Double, n: Int = 0): Vector {
+    fun rt(t: Double, n: Int = 0): Vector {
         val xt = x[t]
         val yt = y[t]
         return when(n) {
@@ -289,7 +291,7 @@ class Spline(
     }
 
     // from multi: k = (a x v) / |v|^3
-    fun getK(t: Double) = tGet(t, 2).cross(tGet(t, 1)) / tGet(t, 1).norm.pow(3)
+    fun getK(t: Double) = rt(t, 2).cross(rt(t, 1)) / rt(t, 1).norm.pow(3)
 
     // now that we have our spline parametrized into arcs,
     // we can find the corresponding t with s by iterating across
@@ -306,6 +308,10 @@ class Spline(
     }
 
 
+    // r(s) = r(s(t))
+    // r'(s) = r'(s(t))*s'(t)
+    // r''(s) = r''(s(t))s'(t)s'(t) + s''(t)r'(s(t))
+    // r''(s) = r''(t) * s'(t)^2 + s''(t) * r'(t)
     // s'(t) = d/dt int 0->t |r'(u)| du
     // = |r'(t)|
     // expand |r'(t)|
@@ -320,28 +326,29 @@ class Spline(
     // = 2 * tDeriv dot tDeriv2
     // and that denom is just s'(t)
     // s''(t) = (2 * tDeriv dot tDeriv2) / sDeriv(t)
+    // r''(s) = r''(t) * s'(t)^2 + s''(t) * r'(t)
     // i dont want to take another fucking derivative
-    private fun sDeriv(t: Double, n: Int = 1): Double {
+    private fun dsdt(t: Double, n: Int = 1): Double {
         return when(n) {
-            1 -> tGet(t, 1).norm
-            2 -> (2 * tGet(t, 1).dot(tGet(t, 2))) / sDeriv(t) // recursion??? :face_with_raised_eyebrow:
+            1 -> rt(t, 1).norm
+            2 -> (2 * rt(t, 1).dot(rt(t, 2))) / dsdt(t) // recursion??? :face_with_raised_eyebrow:
             else -> throw Exception("fuck you im not adding more derivatives :rage:")
         }
     }
 
-    private fun deriv(s: Double, n: Int = 1): Vector {
+    private fun drds(s: Double, n: Int = 1): Vector {
         val t = invArc(s)
         return when(n) {
-            1 -> this.tGet(t, 1).unit
-            2 -> this.tGet(t, 2) * sDeriv(t).pow(2) + tGet(t, 1) * sDeriv(t, 2)
+            1 -> rt(t, 1).unit
+            2 -> rt(t, 2) * dsdt(t).pow(2) + rt(t, 1) * dsdt(t, 2)
             else -> throw Exception("fuck you im not adding more derivatives :rage:")
         }
     }
 
     operator fun get(s: Double, n: Int = 0): Pose {
         return when (n) {
-            0 -> Pose(tGet(invArc(s)), deriv(s).angle)
-            1 -> Pose(deriv(s), deriv(s).cross(deriv(s, 2)))
+            0 -> Pose(rt(invArc(s)), drds(s).angle)
+            1 -> Pose(drds(s), drds(s).cross(drds(s, 2)))
             else -> throw Exception("fuck you im not adding more derivatives :rage:")
         }
     }
@@ -359,9 +366,9 @@ class Spline(
             val curr = tParams.removeFirst()
             val midT = (curr.first + curr.second) / 2.0
 
-            val startV = tGet(curr.first)
-            val endV  = tGet(curr.second)
-            val midV = tGet(midT)
+            val startV = rt(curr.first)
+            val endV  = rt(curr.second)
+            val midV = rt(midT)
 
             val startK = getK(curr.first)
             val endK = getK(curr.second)
@@ -386,6 +393,8 @@ class Spline(
             }
         }
 
+        // we want to make sure that t is always increasing in this set (array)
+        // therefore it will be possible to interpolate when invArc
         arcs.sortBy { it.tStart }
     }
 }
@@ -415,7 +424,7 @@ class Path(
     /*
     yoinked this from rr
     basically the way this works is
-    take rVec from pose to proj (proj = get(s))
+    take rVec from pose to projection
     this is ideally normal to the curve
     check if its normal with by dot product with tangent vec
     ofc if result is 0, its normal (and therefore the correct projection)
@@ -426,7 +435,7 @@ class Path(
 
     init {
         var curr = poses[0]
-        for(target in poses) {
+        for(target in poses.slice(1 until poses.size)) {
             val cv = curr.vec
             val tv = target.vec
             val r = cv.dist(tv)
