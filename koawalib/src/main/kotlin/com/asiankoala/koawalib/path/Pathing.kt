@@ -298,17 +298,9 @@ class Spline(
     private fun invArc(s: Double): Double {
         if(s <= 0) return 0.0
         if(s >= length) return 1.0
-        var arcLengthSum = 0.0
-        var its = 0
-        while(arcLengthSum < s) {
-            val workingArc = arcs[its]
-            if(arcLengthSum + workingArc.length > s) {
-                val ds = arcLengthSum - s
-                val t = workingArc.interpolateSAlongT(ds)
-                return workingArc.interpolateSAlongT(ds)
-            }
-            arcLengthSum += workingArc.length
-            its++
+        arcs.fold(0.0) { acc, arc ->
+            if(acc + arc.length > s) return arc.interpolateSAlongT(acc - s)
+            acc + arc.length
         }
         throw Exception("i think ur pretty fucking bad a coding neil")
     }
@@ -354,6 +346,11 @@ class Spline(
         }
     }
 
+    override fun toString(): String {
+        return x.toString() + "\n" + y.toString()
+    }
+
+
     init {
         val tParams = ArrayDeque<Pair<Double, Double>>()
         tParams.add(Pair(0.0, 1.0))
@@ -368,12 +365,11 @@ class Spline(
 
             val startK = getK(curr.first)
             val endK = getK(curr.second)
-            val dk = (endK - startK).absoluteValue
             val arc = Arc(startV, midV, endV)
             // we want to make our arcs as linear?ish as possible to have
             // a more accurate interpolation when param from s -> t
             // might want to try adjusting 0.01 for curve or 1.0 for arc length later
-            val subdivide = dk > 0.01 || arc.length > 1.0
+            val subdivide = (endK - startK).absoluteValue > 0.01 || arc.length > 1.0
             if(subdivide) {
                 tParams.add(Pair(midT, curr.second))
                 tParams.add(Pair(curr.first, midT))
@@ -395,7 +391,6 @@ class Spline(
 }
 
 class Path(
-    start: Pose,
     vararg poses: Pose
 ) {
     private var _length = 0.0
@@ -405,20 +400,17 @@ class Path(
     val end get() = this[_length]
     val length get() = _length
 
-    private fun find(s: Double): Pair<Double, Spline> {
-        if(s <= 0.0) return Pair(0.0, splines[0])
-        if(s >= _length) return Pair(_length, splines[splines.size-1])
-        var accum = 0.0
-        for(spline in splines) {
-            if(accum + spline.length > s) {
-                return Pair(s - accum, spline)
+    operator fun get(s: Double, n: Int = 0): Pose {
+        if(s <= 0.0) return splines[0][0.0, n]
+        if(s >= _length) return splines[splines.size-1][splines[splines.size-1].length, n]
+        splines.fold(0.0) { acc, spline ->
+            if(acc + spline.length > s) {
+                return spline[s - acc, n]
             }
-            accum += spline.length
+            acc + spline.length
         }
-        throw Exception("couldn't find shit bozo")
+        throw Exception("fuck you")
     }
-
-    operator fun get(s: Double, n: Int = 0) = find(s).second[s, n]
 
     /*
     yoinked this from rr
@@ -426,14 +418,14 @@ class Path(
     take rVec from pose to proj (proj = get(s))
     this is ideally normal to the curve
     check if its normal with by dot product with tangent vec
-    ofc result is 0, its normal (and therefore the correct projection)
+    ofc if result is 0, its normal (and therefore the correct projection)
     if not, then add dot product to s
     since dot product literally just finds the amount vec a is parallel to vec b
      */
     fun project(p: Vector, pGuess: Double) = (1..10).fold(pGuess) { s, _ ->  clamp(s + (p - get(s).vec).dot(get(s, 1).vec), 0.0, length) }
 
     init {
-        var curr = start
+        var curr = poses[0]
         for(target in poses) {
             val cv = curr.vec
             val tv = target.vec
