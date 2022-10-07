@@ -10,6 +10,8 @@ import com.asiankoala.koawalib.control.profile.MotionProfile
 import com.asiankoala.koawalib.control.profile.MotionState
 import com.qualcomm.robotcore.util.ElapsedTime
 import kotlin.math.min
+import kotlin.math.PI
+import kotlin.math.sign
 
 /**
  *  Guided Vector Field follower
@@ -32,26 +34,56 @@ import kotlin.math.min
  *  its half-assed
  */
 class MPGVFController(
-    path: Path,
-    kN: Double,
-    kOmega: Double,
+    private val path: Path,
+    private val kN: Double,
+    private val kOmega: Double,
     private val kF: Double,
     private val kS: Double,
     private val constraints: MotionConstraints,
-    epsilon: Double,
-    errorMap: (Double) -> Double = { it },
-) : GVFController(path, kN, kOmega, epsilon, errorMap) {
+    private val epsilon: Double,
+    private val errorMap: (Double) -> Double = { it },
+) {
+    var isFinished = false
+        private set
+
     private val timer = ElapsedTime()
     private val profile: MotionProfile
 
-    override fun headingControl(vel: Speeds): Pair<Double, Double> {
+    private var pose: Pose = Pose()
+    private var s: Double = 0.0
+    private var gvfVec = Vector()
+    private var tangent = Vector()
+    private var headingResult = Pair(0.0, 0.0)
+    private var vectorResult = Vector()
+
+    fun update(currPose: Pose): Speeds {
+        pose = currPose
+        s = path.project(pose.vec, s)
+        gvfVec = gvfVecAt(pose, s).unit
+        headingResult = headingControl()
+        vectorResult = vectorControl()
+        isFinished = path.length - s < epsilon && pose.vec.dist(path.end.vec) < epsilon
+        val speeds = Speeds()
+        speeds.setFieldCentric(Pose(vectorResult, headingResult.first))
+        return speeds
+    }
+
+    private fun gvfVecAt(currPose: Pose, currS: Double): Vector {
+        tangent = path[currS, 1].vec
+        val normal = tangent.rotate(PI / 2.0)
+        val displacementVec = path[currS].vec - currPose.vec
+        val error = displacementVec.norm * (displacementVec cross tangent).sign
+        return tangent - normal * kN * errorMap.invoke(error)
+    }
+
+    private fun headingControl(): Pair<Double, Double> {
         val error = (tangent.angle - pose.heading).angleWrap.degrees
         val result = kOmega * error
         return Pair(result, error)
     }
 
-    override fun vectorControl(vel: Speeds): Vector {
-        var raw = gvfVec * kS * min(1.0, (path.length - s) / kF) // this is <= 1.0 normalized
+    private fun vectorControl(): Vector {
+        var raw = gvfVec * kS // this is <= 1.0 normalized
         // so im going to assume 1.0 power is just max velocity constraint
         // honestly this is pretty shit and cringe im going to change it
         // when im free from tj workload feelsbadman
@@ -59,6 +91,7 @@ class MPGVFController(
         raw *= scaled
         return raw
     }
+
 
     init {
         require(kS <= 1.0)
