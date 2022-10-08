@@ -29,8 +29,6 @@ of course, credit given to rr for the idea of using splines for paths, as well a
 data class DifferentiablePoint(
     val zero: Double = 0.0,
     val first: Double = 0.0,
-    val second: Double = 0.0,
-    val third: Double = 0.0
 )
 
 class DifferentiablePoint2d(zero: Vector, first: Vector) {
@@ -47,6 +45,30 @@ abstract class DifferentiableFunction {
     abstract operator fun get(t: Double): DifferentiablePoint
 }
 
+
+// in the form ax^3 + bx^2 + cx + d
+// created from specifying the start point and derivative
+// https://cdn.discordapp.com/attachments/770810258322227231/1028432435236581386/unknown.png
+// enforces c^2 because i force curvature at begin/end of spline to be 0.
+// class Cubic(
+//     start: DifferentiablePoint,
+//     end: DifferentiablePoint
+// ) : DifferentiableFunction() {
+//     private val coeffVec = mutableListOf(0.0, 0.0, 0.0, 0.0)
+//
+//     override operator fun get(t: Double): DifferentiablePoint {
+//         return DifferentiablePoint(
+//             coeffVec[0] * t.pow(3) + coeffVec[1] * t.pow(2) + coeffVec[2] * t + coeffVec[3],
+//             3 * coeffVec[0] * t.pow(2) + 2 * coeffVec[1] * t + coeffVec[2],
+//         )
+//     }
+//
+//     override fun toString(): String {
+//         return "${coeffVec[0]}t^3 + ${coeffVec[1]}^2 + ${coeffVec[2]}t + ${coeffVec[3]}"
+//     }
+// }
+
+// in the form ax^5 + bx^4 + cx^3 + dx^2 + ex + f
 class Quintic(
     start: DifferentiablePoint,
     end: DifferentiablePoint
@@ -59,7 +81,6 @@ class Quintic(
                     coeffVec[3] * t.pow(2) + coeffVec[4] * t + coeffVec[5],
             5 * coeffVec[0] * t.pow(4) + 4 * coeffVec[1] * t.pow(3) + 3 * coeffVec[2] * t.pow(2) +
                     2 * coeffVec[3] * t + coeffVec[4],
-            20 * coeffVec[0] * t.pow(3) + 12 * coeffVec[1] * t.pow(2) + 6 * coeffVec[2] * t + 2 * coeffVec[3]
         )
     }
 
@@ -91,22 +112,24 @@ class Quintic(
         // 2 = w/d
         // 2d = w
         // d = w/2
-        coeffVec[3] = start.second / 2.0
+        // coeffVec[3] = start.second / 2.0
+        coeffVec[3] = 0.0
+
 
         // 2 = -(20u + 12v + 3w - 20x + 8y - z) / c
         // c = -(20u + 12v + 3w - 20x + 8y - z) / 2
-        coeffVec[2] = -(20 * start.zero + 12 * start.first + 3 * start.second
-                - 20 * end.zero + 8 * end.first - end.second) / 2.0
+        coeffVec[2] = -(20 * start.zero + 12 * start.first + 3 * 0.0
+                - 20 * end.zero + 8 * end.first) / 2.0
 
         // 2 = (30u + 16v + 3w -30x + 14y - 2z) / b
         // b = (30u + 16v + 3w -30x + 14y - 2z) / 2
-        coeffVec[1] = (30 * start.zero + 16 * start.first + 3 * start.second
-                - 30 * end.zero + 14 * end.first - 2 * end.second) / 2.0
+        coeffVec[1] = (30 * start.zero + 16 * start.first + 3
+                - 30 * end.zero + 14 * end.first) / 2.0
 
         // 2 = -(12u + 6v + w - 12x + 6y -z) / a
         // a = -(12u + 6v + w - 12x + 6y -z) / 2
-        coeffVec[0] = -(12 * start.zero + 6 * start.first + start.second
-                - 12 * end.zero + 6 * end.first - end.second) / 2.0
+        coeffVec[0] = -(12 * start.zero + 6 * start.first
+                - 12 * end.zero + 6 * end.first) / 2.0
     }
 }
 
@@ -303,8 +326,7 @@ class Spline(
         val yt = y[t]
         return when(n) {
             1 -> Vector(xt.first, yt.first)
-            2 -> Vector(xt.second, yt.second)
-            3 -> Vector(xt.third, yt.third)
+            // 2 -> Vector(xt.second, yt.second)
             else -> Vector(xt.zero, yt.zero)
         }
     }
@@ -347,10 +369,15 @@ class Spline(
     // s''(t) = (2 * tDeriv dot tDeriv2) / sDeriv(t)
     // r''(s) = r''(t) * s'(t)^2 + s''(t) * r'(t)
     // i dont want to take another fucking derivative
+    // note 10/08: i think i just did all of this fuckign wrong and literally
+    // nothing works LMFAO...
+    // well.. i mean at least like at least first derivatives work somewhat
+    // but i think all the arc parametrization i did is wrong
     private fun dsdt(t: Double, n: Int = 1): Double {
         return when(n) {
-            1 -> rt(t, 1).norm
-            2 -> (2 * rt(t, 1).dot(rt(t, 2))) / dsdt(t) // recursion??? :face_with_raised_eyebrow:
+            1 -> 1.0 / rt(t, 1).norm // wait am i fucking retarded
+            // 2 -> (2 * rt(t, 1).dot(rt(t, 2))) / dsdt(t) // recursion??? :face_with_raised_eyebrow:
+            2 -> TODO()
             else -> throw Exception("fuck you im not adding more derivatives :rage:")
         }
     }
@@ -359,7 +386,8 @@ class Spline(
         val t = invArc(s)
         return when(n) {
             1 -> rt(t, 1).unit
-            2 -> rt(t, 2) * dsdt(t).pow(2) + rt(t, 1) * dsdt(t, 2)
+            // 2 -> (rt(t, 2) * dsdt(t).pow(2)) + (rt(t, 1) * dsdt(t, 2))
+            2 -> TODO()
             else -> throw Exception("fuck you im not adding more derivatives :rage:")
         }
     }
@@ -368,6 +396,7 @@ class Spline(
         return when (n) {
             0 -> Pose(rt(invArc(s)), drds(s).angle)
             1 -> Pose(drds(s), drds(s).cross(drds(s, 2)))
+            2 -> Pose(drds(s, 2), 0.0)
             else -> throw Exception("fuck you im not adding more derivatives :rage:")
         }
     }
@@ -430,7 +459,7 @@ class Path(
     vararg poses: Pose
 ) : PathI {
     private var _length = 0.0
-    private val splines = mutableListOf<Spline>()
+    val splines = mutableListOf<Spline>()
 
     override val start get() = this[0.0]
     override val end get() = this[_length]

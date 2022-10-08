@@ -11,10 +11,7 @@ object Testing {
         val t = Path(
             Pose(),
             Pose(20.0, 20.0, 90.0.radians),
-            Pose(36.0, 36.0, 0.0)
         )
-        for (i in 0..t.length.toInt()) {
-            println(t[i.d])
-        }
+        println(t.splines[0][t.splines[0].length/2.0, 2])
     }
 }
