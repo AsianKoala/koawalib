@@ -279,7 +279,7 @@ class Arc(
 
     fun getCorrectCurvature(s: Double): Double = curvature + s * dkds
     fun linearlyInterpolate(s: Double) = ref + (end - start) * (s / length)
-    fun interpolateSAlongT(s: Double) = tStart + dt * ((s + length * 2) / length)
+    fun interpolateSAlongT(s: Double) = tStart + dt * (s / length)
 
     fun get(s: Double): Vector {
         return if(curvature != 0.0) {
@@ -394,6 +394,7 @@ interface DifferentiableCurve {
 
     private fun rs(s: Double, n: Int = 0): Vector {
         val t = invArc(s)
+        println(t)
         return when(n) {
             0 -> rt(t)
             1 -> rt(t, 1).unit
@@ -440,11 +441,11 @@ class Spline(
     }
 
     init {
-        val tParams = ArrayDeque<Pair<Double, Double>>()
-        tParams.add(Pair(0.0, 1.0))
+        val tPairs = ArrayDeque<Pair<Double, Double>>()
+        tPairs.add(Pair(0.0, 1.0))
         var its = 0
-        while(tParams.isNotEmpty()) {
-            val curr = tParams.removeFirst()
+        while(tPairs.isNotEmpty()) {
+            val curr = tPairs.removeFirst()
             val midT = (curr.first + curr.second) / 2.0
 
             val startV = rt(curr.first)
@@ -455,13 +456,15 @@ class Spline(
             val startK = rt(curr.first, 2).cross(rt(curr.first, 1)) / rt(curr.first, 1).norm.pow(3)
             val endK = rt(curr.second, 2).cross(rt(curr.second, 1)) / rt(curr.second, 1).norm.pow(3)
             val arc = Arc(startV, midV, endV)
-            // we want to make our arcs as linear?ish as possible to have
+            // we want to make our approximations as circle-y as possible, so 
+            // the arc approximation will be more accurate
             // a more accurate interpolation when param from s -> t
             // might want to try adjusting 0.01 for curve or 1.0 for arc length later
-            val subdivide = (endK - startK).absoluteValue > 0.01 || arc.length > 1.0
+            // update 10/09/22: it seems limiting curvature works a lot better than length
+            val subdivide = (endK - startK).absoluteValue > 0.005 || arc.length > 0.1
             if(subdivide) {
-                tParams.add(Pair(midT, curr.second))
-                tParams.add(Pair(curr.first, midT))
+                tPairs.add(Pair(midT, curr.second))
+                tPairs.add(Pair(curr.first, midT))
             } else {
                 arc.setCurvature(startK, endK)
                 arc.setT(curr)
@@ -490,8 +493,8 @@ abstract class Path(poses: List<Pose>) {
     val end by lazy { this[length] }
 
     operator fun get(s: Double, n: Int = 0): Pose {
-        if(s <= 0.0) return curveSegments[0][0.0, n]
-        if(s >= length) return curveSegments[curveSegments.size-1][curveSegments[curveSegments.size-1].length, n]
+        if(s <= 0.0) return this[0.0, n]
+        if(s > length) return this[length - 0.0001, n] // better solution? TODO
         curveSegments.fold(0.0) { acc, spline ->
             if(acc + spline.length > s) {
                 return spline[s - acc, n]

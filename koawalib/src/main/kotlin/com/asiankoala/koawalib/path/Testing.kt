@@ -11,6 +11,6 @@ object Testing {
             Pose(20.0, 20.0, 90.0.radians),
         )
 
-        println(t.curveSegments[0][t.curveSegments[0].length / 2.0, 2])
+        println(t[t.length * 0.99])
     }
 }

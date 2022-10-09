@@ -76,10 +76,8 @@ dependencies {
     compileOnly 'org.jetbrains.lets-plot:lets-plot-kotlin-jvm:3.1.1'
     compileOnly 'org.jetbrains.lets-plot:lets-plot-image-export:2.1.0'
     implementation 'org.firstinspires.ftc:RobotCore:8.0.0'
-    implementation 'org.apache.commons:commons-math3:3.6.1'
     implementation 'org.ejml:ejml-all:0.41'
     testImplementation 'org.jetbrains.kotlin:kotlin-test'
-    implementation 'org.apache.commons:commons-math3:3.6.1'
     implementation 'com.acmerobotics.dashboard:dashboard:0.4.5'
     implementation 'com.github.Eeshwar-Krishnan:PhotonFTC:v2.0.1'
 
