@@ -472,10 +472,6 @@ class Spline(
                 _length += arc.length
                 its++
             }
-
-            if(its > 1000) {
-                throw Exception("we fucked up")
-            }
         }
 
         // we want to make sure that t is always increasing in this set (array)
