@@ -461,7 +461,7 @@ class Spline(
             // a more accurate interpolation when param from s -> t
             // might want to try adjusting 0.01 for curve or 1.0 for arc length later
             // update 10/09/22: it seems limiting curvature works a lot better than length
-            val subdivide = (endK - startK).absoluteValue > 0.005 || arc.length > 0.1
+            val subdivide = (endK - startK).absoluteValue > 0.01 || arc.length > 0.25
             if(subdivide) {
                 tPairs.add(Pair(midT, curr.second))
                 tPairs.add(Pair(curr.first, midT))
