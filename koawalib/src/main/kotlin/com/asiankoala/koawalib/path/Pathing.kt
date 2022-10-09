@@ -62,6 +62,7 @@ class Cubic(
         return DifferentiablePoint(
             coeffVec[0] * t.pow(3) + coeffVec[1] * t.pow(2) + coeffVec[2] * t + coeffVec[3],
             3 * coeffVec[0] * t.pow(2) + 2 * coeffVec[1] * t + coeffVec[2],
+            3 * coeffVec[0] * t + 2 * coeffVec[1]
         )
     }
 
@@ -111,6 +112,7 @@ class Quintic(
                     coeffVec[3] * t.pow(2) + coeffVec[4] * t + coeffVec[5],
             5 * coeffVec[0] * t.pow(4) + 4 * coeffVec[1] * t.pow(3) + 3 * coeffVec[2] * t.pow(2) +
                     2 * coeffVec[3] * t + coeffVec[4],
+            20 * coeffVec[0] * t.pow(3) + 12 * coeffVec[1] * t.pow(2) + 6 * coeffVec[2] * t + 2 * coeffVec[3]
         )
     }
 
