@@ -52,6 +52,8 @@ abstract class DifferentiableFunction {
 // created from specifying the start point and derivative
 // https://cdn.discordapp.com/attachments/770810258322227231/1028432435236581386/unknown.png
 // enforces c^2 because i force curvature at begin/end of spline to be 0.
+// thus we don't have that extra degree of freedom that quintics have,
+// but imo it doesn't matter that much
 class Cubic(
     start: DifferentiablePoint,
     end: DifferentiablePoint
@@ -71,23 +73,19 @@ class Cubic(
     }
 
     init {
-        val A = SimpleMatrix(
-            listOf(
-                doubleArrayOf(0.0, 0.0, 0.0, 1.0),
-                doubleArrayOf(0.0, 0.0, 1.0, 0.0),
-                doubleArrayOf(1.0, 1.0, 1.0, 1.0),
-                doubleArrayOf(3.0, 2.0, 1.0, 0.0)
-            ).toTypedArray()
-        )
+        val A = SimpleMatrix(4, 4, true, doubleArrayOf(
+            0.0, 0.0, 0.0, 1.0,
+            0.0, 0.0, 1.0, 0.0,
+            1.0, 1.0, 1.0, 1.0,
+            3.0, 2.0, 1.0, 0.0
+        ))
 
-        val B = SimpleMatrix(
-            listOf(
-                doubleArrayOf(start.zero),
-                doubleArrayOf(start.first),
-                doubleArrayOf(end.zero),
-                doubleArrayOf(end.first)
-            ).toTypedArray()
-        )
+        val B = SimpleMatrix(4, 1, true, doubleArrayOf(
+            start.zero,
+            start.first,
+            end.zero,
+            end.first
+        ))
 
         val x = A.solve(B)
         coeffVec = listOf(
@@ -104,7 +102,7 @@ class Quintic(
     start: DifferentiablePoint,
     end: DifferentiablePoint
 ) : DifferentiableFunction() {
-    private val coeffVec = mutableListOf(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+    private val coeffVec: List<Double>
 
     override operator fun get(t: Double): DifferentiablePoint {
         return DifferentiablePoint(
@@ -121,47 +119,33 @@ class Quintic(
     }
 
     init {
-        /**
-         * https://www.wolframalpha.com/input?i=row+echelon+form+%5B%5B0%2C0%2C0%2C0%2C0%2Cf%2Cu%5D%2C%5B0%2C0%2C0%2C0%2Ce%2C0%2Cv%5D%2C%5B0%2C0%2C0%2C2d%2C0%2C0%2Cw%5D%2C%5Ba%2Cb%2Cc%2Cd%2Ce%2Cf%2Cx%5D%2C%5B5a%2C4b%2C3c%2C2d%2C1e%2C0%2Cy%5D%2C%5B20a%2C12b%2C6c%2C2d%2C0%2C0%2Cz%5D%5D
-         * tldr to find coeffs, just shove it into row echelon form
-         * and then just calc it
-         */
+        val A = SimpleMatrix(6, 6, true, doubleArrayOf(
+            0.0, 0.0, 0.0, 0.0, 0.0, 1.0,
+            0.0, 0.0, 0.0, 0.0, 1.0, 0.0,
+            0.0, 0.0, 0.0, 2.0, 0.0, 0.0,
+            1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+            5.0, 4.0, 3.0, 2.0, 1.0, 0.0,
+            20.0, 12.0, 6.0, 2.0, 0.0, 0.0
+        ))
 
-        // coeffs: a,b,c,d,e,f
-        // u, v, w = start diff
-        // x, y, z = end diff
+        val B = SimpleMatrix(6, 1, true, doubleArrayOf(
+            start.zero,
+            start.first,
+            0.0,
+            end.zero,
+            end.first,
+            0.0
+        ))
 
-        // 2 = 2u/f
-        // 2f = 2u
-        // f = u
-        coeffVec[5] = start.zero
-
-        // 2 = 2v/e
-        // 2e = 2v
-        // e = v
-        coeffVec[4] = start.first
-
-        // 2 = w/d
-        // 2d = w
-        // d = w/2
-        // coeffVec[3] = start.second / 2.0
-        coeffVec[3] = 0.0
-
-
-        // 2 = -(20u + 12v + 3w - 20x + 8y - z) / c
-        // c = -(20u + 12v + 3w - 20x + 8y - z) / 2
-        coeffVec[2] = -(20 * start.zero + 12 * start.first + 3 * 0.0
-                - 20 * end.zero + 8 * end.first) / 2.0
-
-        // 2 = (30u + 16v + 3w -30x + 14y - 2z) / b
-        // b = (30u + 16v + 3w -30x + 14y - 2z) / 2
-        coeffVec[1] = (30 * start.zero + 16 * start.first + 3
-                - 30 * end.zero + 14 * end.first) / 2.0
-
-        // 2 = -(12u + 6v + w - 12x + 6y -z) / a
-        // a = -(12u + 6v + w - 12x + 6y -z) / 2
-        coeffVec[0] = -(12 * start.zero + 6 * start.first
-                - 12 * end.zero + 6 * end.first) / 2.0
+        val x = A.solve(B)
+        coeffVec = listOf(
+            x[0],
+            x[1],
+            x[2],
+            x[3],
+            x[4],
+            x[5]
+        )
     }
 }
 
@@ -497,18 +481,18 @@ class Spline(
     }
 }
 
-abstract class Path<T : DifferentiableCurve>(poses: List<Pose>) {
-    protected val segments = mutableListOf<T>()
+abstract class Path(poses: List<Pose>) {
+    val curveSegments = mutableListOf<DifferentiableCurve>()
     abstract fun project(p: Vector, pGuess: Double): Double
     abstract fun generatePath(poses: List<Pose>)
     abstract val length: Double
-    val start = this[0.0]
-    val end: Pose = this[length]
+    val start by lazy { this[0.0] }
+    val end by lazy { this[length] }
 
     operator fun get(s: Double, n: Int = 0): Pose {
-        if(s <= 0.0) return segments[0][0.0, n]
-        if(s >= length) return segments[segments.size-1][segments[segments.size-1].length, n]
-        segments.fold(0.0) { acc, spline ->
+        if(s <= 0.0) return curveSegments[0][0.0, n]
+        if(s >= length) return curveSegments[curveSegments.size-1][curveSegments[curveSegments.size-1].length, n]
+        curveSegments.fold(0.0) { acc, spline ->
             if(acc + spline.length > s) {
                 return spline[s - acc, n]
             }
@@ -524,7 +508,7 @@ abstract class Path<T : DifferentiableCurve>(poses: List<Pose>) {
 
 abstract class SplinePath(
     vararg poses: Pose
-) : Path<Spline>(poses.toList()) {
+) : Path(poses.toList()) {
     private var _length = 0.0
     override val length get() = _length
 
@@ -551,7 +535,7 @@ abstract class SplinePath(
             val s = DifferentiablePoint2d(cv, Vector.fromPolar(r, curr.heading))
             val e = DifferentiablePoint2d(tv, Vector.fromPolar(r, target.heading))
             val spline = createSpline(s, e)
-            segments.add(spline)
+            curveSegments.add(spline)
             _length += spline.length
             curr = target
         }
