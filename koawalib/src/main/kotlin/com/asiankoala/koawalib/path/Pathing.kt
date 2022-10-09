@@ -489,8 +489,8 @@ abstract class Path(poses: List<Pose>) {
     val end by lazy { this[length] }
 
     operator fun get(s: Double, n: Int = 0): Pose {
-        if(s <= 0.0) return this[0.0, n]
-        if(s > length) return this[length - 0.0001, n] // better solution? TODO
+        if(s <= 0.0) return curveSegments[0][0.0, n]
+        if(s > length) return this[length - 0.0001, n]
         curveSegments.fold(0.0) { acc, spline ->
             if(acc + spline.length > s) {
                 return spline[s - acc, n]
