@@ -120,7 +120,7 @@ class Quintic(
 
     init {
         val A = SimpleMatrix(6, 6, true, doubleArrayOf(
-            0.0, 0.0, 0.0, 0.0, 0.0, 1.0
+            0.0, 0.0, 0.0, 0.0, 0.0, 1.0,
             0.0, 0.0, 0.0, 0.0, 1.0, 0.0,
             0.0, 0.0, 0.0, 2.0, 0.0, 0.0,
             1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
@@ -481,18 +481,18 @@ class Spline(
     }
 }
 
-abstract class Path<T : DifferentiableCurve>(poses: List<Pose>) {
-    protected val segments = mutableListOf<T>()
+abstract class Path(poses: List<Pose>) {
+    val curveSegments = mutableListOf<DifferentiableCurve>()
     abstract fun project(p: Vector, pGuess: Double): Double
     abstract fun generatePath(poses: List<Pose>)
     abstract val length: Double
-    val start = this[0.0]
-    val end: Pose = this[length]
+    val start by lazy { this[0.0] }
+    val end by lazy { this[length] }
 
     operator fun get(s: Double, n: Int = 0): Pose {
-        if(s <= 0.0) return segments[0][0.0, n]
-        if(s >= length) return segments[segments.size-1][segments[segments.size-1].length, n]
-        segments.fold(0.0) { acc, spline ->
+        if(s <= 0.0) return curveSegments[0][0.0, n]
+        if(s >= length) return curveSegments[curveSegments.size-1][curveSegments[curveSegments.size-1].length, n]
+        curveSegments.fold(0.0) { acc, spline ->
             if(acc + spline.length > s) {
                 return spline[s - acc, n]
             }
@@ -508,7 +508,7 @@ abstract class Path<T : DifferentiableCurve>(poses: List<Pose>) {
 
 abstract class SplinePath(
     vararg poses: Pose
-) : Path<Spline>(poses.toList()) {
+) : Path(poses.toList()) {
     private var _length = 0.0
     override val length get() = _length
 
@@ -535,7 +535,7 @@ abstract class SplinePath(
             val s = DifferentiablePoint2d(cv, Vector.fromPolar(r, curr.heading))
             val e = DifferentiablePoint2d(tv, Vector.fromPolar(r, target.heading))
             val spline = createSpline(s, e)
-            segments.add(spline)
+            curveSegments.add(spline)
             _length += spline.length
             curr = target
         }
