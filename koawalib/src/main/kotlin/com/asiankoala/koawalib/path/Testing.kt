@@ -11,6 +11,6 @@ object Testing {
             Pose(20.0, 20.0, 90.0.radians),
         )
 
-        println(t[t.length * 0.99])
+        println(t[0.0, 1].vec)
     }
 }

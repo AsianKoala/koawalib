@@ -394,7 +394,6 @@ interface DifferentiableCurve {
 
     private fun rs(s: Double, n: Int = 0): Vector {
         val t = invArc(s)
-        println(t)
         return when(n) {
             0 -> rt(t)
             1 -> rt(t, 1).unit

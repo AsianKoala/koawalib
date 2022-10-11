@@ -34,7 +34,7 @@ abstract class GVFController(
     fun update(currPose: Pose, currVel: Speeds): Speeds {
         pose = currPose
         s = path.project(pose.vec, s)
-        gvfVec = gvfVecAt(pose, s).unit
+        gvfVec = gvfVecAt().unit
         headingResult = headingControl(currVel)
         vectorResult = vectorControl(currVel)
         isFinished = path.length - s < epsilon && pose.vec.dist(path.end.vec) < epsilon
@@ -43,10 +43,10 @@ abstract class GVFController(
         return speeds
     }
 
-    private fun gvfVecAt(currPose: Pose, currS: Double): Vector {
-        tangent = path[currS, 1].vec
+    private fun gvfVecAt(): Vector {
+        tangent = path[s, 1].vec
         val normal = tangent.rotate(PI / 2.0)
-        val displacementVec = path[currS].vec - currPose.vec
+        val displacementVec = path[s].vec - pose.vec
         val error = displacementVec.norm * (displacementVec cross tangent).sign
         return tangent - normal * kN * errorMap.invoke(error)
     }
