@@ -10,5 +10,11 @@ package com.asiankoala.koawalib.control.profile
 data class MotionConstraints(
     val cruiseVel: Double,
     val accel: Double,
-    val deccel: Double = accel,
-)
+    private val rawDeccel: Double = accel
+) {
+    val deccel: Double
+
+    init {
+        deccel = -rawDeccel
+    }
+}
