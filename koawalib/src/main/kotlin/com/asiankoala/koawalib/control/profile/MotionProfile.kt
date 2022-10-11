@@ -3,7 +3,6 @@ package com.asiankoala.koawalib.control.profile
 import com.asiankoala.koawalib.logger.Logger
 import kotlin.math.absoluteValue
 import kotlin.math.min
-import kotlin.math.pow
 import kotlin.math.sqrt
 
 /**
@@ -51,14 +50,14 @@ class MotionProfile(vararg _periods: MotionPeriod, reversed: Boolean) {
             end = end.copy(a = constraints.deccel)
 
             var accelPeriod = MotionPeriod(start, 
-                (constraints.cruiseVel - start.v / constraints.accel).absoluteValue)
+                (constraints.maxV - start.v / constraints.accel).absoluteValue)
 
-            val deccelTime = ((end.v - constraints.cruiseVel)  / constraints.deccel).absoluteValue
+            val deccelTime = ((end.v - constraints.maxV)  / constraints.deccel).absoluteValue
             val deccelStartState = end.copy(a = constraints.deccel)[-deccelTime]
             var deccelPeriod = MotionPeriod(deccelStartState, deccelTime)
 
             val dx = (end.x - start.x).absoluteValue
-            val cruiseDt = (dx - accelPeriod.dx - deccelPeriod.dx) / constraints.cruiseVel
+            val cruiseDt = (dx - accelPeriod.dx - deccelPeriod.dx) / constraints.maxV
             var cruisePeriod = MotionPeriod(accelPeriod.endState.copy(a = 0.0), cruiseDt)
 
             if(cruiseDt < 0.0) {
