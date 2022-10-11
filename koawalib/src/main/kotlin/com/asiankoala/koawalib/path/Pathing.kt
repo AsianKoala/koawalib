@@ -489,7 +489,7 @@ abstract class Path(poses: List<Pose>) {
 
     operator fun get(s: Double, n: Int = 0): Pose {
         if(s <= 0.0) return curveSegments[0][0.0, n]
-        if(s >= length) return curveSegments[curveSegments.size-1][curveSegments[curveSegments.size-1].length, n] 
+        if(s >= length) return curveSegments.last()[curveSegments.last().length, n]
         curveSegments.fold(0.0) { acc, spline ->
             if(acc + spline.length > s) {
                 return spline[s - acc, n]
@@ -510,7 +510,7 @@ abstract class SplinePath(
     private var _length = 0.0
     override val length get() = _length
 
-    abstract fun createSpline(start: DifferentiablePoint2d, end: DifferentiablePoint2d): Spline
+    abstract fun interpolate(start: DifferentiablePoint2d, end: DifferentiablePoint2d): Spline
 
     /*
     yoinked this from rr
@@ -522,7 +522,7 @@ abstract class SplinePath(
     if not, then add dot product to s
     since dot product literally just finds the amount vec a is parallel to vec b
      */
-    override fun project(p: Vector, pGuess: Double) = (1..10).fold(pGuess) { s, _ ->  clamp(s + (p - get(s).vec).dot(get(s, 1).vec), 0.0, length) }
+    override fun project(p: Vector, pGuess: Double) = (1..10).fold(pGuess) { s, _ ->  clamp(s + ((p - this[s].vec) dot this[s, 1].vec), 0.0, length) }
 
     override fun generatePath(poses: List<Pose>) {
         var curr = poses[0]
@@ -532,7 +532,7 @@ abstract class SplinePath(
             val r = cv.dist(tv)
             val s = DifferentiablePoint2d(cv, Vector.fromPolar(r, curr.heading))
             val e = DifferentiablePoint2d(tv, Vector.fromPolar(r, target.heading))
-            val spline = createSpline(s, e)
+            val spline = interpolate(s, e)
             curveSegments.add(spline)
             _length += spline.length
             curr = target
@@ -541,13 +541,13 @@ abstract class SplinePath(
 }
 
 class QuinticSplinePath(vararg poses: Pose) : SplinePath(*poses) {
-    override fun createSpline(start: DifferentiablePoint2d, end: DifferentiablePoint2d): Spline {
+    override fun interpolate(start: DifferentiablePoint2d, end: DifferentiablePoint2d): Spline {
         return Spline(Quintic(start.x, end.x), Quintic(start.y, end.y))
     }
 }
 
 class CubicSplinePath(vararg poses: Pose) : SplinePath(*poses) {
-    override fun createSpline(start: DifferentiablePoint2d, end: DifferentiablePoint2d): Spline {
+    override fun interpolate(start: DifferentiablePoint2d, end: DifferentiablePoint2d): Spline {
         return Spline(Cubic(start.x, end.x), Cubic(start.y, end.y))
     }
 }

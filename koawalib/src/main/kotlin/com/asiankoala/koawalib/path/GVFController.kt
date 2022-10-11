@@ -1,5 +1,6 @@
 package com.asiankoala.koawalib.path
 
+import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.Vector
 import com.asiankoala.koawalib.util.Speeds
@@ -48,6 +49,7 @@ abstract class GVFController(
         val normal = tangent.rotate(PI / 2.0)
         val displacementVec = path[s].vec - pose.vec
         val error = displacementVec.norm * (displacementVec cross tangent).sign
+        Logger.logInfo("s: $s, d: $tangent, r: $displacementVec, e: $error")
         return tangent - normal * kN * errorMap.invoke(error)
     }
 }

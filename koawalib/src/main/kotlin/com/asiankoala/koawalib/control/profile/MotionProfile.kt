@@ -20,7 +20,7 @@ class MotionProfile(vararg _periods: MotionPeriod, reversed: Boolean) {
     operator fun get(t: Double): MotionState {
         periods.fold(0.0) { acc, it -> 
             if(t <= it.dt + acc) return it[t - acc]
-            it.dt
+            it.dt + acc
         }
         return endState 
     }
