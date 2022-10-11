@@ -9,7 +9,6 @@ import com.asiankoala.koawalib.control.profile.MotionConstraints
 import com.asiankoala.koawalib.control.profile.MotionProfile
 import com.asiankoala.koawalib.control.profile.MotionState
 import com.qualcomm.robotcore.util.ElapsedTime
-import kotlin.math.min
 import kotlin.math.PI
 import kotlin.math.sign
 
@@ -87,7 +86,7 @@ class MPGVFController(
         // so im going to assume 1.0 power is just max velocity constraint
         // honestly this is pretty shit and cringe im going to change it
         // when im free from tj workload feelsbadman
-        val scaled = profile[timer.seconds()].v / constraints.cruiseVel
+        val scaled = profile[timer.seconds()].v / constraints.maxV
         raw *= scaled
         return raw
     }
