@@ -279,7 +279,7 @@ class Arc(
 
     fun getCorrectCurvature(s: Double): Double = curvature + s * dkds
     fun linearlyInterpolate(s: Double) = ref + (end - start) * (s / length)
-    fun interpolateSAlongT(s: Double) = tStart + dt * ((s + length * 2) / length)
+    fun interpolateSAlongT(s: Double) = tStart + dt * (s / length)
 
     fun get(s: Double): Vector {
         return if(curvature != 0.0) {
@@ -440,11 +440,11 @@ class Spline(
     }
 
     init {
-        val tParams = ArrayDeque<Pair<Double, Double>>()
-        tParams.add(Pair(0.0, 1.0))
+        val tPairs = ArrayDeque<Pair<Double, Double>>()
+        tPairs.add(Pair(0.0, 1.0))
         var its = 0
-        while(tParams.isNotEmpty()) {
-            val curr = tParams.removeFirst()
+        while(tPairs.isNotEmpty()) {
+            val curr = tPairs.removeFirst()
             val midT = (curr.first + curr.second) / 2.0
 
             val startV = rt(curr.first)
@@ -455,23 +455,21 @@ class Spline(
             val startK = rt(curr.first, 2).cross(rt(curr.first, 1)) / rt(curr.first, 1).norm.pow(3)
             val endK = rt(curr.second, 2).cross(rt(curr.second, 1)) / rt(curr.second, 1).norm.pow(3)
             val arc = Arc(startV, midV, endV)
-            // we want to make our arcs as linear?ish as possible to have
+            // we want to make our approximations as circle-y as possible, so 
+            // the arc approximation will be more accurate
             // a more accurate interpolation when param from s -> t
             // might want to try adjusting 0.01 for curve or 1.0 for arc length later
-            val subdivide = (endK - startK).absoluteValue > 0.01 || arc.length > 1.0
+            // update 10/09/22: it seems limiting curvature works a lot better than length
+            val subdivide = (endK - startK).absoluteValue > 0.01 || arc.length > 0.25
             if(subdivide) {
-                tParams.add(Pair(midT, curr.second))
-                tParams.add(Pair(curr.first, midT))
+                tPairs.add(Pair(midT, curr.second))
+                tPairs.add(Pair(curr.first, midT))
             } else {
                 arc.setCurvature(startK, endK)
                 arc.setT(curr)
                 arcs.add(arc)
                 _length += arc.length
                 its++
-            }
-
-            if(its > 1000) {
-                throw Exception("we fucked up")
             }
         }
 
@@ -491,7 +489,7 @@ abstract class Path(poses: List<Pose>) {
 
     operator fun get(s: Double, n: Int = 0): Pose {
         if(s <= 0.0) return curveSegments[0][0.0, n]
-        if(s >= length) return curveSegments[curveSegments.size-1][curveSegments[curveSegments.size-1].length, n]
+        if(s >= length) return curveSegments.last()[curveSegments.last().length, n]
         curveSegments.fold(0.0) { acc, spline ->
             if(acc + spline.length > s) {
                 return spline[s - acc, n]
@@ -512,7 +510,7 @@ abstract class SplinePath(
     private var _length = 0.0
     override val length get() = _length
 
-    abstract fun createSpline(start: DifferentiablePoint2d, end: DifferentiablePoint2d): Spline
+    abstract fun interpolate(start: DifferentiablePoint2d, end: DifferentiablePoint2d): Spline
 
     /*
     yoinked this from rr
@@ -524,7 +522,7 @@ abstract class SplinePath(
     if not, then add dot product to s
     since dot product literally just finds the amount vec a is parallel to vec b
      */
-    override fun project(p: Vector, pGuess: Double) = (1..10).fold(pGuess) { s, _ ->  clamp(s + (p - get(s).vec).dot(get(s, 1).vec), 0.0, length) }
+    override fun project(p: Vector, pGuess: Double) = (1..10).fold(pGuess) { s, _ ->  clamp(s + ((p - this[s].vec) dot this[s, 1].vec), 0.0, length) }
 
     override fun generatePath(poses: List<Pose>) {
         var curr = poses[0]
@@ -534,7 +532,7 @@ abstract class SplinePath(
             val r = cv.dist(tv)
             val s = DifferentiablePoint2d(cv, Vector.fromPolar(r, curr.heading))
             val e = DifferentiablePoint2d(tv, Vector.fromPolar(r, target.heading))
-            val spline = createSpline(s, e)
+            val spline = interpolate(s, e)
             curveSegments.add(spline)
             _length += spline.length
             curr = target
@@ -543,13 +541,13 @@ abstract class SplinePath(
 }
 
 class QuinticSplinePath(vararg poses: Pose) : SplinePath(*poses) {
-    override fun createSpline(start: DifferentiablePoint2d, end: DifferentiablePoint2d): Spline {
+    override fun interpolate(start: DifferentiablePoint2d, end: DifferentiablePoint2d): Spline {
         return Spline(Quintic(start.x, end.x), Quintic(start.y, end.y))
     }
 }
 
 class CubicSplinePath(vararg poses: Pose) : SplinePath(*poses) {
-    override fun createSpline(start: DifferentiablePoint2d, end: DifferentiablePoint2d): Spline {
+    override fun interpolate(start: DifferentiablePoint2d, end: DifferentiablePoint2d): Spline {
         return Spline(Cubic(start.x, end.x), Cubic(start.y, end.y))
     }
 }
