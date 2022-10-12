@@ -1,8 +1,5 @@
 package com.asiankoala.koawalib.path
 
-import org.ejml.simple.SimpleMatrix
-import com.asiankoala.koawalib.math.Vector
-
 object Testing {
     @JvmStatic
     fun main(args: Array<String>) {
@@ -16,10 +13,10 @@ object Testing {
 //        var lastProj = 0.0
 //        for(i in 0..t.length.toInt()) {
 //            val s = i.toDouble()
-////            val real = t[s].vec
-////            val projV = t.project(t[s].vec, lastS)
-////            lastS = projV
-////            val proj = t[projV].vec
+// //            val real = t[s].vec
+// //            val projV = t.project(t[s].vec, lastS)
+// //            lastS = projV
+// //            val proj = t[projV].vec
 //
 //            val real = t[s].vec
 //
@@ -34,7 +31,7 @@ object Testing {
 //            val kN = 0.7
 //            val gvf = (deriv - normal * error * kN).unit
 //            println("x: $fakeRobot, p: $projPoint, r: $rVec, e: ${String.format("%.2f", error)}, gvf: $gvf")
-////            println("real: $rVec, proj: $proj, projV: $projV, deriv: $deriv, normal: $normal, delta: ${rVec.dist(proj)}")
+// //            println("real: $rVec, proj: $proj, projV: $projV, deriv: $deriv, normal: $normal, delta: ${rVec.dist(proj)}")
 //        }
 //        println(t.length)
 
@@ -52,6 +49,5 @@ object Testing {
         // val y = polynomial[2.0, 0]
         // println(" = $y")
         // println(polynomial)
-
     }
 }

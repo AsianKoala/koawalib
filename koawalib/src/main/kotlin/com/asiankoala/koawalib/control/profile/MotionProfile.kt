@@ -18,16 +18,16 @@ class MotionProfile(vararg _periods: MotionPeriod, reversed: Boolean) {
     val duration: Double
 
     operator fun get(t: Double): MotionState {
-        periods.fold(0.0) { acc, it -> 
-            if(t <= it.dt + acc) return it[t - acc]
+        periods.fold(0.0) { acc, it ->
+            if (t <= it.dt + acc) return it[t - acc]
             it.dt + acc
         }
-        return endState 
+        return endState
     }
 
     init {
         duration = _periods.sumOf { it.dt }
-        periods = if(reversed) {
+        periods = if (reversed) {
             _periods.reversed().map { it.flipped }
         } else {
             _periods.toList()
@@ -41,7 +41,7 @@ class MotionProfile(vararg _periods: MotionPeriod, reversed: Boolean) {
             val isReversed = endState.x < startState.x
             var start = startState
             var end = endState
-            if(isReversed) {
+            if (isReversed) {
                 end = startState
                 start = endState
             }
@@ -49,10 +49,12 @@ class MotionProfile(vararg _periods: MotionPeriod, reversed: Boolean) {
             start = start.copy(a = constraints.accel)
             end = end.copy(a = constraints.deccel)
 
-            var accelPeriod = MotionPeriod(start, 
-                (constraints.maxV - start.v / constraints.accel).absoluteValue)
+            var accelPeriod = MotionPeriod(
+                start,
+                (constraints.maxV - start.v / constraints.accel).absoluteValue
+            )
 
-            val deccelTime = ((end.v - constraints.maxV)  / constraints.deccel).absoluteValue
+            val deccelTime = ((end.v - constraints.maxV) / constraints.deccel).absoluteValue
             val deccelStartState = end.copy(a = constraints.deccel)[-deccelTime]
             var deccelPeriod = MotionPeriod(deccelStartState, deccelTime)
 
@@ -60,7 +62,7 @@ class MotionProfile(vararg _periods: MotionPeriod, reversed: Boolean) {
             val cruiseDt = (dx - accelPeriod.dx - deccelPeriod.dx) / constraints.maxV
             var cruisePeriod = MotionPeriod(accelPeriod.endState.copy(a = 0.0), cruiseDt)
 
-            if(cruiseDt < 0.0) {
+            if (cruiseDt < 0.0) {
                 Logger.logInfo("profile wont reach cruise vel")
                 cruisePeriod = cruisePeriod.copy(dt = 0.0)
                 val newA = min(constraints.accel.absoluteValue, constraints.deccel.absoluteValue)
@@ -73,4 +75,3 @@ class MotionProfile(vararg _periods: MotionPeriod, reversed: Boolean) {
         }
     }
 }
-

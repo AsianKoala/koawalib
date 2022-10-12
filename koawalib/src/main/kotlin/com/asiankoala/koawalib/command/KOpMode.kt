@@ -53,7 +53,7 @@ abstract class KOpMode(
         Logger.timeIntervalManager["HARDWARE SETUP"].start()
         KDevice.hardwareMap = hardwareMap
 
-        if(photonEnabled) {
+        if (photonEnabled) {
             PhotonCore.enable()
             PhotonCore.CONTROL_HUB.bulkCachingMode = LynxModule.BulkCachingMode.MANUAL
             PhotonCore.EXPANSION_HUB.bulkCachingMode = LynxModule.BulkCachingMode.MANUAL
@@ -83,7 +83,7 @@ abstract class KOpMode(
     }
 
     private fun handleBulkCaching() {
-        if(photonEnabled) {
+        if (photonEnabled) {
             PhotonCore.CONTROL_HUB.clearBulkCache()
             PhotonCore.EXPANSION_HUB.clearBulkCache()
         } else {

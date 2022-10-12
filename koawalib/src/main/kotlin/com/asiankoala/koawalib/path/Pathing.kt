@@ -49,13 +49,13 @@ class Polynomial(coeffVec: SimpleMatrix) {
     override fun toString(): String {
         return coeffs.subList(1, degree)
             .foldIndexed("${coeffs[0]}t^$degree ") { i, acc, c ->
-            acc + "+ ${c}t^${degree - i - 1} "
-        } + "+ ${coeffs.last()}"
+                acc + "+ ${c}t^${degree - i - 1} "
+            } + "+ ${coeffs.last()}"
     }
 
     init {
         require(coeffVec.isVector)
-        for(x in 0..coeffVec.numElements) coeffs[x] = coeffVec[x]
+        for (x in 0..coeffVec.numElements) coeffs[x] = coeffVec[x]
     }
 }
 
@@ -101,7 +101,7 @@ class Arc(
     fun interpolateSAlongT(s: Double) = tStart + dt * (s / length)
 
     fun get(s: Double): Vector {
-        return if(curvature != 0.0) {
+        return if (curvature != 0.0) {
             ref + Vector.fromPolar(1.0 / curvature, angleOffset + (s * curvature))
         } else {
             linearlyInterpolate(s)
@@ -109,14 +109,17 @@ class Arc(
     }
 
     init {
-        val coeffMatrix = SimpleMatrix(2, 2, true, doubleArrayOf(
-            2 * (start.x - end.x), 2 * (start.y - end.y),
-            2 * (start.x - mid.x), 2 * (start.y - mid.y)
-        ))
+        val coeffMatrix = SimpleMatrix(
+            2, 2, true,
+            doubleArrayOf(
+                2 * (start.x - end.x), 2 * (start.y - end.y),
+                2 * (start.x - mid.x), 2 * (start.y - mid.y)
+            )
+        )
 
         val det = coeffMatrix.determinant()
 
-        if(det == 0.0) {
+        if (det == 0.0) {
             curvature = 0.0
             ref = start
             val delta = end - start
@@ -127,10 +130,13 @@ class Arc(
             val sNN = start.normSq
             val mNN = mid.normSq
             val eNN = end.normSq
-            val r = SimpleMatrix(2, 1, true, doubleArrayOf(
-                sNN - eNN,
-                sNN - mNN
-            ))
+            val r = SimpleMatrix(
+                2, 1, true,
+                doubleArrayOf(
+                    sNN - eNN,
+                    sNN - mNN
+                )
+            )
             val inverse = coeffMatrix.invert()
             val product = inverse.mult(r)
             ref = Vector(product[0], product[1])
@@ -138,7 +144,7 @@ class Arc(
             val angle1 = (end - ref).angle
             curvature = 1.0 / (start - ref).norm
             length = (angle1 - angleOffset).absoluteValue / curvature
-            if(angle1 < angleOffset) curvature *= -1
+            if (angle1 < angleOffset) curvature *= -1
         }
     }
 }
@@ -192,7 +198,7 @@ interface SmoothCurve {
     fun rt(t: Double, n: Int = 0) = Vector(x[t, n], y[t, n])
 
     private fun dsdt(t: Double, n: Int = 1): Double {
-        return when(n) {
+        return when (n) {
             1 -> rt(t, 1).norm
             2 -> (2 * rt(t, 1).dot(rt(t, 2))) / dsdt(t)
             else -> throw Exception("im not implementing any more derivatives")
@@ -200,7 +206,7 @@ interface SmoothCurve {
     }
 
     private fun dtds(t: Double, n: Int = 1): Double {
-        return when(n) {
+        return when (n) {
             1 -> 1.0 / dsdt(t)
             2 -> -dsdt(t, 2) / dsdt(t).pow(3)
             else -> throw Exception("im not implementing any more derivatives")
@@ -209,7 +215,7 @@ interface SmoothCurve {
 
     private fun rs(s: Double, n: Int = 0): Vector {
         val t = invArc(s)
-        return when(n) {
+        return when (n) {
             0 -> rt(t)
             1 -> rt(t, 1).unit
             2 -> rt(t, 2) * dtds(t).pow(2) + rt(t, 1) * dtds(t, 2)
@@ -240,10 +246,10 @@ class Spline(
     // our arc array and finding what iteration it is at
     // ok this is a shitty name but like... is it really?
     override fun invArc(s: Double): Double {
-        if(s <= 0) return 0.0
-        if(s >= length) return 1.0
+        if (s <= 0) return 0.0
+        if (s >= length) return 1.0
         arcs.fold(0.0) { acc, arc ->
-            if(acc + arc.length > s) return arc.interpolateSAlongT(acc - s)
+            if (acc + arc.length > s) return arc.interpolateSAlongT(acc - s)
             acc + arc.length
         }
         throw Exception("i think ur pretty bad a coding neil")
@@ -257,12 +263,12 @@ class Spline(
         val tPairs = ArrayDeque<Pair<Double, Double>>()
         tPairs.add(Pair(0.0, 1.0))
         var its = 0
-        while(tPairs.isNotEmpty()) {
+        while (tPairs.isNotEmpty()) {
             val curr = tPairs.removeFirst()
             val midT = (curr.first + curr.second) / 2.0
 
             val startV = rt(curr.first)
-            val endV  = rt(curr.second)
+            val endV = rt(curr.second)
             val midV = rt(midT)
 
             // from multi: k = (a x v) / |v|^3
@@ -275,7 +281,7 @@ class Spline(
             // might want to try adjusting 0.01 for curve or 0.5 for arc length later
             // update 10/09/22: it seems limiting curvature works a lot better than length
             val subdivide = (endK - startK).absoluteValue > 0.01 || arc.length > 0.5
-            if(subdivide) {
+            if (subdivide) {
                 tPairs.add(Pair(midT, curr.second))
                 tPairs.add(Pair(curr.first, midT))
             } else {
@@ -322,21 +328,27 @@ enum class HermiteType {
     CUBIC, QUINTIC
 }
 
-val CUBIC_HERMITE_MATRIX = SimpleMatrix(4, 4, true, doubleArrayOf(
-    0.0, 0.0, 0.0, 1.0,
-    0.0, 0.0, 1.0, 0.0,
-    1.0, 1.0, 1.0, 1.0,
-    3.0, 2.0, 1.0, 0.0
-))
+val CUBIC_HERMITE_MATRIX = SimpleMatrix(
+    4, 4, true,
+    doubleArrayOf(
+        0.0, 0.0, 0.0, 1.0,
+        0.0, 0.0, 1.0, 0.0,
+        1.0, 1.0, 1.0, 1.0,
+        3.0, 2.0, 1.0, 0.0
+    )
+)
 
-val QUINTIC_HERMITE_MATRIX = SimpleMatrix(6, 6, true, doubleArrayOf(
-    0.0, 0.0, 0.0, 0.0, 0.0, 1.0,
-    0.0, 0.0, 0.0, 0.0, 1.0, 0.0,
-    0.0, 0.0, 0.0, 2.0, 0.0, 0.0,
-    1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-    5.0, 4.0, 3.0, 2.0, 1.0, 0.0,
-    20.0, 12.0, 6.0, 2.0, 0.0, 0.0
-))
+val QUINTIC_HERMITE_MATRIX = SimpleMatrix(
+    6, 6, true,
+    doubleArrayOf(
+        0.0, 0.0, 0.0, 0.0, 0.0, 1.0,
+        0.0, 0.0, 0.0, 0.0, 1.0, 0.0,
+        0.0, 0.0, 0.0, 2.0, 0.0, 0.0,
+        1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+        5.0, 4.0, 3.0, 2.0, 1.0, 0.0,
+        20.0, 12.0, 6.0, 2.0, 0.0, 0.0
+    )
+)
 
 class HermiteSplineInterpolator(
     private val splineType: HermiteType,
@@ -347,26 +359,33 @@ class HermiteSplineInterpolator(
     override val length: Double get() = _length
 
     private fun fitSplineToControlVectors(
-        start: HermiteControlVector2d, end: HermiteControlVector2d
-    ) : Spline {
-        val M = if(splineType == HermiteType.CUBIC) {
-            val B = SimpleMatrix(4, 2, true, doubleArrayOf(
-                start.x.zero, start.y.zero,
-                start.x.first, start.y.first,
-                end.x.zero, end.y.zero,
-                end.x.first, end.y.first
-            ))
+        start: HermiteControlVector2d,
+        end: HermiteControlVector2d
+    ): Spline {
+        val M = if (splineType == HermiteType.CUBIC) {
+            val B = SimpleMatrix(
+                4, 2, true,
+                doubleArrayOf(
+                    start.x.zero, start.y.zero,
+                    start.x.first, start.y.first,
+                    end.x.zero, end.y.zero,
+                    end.x.first, end.y.first
+                )
+            )
 
             CUBIC_HERMITE_MATRIX.solve(B)
         } else {
-            val B = SimpleMatrix(6, 2, true, doubleArrayOf(
-                start.x.zero, start.y.zero,
-                start.x.first, start.y.first,
-                start.x.second, start.y.second,
-                end.x.zero, end.y.zero,
-                end.x.first, end.y.first,
-                end.x.second, end.y.second
-            ))
+            val B = SimpleMatrix(
+                6, 2, true,
+                doubleArrayOf(
+                    start.x.zero, start.y.zero,
+                    start.x.first, start.y.first,
+                    start.x.second, start.y.second,
+                    end.x.zero, end.y.zero,
+                    end.x.first, end.y.first,
+                    end.x.second, end.y.second
+                )
+            )
 
             QUINTIC_HERMITE_MATRIX.solve(B)
         }
@@ -378,7 +397,7 @@ class HermiteSplineInterpolator(
 
     override fun interpolate() {
         var curr = controlPoses[0]
-        for(target in controlPoses.slice(1 until controlPoses.size)) {
+        for (target in controlPoses.slice(1 until controlPoses.size)) {
             val cv = curr.vec
             val tv = target.vec
             val r = cv.dist(tv)
@@ -398,14 +417,14 @@ open class Path(private val interpolator: SplineInterpolator) {
     val length get() = interpolator.length
 
     operator fun get(s: Double, n: Int = 0): Pose {
-        if(s <= 0.0) return interpolator.piecewiseCurve[0][0.0, n]
-        if(s >= length) {
+        if (s <= 0.0) return interpolator.piecewiseCurve[0][0.0, n]
+        if (s >= length) {
             val lastSpline = interpolator.piecewiseCurve.last()
             return lastSpline[lastSpline.length, n]
         }
 
         interpolator.piecewiseCurve.fold(0.0) { acc, spline ->
-            if(acc + spline.length > s) return spline[s - acc, n]
+            if (acc + spline.length > s) return spline[s - acc, n]
             acc + spline.length
         }
 

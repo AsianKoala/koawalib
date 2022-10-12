@@ -20,8 +20,8 @@ class KGamepad(private val gamepad: Gamepad) : Periodic {
     val leftTrigger = KTrigger { gamepad.left_trigger.d }
     val rightTrigger = KTrigger { gamepad.right_trigger.d }
 
-    val leftStick = KStick( KAxis { gamepad.left_stick_x.d }, KAxis { gamepad.left_stick_y.d }, KButton { gamepad.left_stick_button })
-    val rightStick = KStick( KAxis { gamepad.right_stick_x.d }, KAxis { gamepad.right_stick_y.d }, KButton { gamepad.right_stick_button })
+    val leftStick = KStick(KAxis { gamepad.left_stick_x.d }, KAxis { gamepad.left_stick_y.d }, KButton { gamepad.left_stick_button })
+    val rightStick = KStick(KAxis { gamepad.right_stick_x.d }, KAxis { gamepad.right_stick_y.d }, KButton { gamepad.right_stick_button })
 
     val dpadUp = KButton { gamepad.dpad_up }
     val dpadDown = KButton { gamepad.dpad_down }

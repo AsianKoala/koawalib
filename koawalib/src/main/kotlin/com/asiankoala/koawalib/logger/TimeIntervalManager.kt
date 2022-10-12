@@ -4,7 +4,7 @@ class TimeIntervalManager {
     private val timeIntervals = LinkedHashMap<String, TimeInterval>()
 
     operator fun get(name: String): TimeInterval {
-        return if(name in timeIntervals.keys) {
+        return if (name in timeIntervals.keys) {
             timeIntervals[name]!!
         } else {
             timeIntervals[name] = TimeInterval()

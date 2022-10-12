@@ -17,7 +17,7 @@ import kotlin.collections.set
  * and handles them accordingly. Processing is done behind the scenes, so the main purpose of this class for the user
  * is to schedule commands, mainly using [KScheduler.schedule]
  */
-//@Suppress("unused")
+// @Suppress("unused")
 object KScheduler {
     private val scheduledCmds: MutableList<Cmd> = ArrayList()
     private val scheduledCmdReqs: MutableMap<Subsystem, Cmd> = LinkedHashMap()
@@ -114,7 +114,6 @@ object KScheduler {
         scheduledCmds.removeAll(toRemove)
     }
 
-
     /**
      * Schedule commands
      * @param cmds commands to schedule
@@ -125,7 +124,6 @@ object KScheduler {
             Logger.logDebug("added ${it.name} to toSchedule array")
         }
     }
-
 
     /**
      * Schedule command for a state

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>MPGVFController</title>
+    <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">
+    <script>var pathToRoot = "../../../";</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+const savedDarkMode = storage ? JSON.parse(storage) : false
+if(savedDarkMode === true){
+    document.getElementsByTagName("html")[0].classList.add("theme-dark")
+}</script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async="async"></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async="async"></script>
+</head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+            <a href="../../../index.html">
+                    <span>koawalib</span>
+            </a>
+    </div>
+    <div>
+    </div>
+    <div class="pull-right d-flex">
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" id="content" pageIds="koawalib::com.asiankoala.koawalib.path.gvf/MPGVFController///PointingToDeclaration//470886224">
+  <div class="breadcrumbs"><a href="../../../index.html">koawalib</a><span class="delimiter">/</span><a href="../index.html">com.asiankoala.koawalib.path.gvf</a><span class="delimiter">/</span><a href="index.html">MPGVFController</a></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>MPGVFController</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":koawalib:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">MPGVFController</a><span class="token punctuation">(</span><span class="parameters wrapped"><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;path<span class="token operator">: </span><a href="../../com.asiankoala.koawalib.path/-path/index.html">Path</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;kN<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;kOmega<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;kF<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;kS<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;constraints<span class="token operator">: </span><a href="../../com.asiankoala.koawalib.control.profile/-motion-constraints/index.html">MotionConstraints</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;epsilon<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;errorMap<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a><span class="token operator"> = </span>{ it }</span></span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">Guided Vector Field follower Uses roadrunner path generation internally cause im lazy</p><div class="block"></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Constructors">Constructors</button><button class="section-tab" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Properties">Properties</button><button class="section-tab" data-togglable="Parameters">Parameters</button></div>
+    <div class="tabs-section-body">
+      <h2 class="">Parameters</h2>
+      <div data-togglable="Parameters">
+        <div class="platform-hinted WithExtraAttributes" data-platform-hinted="data-platform-hinted" data-togglable="Parameters"><div class="content sourceset-depenent-content" data-active="" data-togglable=":koawalib:dokkaHtml/release"><div data-togglable="Parameters"><div class="table" data-togglable="Parameters"><div class="table-row" data-filterable-current=":koawalib:dokkaHtml/release" data-filterable-set=":koawalib:dokkaHtml/release"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><span><span>path</span></span></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">roadrunner path</p></div></div></div></div></div><div class="table-row" data-filterable-current=":koawalib:dokkaHtml/release" data-filterable-set=":koawalib:dokkaHtml/release"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><span>k</span><wbr></wbr><span><span>N</span></span></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">normal path attraction</p></div></div></div></div></div><div class="table-row" data-filterable-current=":koawalib:dokkaHtml/release" data-filterable-set=":koawalib:dokkaHtml/release"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><span>k</span><wbr></wbr><span><span>Omega</span></span></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">heading weight</p></div></div></div></div></div><div class="table-row" data-filterable-current=":koawalib:dokkaHtml/release" data-filterable-set=":koawalib:dokkaHtml/release"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><span>k</span><wbr></wbr><span><span>F</span></span></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">end param weight</p></div></div></div></div></div><div class="table-row" data-filterable-current=":koawalib:dokkaHtml/release" data-filterable-set=":koawalib:dokkaHtml/release"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><span>k</span><wbr></wbr><span><span>S</span></span></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">raw scalar on translational power</p></div></div></div></div></div><div class="table-row" data-filterable-current=":koawalib:dokkaHtml/release" data-filterable-set=":koawalib:dokkaHtml/release"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><span><span>constraints</span></span></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">motion constraints</p></div></div></div></div></div><div class="table-row" data-filterable-current=":koawalib:dokkaHtml/release" data-filterable-set=":koawalib:dokkaHtml/release"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><span><span>epsilon</span></span></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">allowed absolute and projected error</p></div></div></div></div></div><div class="table-row" data-filterable-current=":koawalib:dokkaHtml/release" data-filterable-set=":koawalib:dokkaHtml/release"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><span>error</span><wbr></wbr><span><span>Map</span></span></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">error map to transform normal displacement error</p></div></div></div></div></div></div></div></div></div>
+      </div>
+      <h2 class="tabbedcontent">Constructors</h2>
+      <div class="table" data-togglable="Constructors"><a data-name="-875599625%2FConstructors%2F470886224" anchor-label="MPGVFController" id="-875599625%2FConstructors%2F470886224" data-filterable-set=":koawalib:dokkaHtml/release"></a>
+        <div class="table-row" data-filterable-current=":koawalib:dokkaHtml/release" data-filterable-set=":koawalib:dokkaHtml/release">
+          <div class="main-subrow keyValue TabbedContent">
+            <div class=""><span class="inline-flex">
+                <div><a href="-m-p-g-v-f-controller.html"><span><span>MPGVFController</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-875599625%2FConstructors%2F470886224"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":koawalib:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="-m-p-g-v-f-controller.html"><span class="token function">MPGVFController</span></a><span class="token punctuation">(</span><span class="parameters wrapped"><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;path<span class="token operator">: </span><a href="../../com.asiankoala.koawalib.path/-path/index.html">Path</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;kN<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;kOmega<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;kF<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;kS<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;constraints<span class="token operator">: </span><a href="../../com.asiankoala.koawalib.control.profile/-motion-constraints/index.html">MotionConstraints</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;epsilon<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;errorMap<span class="token operator">: </span><span class="token punctuation">(</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a><span class="token operator"> = </span>{ it }</span></span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="">Properties</h2>
+      <div class="table" data-togglable="Properties"><a data-name="-1467253538%2FProperties%2F470886224" anchor-label="isFinished" id="-1467253538%2FProperties%2F470886224" data-filterable-set=":koawalib:dokkaHtml/release"></a>
+        <div class="table-row" data-filterable-current=":koawalib:dokkaHtml/release" data-filterable-set=":koawalib:dokkaHtml/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="is-finished.html">isFinished</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1467253538%2FProperties%2F470886224"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":koawalib:dokkaHtml/release"><a data-name="-1467253538%2FProperties%2F470886224" anchor-label="isFinished" id="-1467253538%2FProperties%2F470886224" data-filterable-set=":koawalib:dokkaHtml/release"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="is-finished.html">isFinished</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="-1467253538%2FProperties%2F470886224" anchor-label="isFinished" id="-1467253538%2FProperties%2F470886224" data-filterable-set=":koawalib:dokkaHtml/release"></a><p class="paragraph">path finish state honestly this probably isn't the proper way to do a motion profiled gvf, but i cba to find gradients. doing it this way is just pisseasy and works even if (although idk if it works xd) in the future i might try doing a better impl of motion profiling a gvf which means either reading its half-assed</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="">Functions</h2>
+      <div class="table" data-togglable="Functions"><a data-name="998893815%2FFunctions%2F470886224" anchor-label="update" id="998893815%2FFunctions%2F470886224" data-filterable-set=":koawalib:dokkaHtml/release"></a>
+        <div class="table-row" data-filterable-current=":koawalib:dokkaHtml/release" data-filterable-set=":koawalib:dokkaHtml/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="update.html"><span><span>update</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="998893815%2FFunctions%2F470886224"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":koawalib:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="update.html"><span class="token function">update</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">currPose<span class="token operator">: </span><a href="../../com.asiankoala.koawalib.math/-pose/index.html">Pose</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../com.asiankoala.koawalib.util/-speeds/index.html">Speeds</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+        <div class="footer"><span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2022 Copyright</span><span
+                class="pull-right"><span>Generated by </span><a
+                href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+        </div>
+    </div>
+</div>
+</body>
+</html>

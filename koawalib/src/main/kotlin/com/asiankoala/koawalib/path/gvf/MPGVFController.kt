@@ -1,14 +1,14 @@
 package com.asiankoala.koawalib.path.gvf
 
+import com.asiankoala.koawalib.control.profile.MotionConstraints
+import com.asiankoala.koawalib.control.profile.MotionProfile
+import com.asiankoala.koawalib.control.profile.MotionState
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.Vector
 import com.asiankoala.koawalib.math.angleWrap
 import com.asiankoala.koawalib.math.degrees
-import com.asiankoala.koawalib.util.Speeds
-import com.asiankoala.koawalib.control.profile.MotionConstraints
-import com.asiankoala.koawalib.control.profile.MotionProfile
-import com.asiankoala.koawalib.control.profile.MotionState
 import com.asiankoala.koawalib.path.Path
+import com.asiankoala.koawalib.util.Speeds
 import com.qualcomm.robotcore.util.ElapsedTime
 import kotlin.math.PI
 import kotlin.math.sign
@@ -91,7 +91,6 @@ class MPGVFController(
         raw *= scaled
         return raw
     }
-
 
     init {
         require(kS <= 1.0)
