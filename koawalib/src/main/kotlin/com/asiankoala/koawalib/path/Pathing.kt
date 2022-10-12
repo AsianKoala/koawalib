@@ -66,8 +66,8 @@ class Polynomial(coeffVec: SimpleMatrix) {
 // t=1 might correspond to 10 inches of arc length, while t=1 at the
 // another spline segment might correspond to 20 inches.
 // Converting from t -> s is pretty simple itself (remember multi) but we want s -> t in t(s)
-// ryan (rbrott) talks about this in his "Quintic Splines for FTC" paper
-// see https://github.com/GrappleRobotics/Pathfinder/blob/master/Pathfinder/src/include/grpl/pf/path/arc_parameterizer.h
+// ryan talks about this in his spline paper
+// see https://github.com/GrappleRobotics/Pathfinder
 // this arc class is used to parametrize, pulled from above link ^
 class Arc(
     private val start: Vector,
@@ -109,8 +109,6 @@ class Arc(
     }
 
     init {
-        // ok manually calculating matrix determinants and inverses is hella cringe lmfao
-        // should prolly just use apache mat lib instead
         val coeffMatrix = SimpleMatrix(2, 2, true, doubleArrayOf(
             2 * (start.x - end.x), 2 * (start.y - end.y),
             2 * (start.x - mid.x), 2 * (start.y - mid.y)
@@ -301,7 +299,7 @@ interface SplineInterpolator {
     val length: Double
 }
 
-data class HermiteControlPoint1d(
+data class HermiteControlVector1d(
     val zero: Double = 0.0,
     val first: Double = 0.0,
     val second: Double = 0.0
@@ -310,13 +308,13 @@ data class HermiteControlPoint1d(
     operator fun get(n: Int) = derivatives[n]
 }
 
-class HermiteControlPoint2d(zero: Vector, first: Vector, second: Vector = Vector()) {
-    val x: HermiteControlPoint1d
-    val y: HermiteControlPoint1d
+class HermiteControlVector2d(zero: Vector, first: Vector, second: Vector = Vector()) {
+    val x: HermiteControlVector1d
+    val y: HermiteControlVector1d
 
     init {
-        x = HermiteControlPoint1d(zero.x, first.x, second.x)
-        y = HermiteControlPoint1d(zero.y, first.y, second.y)
+        x = HermiteControlVector1d(zero.x, first.x, second.x)
+        y = HermiteControlVector1d(zero.y, first.y, second.y)
     }
 }
 
@@ -349,24 +347,22 @@ class HermiteSplineInterpolator(
     override val length: Double get() = _length
 
     private fun fitSplineToControlVectors(
-        start: HermiteControlPoint2d, end: HermiteControlPoint2d
+        start: HermiteControlVector2d, end: HermiteControlVector2d
     ) : Spline {
         val M = if(splineType == HermiteType.CUBIC) {
             val B = SimpleMatrix(4, 2, true, doubleArrayOf(
                 start.x.zero, start.y.zero,
                 start.x.first, start.y.first,
-                0.0, 0.0,
                 end.x.zero, end.y.zero,
                 end.x.first, end.y.first
             ))
 
             CUBIC_HERMITE_MATRIX.solve(B)
         } else {
-            val B = SimpleMatrix(4, 2, true, doubleArrayOf(
+            val B = SimpleMatrix(6, 2, true, doubleArrayOf(
                 start.x.zero, start.y.zero,
                 start.x.first, start.y.first,
                 start.x.second, start.y.second,
-                0.0, 0.0,
                 end.x.zero, end.y.zero,
                 end.x.first, end.y.first,
                 end.x.second, end.y.second
@@ -386,8 +382,8 @@ class HermiteSplineInterpolator(
             val cv = curr.vec
             val tv = target.vec
             val r = cv.dist(tv)
-            val s = HermiteControlPoint2d(cv, Vector.fromPolar(r, curr.heading))
-            val e = HermiteControlPoint2d(tv, Vector.fromPolar(r, target.heading))
+            val s = HermiteControlVector2d(cv, Vector.fromPolar(r, curr.heading))
+            val e = HermiteControlVector2d(tv, Vector.fromPolar(r, target.heading))
             val curve = fitSplineToControlVectors(s, e)
             piecewiseCurve.add(curve)
             _length += curve.length

@@ -1,5 +1,8 @@
 package com.asiankoala.koawalib.path
 
+import org.ejml.simple.SimpleMatrix
+import com.asiankoala.koawalib.math.Vector
+
 object Testing {
     @JvmStatic
     fun main(args: Array<String>) {
@@ -35,16 +38,20 @@ object Testing {
 //        }
 //        println(t.length)
 
+        // val oldArc = OldArc(Vector(0.0), Vector(25.0, 25.0), Vector(50.0, 0.0))
+        // val newArc = Arc(Vector(0.0), Vector(25.0, 25.0), Vector(50.0, 0.0))
+        // println(oldArc.get(0.5))
+        // println(newArc.get(0.5))
+
         // f    = 2x^2 + x + 5   @ 2 = 15
         // f'   = 4x + 1         @ 2 = 9
         // f''  = 4              @ 2 = 4
-        val polynomial = object : Polynomial() {
-            override val coeffVec: List<Double>
-                get() = listOf(5.0, 2.0, -3.0, 10.0, 4.0, -6.0)
-        }
+        // val polynomial = Polynomial(SimpleMatrix(6, 1, true, 
+        // doubleArrayOf((5.0, 2.0, -3.0, 10.0, 4.0, -6.0)))
+        //
+        // val y = polynomial[2.0, 0]
+        // println(" = $y")
+        // println(polynomial)
 
-        val y = polynomial[2.0, 0]
-        println(" = $y")
-        println(polynomial)
     }
 }
