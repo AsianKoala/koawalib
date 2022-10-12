@@ -396,7 +396,7 @@ interface SmoothCurve {
             0 -> rt(t)
             1 -> rt(t, 1).unit
             2 -> rt(t, 2) * dtds(t).pow(2) + rt(t, 1) * dtds(t, 2)
-            else -> throw Exception("im not implemented any more derivatives fuck u")
+            else -> throw Exception("im not implementing any more derivatives")
         }
     }
 
@@ -405,7 +405,7 @@ interface SmoothCurve {
             0 -> Pose(rs(s), rs(s, 1).angle)
             1 -> Pose(rs(s, 1), rs(s, 1).cross(rs(s, 2)))
             2 -> Pose(rs(s, 2), 0.0)
-            else -> throw Exception("im not implemented any more derivatives fuck u")
+            else -> throw Exception("im not implementing any more derivatives")
         }
     }
 }
@@ -456,9 +456,9 @@ class Spline(
             // we want to make our approximations as circle-y as possible, so
             // the arc approximation will be more accurate
             // a more accurate interpolation when param from s -> t
-            // might want to try adjusting 0.01 for curve or 1.0 for arc length later
+            // might want to try adjusting 0.01 for curve or 0.5 for arc length later
             // update 10/09/22: it seems limiting curvature works a lot better than length
-            val subdivide = (endK - startK).absoluteValue > 0.01 || arc.length > 0.25
+            val subdivide = (endK - startK).absoluteValue > 0.01 || arc.length > 0.5
             if(subdivide) {
                 tPairs.add(Pair(midT, curr.second))
                 tPairs.add(Pair(curr.first, midT))
