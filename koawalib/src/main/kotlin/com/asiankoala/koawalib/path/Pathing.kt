@@ -30,7 +30,7 @@ of course, credit given to rr for the idea of using splines for paths, as well a
  */
 
 class Polynomial(coeffVec: SimpleMatrix) {
-    private val coeffs = mutableListOf<Double>()
+    private val coeffs = MutableList(coeffVec.numElements, init = { index -> coeffVec[index] })
     private val degree by lazy { coeffs.size - 1 }
 
     /**
@@ -56,7 +56,6 @@ class Polynomial(coeffVec: SimpleMatrix) {
 
     init {
         require(coeffVec.isVector)
-        for (x in 0..coeffVec.numElements) coeffs[x] = coeffVec[x]
     }
 }
 

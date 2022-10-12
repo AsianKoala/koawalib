@@ -1,5 +1,7 @@
 package com.asiankoala.koawalib.path
 
+import org.ejml.simple.SimpleMatrix
+
 object Testing {
     @JvmStatic
     fun main(args: Array<String>) {
@@ -43,11 +45,20 @@ object Testing {
         // f    = 2x^2 + x + 5   @ 2 = 15
         // f'   = 4x + 1         @ 2 = 9
         // f''  = 4              @ 2 = 4
-        // val polynomial = Polynomial(SimpleMatrix(6, 1, true, 
-        // doubleArrayOf((5.0, 2.0, -3.0, 10.0, 4.0, -6.0)))
-        //
-        // val y = polynomial[2.0, 0]
-        // println(" = $y")
-        // println(polynomial)
+        val vec = SimpleMatrix(6, 1, true,
+        doubleArrayOf(5.0, 2.0, -3.0, 10.0, 4.0, -6.0))
+
+        println(vec)
+        println(vec.numElements)
+        val coeffs = MutableList(vec.numElements, init = { index -> vec[index] })
+        println(coeffs)
+//        val polynomial = Polynomial(
+//            SimpleMatrix(6, 1, true,
+//        doubleArrayOf(5.0, 2.0, -3.0, 10.0, 4.0, -6.0)
+//        ))
+//
+//        val y = polynomial[2.0, 0]
+//        println(" = $y")
+//        println(polynomial)
     }
 }
