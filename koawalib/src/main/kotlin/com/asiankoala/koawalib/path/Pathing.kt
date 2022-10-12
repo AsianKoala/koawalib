@@ -7,6 +7,7 @@ import kotlin.math.absoluteValue
 import kotlin.math.atan2
 import kotlin.math.pow
 import org.ejml.simple.SimpleMatrix
+import kotlin.reflect.KClass
 
 /*
 sources i used to create my path generation system:
@@ -33,7 +34,7 @@ data class DifferentiablePoint(
     val second: Double = 0.0
 )
 
-class DifferentiablePoint2d(zero: Vector, first: Vector) {
+class HermiteControlPoint(zero: Vector, first: Vector) {
     val x: DifferentiablePoint
     val y: DifferentiablePoint
 
@@ -43,10 +44,19 @@ class DifferentiablePoint2d(zero: Vector, first: Vector) {
     }
 }
 
-abstract class DifferentiableFunction {
+abstract class SmoothFunction {
     abstract operator fun get(t: Double): DifferentiablePoint
 }
 
+// this is used for interpolating instead of
+// using reflection cause idk i dont like reflection
+abstract class HermitePolynomial : SmoothFunction() {
+    abstract val coeffVec: List<Double>
+    operator fun get(t: Double): DifferentiablePoint {
+        val n = coeffVec.size
+        val zero = coeffVec[0] * t.pow(n) + coeffVec[1]
+    }
+}
 
 // in the form ax^3 + bx^2 + cx + d
 // created from specifying the start point and derivative
@@ -54,10 +64,11 @@ abstract class DifferentiableFunction {
 // enforces c^2 because i force curvature at begin/end of spline to be 0.
 // thus we don't have that extra degree of freedom that quintics have,
 // but imo it doesn't matter that much
-class Cubic(
+// interpolated using hermite interpolation
+class CubicHermite(
     start: DifferentiablePoint,
     end: DifferentiablePoint
-) : DifferentiableFunction() {
+) : HermitePolynomial(start, end) {
     private val coeffVec: List<Double> 
 
     override operator fun get(t: Double): DifferentiablePoint {
@@ -98,10 +109,10 @@ class Cubic(
 }
 
 // in the form ax^5 + bx^4 + cx^3 + dx^2 + ex + f
-class Quintic(
+class QuinticHermite(
     start: DifferentiablePoint,
     end: DifferentiablePoint
-) : DifferentiableFunction() {
+) : HermitePolynomial(start, end) {
     private val coeffVec: List<Double>
 
     override operator fun get(t: Double): DifferentiablePoint {
@@ -360,9 +371,9 @@ class Arc(
 // r(s) = r(t(s))
 // r'(s) = r'(t(s)) * t'(s) = r'(t) / |r'(t)|
 // r''(s) = r''(t(s)) * t'(s)^2 + r'(t(s)) * t''(s)
-interface DifferentiableCurve {
-    val x: DifferentiableFunction
-    val y: DifferentiableFunction
+interface SmoothCurve {
+    val x: SmoothFunction
+    val y: SmoothFunction
     val length: Double
     fun invArc(s: Double): Double
 
@@ -410,13 +421,25 @@ interface DifferentiableCurve {
             else -> throw Exception("fuck you im not adding more derivatives :rage:")
         }
     }
+
+    /*
+    yoinked this from rr
+    basically the way this works is
+    take rVec from pose to projection
+    this is ideally normal to the curve
+    check if its normal with by dot product with tangent vec
+    ofc if result is 0, its normal (and therefore the correct projection)
+    if not, then add dot product to s
+    since dot product literally just finds the amount vec a is parallel to vec b
+     */
+   fun project(p: Vector, pGuess: Double) = (1..10).fold(pGuess) { s, _ ->  clamp(s + ((p - this[s].vec) dot this[s, 1].vec), 0.0, length) }
 }
 
 
 class Spline(
-    override val x: DifferentiableFunction,
-    override val y: DifferentiableFunction
-) : DifferentiableCurve {
+    override val x: SmoothFunction,
+    override val y: SmoothFunction
+) : SmoothCurve {
     private var _length = 0.0
     private val arcs = mutableListOf<Arc>()
     override val length: Double get() = _length
@@ -479,75 +502,73 @@ class Spline(
     }
 }
 
-abstract class Path(poses: List<Pose>) {
-    val curveSegments = mutableListOf<DifferentiableCurve>()
-    abstract fun project(p: Vector, pGuess: Double): Double
-    abstract fun generatePath(poses: List<Pose>)
-    abstract val length: Double
-    val start by lazy { this[0.0] }
-    val end by lazy { this[length] }
+interface SplineInterpolator {
+    fun interpolate()
+    val piecewiseCurve: MutableList<Spline>
+    val length: Double
+}
+
+/**
+ * i want to do something like this:
+ *
+ * val cubicPath = Path<Hermite<Cubic>>(poses here)
+ * val quinticPath = Path(
+ */
+class Path(private val interpolator: SplineInterpolator) {
+    val start get() = this[0.0]
+    val end get() = this[length]
+    val length get() = interpolator.length
 
     operator fun get(s: Double, n: Int = 0): Pose {
-        if(s <= 0.0) return curveSegments[0][0.0, n]
-        if(s >= length) return curveSegments.last()[curveSegments.last().length, n]
-        curveSegments.fold(0.0) { acc, spline ->
-            if(acc + spline.length > s) {
-                return spline[s - acc, n]
-            }
+        if(s <= 0.0) return interpolator.piecewiseCurve[0][0.0, n]
+        if(s >= length) {
+            val lastSpline = interpolator.piecewiseCurve.last()
+            return lastSpline[lastSpline.length, n]
+        }
+
+        interpolator.piecewiseCurve.fold(0.0) { acc, spline ->
+            if(acc + spline.length > s) return spline[s - acc, n]
             acc + spline.length
         }
+
         throw Exception("fuck you")
     }
 
     init {
-        generatePath(poses.toList())
+        interpolator.interpolate()
     }
 }
 
-abstract class SplinePath(
-    vararg poses: Pose
-) : Path(poses.toList()) {
+class HermiteSplineInterpolator(
+    private val splineClass: KClass<out HermitePolynomial>,
+    private vararg val controlPoses: Pose,
+) : SplineInterpolator {
     private var _length = 0.0
-    override val length get() = _length
+    override val piecewiseCurve = mutableListOf<Spline>()
+    override val length: Double get() = _length
 
-    abstract fun interpolate(start: DifferentiablePoint2d, end: DifferentiablePoint2d): Spline
-
-    /*
-    yoinked this from rr
-    basically the way this works is
-    take rVec from pose to projection
-    this is ideally normal to the curve
-    check if its normal with by dot product with tangent vec
-    ofc if result is 0, its normal (and therefore the correct projection)
-    if not, then add dot product to s
-    since dot product literally just finds the amount vec a is parallel to vec b
-     */
-    override fun project(p: Vector, pGuess: Double) = (1..10).fold(pGuess) { s, _ ->  clamp(s + ((p - this[s].vec) dot this[s, 1].vec), 0.0, length) }
-
-    override fun generatePath(poses: List<Pose>) {
-        var curr = poses[0]
-        for(target in poses.slice(1 until poses.size)) {
+    override fun interpolate() {
+        var curr = controlPoses[0]
+        for(target in controlPoses.slice(1 until controlPoses.size)) {
             val cv = curr.vec
             val tv = target.vec
             val r = cv.dist(tv)
-            val s = DifferentiablePoint2d(cv, Vector.fromPolar(r, curr.heading))
-            val e = DifferentiablePoint2d(tv, Vector.fromPolar(r, target.heading))
-            val spline = interpolate(s, e)
-            curveSegments.add(spline)
-            _length += spline.length
+            val s = HermiteControlPoint(cv, Vector.fromPolar(r, curr.heading))
+            val e = HermiteControlPoint(tv, Vector.fromPolar(r, target.heading))
+            val hermiteConst = splineClass.constructors.toList()[0]
+            val xHermitePoly = hermiteConst.call(s.x, e.x)
+            val yHermitePoly = hermiteConst.call(s.y, e.y)
+            val curve = Spline(xHermitePoly, yHermitePoly)
+            piecewiseCurve.add(curve)
+            _length += curve.length
             curr = target
         }
     }
 }
 
-class QuinticSplinePath(vararg poses: Pose) : SplinePath(*poses) {
-    override fun interpolate(start: DifferentiablePoint2d, end: DifferentiablePoint2d): Spline {
-        return Spline(Quintic(start.x, end.x), Quintic(start.y, end.y))
-    }
-}
-
-class CubicSplinePath(vararg poses: Pose) : SplinePath(*poses) {
-    override fun interpolate(start: DifferentiablePoint2d, end: DifferentiablePoint2d): Spline {
-        return Spline(Cubic(start.x, end.x), Cubic(start.y, end.y))
-    }
+fun main() {
+    val t = Path(HermiteSplineInterpolator(
+        CubicHermite::class,
+        Pose(),
+    ))
 }

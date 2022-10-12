@@ -8,7 +8,7 @@ import kotlin.math.sign
 object Testing {
     @JvmStatic
     fun main(args: Array<String>) {
-        val t = QuinticSplinePath(
+        val t = QuinticHermitePath(
             Pose(-60.0, -10.0, 0.0),
             Pose(-10.0, -35.0, 270.0.radians),
             Pose(-30.0, -60.0, 180.0.radians),

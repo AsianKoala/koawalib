@@ -33,7 +33,7 @@ import kotlin.math.sign
  *  its half-assed
  */
 class MPGVFController(
-    private val path: QuinticSplinePath,
+    private val path: QuinticHermitePath,
     private val kN: Double,
     private val kOmega: Double,
     private val kF: Double,
