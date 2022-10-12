@@ -1,8 +1,10 @@
-package com.asiankoala.koawalib.path
+package com.asiankoala.koawalib.path.gvf
 
-import com.asiankoala.koawalib.math.*
+import com.asiankoala.koawalib.math.Vector
+import com.asiankoala.koawalib.math.angleWrap
+import com.asiankoala.koawalib.math.degrees
+import com.asiankoala.koawalib.path.Path
 import com.asiankoala.koawalib.util.Speeds
-import kotlin.math.absoluteValue
 import kotlin.math.min
 
 /**
@@ -14,8 +16,6 @@ import kotlin.math.min
  *  @param kOmega heading weight
  *  @param kF end param weight
  *  @param kS raw scalar on translational power
- *  @param kLookahead turning lookahead
- *  @param kTheta translational heading error scalar
  *  @param epsilon allowed absolute and projected error
  *  @param errorMap error map to transform normal displacement error
  *  @property isFinished path finish state
@@ -27,28 +27,23 @@ import kotlin.math.min
  *  something like this: scaled = translational * max(1.0, kTheta / headingError.absolute)
  *  min cause we don't want to scale it upwards
  */
-class ExtGVFController(
+class SimpleGVFController(
     path: Path,
     kN: Double,
     kOmega: Double,
     private val kF: Double,
     private val kS: Double,
-    private val kLookahead: Double,
-    private val kTheta: Double,
     epsilon: Double,
-    errorMap: (Double) -> Double = { it }
+    errorMap: (Double) -> Double = { it },
 ) : GVFController(path, kN, kOmega, epsilon, errorMap) {
     override fun headingControl(vel: Speeds): Pair<Double, Double> {
-        val target = path[clamp(s + kLookahead, 0.0, path.length)].heading
-        val error = (target - pose.heading).angleWrap.degrees
+        val error = (tangent.angle - pose.heading).angleWrap.degrees
         val result = kOmega * error
         return Pair(result, error)
     }
 
     override fun vectorControl(vel: Speeds): Vector {
-        val endScalar = min(1.0, (path.length - s) / kF)
-        val headingErrorScalar = min(1.0, kTheta / headingResult.second.absoluteValue)
-        return gvfVec * kS * endScalar * headingErrorScalar
+        return gvfVec * kS * min(1.0, (path.length - s) / kF)
     }
 
     init {
