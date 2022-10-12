@@ -27,7 +27,7 @@ import kotlin.math.min
  *  min cause we don't want to scale it upwards
  */
 class SimpleGVFController(
-    path: QuinticHermitePath,
+    path: Path,
     kN: Double,
     kOmega: Double,
     private val kF: Double,

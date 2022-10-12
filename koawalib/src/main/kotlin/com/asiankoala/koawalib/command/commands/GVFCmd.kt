@@ -1,14 +1,14 @@
 package com.asiankoala.koawalib.command.commands
 
 import com.asiankoala.koawalib.math.Pose
-import com.asiankoala.koawalib.path.QuinticHermitePath
+import com.asiankoala.koawalib.path.Path
 import com.asiankoala.koawalib.path.SimpleGVFController
 import com.asiankoala.koawalib.subsystem.drive.KMecanumOdoDrive
 import com.asiankoala.koawalib.util.Speeds
 
 class GVFCmd(
     private val drive: KMecanumOdoDrive,
-    path: QuinticHermitePath,
+    path: Path,
     kN: Double,
     kOmega: Double,
     kF: Double,

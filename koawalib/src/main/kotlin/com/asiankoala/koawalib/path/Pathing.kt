@@ -3,10 +3,10 @@ package com.asiankoala.koawalib.path
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.Vector
 import com.asiankoala.koawalib.math.clamp
+import org.ejml.simple.SimpleMatrix
 import kotlin.math.absoluteValue
 import kotlin.math.atan2
 import kotlin.math.pow
-import org.ejml.simple.SimpleMatrix
 import kotlin.reflect.KClass
 
 /*
@@ -32,7 +32,10 @@ data class DifferentiablePoint(
     val zero: Double = 0.0,
     val first: Double = 0.0,
     val second: Double = 0.0
-)
+) {
+    private val derivatives = listOf(zero, first, second)
+    operator fun get(n: Int) = derivatives[n]
+}
 
 class HermiteControlPoint(zero: Vector, first: Vector) {
     val x: DifferentiablePoint
@@ -45,16 +48,26 @@ class HermiteControlPoint(zero: Vector, first: Vector) {
 }
 
 abstract class SmoothFunction {
-    abstract operator fun get(t: Double): DifferentiablePoint
+    abstract operator fun get(t: Double, degree: Int = 0): Double
 }
 
-// this is used for interpolating instead of
-// using reflection cause idk i dont like reflection
-abstract class HermitePolynomial : SmoothFunction() {
-    abstract val coeffVec: List<Double>
-    operator fun get(t: Double): DifferentiablePoint {
-        val n = coeffVec.size
-        val zero = coeffVec[0] * t.pow(n) + coeffVec[1]
+abstract class Polynomial : SmoothFunction() {
+    protected abstract val coeffVec: List<Double>
+    private val degree by lazy { coeffVec.size - 1 }
+
+    override operator fun get(t: Double, n: Int): Double {
+        return coeffVec.foldIndexed(0.0) { i, acc, c ->
+            acc + (0 until n).fold(1.0) { a, x ->
+                (degree - i - x) * a
+            } * c * t.pow(degree - i - n)
+        }
+    }
+
+    override fun toString(): String {
+        return coeffVec.subList(1, degree)
+            .foldIndexed("${coeffVec[0]}t^$degree ") { i, acc, c ->
+            acc + "+ ${c}t^${degree - i - 1} "
+        } + "+ ${coeffVec.last()}"
     }
 }
 
@@ -68,16 +81,8 @@ abstract class HermitePolynomial : SmoothFunction() {
 class CubicHermite(
     start: DifferentiablePoint,
     end: DifferentiablePoint
-) : HermitePolynomial(start, end) {
-    private val coeffVec: List<Double> 
-
-    override operator fun get(t: Double): DifferentiablePoint {
-        return DifferentiablePoint(
-            coeffVec[0] * t.pow(3) + coeffVec[1] * t.pow(2) + coeffVec[2] * t + coeffVec[3],
-            3 * coeffVec[0] * t.pow(2) + 2 * coeffVec[1] * t + coeffVec[2],
-            3 * coeffVec[0] * t + 2 * coeffVec[1]
-        )
-    }
+) : Polynomial() {
+    override val coeffVec: List<Double>
 
     override fun toString(): String {
         return "${coeffVec[0]}t^3 + ${coeffVec[1]}^2 + ${coeffVec[2]}t + ${coeffVec[3]}"
@@ -112,18 +117,8 @@ class CubicHermite(
 class QuinticHermite(
     start: DifferentiablePoint,
     end: DifferentiablePoint
-) : HermitePolynomial(start, end) {
-    private val coeffVec: List<Double>
-
-    override operator fun get(t: Double): DifferentiablePoint {
-        return DifferentiablePoint(
-            coeffVec[0] * t.pow(5) + coeffVec[1] * t.pow(4) + coeffVec[2] * t.pow(3) +
-                    coeffVec[3] * t.pow(2) + coeffVec[4] * t + coeffVec[5],
-            5 * coeffVec[0] * t.pow(4) + 4 * coeffVec[1] * t.pow(3) + 3 * coeffVec[2] * t.pow(2) +
-                    2 * coeffVec[3] * t + coeffVec[4],
-            20 * coeffVec[0] * t.pow(3) + 12 * coeffVec[1] * t.pow(2) + 6 * coeffVec[2] * t + 2 * coeffVec[3]
-        )
-    }
+) : Polynomial() {
+    override val coeffVec: List<Double>
 
     override fun toString(): String {
         return "${coeffVec[0]}t^5 + ${coeffVec[1]}^4 + ${coeffVec[2]}t^3 + ${coeffVec[3]}t^2 + ${coeffVec[4]}t + ${coeffVec[5]}"
@@ -377,15 +372,7 @@ interface SmoothCurve {
     val length: Double
     fun invArc(s: Double): Double
 
-    fun rt(t: Double, n: Int = 0): Vector {
-        val xt = x[t]
-        val yt = y[t]
-        return when(n) {
-            1 -> Vector(xt.first, yt.first)
-            2 -> Vector(xt.second, yt.second)
-            else -> Vector(xt.zero, yt.zero)
-        }
-    }
+    fun rt(t: Double, n: Int = 0) = Vector(x[t, n], y[t, n])
 
     private fun dsdt(t: Double, n: Int = 1): Double {
         return when(n) {
@@ -421,18 +408,6 @@ interface SmoothCurve {
             else -> throw Exception("fuck you im not adding more derivatives :rage:")
         }
     }
-
-    /*
-    yoinked this from rr
-    basically the way this works is
-    take rVec from pose to projection
-    this is ideally normal to the curve
-    check if its normal with by dot product with tangent vec
-    ofc if result is 0, its normal (and therefore the correct projection)
-    if not, then add dot product to s
-    since dot product literally just finds the amount vec a is parallel to vec b
-     */
-   fun project(p: Vector, pGuess: Double) = (1..10).fold(pGuess) { s, _ ->  clamp(s + ((p - this[s].vec) dot this[s, 1].vec), 0.0, length) }
 }
 
 
@@ -478,7 +453,7 @@ class Spline(
             val startK = rt(curr.first, 2).cross(rt(curr.first, 1)) / rt(curr.first, 1).norm.pow(3)
             val endK = rt(curr.second, 2).cross(rt(curr.second, 1)) / rt(curr.second, 1).norm.pow(3)
             val arc = Arc(startV, midV, endV)
-            // we want to make our approximations as circle-y as possible, so 
+            // we want to make our approximations as circle-y as possible, so
             // the arc approximation will be more accurate
             // a more accurate interpolation when param from s -> t
             // might want to try adjusting 0.01 for curve or 1.0 for arc length later
@@ -534,13 +509,26 @@ class Path(private val interpolator: SplineInterpolator) {
         throw Exception("fuck you")
     }
 
+
+    /*
+    yoinked this from rr
+    basically the way this works is
+    take rVec from pose to projection
+    this is ideally normal to the curve
+    check if its normal with by dot product with tangent vec
+    ofc if result is 0, its normal (and therefore the correct projection)
+    if not, then add dot product to s
+    since dot product literally just finds the amount vec a is parallel to vec b
+     */
+    fun project(p: Vector, pGuess: Double) = (1..10).fold(pGuess) { s, _ ->  clamp(s + ((p - this[s].vec) dot this[s, 1].vec), 0.0, length) }
+
     init {
         interpolator.interpolate()
     }
 }
 
 class HermiteSplineInterpolator(
-    private val splineClass: KClass<out HermitePolynomial>,
+    private val splineClass: KClass<out Polynomial>,
     private vararg val controlPoses: Pose,
 ) : SplineInterpolator {
     private var _length = 0.0
@@ -564,11 +552,4 @@ class HermiteSplineInterpolator(
             curr = target
         }
     }
-}
-
-fun main() {
-    val t = Path(HermiteSplineInterpolator(
-        CubicHermite::class,
-        Pose(),
-    ))
 }
