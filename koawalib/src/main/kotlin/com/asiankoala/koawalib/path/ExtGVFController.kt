@@ -28,7 +28,7 @@ import kotlin.math.min
  *  min cause we don't want to scale it upwards
  */
 class ExtGVFController(
-    path: QuinticSplinePath,
+    path: Path,
     kN: Double,
     kOmega: Double,
     private val kF: Double,

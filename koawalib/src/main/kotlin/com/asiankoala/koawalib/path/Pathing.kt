@@ -3,10 +3,11 @@ package com.asiankoala.koawalib.path
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.Vector
 import com.asiankoala.koawalib.math.clamp
+import org.ejml.simple.SimpleMatrix
 import kotlin.math.absoluteValue
 import kotlin.math.atan2
 import kotlin.math.pow
-import org.ejml.simple.SimpleMatrix
+import kotlin.reflect.KClass
 
 /*
 sources i used to create my path generation system:
@@ -31,9 +32,12 @@ data class DifferentiablePoint(
     val zero: Double = 0.0,
     val first: Double = 0.0,
     val second: Double = 0.0
-)
+) {
+    private val derivatives = listOf(zero, first, second)
+    operator fun get(n: Int) = derivatives[n]
+}
 
-class DifferentiablePoint2d(zero: Vector, first: Vector) {
+class HermiteControlPoint(zero: Vector, first: Vector) {
     val x: DifferentiablePoint
     val y: DifferentiablePoint
 
@@ -43,10 +47,29 @@ class DifferentiablePoint2d(zero: Vector, first: Vector) {
     }
 }
 
-abstract class DifferentiableFunction {
-    abstract operator fun get(t: Double): DifferentiablePoint
+abstract class SmoothFunction {
+    abstract operator fun get(t: Double, degree: Int = 0): Double
 }
 
+abstract class Polynomial : SmoothFunction() {
+    protected abstract val coeffVec: List<Double>
+    private val degree by lazy { coeffVec.size - 1 }
+
+    override operator fun get(t: Double, n: Int): Double {
+        return coeffVec.foldIndexed(0.0) { i, acc, c ->
+            acc + (0 until n).fold(1.0) { a, x ->
+                (degree - i - x) * a
+            } * c * t.pow(degree - i - n)
+        }
+    }
+
+    override fun toString(): String {
+        return coeffVec.subList(1, degree)
+            .foldIndexed("${coeffVec[0]}t^$degree ") { i, acc, c ->
+            acc + "+ ${c}t^${degree - i - 1} "
+        } + "+ ${coeffVec.last()}"
+    }
+}
 
 // in the form ax^3 + bx^2 + cx + d
 // created from specifying the start point and derivative
@@ -54,19 +77,12 @@ abstract class DifferentiableFunction {
 // enforces c^2 because i force curvature at begin/end of spline to be 0.
 // thus we don't have that extra degree of freedom that quintics have,
 // but imo it doesn't matter that much
-class Cubic(
+// interpolated using hermite interpolation
+class CubicHermite(
     start: DifferentiablePoint,
     end: DifferentiablePoint
-) : DifferentiableFunction() {
-    private val coeffVec: List<Double> 
-
-    override operator fun get(t: Double): DifferentiablePoint {
-        return DifferentiablePoint(
-            coeffVec[0] * t.pow(3) + coeffVec[1] * t.pow(2) + coeffVec[2] * t + coeffVec[3],
-            3 * coeffVec[0] * t.pow(2) + 2 * coeffVec[1] * t + coeffVec[2],
-            3 * coeffVec[0] * t + 2 * coeffVec[1]
-        )
-    }
+) : Polynomial() {
+    override val coeffVec: List<Double>
 
     override fun toString(): String {
         return "${coeffVec[0]}t^3 + ${coeffVec[1]}^2 + ${coeffVec[2]}t + ${coeffVec[3]}"
@@ -98,21 +114,11 @@ class Cubic(
 }
 
 // in the form ax^5 + bx^4 + cx^3 + dx^2 + ex + f
-class Quintic(
+class QuinticHermite(
     start: DifferentiablePoint,
     end: DifferentiablePoint
-) : DifferentiableFunction() {
-    private val coeffVec: List<Double>
-
-    override operator fun get(t: Double): DifferentiablePoint {
-        return DifferentiablePoint(
-            coeffVec[0] * t.pow(5) + coeffVec[1] * t.pow(4) + coeffVec[2] * t.pow(3) +
-                    coeffVec[3] * t.pow(2) + coeffVec[4] * t + coeffVec[5],
-            5 * coeffVec[0] * t.pow(4) + 4 * coeffVec[1] * t.pow(3) + 3 * coeffVec[2] * t.pow(2) +
-                    2 * coeffVec[3] * t + coeffVec[4],
-            20 * coeffVec[0] * t.pow(3) + 12 * coeffVec[1] * t.pow(2) + 6 * coeffVec[2] * t + 2 * coeffVec[3]
-        )
-    }
+) : Polynomial() {
+    override val coeffVec: List<Double>
 
     override fun toString(): String {
         return "${coeffVec[0]}t^5 + ${coeffVec[1]}^4 + ${coeffVec[2]}t^3 + ${coeffVec[3]}t^2 + ${coeffVec[4]}t + ${coeffVec[5]}"
@@ -360,21 +366,13 @@ class Arc(
 // r(s) = r(t(s))
 // r'(s) = r'(t(s)) * t'(s) = r'(t) / |r'(t)|
 // r''(s) = r''(t(s)) * t'(s)^2 + r'(t(s)) * t''(s)
-interface DifferentiableCurve {
-    val x: DifferentiableFunction
-    val y: DifferentiableFunction
+interface SmoothCurve {
+    val x: SmoothFunction
+    val y: SmoothFunction
     val length: Double
     fun invArc(s: Double): Double
 
-    fun rt(t: Double, n: Int = 0): Vector {
-        val xt = x[t]
-        val yt = y[t]
-        return when(n) {
-            1 -> Vector(xt.first, yt.first)
-            2 -> Vector(xt.second, yt.second)
-            else -> Vector(xt.zero, yt.zero)
-        }
-    }
+    fun rt(t: Double, n: Int = 0) = Vector(x[t, n], y[t, n])
 
     private fun dsdt(t: Double, n: Int = 1): Double {
         return when(n) {
@@ -414,9 +412,9 @@ interface DifferentiableCurve {
 
 
 class Spline(
-    override val x: DifferentiableFunction,
-    override val y: DifferentiableFunction
-) : DifferentiableCurve {
+    override val x: SmoothFunction,
+    override val y: SmoothFunction
+) : SmoothCurve {
     private var _length = 0.0
     private val arcs = mutableListOf<Arc>()
     override val length: Double get() = _length
@@ -455,7 +453,7 @@ class Spline(
             val startK = rt(curr.first, 2).cross(rt(curr.first, 1)) / rt(curr.first, 1).norm.pow(3)
             val endK = rt(curr.second, 2).cross(rt(curr.second, 1)) / rt(curr.second, 1).norm.pow(3)
             val arc = Arc(startV, midV, endV)
-            // we want to make our approximations as circle-y as possible, so 
+            // we want to make our approximations as circle-y as possible, so
             // the arc approximation will be more accurate
             // a more accurate interpolation when param from s -> t
             // might want to try adjusting 0.01 for curve or 1.0 for arc length later
@@ -479,38 +477,38 @@ class Spline(
     }
 }
 
-abstract class Path(poses: List<Pose>) {
-    val curveSegments = mutableListOf<DifferentiableCurve>()
-    abstract fun project(p: Vector, pGuess: Double): Double
-    abstract fun generatePath(poses: List<Pose>)
-    abstract val length: Double
-    val start by lazy { this[0.0] }
-    val end by lazy { this[length] }
+interface SplineInterpolator {
+    fun interpolate()
+    val piecewiseCurve: MutableList<Spline>
+    val length: Double
+}
+
+/**
+ * i want to do something like this:
+ *
+ * val cubicPath = Path<Hermite<Cubic>>(poses here)
+ * val quinticPath = Path(
+ */
+class Path(private val interpolator: SplineInterpolator) {
+    val start get() = this[0.0]
+    val end get() = this[length]
+    val length get() = interpolator.length
 
     operator fun get(s: Double, n: Int = 0): Pose {
-        if(s <= 0.0) return curveSegments[0][0.0, n]
-        if(s >= length) return curveSegments.last()[curveSegments.last().length, n]
-        curveSegments.fold(0.0) { acc, spline ->
-            if(acc + spline.length > s) {
-                return spline[s - acc, n]
-            }
+        if(s <= 0.0) return interpolator.piecewiseCurve[0][0.0, n]
+        if(s >= length) {
+            val lastSpline = interpolator.piecewiseCurve.last()
+            return lastSpline[lastSpline.length, n]
+        }
+
+        interpolator.piecewiseCurve.fold(0.0) { acc, spline ->
+            if(acc + spline.length > s) return spline[s - acc, n]
             acc + spline.length
         }
+
         throw Exception("fuck you")
     }
 
-    init {
-        generatePath(poses.toList())
-    }
-}
-
-abstract class SplinePath(
-    vararg poses: Pose
-) : Path(poses.toList()) {
-    private var _length = 0.0
-    override val length get() = _length
-
-    abstract fun interpolate(start: DifferentiablePoint2d, end: DifferentiablePoint2d): Spline
 
     /*
     yoinked this from rr
@@ -522,32 +520,36 @@ abstract class SplinePath(
     if not, then add dot product to s
     since dot product literally just finds the amount vec a is parallel to vec b
      */
-    override fun project(p: Vector, pGuess: Double) = (1..10).fold(pGuess) { s, _ ->  clamp(s + ((p - this[s].vec) dot this[s, 1].vec), 0.0, length) }
+    fun project(p: Vector, pGuess: Double) = (1..10).fold(pGuess) { s, _ ->  clamp(s + ((p - this[s].vec) dot this[s, 1].vec), 0.0, length) }
 
-    override fun generatePath(poses: List<Pose>) {
-        var curr = poses[0]
-        for(target in poses.slice(1 until poses.size)) {
+    init {
+        interpolator.interpolate()
+    }
+}
+
+class HermiteSplineInterpolator(
+    private val splineClass: KClass<out Polynomial>,
+    private vararg val controlPoses: Pose,
+) : SplineInterpolator {
+    private var _length = 0.0
+    override val piecewiseCurve = mutableListOf<Spline>()
+    override val length: Double get() = _length
+
+    override fun interpolate() {
+        var curr = controlPoses[0]
+        for(target in controlPoses.slice(1 until controlPoses.size)) {
             val cv = curr.vec
             val tv = target.vec
             val r = cv.dist(tv)
-            val s = DifferentiablePoint2d(cv, Vector.fromPolar(r, curr.heading))
-            val e = DifferentiablePoint2d(tv, Vector.fromPolar(r, target.heading))
-            val spline = interpolate(s, e)
-            curveSegments.add(spline)
-            _length += spline.length
+            val s = HermiteControlPoint(cv, Vector.fromPolar(r, curr.heading))
+            val e = HermiteControlPoint(tv, Vector.fromPolar(r, target.heading))
+            val hermiteConst = splineClass.constructors.toList()[0]
+            val xHermitePoly = hermiteConst.call(s.x, e.x)
+            val yHermitePoly = hermiteConst.call(s.y, e.y)
+            val curve = Spline(xHermitePoly, yHermitePoly)
+            piecewiseCurve.add(curve)
+            _length += curve.length
             curr = target
         }
-    }
-}
-
-class QuinticSplinePath(vararg poses: Pose) : SplinePath(*poses) {
-    override fun interpolate(start: DifferentiablePoint2d, end: DifferentiablePoint2d): Spline {
-        return Spline(Quintic(start.x, end.x), Quintic(start.y, end.y))
-    }
-}
-
-class CubicSplinePath(vararg poses: Pose) : SplinePath(*poses) {
-    override fun interpolate(start: DifferentiablePoint2d, end: DifferentiablePoint2d): Spline {
-        return Spline(Cubic(start.x, end.x), Cubic(start.y, end.y))
     }
 }

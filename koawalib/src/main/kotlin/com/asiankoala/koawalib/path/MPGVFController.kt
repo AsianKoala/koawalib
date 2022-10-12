@@ -26,14 +26,14 @@ import kotlin.math.sign
  *  @param errorMap error map to transform normal displacement error
  *  @property isFinished path finish state
  *  honestly this probably isn't the proper way to do a motion profiled gvf,
- *  but i cba to find gradients. doing it this way is just pisseasy and works even if 
+ *  but i cba to find gradients. doing it this way is just pisseasy and works even if
  *  (although idk if it works xd)
  *  in the future i might try doing a better impl of motion profiling a gvf
- *  which means either reading 
+ *  which means either reading
  *  its half-assed
  */
 class MPGVFController(
-    private val path: QuinticSplinePath,
+    private val path: Path,
     private val kN: Double,
     private val kOmega: Double,
     private val kF: Double,

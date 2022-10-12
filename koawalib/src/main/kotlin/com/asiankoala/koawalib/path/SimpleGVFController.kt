@@ -1,6 +1,5 @@
 package com.asiankoala.koawalib.path
 
-import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.Vector
 import com.asiankoala.koawalib.math.angleWrap
 import com.asiankoala.koawalib.math.degrees
@@ -28,7 +27,7 @@ import kotlin.math.min
  *  min cause we don't want to scale it upwards
  */
 class SimpleGVFController(
-    path: QuinticSplinePath,
+    path: Path,
     kN: Double,
     kOmega: Double,
     private val kF: Double,
