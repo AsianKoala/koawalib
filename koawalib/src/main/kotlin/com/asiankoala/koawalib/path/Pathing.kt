@@ -3,6 +3,7 @@ package com.asiankoala.koawalib.path
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.Vector
 import com.asiankoala.koawalib.math.clamp
+import com.asiankoala.koawalib.logger.Logger
 import org.ejml.simple.SimpleMatrix
 import kotlin.math.absoluteValue
 import kotlin.math.atan2
@@ -393,7 +394,7 @@ class HermiteSplineInterpolator(
         val x = M.extractVector(false, 0)
         val y = M.extractVector(false, 1)
 
-        println("resulting matrix: $M")
+        Logger.logInfo("resulting matrix: $M")
         return Spline(Polynomial(x), Polynomial(y))
     }
 
