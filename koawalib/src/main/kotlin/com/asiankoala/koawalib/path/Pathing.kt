@@ -378,7 +378,7 @@ interface SmoothCurve {
         return when(n) {
             1 -> rt(t, 1).norm
             2 -> (2 * rt(t, 1).dot(rt(t, 2))) / dsdt(t)
-            else -> throw Exception("im not implemented any more derivatives fuck u")
+            else -> throw Exception("im not implementing any more derivatives")
         }
     }
 
@@ -386,7 +386,7 @@ interface SmoothCurve {
         return when(n) {
             1 -> 1.0 / dsdt(t)
             2 -> -dsdt(t, 2) / dsdt(t).pow(3)
-            else -> throw Exception("im not implemented any more derivatives fuck u")
+            else -> throw Exception("im not implementing any more derivatives")
         }
     }
 
@@ -405,7 +405,7 @@ interface SmoothCurve {
             0 -> Pose(rs(s), rs(s, 1).angle)
             1 -> Pose(rs(s, 1), rs(s, 1).cross(rs(s, 2)))
             2 -> Pose(rs(s, 2), 0.0)
-            else -> throw Exception("fuck you im not adding more derivatives :rage:")
+            else -> throw Exception("im not implemented any more derivatives fuck u")
         }
     }
 }
@@ -430,7 +430,7 @@ class Spline(
             if(acc + arc.length > s) return arc.interpolateSAlongT(acc - s)
             acc + arc.length
         }
-        throw Exception("i think ur pretty fucking bad a coding neil")
+        throw Exception("i think ur pretty bad a coding neil")
     }
 
     override fun toString(): String {
@@ -506,7 +506,7 @@ class Path(private val interpolator: SplineInterpolator) {
             acc + spline.length
         }
 
-        throw Exception("fuck you")
+        throw Exception("couldn't find curve in piecewise")
     }
 
 
