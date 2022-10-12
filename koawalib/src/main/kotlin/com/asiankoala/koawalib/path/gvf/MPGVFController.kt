@@ -1,4 +1,4 @@
-package com.asiankoala.koawalib.path
+package com.asiankoala.koawalib.path.gvf
 
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.Vector
@@ -8,6 +8,7 @@ import com.asiankoala.koawalib.util.Speeds
 import com.asiankoala.koawalib.control.profile.MotionConstraints
 import com.asiankoala.koawalib.control.profile.MotionProfile
 import com.asiankoala.koawalib.control.profile.MotionState
+import com.asiankoala.koawalib.path.Path
 import com.qualcomm.robotcore.util.ElapsedTime
 import kotlin.math.PI
 import kotlin.math.sign

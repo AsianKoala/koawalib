@@ -1,8 +1,9 @@
-package com.asiankoala.koawalib.path
+package com.asiankoala.koawalib.path.gvf
 
 import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.Vector
+import com.asiankoala.koawalib.path.Path
 import com.asiankoala.koawalib.util.Speeds
 import kotlin.math.PI
 import kotlin.math.sign

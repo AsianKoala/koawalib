@@ -7,7 +7,6 @@ import org.ejml.simple.SimpleMatrix
 import kotlin.math.absoluteValue
 import kotlin.math.atan2
 import kotlin.math.pow
-import kotlin.reflect.KClass
 
 /*
 sources i used to create my path generation system:
@@ -28,35 +27,19 @@ https://github.com/GrappleRobotics/Pathfinder/tree/master/Pathfinder/src/include
 this is the basis of my arc approximation
 of course, credit given to rr for the idea of using splines for paths, as well as its projection algorithm
  */
-data class DifferentiablePoint(
-    val zero: Double = 0.0,
-    val first: Double = 0.0,
-    val second: Double = 0.0
-) {
-    private val derivatives = listOf(zero, first, second)
-    operator fun get(n: Int) = derivatives[n]
-}
 
-class HermiteControlPoint(zero: Vector, first: Vector) {
-    val x: DifferentiablePoint
-    val y: DifferentiablePoint
+class Polynomial(coeffVec: SimpleMatrix) {
+    private val coeffs = mutableListOf<Double>()
+    private val degree by lazy { coeffs.size - 1 }
 
-    init {
-        x = DifferentiablePoint(zero.x, first.x)
-        y = DifferentiablePoint(zero.y, first.y)
-    }
-}
-
-abstract class SmoothFunction {
-    abstract operator fun get(t: Double, degree: Int = 0): Double
-}
-
-abstract class Polynomial : SmoothFunction() {
-    protected abstract val coeffVec: List<Double>
-    private val degree by lazy { coeffVec.size - 1 }
-
-    override operator fun get(t: Double, n: Int): Double {
-        return coeffVec.foldIndexed(0.0) { i, acc, c ->
+    /**
+     * yes this is totally unreadable i know
+     * but it's cool so whatever
+     * @param t function input
+     * @param n nth deriv
+     */
+    operator fun get(t: Double, n: Int): Double {
+        return coeffs.foldIndexed(0.0) { i, acc, c ->
             acc + (0 until n).fold(1.0) { a, x ->
                 (degree - i - x) * a
             } * c * t.pow(degree - i - n)
@@ -64,198 +47,28 @@ abstract class Polynomial : SmoothFunction() {
     }
 
     override fun toString(): String {
-        return coeffVec.subList(1, degree)
-            .foldIndexed("${coeffVec[0]}t^$degree ") { i, acc, c ->
+        return coeffs.subList(1, degree)
+            .foldIndexed("${coeffs[0]}t^$degree ") { i, acc, c ->
             acc + "+ ${c}t^${degree - i - 1} "
-        } + "+ ${coeffVec.last()}"
-    }
-}
-
-// in the form ax^3 + bx^2 + cx + d
-// created from specifying the start point and derivative
-// https://cdn.discordapp.com/attachments/770810258322227231/1028432435236581386/unknown.png
-// enforces c^2 because i force curvature at begin/end of spline to be 0.
-// thus we don't have that extra degree of freedom that quintics have,
-// but imo it doesn't matter that much
-// interpolated using hermite interpolation
-class CubicHermite(
-    start: DifferentiablePoint,
-    end: DifferentiablePoint
-) : Polynomial() {
-    override val coeffVec: List<Double>
-
-    override fun toString(): String {
-        return "${coeffVec[0]}t^3 + ${coeffVec[1]}^2 + ${coeffVec[2]}t + ${coeffVec[3]}"
+        } + "+ ${coeffs.last()}"
     }
 
     init {
-        val A = SimpleMatrix(4, 4, true, doubleArrayOf(
-            0.0, 0.0, 0.0, 1.0,
-            0.0, 0.0, 1.0, 0.0,
-            1.0, 1.0, 1.0, 1.0,
-            3.0, 2.0, 1.0, 0.0
-        ))
-
-        val B = SimpleMatrix(4, 1, true, doubleArrayOf(
-            start.zero,
-            start.first,
-            end.zero,
-            end.first
-        ))
-
-        val x = A.solve(B)
-        coeffVec = listOf(
-            x[0],
-            x[1],
-            x[2],
-            x[3]
-        )
-    }
-}
-
-// in the form ax^5 + bx^4 + cx^3 + dx^2 + ex + f
-class QuinticHermite(
-    start: DifferentiablePoint,
-    end: DifferentiablePoint
-) : Polynomial() {
-    override val coeffVec: List<Double>
-
-    override fun toString(): String {
-        return "${coeffVec[0]}t^5 + ${coeffVec[1]}^4 + ${coeffVec[2]}t^3 + ${coeffVec[3]}t^2 + ${coeffVec[4]}t + ${coeffVec[5]}"
-    }
-
-    init {
-        val A = SimpleMatrix(6, 6, true, doubleArrayOf(
-            0.0, 0.0, 0.0, 0.0, 0.0, 1.0,
-            0.0, 0.0, 0.0, 0.0, 1.0, 0.0,
-            0.0, 0.0, 0.0, 2.0, 0.0, 0.0,
-            1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-            5.0, 4.0, 3.0, 2.0, 1.0, 0.0,
-            20.0, 12.0, 6.0, 2.0, 0.0, 0.0
-        ))
-
-        val B = SimpleMatrix(6, 1, true, doubleArrayOf(
-            start.zero,
-            start.first,
-            0.0,
-            end.zero,
-            end.first,
-            0.0
-        ))
-
-        val x = A.solve(B)
-        coeffVec = listOf(
-            x[0],
-            x[1],
-            x[2],
-            x[3],
-            x[4],
-            x[5]
-        )
-    }
-}
-
-/*
-see https://www.youtube.com/watch?v=unWguclP-Ds&list=PLC8FC40C714F5E60F&index=2
-and https://pomax.github.io/bezierinfo/#arclength
-arc length is int 0->1 ||r'(t)|| dt of course
-Gaussian quadrature is derived on the interval [-1,1]
-but changing it to [0,1] is arbitrarily easy
- */
-data class GaussianLegendreCoefficients(
-    val weight: Double,
-    val abscissa: Double
-)
-
-abstract class GaussianQuadratureTable {
-    abstract val list: List<GaussianLegendreCoefficients>
-}
-
-class FivePointGaussianLegendre : GaussianQuadratureTable() {
-    override val list: List<GaussianLegendreCoefficients>
-        get() = listOf(
-            GaussianLegendreCoefficients(0.5688888888888889, 0.0000000000000000),
-            GaussianLegendreCoefficients(0.4786286704993665, -0.5384693101056831),
-            GaussianLegendreCoefficients(0.4786286704993665, 0.5384693101056831),
-            GaussianLegendreCoefficients(0.2369268850561891, -0.9061798459386640),
-            GaussianLegendreCoefficients(0.2369268850561891, 0.9061798459386640)
-        )
-}
-
-class GaussianQuadrature(
-    curve: Spline,
-    table: GaussianQuadratureTable
-) {
-    var length = 0.0
-        private set
-
-    init {
-        for(coefficient in table.list) {
-            val t = 0.5 * (1.0 + coefficient.abscissa) // used for converting from [-1,1] to [0,1]
-            length += curve.rt(t, 1).norm * coefficient.weight
-        }
-        length *= 0.5
+        require(coeffVec.isVector)
+        for(x in 0..coeffVec.numElements) coeffs[x] = coeffVec[x]
     }
 }
 
 // To actually create paths, we can't have splines parametrized on [0,1] with t,
-// instead splines have to be parametrized according to arc length s.
+// instead splines have to be parametrized according to arc length s
 // This problem is obvious when combining splines, cause t is completely
 // arbitrary in different parts of a path (e.g.) for the first spline,
 // t=1 might correspond to 10 inches of arc length, while t=1 at the
 // another spline segment might correspond to 20 inches.
-// Parametrizing is pretty simple itself (second week of multi var calc)
-// 1. s(t) = int 0->t |r'(u)| du
-// 2. t(s) = inverse function of s(t)
-// 3. plug t(s) into r(t) (our spline)
-// 4. r(t(s)) now is our give parametrized by arc length
-// from here on out r((t(s)) will just be referred to as r(s) since its already reparamed
-// Ryan (rbrott) talks about this in section 5 of his Quintic Splines for FTC paper
-// r(s) obviously has different derivatives now, but they are fairly simple to find
-// by just chain ruling
-// r(s) = r(t(s))
-// r'(s) = r'(t(s)) * t'(s)
-// r''(s) = r''(t(s)) * t'(s) * t'(s) + r'(t(s)) * t''(s)
-// r''(s) = r''(t(s)) * t'(s)^2 + r'(t(s)) * t''(s)
-// s(t) = int 0->t |r'(u)| du
-// s(t) = int 0-> sqrt((dx/du)^2 + (dy/du)^2) du
-// s'(t) = |r'(t)|
-// s'(t) = d/dt int 0->t |r'(u)| du
-// = |r'(t)|
-// this is cool and all, but we need a way to reparametrize from s->t still
+// Converting from t -> s is pretty simple itself (remember multi) but we want s -> t in t(s)
+// ryan (rbrott) talks about this in his "Quintic Splines for FTC" paper
 // see https://github.com/GrappleRobotics/Pathfinder/blob/master/Pathfinder/src/include/grpl/pf/path/arc_parameterizer.h
-//
-// this arc class is used to reparametrize, also pulled from above link ^
-// template <typename output_iterator_t>
-// size_t parameterize(spline<2> &spline, output_iterator_t &&curve_begin, const size_t max_curve_count,
-//                     double t_lo = 0, double t_hi = 1) {
-//   _has_overrun = false;
-//   if (max_curve_count <= 0) {
-//     _has_overrun = true;
-//     return 0;
-//   }
-//
-//   double t_mid = (t_hi + t_lo) / 2.0;
-//   double k_lo  = spline.curvature(t_lo);
-//   double k_hi  = spline.curvature(t_hi);
-//
-//   augmented_arc2d arc{spline.position(t_lo), spline.position(t_mid), spline.position(t_hi), k_lo, k_hi};
-//
-//   bool subdivide = (fabs(k_hi - k_lo) > _max_delta_curvature) || (arc.length() > _max_arc_length);
-//
-//   if (subdivide) {
-//     output_iterator_t head = curve_begin;
-//
-//     size_t len = parameterize(spline, head, max_curve_count, t_lo, t_mid);
-//     len += parameterize(spline, head, max_curve_count - len, t_mid, t_hi);
-//     return len;
-//   } else {
-//     arc.set_curvature(k_lo, k_hi);
-//     *(curve_begin++) = arc;
-//     return 1;
-//   }
-// }
-// really need to make this class cleaner tbh
+// this arc class is used to parametrize, pulled from above link ^
 class Arc(
     private val start: Vector,
     mid: Vector,
@@ -298,27 +111,31 @@ class Arc(
     init {
         // ok manually calculating matrix determinants and inverses is hella cringe lmfao
         // should prolly just use apache mat lib instead
-        val coeffMatrix = listOf(
-            listOf(2 * (start.x - end.x), 2 * (start.y - end.y)),
-            listOf(2 * (start.x - mid.x), 2 * (start.y - mid.y))
-        )
+        val coeffMatrix = SimpleMatrix(2, 2, true, doubleArrayOf(
+            2 * (start.x - end.x), 2 * (start.y - end.y),
+            2 * (start.x - mid.x), 2 * (start.y - mid.y)
+        ))
 
-        val coeffDet = coeffMatrix[0][0] * coeffMatrix[1][1] - coeffMatrix[0][1] * coeffMatrix[1][0]
+        val det = coeffMatrix.determinant()
 
-        if(coeffDet == 0.0) {
+        if(det == 0.0) {
             curvature = 0.0
             ref = start
             val delta = end - start
             length = delta.norm
             angleOffset = atan2(delta.y, delta.x)
         } else {
+            // todo: check if this works
             val sNN = start.normSq
             val mNN = mid.normSq
             val eNN = end.normSq
-            val rVec = Vector(sNN - eNN, sNN - mNN)
-            val inverse1 = Vector(coeffMatrix[1][1] / coeffDet, -coeffMatrix[0][1] / coeffDet)
-            val inverse2 = Vector(-coeffMatrix[1][0] / coeffDet, coeffMatrix[0][0] / coeffDet)
-            ref = Vector(inverse1.dot(rVec), inverse2.dot(rVec))
+            val r = SimpleMatrix(2, 1, true, doubleArrayOf(
+                sNN - eNN,
+                sNN - mNN
+            ))
+            val inverse = coeffMatrix.invert()
+            val product = inverse.mult(r)
+            ref = Vector(product[0], product[1])
             angleOffset = (start - ref).angle
             val angle1 = (end - ref).angle
             curvature = 1.0 / (start - ref).norm
@@ -366,9 +183,11 @@ class Arc(
 // r(s) = r(t(s))
 // r'(s) = r'(t(s)) * t'(s) = r'(t) / |r'(t)|
 // r''(s) = r''(t(s)) * t'(s)^2 + r'(t(s)) * t''(s)
+// did i really just type all of this out instead of
+// doing it on paper? yes. am i lazy? yes.
 interface SmoothCurve {
-    val x: SmoothFunction
-    val y: SmoothFunction
+    val x: Polynomial
+    val y: Polynomial
     val length: Double
     fun invArc(s: Double): Double
 
@@ -410,10 +229,9 @@ interface SmoothCurve {
     }
 }
 
-
 class Spline(
-    override val x: SmoothFunction,
-    override val y: SmoothFunction
+    override val x: Polynomial,
+    override val y: Polynomial
 ) : SmoothCurve {
     private var _length = 0.0
     private val arcs = mutableListOf<Arc>()
@@ -483,13 +301,102 @@ interface SplineInterpolator {
     val length: Double
 }
 
-/**
- * i want to do something like this:
- *
- * val cubicPath = Path<Hermite<Cubic>>(poses here)
- * val quinticPath = Path(
- */
-class Path(private val interpolator: SplineInterpolator) {
+data class HermiteControlPoint1d(
+    val zero: Double = 0.0,
+    val first: Double = 0.0,
+    val second: Double = 0.0
+) {
+    private val derivatives = listOf(zero, first, second)
+    operator fun get(n: Int) = derivatives[n]
+}
+
+class HermiteControlPoint2d(zero: Vector, first: Vector, second: Vector = Vector()) {
+    val x: HermiteControlPoint1d
+    val y: HermiteControlPoint1d
+
+    init {
+        x = HermiteControlPoint1d(zero.x, first.x, second.x)
+        y = HermiteControlPoint1d(zero.y, first.y, second.y)
+    }
+}
+
+enum class HermiteType {
+    CUBIC, QUINTIC
+}
+
+val CUBIC_HERMITE_MATRIX = SimpleMatrix(4, 4, true, doubleArrayOf(
+    0.0, 0.0, 0.0, 1.0,
+    0.0, 0.0, 1.0, 0.0,
+    1.0, 1.0, 1.0, 1.0,
+    3.0, 2.0, 1.0, 0.0
+))
+
+val QUINTIC_HERMITE_MATRIX = SimpleMatrix(6, 6, true, doubleArrayOf(
+    0.0, 0.0, 0.0, 0.0, 0.0, 1.0,
+    0.0, 0.0, 0.0, 0.0, 1.0, 0.0,
+    0.0, 0.0, 0.0, 2.0, 0.0, 0.0,
+    1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+    5.0, 4.0, 3.0, 2.0, 1.0, 0.0,
+    20.0, 12.0, 6.0, 2.0, 0.0, 0.0
+))
+
+class HermiteSplineInterpolator(
+    private val splineType: HermiteType,
+    private vararg val controlPoses: Pose,
+) : SplineInterpolator {
+    private var _length = 0.0
+    override val piecewiseCurve = mutableListOf<Spline>()
+    override val length: Double get() = _length
+
+    private fun fitSplineToControlVectors(
+        start: HermiteControlPoint2d, end: HermiteControlPoint2d
+    ) : Spline {
+        val M = if(splineType == HermiteType.CUBIC) {
+            val B = SimpleMatrix(4, 2, true, doubleArrayOf(
+                start.x.zero, start.y.zero,
+                start.x.first, start.y.first,
+                0.0, 0.0,
+                end.x.zero, end.y.zero,
+                end.x.first, end.y.first
+            ))
+
+            CUBIC_HERMITE_MATRIX.solve(B)
+        } else {
+            val B = SimpleMatrix(4, 2, true, doubleArrayOf(
+                start.x.zero, start.y.zero,
+                start.x.first, start.y.first,
+                start.x.second, start.y.second,
+                0.0, 0.0,
+                end.x.zero, end.y.zero,
+                end.x.first, end.y.first,
+                end.x.second, end.y.second
+            ))
+
+            QUINTIC_HERMITE_MATRIX.solve(B)
+        }
+
+        val x = M.extractVector(false, 0)
+        val y = M.extractVector(false, 1)
+        return Spline(Polynomial(x), Polynomial(y))
+    }
+
+    override fun interpolate() {
+        var curr = controlPoses[0]
+        for(target in controlPoses.slice(1 until controlPoses.size)) {
+            val cv = curr.vec
+            val tv = target.vec
+            val r = cv.dist(tv)
+            val s = HermiteControlPoint2d(cv, Vector.fromPolar(r, curr.heading))
+            val e = HermiteControlPoint2d(tv, Vector.fromPolar(r, target.heading))
+            val curve = fitSplineToControlVectors(s, e)
+            piecewiseCurve.add(curve)
+            _length += curve.length
+            curr = target
+        }
+    }
+}
+
+open class Path(private val interpolator: SplineInterpolator) {
     val start get() = this[0.0]
     val end get() = this[length]
     val length get() = interpolator.length
@@ -509,47 +416,15 @@ class Path(private val interpolator: SplineInterpolator) {
         throw Exception("couldn't find curve in piecewise")
     }
 
-
-    /*
-    yoinked this from rr
-    basically the way this works is
-    take rVec from pose to projection
-    this is ideally normal to the curve
-    check if its normal with by dot product with tangent vec
-    ofc if result is 0, its normal (and therefore the correct projection)
-    if not, then add dot product to s
-    since dot product literally just finds the amount vec a is parallel to vec b
-     */
-    fun project(p: Vector, pGuess: Double) = (1..10).fold(pGuess) { s, _ ->  clamp(s + ((p - this[s].vec) dot this[s, 1].vec), 0.0, length) }
+    // yoinked this from rr
+    fun project(p: Vector, pGuess: Double) = (1..10).fold(pGuess) { s, _ ->
+        clamp(s + ((p - this[s].vec) dot this[s, 1].vec), 0.0, length)
+    }
 
     init {
         interpolator.interpolate()
     }
 }
 
-class HermiteSplineInterpolator(
-    private val splineClass: KClass<out Polynomial>,
-    private vararg val controlPoses: Pose,
-) : SplineInterpolator {
-    private var _length = 0.0
-    override val piecewiseCurve = mutableListOf<Spline>()
-    override val length: Double get() = _length
-
-    override fun interpolate() {
-        var curr = controlPoses[0]
-        for(target in controlPoses.slice(1 until controlPoses.size)) {
-            val cv = curr.vec
-            val tv = target.vec
-            val r = cv.dist(tv)
-            val s = HermiteControlPoint(cv, Vector.fromPolar(r, curr.heading))
-            val e = HermiteControlPoint(tv, Vector.fromPolar(r, target.heading))
-            val hermiteConst = splineClass.constructors.toList()[0]
-            val xHermitePoly = hermiteConst.call(s.x, e.x)
-            val yHermitePoly = hermiteConst.call(s.y, e.y)
-            val curve = Spline(xHermitePoly, yHermitePoly)
-            piecewiseCurve.add(curve)
-            _length += curve.length
-            curr = target
-        }
-    }
-}
+class CubicPath(vararg controlPoses: Pose) : Path(HermiteSplineInterpolator(HermiteType.CUBIC, *controlPoses))
+class QuinticPath(vararg controlPoses: Pose) : Path(HermiteSplineInterpolator(HermiteType.QUINTIC, *controlPoses))
