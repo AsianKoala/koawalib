@@ -1,5 +1,7 @@
 package com.asiankoala.koawalib.path
 
+import com.asiankoala.koawalib.math.Pose
+import com.asiankoala.koawalib.math.radians
 import org.ejml.simple.SimpleMatrix
 
 object Testing {
@@ -45,13 +47,13 @@ object Testing {
         // f    = 2x^2 + x + 5   @ 2 = 15
         // f'   = 4x + 1         @ 2 = 9
         // f''  = 4              @ 2 = 4
-        val vec = SimpleMatrix(6, 1, true,
-        doubleArrayOf(5.0, 2.0, -3.0, 10.0, 4.0, -6.0))
-
-        println(vec)
-        println(vec.numElements)
-        val coeffs = MutableList(vec.numElements, init = { index -> vec[index] })
-        println(coeffs)
+//        val vec = SimpleMatrix(6, 1, true,
+//        doubleArrayOf(5.0, 2.0, -3.0, 10.0, 4.0, -6.0))
+//
+//        println(vec)
+//        println(vec.numElements)
+//        val coeffs = MutableList(vec.numElements, init = { index -> vec[index] })
+//        println(coeffs)
 //        val polynomial = Polynomial(
 //            SimpleMatrix(6, 1, true,
 //        doubleArrayOf(5.0, 2.0, -3.0, 10.0, 4.0, -6.0)
@@ -60,5 +62,11 @@ object Testing {
 //        val y = polynomial[2.0, 0]
 //        println(" = $y")
 //        println(polynomial)
+
+        val path = QuinticPath(Pose(), Pose(24.0, 24.0))
+        val x = path.interpolator.piecewiseCurve[0].x
+        val y = path.interpolator.piecewiseCurve[0].y
+        println(x[0.0, 1])
+        println(x.coeffs[5])
     }
 }

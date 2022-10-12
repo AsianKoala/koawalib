@@ -7,6 +7,7 @@ import com.asiankoala.koawalib.logger.Logger
 import org.ejml.simple.SimpleMatrix
 import kotlin.math.absoluteValue
 import kotlin.math.atan2
+import kotlin.math.max
 import kotlin.math.pow
 
 /*
@@ -30,7 +31,7 @@ of course, credit given to rr for the idea of using splines for paths, as well a
  */
 
 class Polynomial(coeffVec: SimpleMatrix) {
-    private val coeffs = MutableList(coeffVec.numElements, init = { index -> coeffVec[index] })
+    val coeffs = MutableList(coeffVec.numElements, init = { index -> coeffVec[index] })
     private val degree by lazy { coeffs.size - 1 }
 
     /**
@@ -39,11 +40,11 @@ class Polynomial(coeffVec: SimpleMatrix) {
      * @param t function input
      * @param n nth deriv
      */
-    operator fun get(t: Double, n: Int): Double {
+    operator fun get(t: Double, n: Int = 0): Double {
         return coeffs.foldIndexed(0.0) { i, acc, c ->
             acc + (0 until n).fold(1.0) { a, x ->
                 (degree - i - x) * a
-            } * c * t.pow(degree - i - n)
+            } * c * t.pow(max(0, degree - i - n))
         }
     }
 
@@ -413,7 +414,7 @@ class HermiteSplineInterpolator(
     }
 }
 
-open class Path(private val interpolator: SplineInterpolator) {
+open class Path(val interpolator: SplineInterpolator) {
     val start get() = this[0.0]
     val end get() = this[length]
     val length get() = interpolator.length
