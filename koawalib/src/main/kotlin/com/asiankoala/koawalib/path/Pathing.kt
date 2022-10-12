@@ -392,6 +392,8 @@ class HermiteSplineInterpolator(
 
         val x = M.extractVector(false, 0)
         val y = M.extractVector(false, 1)
+
+        println("resulting matrix: $M")
         return Spline(Polynomial(x), Polynomial(y))
     }
 
