@@ -37,7 +37,7 @@ class SimpleGVFController(
     errorMap: (Double) -> Double = { it },
 ) : GVFController(path, kN, kOmega, epsilon, errorMap) {
     override fun headingControl(vel: Speeds): Pair<Double, Double> {
-        val error = (tangent.angle - pose.heading).angleWrap.degrees
+        val error = (path[s].heading - pose.heading).angleWrap.degrees
         val result = kOmega * error
         return Pair(result, error)
     }
