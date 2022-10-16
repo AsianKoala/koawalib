@@ -1,10 +1,7 @@
 package com.asiankoala.koawalib.path
 
-import com.asiankoala.koawalib.math.Pose
-import com.asiankoala.koawalib.math.Vector
-import com.asiankoala.koawalib.math.clamp
 import com.asiankoala.koawalib.logger.Logger
-import com.asiankoala.koawalib.math.EPSILON
+import com.asiankoala.koawalib.math.*
 import org.ejml.simple.SimpleMatrix
 import kotlin.math.*
 
@@ -355,7 +352,7 @@ fun interface HeadingController {
 }
 
 val DEFAULT_HEADING_CONTROLLER = HeadingController { it.angle }
-val REVERSED_HEADING_CONTROLLER = HeadingController { it.angle + PI }
+val REVERSED_HEADING_CONTROLLER = HeadingController { (it.angle + PI).angleWrap }
 
 // headingFunction inputs are (spline, s (into spline), n)
 class HermiteSplineInterpolator(
