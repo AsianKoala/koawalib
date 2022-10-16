@@ -1,5 +1,6 @@
 package com.asiankoala.koawalib.command.commands
 
+import com.asiankoala.koawalib.control.controller.AutoAvoidance
 import com.asiankoala.koawalib.gamepad.functionality.Stick
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.Vector
@@ -50,6 +51,7 @@ class MecanumCmd(
     private val isHeadingFieldCentric: Boolean = false,
     private val heading: () -> Double = { Double.NaN },
     private val fieldCentricHeadingScalar: Double = 90.0.radians,
+    private val autoAvoidance: AutoAvoidance? = null
 ) : Cmd() {
 
     private fun transferFunction(s: Double, k: Double, x: Double): Double {
@@ -69,7 +71,12 @@ class MecanumCmd(
         val rOutput = transferFunction(rScalar, rCubic, rRaw)
 
         val final = if (isTranslationFieldCentric) {
-            val translationVector = Vector(xOutput, yOutput)
+            var translationVector = Vector(xOutput, yOutput)
+
+            if(autoAvoidance != null) {
+                translationVector = autoAvoidance.calculate(translationVector)
+            }
+
             val headingInvoked = heading.invoke()
             val rotatedTranslation = translationVector.rotate(-heading.invoke() + if (alliance == Alliance.RED) 180.0.radians else 0.0)
 

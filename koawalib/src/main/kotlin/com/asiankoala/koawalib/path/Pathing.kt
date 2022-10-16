@@ -224,11 +224,11 @@ interface SmoothCurve {
         }
     }
 
-    operator fun get(s: Double, n: Int = 0): Pose {
+    operator fun get(s: Double, n: Int = 0): Vector {
         return when (n) {
-            0 -> Pose(rs(s), rs(s, 1).angle)
-            1 -> Pose(rs(s, 1), rs(s, 1).cross(rs(s, 2)))
-            2 -> Pose(rs(s, 2), 0.0)
+            0 -> rs(s)
+            1 -> rs(s, 1)
+            2 -> rs(s, 2)
             else -> throw Exception("im not implementing any more derivatives")
         }
     }
@@ -300,10 +300,11 @@ class Spline(
     }
 }
 
-interface SplineInterpolator {
+interface PiecewiseSplineInterpolator {
     fun interpolate()
     val piecewiseCurve: MutableList<Spline>
     val length: Double
+    operator fun get(s: Double, n: Int): Pose
 }
 
 data class HermiteControlVector1d(
@@ -351,11 +352,22 @@ val QUINTIC_HERMITE_MATRIX = SimpleMatrix(
     )
 )
 
+interface HeadingController {
+    fun update(tangent: Vector): Double
+}
+
+class DefaultHeadingController : HeadingController {
+    override fun update(tangent: Vector) = tangent.angle
+}
+
+// headingFunction inputs are (spline, s (into spline), n)
 class HermiteSplineInterpolator(
     private val splineType: HermiteType,
+    private val headingController: HeadingController,
     private vararg val controlPoses: Pose,
-) : SplineInterpolator {
+) : PiecewiseSplineInterpolator {
     private var _length = 0.0
+    private val arcLengthSteps = mutableListOf<Double>()
     override val piecewiseCurve = mutableListOf<Spline>()
     override val length: Double get() = _length
 
@@ -408,31 +420,33 @@ class HermiteSplineInterpolator(
             val e = HermiteControlVector2d(tv, Vector.fromPolar(r, target.heading))
             val curve = fitSplineToControlVectors(s, e)
             piecewiseCurve.add(curve)
+            arcLengthSteps.add(_length)
             _length += curve.length
             curr = target
         }
     }
+
+    // TODO: test if this actually fucking works lmao
+    override operator fun get(s: Double, n: Int): Pose {
+        val cs = clamp(s, 0.0, length)
+        arcLengthSteps.forEachIndexed { i, x -> 
+            if(x + piecewiseCurve[i].length > cs) {
+                val v = piecewiseCurve[i][cs - x, n]
+                val h = headingController.update(v)
+                return Pose(v, h)
+            } 
+        }
+
+        throw Exception("we fucked up")
+    }
 }
 
-open class Path(val interpolator: SplineInterpolator) {
+open class Path(val interpolator: PiecewiseSplineInterpolator) {
     val start get() = this[0.0]
     val end get() = this[length]
     val length get() = interpolator.length
 
-    operator fun get(s: Double, n: Int = 0): Pose {
-        if (s <= 0.0) return interpolator.piecewiseCurve[0][0.0, n]
-        if (s >= length) {
-            val lastSpline = interpolator.piecewiseCurve.last()
-            return lastSpline[lastSpline.length, n]
-        }
-
-        interpolator.piecewiseCurve.fold(0.0) { acc, spline ->
-            if (acc + spline.length > s) return spline[s - acc, n]
-            acc + spline.length
-        }
-
-        throw Exception("couldn't find curve in piecewise")
-    }
+    operator fun get(s: Double, n: Int = 0) = interpolator[s, n]
 
     // yoinked this from rr
     fun project(p: Vector, pGuess: Double) = (1..10).fold(pGuess) { s, _ ->
@@ -444,5 +458,5 @@ open class Path(val interpolator: SplineInterpolator) {
     }
 }
 
-class CubicPath(vararg controlPoses: Pose) : Path(HermiteSplineInterpolator(HermiteType.CUBIC, *controlPoses))
-class QuinticPath(vararg controlPoses: Pose) : Path(HermiteSplineInterpolator(HermiteType.QUINTIC, *controlPoses))
+class CubicPath(vararg controlPoses: Pose) : Path(HermiteSplineInterpolator(HermiteType.CUBIC, DefaultHeadingController(), *controlPoses))
+class QuinticPath(vararg controlPoses: Pose) : Path(HermiteSplineInterpolator(HermiteType.QUINTIC, DefaultHeadingController(), *controlPoses))

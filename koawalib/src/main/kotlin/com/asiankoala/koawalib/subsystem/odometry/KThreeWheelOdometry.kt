@@ -46,5 +46,6 @@ class KThreeWheelOdometry(
         val deltaY = (leftEncoder.delta - rightEncoder.delta) / 2.0
         val pointIncrement = updatePoseWithDeltas(pose, leftEncoder.delta, rightEncoder.delta, auxDelta, deltaY, headingDelta)
         pose = Pose(pose.vec + pointIncrement, newAngle)
+        savePose(pose)
     }
 }

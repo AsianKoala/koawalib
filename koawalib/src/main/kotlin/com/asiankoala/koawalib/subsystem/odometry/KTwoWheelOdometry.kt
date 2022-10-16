@@ -6,6 +6,7 @@ import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.angleWrap
 
+// TODO: find what was causing so much drift
 class KTwoWheelOdometry(
     private val imu: KIMU,
     private val leftEncoder: KEncoder,
@@ -59,5 +60,6 @@ class KTwoWheelOdometry(
 
         pose = Pose(pose.vec + pointIncrement, newAngle)
         lastAngle = newAngle
+        savePose(pose)
     }
 }

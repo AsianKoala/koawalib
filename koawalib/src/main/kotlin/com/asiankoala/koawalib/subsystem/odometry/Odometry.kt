@@ -2,10 +2,13 @@ package com.asiankoala.koawalib.subsystem.odometry
 
 import com.asiankoala.koawalib.math.*
 import com.asiankoala.koawalib.subsystem.Subsystem
+import com.asiankoala.koawalib.util.Speeds
 import kotlin.math.absoluteValue
 import kotlin.math.max
 
-abstract class Odometry(protected val startPose: Pose) : Subsystem() {
+abstract class Odometry(
+    protected var startPose: Pose, 
+) : Subsystem() {
     internal data class TimePose(val pose: Pose, val timestamp: Long = System.currentTimeMillis())
 
     abstract fun updateTelemetry()
@@ -33,7 +36,18 @@ abstract class Odometry(protected val startPose: Pose) : Subsystem() {
             return Pose(dirVel, angularVel.angleWrap)
         }
 
-    fun updatePoseWithDeltas(currPose: Pose, lWheelDelta: Double, rWheelDelta: Double, dx: Double, dy: Double, angleIncrement: Double): Vector {
+    fun fieldCentricVelocity(heading: Double): Pose {
+        val s = Speeds()
+        s.setRobotCentric(velocity, heading)
+        return s.getFieldCentric()
+    }
+
+
+    protected fun savePose(p: Pose) {
+        Odometry.lastPose = p
+    }
+
+    protected fun updatePoseWithDeltas(currPose: Pose, lWheelDelta: Double, rWheelDelta: Double, dx: Double, dy: Double, angleIncrement: Double): Vector {
         var deltaX = dx
         var deltaY = dy
         if (angleIncrement.absoluteValue > 0) {
@@ -53,5 +67,15 @@ abstract class Odometry(protected val startPose: Pose) : Subsystem() {
         val incrementY = currPose.heading.sin * deltaY - currPose.heading.cos * deltaX
 
         return Vector(incrementX, incrementY)
+    }
+
+    fun loadSavedPose() {
+        startPose = Odometry.lastPose
+        pose = Odometry.lastPose
+    }
+
+    companion object {
+        var lastPose = Pose()
+            private set
     }
 }
