@@ -4,6 +4,7 @@ import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.Vector
 import com.asiankoala.koawalib.math.clamp
 import com.asiankoala.koawalib.logger.Logger
+import com.asiankoala.koawalib.math.EPSILON
 import org.ejml.simple.SimpleMatrix
 import kotlin.math.absoluteValue
 import kotlin.math.atan2
@@ -428,7 +429,7 @@ class HermiteSplineInterpolator(
 
     // TODO: test if this actually fucking works lmao
     override operator fun get(s: Double, n: Int): Pose {
-        val cs = clamp(s, 0.0, length)
+        val cs = clamp(s, 0.0 + EPSILON, length - EPSILON)
         arcLengthSteps.forEachIndexed { i, x -> 
             if(x + piecewiseCurve[i].length > cs) {
                 val v = piecewiseCurve[i][cs - x, n]
