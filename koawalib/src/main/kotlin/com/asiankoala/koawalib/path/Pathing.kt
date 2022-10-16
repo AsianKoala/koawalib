@@ -6,10 +6,7 @@ import com.asiankoala.koawalib.math.clamp
 import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.math.EPSILON
 import org.ejml.simple.SimpleMatrix
-import kotlin.math.absoluteValue
-import kotlin.math.atan2
-import kotlin.math.max
-import kotlin.math.pow
+import kotlin.math.*
 
 /*
 sources i used to create my path generation system:
@@ -353,13 +350,12 @@ val QUINTIC_HERMITE_MATRIX = SimpleMatrix(
     )
 )
 
-interface HeadingController {
+fun interface HeadingController {
     fun update(tangent: Vector): Double
 }
 
-class DefaultHeadingController : HeadingController {
-    override fun update(tangent: Vector) = tangent.angle
-}
+val DEFAULT_HEADING_CONTROLLER = HeadingController { it.angle }
+val REVERSED_HEADING_CONTROLLER = HeadingController { it.angle + PI }
 
 // headingFunction inputs are (spline, s (into spline), n)
 class HermiteSplineInterpolator(
@@ -459,5 +455,6 @@ open class Path(val interpolator: PiecewiseSplineInterpolator) {
     }
 }
 
-class CubicPath(vararg controlPoses: Pose) : Path(HermiteSplineInterpolator(HermiteType.CUBIC, DefaultHeadingController(), *controlPoses))
-class QuinticPath(vararg controlPoses: Pose) : Path(HermiteSplineInterpolator(HermiteType.QUINTIC, DefaultHeadingController(), *controlPoses))
+class CubicPath(vararg controlPoses: Pose) : Path(HermiteSplineInterpolator(HermiteType.CUBIC, DEFAULT_HEADING_CONTROLLER, *controlPoses))
+class QuinticPath(vararg controlPoses: Pose) : Path(HermiteSplineInterpolator(HermiteType.QUINTIC, DEFAULT_HEADING_CONTROLLER, *controlPoses))
+class ReversedCubicPath(vararg controlPoses: Pose) : Path(HermiteSplineInterpolator(HermiteType.CUBIC, REVERSED_HEADING_CONTROLLER, *controlPoses))
