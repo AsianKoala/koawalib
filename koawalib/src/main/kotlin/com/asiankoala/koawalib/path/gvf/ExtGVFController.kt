@@ -40,7 +40,7 @@ class ExtGVFController(
     errorMap: (Double) -> Double = { it }
 ) : GVFController(path, kN, kOmega, epsilon, errorMap) {
     override fun headingControl(vel: Speeds): Pair<Double, Double> {
-        val target = path[clamp(s + kLookahead, 0.0, path.length)].heading
+        val target = path[clamp(s + kLookahead, 0.0, path.length)].heading + path[s].heading
         val error = (target - pose.heading).angleWrap.degrees
         val result = kOmega * error
         return Pair(result, error)

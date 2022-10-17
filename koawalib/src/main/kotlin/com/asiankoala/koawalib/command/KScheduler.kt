@@ -16,13 +16,13 @@ import kotlin.collections.set
  * is to schedule commands, mainly using [KScheduler.schedule]
  */
 object KScheduler {
-    private val scheduledCmds: MutableMap<Cmd, Set<Subsystem>> = LinkedHashMap()
+    private val cmds: MutableMap<Cmd, Set<Subsystem>> = LinkedHashMap()
     private val subsystems: MutableMap<Subsystem, Cmd?> = LinkedHashMap()
     private val toSchedule: MutableList<Cmd> = ArrayDeque()
     private val toCancel: MutableList<Cmd> = ArrayDeque()
     internal val deviceRegistry: MutableMap<String, KDevice<*>> = HashMap()
 
-    private val allMaps = listOf<MutableMap<*, *>>(scheduledCmds, subsystems, deviceRegistry)
+    private val allMaps = listOf<MutableMap<*, *>>(cmds, subsystems, deviceRegistry)
     private val allLists = listOf<MutableList<*>>(toCancel, toSchedule, toCancel)
 
     internal lateinit var stateReceiver: () -> OpModeState
@@ -33,29 +33,29 @@ object KScheduler {
     }
 
     private fun Cmd.scheduleThis() {
-        scheduledCmds
+        cmds
             .filter { !(requirements disjoint it.value) }
             .keys
             .forEach(Cmd::cancel)
 
         this.initialize()
-        scheduledCmds[this] = requirements
+        cmds[this] = requirements
         Logger.logDebug("command $name initialized")
     }
 
     private fun Cmd.cancelThis() {
         toSchedule.remove(this)
-        if (this !in scheduledCmds) return
+        if (this !in cmds) return
         this.end()
         Logger.logInfo("command ${this.name} canceled")
-        scheduledCmds.remove(this)
+        cmds.remove(this)
     }
 
     internal fun update() {
         toSchedule.forEach { it.scheduleThis() }
         toCancel.forEach { it.cancelThis() }
 
-        val f = scheduledCmds.values.flatten()
+        val f = cmds.values.flatten()
         subsystems
             .filter { it.key !in f && it.value != null }
             .values
@@ -66,7 +66,7 @@ object KScheduler {
 
         subsystems.keys.forEach(Subsystem::periodic)
         val toRemove = LinkedHashSet<Cmd>()
-        scheduledCmds.forEach {
+        cmds.forEach {
             val command = it.key
             command.execute()
             if (command.isFinished) {
@@ -75,7 +75,7 @@ object KScheduler {
             }
         }
 
-        toRemove.forEach { scheduledCmds.remove(it) }
+        toRemove.forEach { cmds.remove(it) }
     }
 
     /**
