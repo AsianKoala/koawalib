@@ -17,7 +17,6 @@ import kotlin.collections.set
  * and handles them accordingly. Processing is done behind the scenes, so the main purpose of this class for the user
  * is to schedule commands, mainly using [KScheduler.schedule]
  */
-// @Suppress("unused")
 object KScheduler {
     private val scheduledCmds: MutableMap<Cmd, Set<Subsystem>> = LinkedHashMap()
     private val subsystems: MutableMap<Subsystem, Cmd?> = LinkedHashMap()
@@ -44,7 +43,7 @@ object KScheduler {
 
         this.initialize()
         scheduledCmds[this] = requirements
-        Logger.logDebug("command ${name} initialized")
+        Logger.logDebug("command $name initialized")
     }
 
     private fun Cmd.cancelThis() {
@@ -60,7 +59,6 @@ object KScheduler {
         toCancel.forEach { it.cancelThis() }
 
         val f = scheduledCmds.values.flatten()
-
         subsystems
             .filter { it.key !in f && it.value != null }
             .values
@@ -70,12 +68,10 @@ object KScheduler {
         toCancel.clear()
 
         subsystems.keys.forEach(Subsystem::periodic)
-
         val toRemove = LinkedHashSet<Cmd>()
         scheduledCmds.forEach {
             val command = it.key
             command.execute()
-
             if (command.isFinished) {
                 command.end()
                 toRemove.add(command)
@@ -139,9 +135,7 @@ object KScheduler {
         if (cmd.requirements.size != 1 || subsystem !in cmd.requirements) {
             throw Exception("command ${cmd.name}: default commands must require only subsystem ${subsystem.name}")
         }
-
         if (cmd.isFinished) throw Exception("command ${cmd.name}: default commands must not end")
-
         Logger.logInfo("set default command of ${subsystem.name} to ${cmd.name}")
         subsystems[subsystem] = cmd
     }

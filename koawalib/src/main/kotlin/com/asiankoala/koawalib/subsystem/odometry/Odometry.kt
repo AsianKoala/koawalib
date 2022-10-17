@@ -7,7 +7,7 @@ import kotlin.math.absoluteValue
 import kotlin.math.max
 
 abstract class Odometry(
-    protected var startPose: Pose, 
+    protected var startPose: Pose,
 ) : Subsystem() {
     internal data class TimePose(val pose: Pose, val timestamp: Long = System.currentTimeMillis())
 
@@ -41,7 +41,6 @@ abstract class Odometry(
         s.setRobotCentric(velocity, heading)
         return s.getFieldCentric()
     }
-
 
     protected fun savePose(p: Pose) {
         Odometry.lastPose = p

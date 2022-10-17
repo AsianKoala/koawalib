@@ -422,12 +422,12 @@ class HermiteSplineInterpolator(
 
     override operator fun get(s: Double, n: Int): Pose {
         val cs = clamp(s, 0.0 + EPSILON, length - EPSILON)
-        arcLengthSteps.forEachIndexed { i, x -> 
-            if(x + piecewiseCurve[i].length > cs) {
+        arcLengthSteps.forEachIndexed { i, x ->
+            if (x + piecewiseCurve[i].length > cs) {
                 val v = piecewiseCurve[i][cs - x, n]
                 val h = headingController.update(v)
                 return Pose(v, h)
-            } 
+            }
         }
 
         throw Exception("we fucked up")

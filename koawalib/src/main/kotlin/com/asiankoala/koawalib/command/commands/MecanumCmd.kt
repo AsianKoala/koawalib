@@ -73,7 +73,7 @@ class MecanumCmd(
         val final = if (isTranslationFieldCentric) {
             var translationVector = Vector(xOutput, yOutput)
 
-            if(autoAvoidance != null) {
+            if (autoAvoidance != null) {
                 translationVector = autoAvoidance.calculate(translationVector)
             }
 
