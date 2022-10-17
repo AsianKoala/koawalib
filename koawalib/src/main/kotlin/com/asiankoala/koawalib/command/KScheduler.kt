@@ -13,86 +13,58 @@ import kotlin.collections.component2
 import kotlin.collections.set
 
 /**
- * CommandScheduler runs all commands. Every loop the scheduler checks for newly scheduled commands, cancelled commands, finished commands,
+ * KScheduler runs all commands. Every loop the scheduler checks for newly scheduled commands, cancelled commands, finished commands,
  * and handles them accordingly. Processing is done behind the scenes, so the main purpose of this class for the user
  * is to schedule commands, mainly using [KScheduler.schedule]
  */
 // @Suppress("unused")
 object KScheduler {
-    private val scheduledCmds: MutableList<Cmd> = ArrayList()
-    private val scheduledCmdReqs: MutableMap<Subsystem, Cmd> = LinkedHashMap()
+    private val scheduledCmds: MutableMap<Cmd, Set<Subsystem>> = LinkedHashMap()
     private val subsystems: MutableMap<Subsystem, Cmd?> = LinkedHashMap()
     private val toSchedule: MutableList<Cmd> = ArrayDeque()
     private val toCancel: MutableList<Cmd> = ArrayDeque()
     internal val deviceRegistry: MutableMap<String, KDevice<*>> = HashMap()
 
-    private val allCollections = listOf(scheduledCmds, scheduledCmdReqs, subsystems, toSchedule, toCancel, deviceRegistry)
-    private val allMaps = listOf<MutableMap<*, *>>(scheduledCmdReqs, subsystems, deviceRegistry)
-    private val allLists = listOf<MutableList<*>>(scheduledCmds, toCancel, toSchedule, toCancel)
+    private val allCollections = listOf(scheduledCmds, subsystems, toSchedule, toCancel, deviceRegistry)
+    private val allMaps = listOf<MutableMap<*, *>>(scheduledCmds, subsystems, deviceRegistry)
+    private val allLists = listOf<MutableList<*>>(toCancel, toSchedule, toCancel)
 
     internal lateinit var stateReceiver: () -> OpModeState
 
     internal fun resetScheduler() {
         allMaps.forEach(MutableMap<*, *>::clear)
         allLists.forEach(MutableList<*>::clear)
-
-        allCollections.forEach {
-            if (it is Collection<*>) {
-                if (it.isNotEmpty()) throw Exception("collection not empty on init")
-            } else if (it is Map<*, *>) {
-                if (it.isNotEmpty()) throw Exception("collection not empty on init")
-            }
-        }
-    }
-
-    private fun initCommand(cmd: Cmd, cRequirements: Set<Subsystem>) {
-        cmd.initialize()
-        scheduledCmds.add(cmd)
-        Logger.logDebug("command ${cmd.name} initialized")
-        cRequirements.forEach { scheduledCmdReqs[it] = cmd }
     }
 
     private fun Cmd.scheduleThis() {
-        if (scheduledCmdReqs.keys disjoint requirements) {
-            initCommand(this, requirements)
-        } else {
-            Logger.logWarning("command ${this.name}: Command overlap scheduledRequirementKeys")
+        scheduledCmds
+            .filter { !(requirements disjoint it.value) }
+            .keys
+            .forEach(Cmd::cancel)
 
-            requirements.forEach {
-                if (scheduledCmdReqs.containsKey(it)) {
-                    val toCancelScheduled = scheduledCmdReqs[it]!!
-                    toCancelScheduled.cancel()
-                    Logger.logWarning("command ${this.name}: Command caused command ${toCancelScheduled.name} to cancel")
-                }
-            }
-
-            initCommand(this, requirements)
-            Logger.logWarning("command ${this.name}: Command initialized following cancellation of commands with overlapping requirements")
-        }
+        this.initialize()
+        scheduledCmds[this] = requirements
+        Logger.logDebug("command ${name} initialized")
     }
 
     private fun Cmd.cancelThis() {
-        if (!scheduledCmds.contains(this)) {
-            return
-        }
-
+        toSchedule.remove(this)
+        if (this !in scheduledCmds) return
         this.end()
         Logger.logInfo("command ${this.name} canceled")
         scheduledCmds.remove(this)
-        scheduledCmdReqs.keys.removeAll(this.requirements)
-        toSchedule.remove(this)
     }
 
     internal fun update() {
         toSchedule.forEach { it.scheduleThis() }
         toCancel.forEach { it.cancelThis() }
 
-        subsystems.forEach { (k, v) ->
-            if (!scheduledCmdReqs.containsKey(k) && v != null && scheduledCmdReqs.keys disjoint v.requirements) {
-                v.execute()
-                Logger.logDebug("subsystem ${k.name} default cmd executed")
-            }
-        }
+        val f = scheduledCmds.values.flatten()
+
+        subsystems
+            .filter { it.key !in f && it.value != null }
+            .values
+            .forEach { it!!.execute() }
 
         toSchedule.clear()
         toCancel.clear()
@@ -101,17 +73,16 @@ object KScheduler {
 
         val toRemove = LinkedHashSet<Cmd>()
         scheduledCmds.forEach {
-            val command = it
+            val command = it.key
             command.execute()
 
             if (command.isFinished) {
                 command.end()
                 toRemove.add(command)
-                scheduledCmdReqs.keys.removeAll(command.requirements)
             }
         }
 
-        scheduledCmds.removeAll(toRemove)
+        toRemove.forEach { scheduledCmds.remove(it) }
     }
 
     /**
@@ -119,10 +90,7 @@ object KScheduler {
      * @param cmds commands to schedule
      */
     fun schedule(vararg cmds: Cmd) {
-        cmds.forEach {
-            toSchedule.add(it)
-            Logger.logDebug("added ${it.name} to toSchedule array")
-        }
+        toSchedule.addAll(cmds)
     }
 
     /**
@@ -149,7 +117,7 @@ object KScheduler {
     fun registerSubsystem(vararg requestedSubsystems: Subsystem) {
         requestedSubsystems.forEach {
             Logger.logInfo("registered subsystem ${it.name}")
-            this.subsystems[it] = null
+            subsystems[it] = null
         }
     }
 
@@ -159,7 +127,7 @@ object KScheduler {
      */
     fun unregisterSubsystem(vararg requestedSubsystems: Subsystem) {
         requestedSubsystems.forEach { Logger.logInfo("unregistered subsystem ${it.name}") }
-        this.subsystems.keys.removeAll(requestedSubsystems)
+        subsystems.keys.removeAll(requestedSubsystems)
     }
 
     /**
@@ -172,9 +140,7 @@ object KScheduler {
             throw Exception("command ${cmd.name}: default commands must require only subsystem ${subsystem.name}")
         }
 
-        if (cmd.isFinished) {
-            throw Exception("command ${cmd.name}: default commands must not end")
-        }
+        if (cmd.isFinished) throw Exception("command ${cmd.name}: default commands must not end")
 
         Logger.logInfo("set default command of ${subsystem.name} to ${cmd.name}")
         subsystems[subsystem] = cmd
