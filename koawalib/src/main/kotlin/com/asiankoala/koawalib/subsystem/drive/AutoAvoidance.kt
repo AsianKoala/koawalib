@@ -4,7 +4,7 @@ import com.asiankoala.koawalib.math.Vector
 import kotlin.math.PI
 
 // see my desmos graph explaining how this works
-// https://www.desmos.com/calculator/px3tbum5kb 
+// https://www.desmos.com/calculator/48o1dyo1ak 
 class AutoAvoidance(
     private val obstacles: List<Vector>,
     private val R: Double = 1.0,
