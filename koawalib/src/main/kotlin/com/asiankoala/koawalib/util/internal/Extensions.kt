@@ -1,4 +1,4 @@
-package com.asiankoala.koawalib.util
+package com.asiankoala.koawalib.util.internal
 
 import java.util.*
 

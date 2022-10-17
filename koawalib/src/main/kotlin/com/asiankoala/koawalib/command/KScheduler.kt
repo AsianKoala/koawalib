@@ -5,11 +5,9 @@ import com.asiankoala.koawalib.hardware.KDevice
 import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.subsystem.Subsystem
 import com.asiankoala.koawalib.util.OpModeState
-import com.asiankoala.koawalib.util.disjoint
+import com.asiankoala.koawalib.util.internal.disjoint
 import java.util.*
 import kotlin.collections.ArrayDeque
-import kotlin.collections.component1
-import kotlin.collections.component2
 import kotlin.collections.set
 
 /**
@@ -24,7 +22,6 @@ object KScheduler {
     private val toCancel: MutableList<Cmd> = ArrayDeque()
     internal val deviceRegistry: MutableMap<String, KDevice<*>> = HashMap()
 
-    private val allCollections = listOf(scheduledCmds, subsystems, toSchedule, toCancel, deviceRegistry)
     private val allMaps = listOf<MutableMap<*, *>>(scheduledCmds, subsystems, deviceRegistry)
     private val allLists = listOf<MutableList<*>>(toCancel, toSchedule, toCancel)
 
@@ -123,7 +120,7 @@ object KScheduler {
      */
     fun unregisterSubsystem(vararg requestedSubsystems: Subsystem) {
         requestedSubsystems.forEach { Logger.logInfo("unregistered subsystem ${it.name}") }
-        subsystems.keys.removeAll(requestedSubsystems)
+        subsystems.keys.removeAll(requestedSubsystems.toSet())
     }
 
     /**

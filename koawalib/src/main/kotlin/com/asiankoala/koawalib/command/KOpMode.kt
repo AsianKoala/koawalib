@@ -6,7 +6,7 @@ import com.asiankoala.koawalib.hardware.KDevice
 import com.asiankoala.koawalib.hardware.motor.KMotor
 import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.util.OpModeState
-import com.asiankoala.koawalib.util.containsBy
+import com.asiankoala.koawalib.util.internal.containsBy
 import com.asiankoala.koawalib.util.internal.statemachine.StateMachine
 import com.asiankoala.koawalib.util.internal.statemachine.StateMachineBuilder
 import com.outoftheboxrobotics.photoncore.PhotonCore
