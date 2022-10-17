@@ -23,11 +23,7 @@ class AutoAvoidance(
         val n1 = r.rotate(theta)
         val d2 = v1 dot n1
         val n2 = r.rotate(if(d2 >= 0) theta else -theta)
-        val v2 = if(d1 >= 0.0 || r.norm > R) {
-            v1
-        } else {
-            n2 + r * a
-        }
+        val v2 = if(d1 >= 0.0 || r.norm > R) v1 else n2 + r * a
         val im = i.norm
         val u = v2.unit
         return u / im
