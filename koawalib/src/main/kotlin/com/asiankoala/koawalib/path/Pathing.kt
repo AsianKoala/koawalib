@@ -420,7 +420,6 @@ class HermiteSplineInterpolator(
         }
     }
 
-    // TODO: test if this actually fucking works lmao
     override operator fun get(s: Double, n: Int): Pose {
         val cs = clamp(s, 0.0 + EPSILON, length - EPSILON)
         arcLengthSteps.forEachIndexed { i, x -> 
@@ -442,7 +441,7 @@ open class Path(val interpolator: PiecewiseSplineInterpolator) {
 
     operator fun get(s: Double, n: Int = 0) = interpolator[s, n]
 
-    // yoinked this from rr
+    // yoinked this from rr. needs a reasonable guess
     fun project(p: Vector, pGuess: Double) = (1..10).fold(pGuess) { s, _ ->
         clamp(s + ((p - this[s].vec) dot this[s, 1].vec), 0.0, length)
     }
