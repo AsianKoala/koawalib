@@ -3,6 +3,8 @@ package com.asiankoala.koawalib.control.controller
 import com.asiankoala.koawalib.math.Vector
 import kotlin.math.PI
 
+// see my desmos graph explaining how this works
+// https://www.desmos.com/calculator/dav8kppwqr
 class AutoAvoidance(
     private val obstacles: List<Vector>,
     private val R: Double = 1.0,
@@ -10,7 +12,7 @@ class AutoAvoidance(
 ) {
     fun calculate(i: Vector): Vector {
         val p = ps.invoke()
-        val o = obstacles.minBy { (p - it).norm }
+        val o = obstacles.minByOrNull { (p - it).norm }!!
         val r = p - o
         val v1 = i.unit
         val theta = PI / 2.0
