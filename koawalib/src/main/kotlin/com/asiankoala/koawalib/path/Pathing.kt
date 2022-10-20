@@ -1,6 +1,5 @@
 package com.asiankoala.koawalib.path
 
-import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.math.*
 import org.ejml.simple.SimpleMatrix
 import kotlin.math.*
@@ -400,7 +399,6 @@ class HermiteSplineInterpolator(
         val x = M.extractVector(false, 0)
         val y = M.extractVector(false, 1)
 
-        Logger.logInfo("resulting matrix: $M")
         return Spline(Polynomial(x), Polynomial(y))
     }
 
@@ -425,7 +423,7 @@ class HermiteSplineInterpolator(
         arcLengthSteps.forEachIndexed { i, x ->
             if (x + piecewiseCurve[i].length > cs) {
                 val v = piecewiseCurve[i][cs - x, n]
-                val h = headingController.update(v)
+                val h = headingController.update(piecewiseCurve[i][cs - x, 1]) // need to fix this later...
                 return Pose(v, h)
             }
         }
@@ -452,5 +450,4 @@ open class Path(val interpolator: PiecewiseSplineInterpolator) {
 }
 
 class CubicPath(vararg controlPoses: Pose) : Path(HermiteSplineInterpolator(HermiteType.CUBIC, DEFAULT_HEADING_CONTROLLER, *controlPoses))
-class QuinticPath(vararg controlPoses: Pose) : Path(HermiteSplineInterpolator(HermiteType.QUINTIC, DEFAULT_HEADING_CONTROLLER, *controlPoses))
 class ReversedCubicPath(vararg controlPoses: Pose) : Path(HermiteSplineInterpolator(HermiteType.CUBIC, REVERSED_HEADING_CONTROLLER, *controlPoses))
