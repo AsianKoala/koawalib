@@ -22,6 +22,5 @@ abstract class KDevice<T : HardwareDevice>(val deviceName: String) {
 
     companion object {
         lateinit var hardwareMap: HardwareMap
-        internal var lastVoltageRead = Double.NaN
     }
 }

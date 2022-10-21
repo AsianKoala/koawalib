@@ -195,7 +195,7 @@ interface SmoothCurve {
     private fun dsdt(t: Double, n: Int = 1): Double {
         return when (n) {
             1 -> rt(t, 1).norm
-            2 -> (2 * rt(t, 1).dot(rt(t, 2))) / dsdt(t)
+            2 -> (2 * (rt(t, 1) dot rt(t, 2))) / dsdt(t)
             else -> throw Exception("im not implementing any more derivatives")
         }
     }
@@ -304,24 +304,19 @@ interface PiecewiseSplineInterpolator {
 data class HermiteControlVector1d(
     val zero: Double = 0.0,
     val first: Double = 0.0,
-    val second: Double = 0.0
 ) {
-    private val derivatives = listOf(zero, first, second)
+    private val derivatives = listOf(zero, first)
     operator fun get(n: Int) = derivatives[n]
 }
 
-class HermiteControlVector2d(zero: Vector, first: Vector, second: Vector = Vector()) {
+class HermiteControlVector2d(zero: Vector, first: Vector) {
     val x: HermiteControlVector1d
     val y: HermiteControlVector1d
 
     init {
-        x = HermiteControlVector1d(zero.x, first.x, second.x)
-        y = HermiteControlVector1d(zero.y, first.y, second.y)
+        x = HermiteControlVector1d(zero.x, first.x)
+        y = HermiteControlVector1d(zero.y, first.y)
     }
-}
-
-enum class HermiteType {
-    CUBIC, QUINTIC
 }
 
 val CUBIC_HERMITE_MATRIX = SimpleMatrix(
@@ -334,20 +329,8 @@ val CUBIC_HERMITE_MATRIX = SimpleMatrix(
     )
 )
 
-val QUINTIC_HERMITE_MATRIX = SimpleMatrix(
-    6, 6, true,
-    doubleArrayOf(
-        0.0, 0.0, 0.0, 0.0, 0.0, 1.0,
-        0.0, 0.0, 0.0, 0.0, 1.0, 0.0,
-        0.0, 0.0, 0.0, 2.0, 0.0, 0.0,
-        1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-        5.0, 4.0, 3.0, 2.0, 1.0, 0.0,
-        20.0, 12.0, 6.0, 2.0, 0.0, 0.0
-    )
-)
-
 fun interface HeadingController {
-    fun update(tangent: Vector): Double
+    fun update(t: Vector): Double
 }
 
 val DEFAULT_HEADING_CONTROLLER = HeadingController { it.angle }
@@ -355,7 +338,6 @@ val REVERSED_HEADING_CONTROLLER = HeadingController { (it.angle + PI).angleWrap 
 
 // headingFunction inputs are (spline, s (into spline), n)
 class HermiteSplineInterpolator(
-    private val splineType: HermiteType,
     private val headingController: HeadingController,
     private vararg val controlPoses: Pose,
 ) : PiecewiseSplineInterpolator {
@@ -368,8 +350,8 @@ class HermiteSplineInterpolator(
         start: HermiteControlVector2d,
         end: HermiteControlVector2d
     ): Spline {
-        val M = if (splineType == HermiteType.CUBIC) {
-            val B = SimpleMatrix(
+        val M = CUBIC_HERMITE_MATRIX.solve(
+            SimpleMatrix(
                 4, 2, true,
                 doubleArrayOf(
                     start.x.zero, start.y.zero,
@@ -378,23 +360,7 @@ class HermiteSplineInterpolator(
                     end.x.first, end.y.first
                 )
             )
-
-            CUBIC_HERMITE_MATRIX.solve(B)
-        } else {
-            val B = SimpleMatrix(
-                6, 2, true,
-                doubleArrayOf(
-                    start.x.zero, start.y.zero,
-                    start.x.first, start.y.first,
-                    start.x.second, start.y.second,
-                    end.x.zero, end.y.zero,
-                    end.x.first, end.y.first,
-                    end.x.second, end.y.second
-                )
-            )
-
-            QUINTIC_HERMITE_MATRIX.solve(B)
-        }
+        )
 
         val x = M.extractVector(false, 0)
         val y = M.extractVector(false, 1)
@@ -423,7 +389,7 @@ class HermiteSplineInterpolator(
         arcLengthSteps.forEachIndexed { i, x ->
             if (x + piecewiseCurve[i].length > cs) {
                 val v = piecewiseCurve[i][cs - x, n]
-                val h = headingController.update(piecewiseCurve[i][cs - x, 1]) // need to fix this later...
+                val h = headingController.update(piecewiseCurve[i][cs - x, 1])
                 return Pose(v, h)
             }
         }
@@ -439,7 +405,7 @@ open class Path(val interpolator: PiecewiseSplineInterpolator) {
 
     operator fun get(s: Double, n: Int = 0) = interpolator[s, n]
 
-    // yoinked this from rr. needs a reasonable guess
+    // yoinked this from rr
     fun project(p: Vector, pGuess: Double) = (1..10).fold(pGuess) { s, _ ->
         clamp(s + ((p - this[s].vec) dot this[s, 1].vec), 0.0, length)
     }
@@ -449,5 +415,5 @@ open class Path(val interpolator: PiecewiseSplineInterpolator) {
     }
 }
 
-class CubicPath(vararg controlPoses: Pose) : Path(HermiteSplineInterpolator(HermiteType.CUBIC, DEFAULT_HEADING_CONTROLLER, *controlPoses))
-class ReversedCubicPath(vararg controlPoses: Pose) : Path(HermiteSplineInterpolator(HermiteType.CUBIC, REVERSED_HEADING_CONTROLLER, *controlPoses))
+class CubicPath(vararg controlPoses: Pose) : Path(HermiteSplineInterpolator(DEFAULT_HEADING_CONTROLLER, *controlPoses))
+class ReversedCubicPath(vararg controlPoses: Pose) : Path(HermiteSplineInterpolator(REVERSED_HEADING_CONTROLLER, *controlPoses))

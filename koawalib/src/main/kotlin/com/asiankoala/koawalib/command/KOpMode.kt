@@ -23,7 +23,6 @@ import com.qualcomm.robotcore.util.ElapsedTime
 // todo: Clean this class up
 abstract class KOpMode(
     private val photonEnabled: Boolean = false,
-    private val maxParallelCommands: Int = 4
 ) : LinearOpMode() {
     var opmodeState = OpModeState.INIT
         private set
@@ -103,7 +102,7 @@ abstract class KOpMode(
             .filterIsInstance<KMotor>()
             .containsBy({ it.isVoltageCorrected }, true)
         ) {
-            + LoopCmd({ KDevice.lastVoltageRead = voltageSensor.voltage }).withName("voltage sensor periodic")
+            + LoopCmd({ KMotor.lastVoltageRead = voltageSensor.voltage }).withName("voltage sensor periodic")
             Logger.logInfo("Voltage read scheduled")
         } else {
             Logger.logInfo("Voltage sensor not enabled")

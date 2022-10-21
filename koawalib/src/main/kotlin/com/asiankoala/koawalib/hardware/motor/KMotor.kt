@@ -27,17 +27,9 @@ class KMotor internal constructor(name: String) : KDevice<DcMotorEx>(name) {
 
     private fun update() {
         if (mode == MotorControlModes.OPEN_LOOP) return
-
         controller.updateEncoder()
         controller.update()
-
-        var rawOutput = controller.output
-
-        if (isVoltageCorrected) {
-            rawOutput *= (12.0 / lastVoltageRead)
-        }
-
-        this.power = rawOutput
+        this.power = controller.output
     }
 
     internal var zeroPowerBehavior: DcMotor.ZeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
@@ -134,5 +126,9 @@ class KMotor internal constructor(name: String) : KDevice<DcMotorEx>(name) {
     init {
         device.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         device.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
+    }
+
+    companion object {
+        internal var lastVoltageRead = Double.NaN
     }
 }
