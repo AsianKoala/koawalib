@@ -6,7 +6,6 @@ import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.subsystem.Subsystem
 import com.asiankoala.koawalib.util.OpModeState
 import com.asiankoala.koawalib.util.internal.disjoint
-import java.util.*
 import kotlin.collections.ArrayDeque
 import kotlin.collections.set
 
@@ -17,13 +16,13 @@ import kotlin.collections.set
  */
 object KScheduler {
     private val cmds: MutableMap<Cmd, Set<Subsystem>> = LinkedHashMap()
-    private val subsystems: MutableMap<Subsystem, Cmd?> = LinkedHashMap()
+    private val subsystems: MutableList<Subsystem> = ArrayDeque()
     private val toSchedule: MutableList<Cmd> = ArrayDeque()
     private val toCancel: MutableList<Cmd> = ArrayDeque()
     internal val deviceRegistry: MutableMap<String, KDevice<*>> = HashMap()
 
-    private val allMaps = listOf<MutableMap<*, *>>(cmds, subsystems, deviceRegistry)
-    private val allLists = listOf<MutableList<*>>(toCancel, toSchedule, toCancel)
+    private val allMaps = listOf<MutableMap<*, *>>(cmds, deviceRegistry)
+    private val allLists = listOf<MutableList<*>>(subsystems, toSchedule, toCancel)
 
     internal lateinit var stateReceiver: () -> OpModeState
 
@@ -57,14 +56,13 @@ object KScheduler {
 
         val f = cmds.values.flatten()
         subsystems
-            .filter { it.key !in f && it.value != null }
-            .values
-            .forEach { it!!.execute() }
+            .filter { it !in f && it.defaultCommand != null }
+            .forEach { it.defaultCommand!!.execute() }
 
         toSchedule.clear()
         toCancel.clear()
 
-        subsystems.keys.forEach(Subsystem::periodic)
+        subsystems.forEach(Subsystem::periodic)
         val toRemove = LinkedHashSet<Cmd>()
         cmds.forEach {
             val command = it.key
@@ -110,7 +108,7 @@ object KScheduler {
     fun registerSubsystem(vararg requestedSubsystems: Subsystem) {
         requestedSubsystems.forEach {
             Logger.logInfo("registered subsystem ${it.name}")
-            subsystems[it] = null
+            subsystems.add(it)
         }
     }
 
@@ -120,32 +118,7 @@ object KScheduler {
      */
     fun unregisterSubsystem(vararg requestedSubsystems: Subsystem) {
         requestedSubsystems.forEach { Logger.logInfo("unregistered subsystem ${it.name}") }
-        subsystems.keys.removeAll(requestedSubsystems.toSet())
-    }
-
-    /**
-     * Set the default command of a subsystem. Default commands run when no other command requires the specified subsystem
-     * @param subsystem subsystem to set default command of
-     * @param cmd the default command
-     */
-    fun setDefaultCommand(subsystem: Subsystem, cmd: Cmd) {
-        if (cmd.requirements.size != 1 || subsystem !in cmd.requirements) {
-            throw Exception("command ${cmd.name}: default commands must require only subsystem ${subsystem.name}")
-        }
-        if (cmd.isFinished) throw Exception("command ${cmd.name}: default commands must not end")
-        Logger.logInfo("set default command of ${subsystem.name} to ${cmd.name}")
-        subsystems[subsystem] = cmd
-    }
-
-    /**
-     * Schedule a watchdog
-     * @see Watchdog
-     * @param condition condition to schedule the watchdog's command
-     * @param cmd the watchdog's command
-     */
-    fun scheduleWatchdog(condition: () -> Boolean, cmd: Cmd) {
-        schedule(Watchdog(condition, cmd).withName(cmd.name))
-        Logger.logInfo("added watchdog ${cmd.name}")
+        subsystems.removeAll(requestedSubsystems.toSet())
     }
 
     /**

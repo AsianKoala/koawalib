@@ -2,19 +2,25 @@ package com.asiankoala.koawalib.subsystem
 
 import com.asiankoala.koawalib.command.KScheduler
 import com.asiankoala.koawalib.command.commands.Cmd
+import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.util.Periodic
 
 abstract class Subsystem : Periodic {
-
     /**
-     * periodic() is always run no matter what Command the Subsystem is currently using
-     * defaultCommand runs whenever no Command is requiring this subsystem
+     * Set the default command of a subsystem. Default commands run when no other command requires the specified subsystem
+     * Note: default commands must not end
      */
-    override fun periodic() {}
+    internal var defaultCommand: Cmd? = null
+        set(value) {
+            if(value == null) return
+            if (value.requirements.size != 1 || this !in value.requirements) {
+                throw Exception("command ${name}: default commands must require only subsystem $name")
+            }
+            Logger.logInfo("set default command of $name to $value")
+            field = value
+        }
 
-    fun setDefaultCommand(cmd: Cmd) {
-        KScheduler.setDefaultCommand(this, cmd)
-    }
+    override fun periodic() {}
 
     fun register() {
         KScheduler.registerSubsystem(this)

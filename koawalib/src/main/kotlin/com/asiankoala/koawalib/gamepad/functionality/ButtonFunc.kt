@@ -2,6 +2,9 @@ package com.asiankoala.koawalib.gamepad.functionality
 
 import com.asiankoala.koawalib.command.KScheduler
 import com.asiankoala.koawalib.command.commands.Cmd
+import com.asiankoala.koawalib.command.commands.Watchdog
+import com.asiankoala.koawalib.logger.Logger
+import com.asiankoala.koawalib.util.OpModeState
 
 // todo log button -> cmd somehow
 // e.g. in logcat it should look like this
@@ -53,6 +56,15 @@ interface ButtonFunc {
     }
 
     private fun schedule(condition: () -> Boolean, cmd: Cmd) {
-        KScheduler.scheduleWatchdog(condition, cmd)
+        + object : Cmd() {
+            override fun execute() {
+                if (condition.invoke() && KScheduler.stateReceiver.invoke() == OpModeState.LOOP) {
+                    cmd.schedule()
+                }
+            }
+
+            override val isFinished: Boolean = false
+        }
+        Logger.logInfo("added watchdog $cmd")
     }
 }
