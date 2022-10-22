@@ -1,7 +1,5 @@
 package com.asiankoala.koawalib.path
 
-import com.asiankoala.koawalib.math.Pose
-
 object Testing {
     @JvmStatic
     fun main(args: Array<String>) {

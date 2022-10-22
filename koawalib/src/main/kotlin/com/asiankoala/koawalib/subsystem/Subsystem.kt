@@ -10,11 +10,11 @@ abstract class Subsystem : Periodic {
      * Set the default command of a subsystem. Default commands run when no other command requires the specified subsystem
      * Note: default commands must not end
      */
-    internal var defaultCommand: Cmd? = null
+    var defaultCommand: Cmd? = null
         set(value) {
-            if(value == null) return
+            if (value == null) return
             if (value.requirements.size != 1 || this !in value.requirements) {
-                throw Exception("command ${name}: default commands must require only subsystem $name")
+                throw Exception("command $name: default commands must require only subsystem $name")
             }
             Logger.logInfo("set default command of $name to $value")
             field = value
