@@ -61,10 +61,10 @@ object Testing {
 //        println(" = $y")
 //        println(polynomial)
 
-        val path = QuinticPath(Pose(), Pose(24.0, 24.0))
-        val x = path.interpolator.piecewiseCurve[0].x
-        val y = path.interpolator.piecewiseCurve[0].y
-        println(x[0.0, 1])
-        println(x.coeffs[5])
+//        val path = QuinticPath(Pose(), Pose(24.0, 24.0))
+//        val x = path.interpolator.piecewiseCurve[0].x
+//        val y = path.interpolator.piecewiseCurve[0].y
+//        println(x[0.0, 1])
+//        println(x.coeffs[5])
     }
 }
