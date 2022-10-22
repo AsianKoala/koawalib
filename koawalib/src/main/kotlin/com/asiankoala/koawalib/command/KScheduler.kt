@@ -1,7 +1,6 @@
 package com.asiankoala.koawalib.command
 
 import com.asiankoala.koawalib.command.commands.*
-import com.asiankoala.koawalib.hardware.KDevice
 import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.subsystem.Subsystem
 import com.asiankoala.koawalib.util.OpModeState
@@ -19,21 +18,17 @@ object KScheduler {
     private val subsystems: MutableList<Subsystem> = ArrayDeque()
     private val toSchedule: MutableList<Cmd> = ArrayDeque()
     private val toCancel: MutableList<Cmd> = ArrayDeque()
-    internal val deviceRegistry: MutableMap<String, KDevice<*>> = HashMap()
-
-    private val allMaps = listOf<MutableMap<*, *>>(cmds, deviceRegistry)
     private val allLists = listOf<MutableList<*>>(subsystems, toSchedule, toCancel)
 
     internal lateinit var stateReceiver: () -> OpModeState
 
     internal fun resetScheduler() {
-        allMaps.forEach(MutableMap<*, *>::clear)
+        cmds.clear()
         allLists.forEach(MutableList<*>::clear)
     }
 
     private fun Cmd.scheduleThis() {
-        cmds
-            .filter { !(requirements disjoint it.value) }
+        cmds.filter { !(requirements disjoint it.value) }
             .keys
             .forEach(Cmd::cancel)
 
@@ -55,8 +50,7 @@ object KScheduler {
         toCancel.forEach { it.cancelThis() }
 
         val f = cmds.values.flatten()
-        subsystems
-            .filter { it !in f && it.defaultCommand != null }
+        subsystems.filter { it !in f && it.defaultCommand != null }
             .forEach { it.defaultCommand!!.execute() }
 
         toSchedule.clear()
@@ -85,15 +79,6 @@ object KScheduler {
     }
 
     /**
-     * Schedule command for a state
-     * @param state state to start cmd
-     * @param cmd cmd to run when state reached
-     */
-    fun scheduleForState(state: OpModeState, cmd: Cmd) {
-        schedule(cmd.waitUntil { stateReceiver.invoke() == state })
-    }
-
-    /**
      * Cancel commands, removing them from the scheduler and ending them
      * @param cmds commands to cancel
      */
@@ -119,16 +104,5 @@ object KScheduler {
     fun unregisterSubsystem(vararg requestedSubsystems: Subsystem) {
         requestedSubsystems.forEach { Logger.logInfo("unregistered subsystem ${it.name}") }
         subsystems.removeAll(requestedSubsystems.toSet())
-    }
-
-    /**
-     * Register a device with KScheduler
-     * @see KScheduler
-     */
-    fun registerDevices(vararg devices: KDevice<*>) {
-        devices.forEach {
-            Logger.logInfo("registered device ${it.deviceName}")
-            deviceRegistry[it.deviceName] = it
-        }
     }
 }

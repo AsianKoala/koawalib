@@ -17,7 +17,6 @@ import java.util.*
 @Suppress("unused")
 object Logger {
     var config = LoggerConfig.SIMPLE_CONFIG
-    val timeIntervalManager = TimeIntervalManager()
 
     internal var telemetry: Telemetry? = null
     internal var logCount = 0; private set

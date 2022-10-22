@@ -6,7 +6,6 @@ import com.asiankoala.koawalib.hardware.KDevice
 import com.asiankoala.koawalib.hardware.motor.KMotor
 import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.util.OpModeState
-import com.asiankoala.koawalib.util.internal.containsBy
 import com.asiankoala.koawalib.util.internal.statemachine.StateMachine
 import com.asiankoala.koawalib.util.internal.statemachine.StateMachineBuilder
 import com.outoftheboxrobotics.photoncore.PhotonCore
@@ -19,12 +18,10 @@ import com.qualcomm.robotcore.util.ElapsedTime
  * The template opmode for utilizing koawalib. DO NOT OVERRIDE runOpMode(). Iterative OpMode's init, init loop, start, and loop functions have been
  * implemented with mInit(), mInitLoop(), mStart(), mLoop(), mStop()
  */
-// @Suppress("unused")
-// todo: Clean this class up
 abstract class KOpMode(
     private val photonEnabled: Boolean = false,
 ) : LinearOpMode() {
-    var opmodeState = OpModeState.INIT
+    var opModeState = OpModeState.INIT
         private set
 
     protected val driver: KGamepad by lazy { KGamepad(gamepad1) }
@@ -32,24 +29,19 @@ abstract class KOpMode(
 
     // let this be public for user opmodes
     private var opModeTimer = ElapsedTime()
-
     private var loopTimer = ElapsedTime()
     private lateinit var hubs: List<LynxModule>
-
     private lateinit var voltageSensor: VoltageSensor
 
     private fun setupLib() {
-        Logger.timeIntervalManager["LIB SETUP"].start()
-        KScheduler.stateReceiver = { opmodeState }
+        KScheduler.stateReceiver = { opModeState }
         Logger.reset()
         Logger.telemetry = telemetry
         KScheduler.resetScheduler()
         Logger.addWarningCountCommand()
-        Logger.timeIntervalManager["LIB SETUP"].end()
     }
 
     private fun setupHardware() {
-        Logger.timeIntervalManager["HARDWARE SETUP"].start()
         KDevice.hardwareMap = hardwareMap
 
         if (photonEnabled) {
@@ -62,14 +54,12 @@ abstract class KOpMode(
         }
 
         voltageSensor = hardwareMap.voltageSensor.iterator().next()
-        Logger.timeIntervalManager["HARDWARE SETUP"].end()
     }
 
     private fun setup() {
         setupLib()
         setupHardware()
         opModeTimer.reset()
-        Logger.timeIntervalManager.log()
         Logger.logInfo("OpMode set up")
     }
 
@@ -78,6 +68,7 @@ abstract class KOpMode(
         + LoopCmd(gunner::periodic).withName("gunner gamepad periodic")
         + LoopCmd(::handleBulkCaching).withName("clear bulk data periodic")
         + LoopCmd(::handleLoopMsTelemetry).withName("loop ms telemetry periodic")
+        + LoopCmd({ KMotor.lastVoltageRead = voltageSensor.voltage }).withName("voltage sensor periodic")
         Logger.logInfo("periodics scheduled")
     }
 
@@ -97,18 +88,6 @@ abstract class KOpMode(
         telemetry.addData("loop time", dt)
     }
 
-    private fun checkIfVoltageSensorNeeded() {
-        if (KScheduler.deviceRegistry.values
-            .filterIsInstance<KMotor>()
-            .containsBy({ it.isVoltageCorrected }, true)
-        ) {
-            + LoopCmd({ KMotor.lastVoltageRead = voltageSensor.voltage }).withName("voltage sensor periodic")
-            Logger.logInfo("Voltage read scheduled")
-        } else {
-            Logger.logInfo("Voltage sensor not enabled")
-        }
-    }
-
     private fun updateTelemetryIfEnabled() {
         if (Logger.config.isTelemetryEnabled) {
             telemetry.update()
@@ -120,7 +99,7 @@ abstract class KOpMode(
             telemetry.msTransmissionInterval = 100000
             Logger.logInfo("Telemetry disabled")
         } else {
-            telemetry.msTransmissionInterval = 250
+            telemetry.msTransmissionInterval = 500
         }
     }
 
@@ -129,22 +108,19 @@ abstract class KOpMode(
         .universal(Logger::update)
         .universal(::updateTelemetryIfEnabled)
         .state(OpModeState.INIT)
-        .onEnter { Logger.timeIntervalManager["INIT"].start() }
         .onEnter(::setup)
         .onEnter(::schedulePeriodics)
         .onEnter(::mInit)
-        .onEnter { Logger.timeIntervalManager["INIT"].end() }
         .onEnter { Logger.logInfo("fully initialized, entering init loop") }
         .transition { true }
         .state(OpModeState.INIT_LOOP)
         .onEnter(::checkIfTelemetryNeeded)
-        .onEnter(::checkIfVoltageSensorNeeded)
         .loop(::mInitLoop)
         .transition(::isStarted)
         .state(OpModeState.START)
         .onEnter(::mStart)
         .onEnter(opModeTimer::reset)
-        .onEnter { Logger.logInfo("opmode started") }
+        .onEnter { Logger.logInfo("OpMode started") }
         .transition { true }
         .state(OpModeState.LOOP)
         .loop(::mLoop)
@@ -160,7 +136,7 @@ abstract class KOpMode(
 
         while (mainStateMachine.running) {
             mainStateMachine.update()
-            opmodeState = mainStateMachine.state
+            opModeState = mainStateMachine.state
         }
     }
 

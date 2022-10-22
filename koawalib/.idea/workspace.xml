@@ -4,7 +4,14 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="07cfaa36-72d6-4fcf-8276-56a1acdaa676" name="Changes" comment="" />
+    <list default="true" id="07cfaa36-72d6-4fcf-8276-56a1acdaa676" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/asiankoala/koawalib/command/KOpMode.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/asiankoala/koawalib/command/KOpMode.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/asiankoala/koawalib/command/KScheduler.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/asiankoala/koawalib/command/KScheduler.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/asiankoala/koawalib/hardware/KDevice.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/asiankoala/koawalib/hardware/KDevice.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/asiankoala/koawalib/logger/Logger.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/asiankoala/koawalib/logger/Logger.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/asiankoala/koawalib/logger/TimeInterval.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/asiankoala/koawalib/logger/TimeIntervalManager.kt" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

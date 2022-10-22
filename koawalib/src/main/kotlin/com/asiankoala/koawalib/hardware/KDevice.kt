@@ -10,14 +10,18 @@ import com.qualcomm.robotcore.hardware.HardwareMap
  */
 @Suppress("UNCHECKED_CAST")
 abstract class KDevice<T : HardwareDevice>(val deviceName: String) {
-    protected val device: T = hardwareMap[HardwareDevice::class.java as Class<T>, deviceName]
+    protected val device: T?
+        get() {
+            return if(!disabled) {
+                hardwareMap[HardwareDevice::class.java as Class<T>, deviceName]
+            } else {
+                null
+            }
+        }
+    internal var disabled = false
 
     override fun toString(): String {
         return deviceName
-    }
-
-    init {
-        KScheduler.registerDevices(this)
     }
 
     companion object {
