@@ -3,9 +3,7 @@ package com.asiankoala.koawalib.command.group
 import com.asiankoala.koawalib.command.commands.Cmd
 import com.asiankoala.koawalib.util.internal.disjoint
 
-/**
- * CommandGroups are used to run multiple commands. To create a custom CommandGroup, extend this class
- */
+// todo: rework this class its too convoluted
 open class ParallelGroup(private val endCond: (Map<Cmd, Boolean>) -> Boolean = { !it.containsValue(true) }, vararg cmds: Cmd) : Cmd(), Group {
     constructor(vararg commands: Cmd) : this(cmds = commands)
 

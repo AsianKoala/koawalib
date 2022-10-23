@@ -13,6 +13,7 @@ interface ButtonFunc {
     val isJustReleased: Boolean
     val isPressed: Boolean
     val isReleased: Boolean
+    val isToggled: Boolean
 
     /**
      * Schedule command on press
@@ -52,6 +53,14 @@ interface ButtonFunc {
      */
     fun onPressUntilRelease(cmd: Cmd) {
         schedule(::isJustPressed, cmd.cancelIf(::isReleased))
+    }
+
+    /**
+     * Schedule a command when toggled
+     * @param cmd command to schedule
+     */
+    fun onToggle(cmd: Cmd) {
+        schedule(::isToggled, cmd)
     }
 
     private fun schedule(condition: () -> Boolean, cmd: Cmd) {
