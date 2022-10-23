@@ -11,7 +11,7 @@ import com.asiankoala.koawalib.util.internal.KBoolean
  * @property isJustReleased was button just released (state changed this loop)
  * @property isReleased is button not pressed
  */
-class KButton(
+open class KButton(
     private val buttonState: () -> Boolean
 ) : ButtonFunc, KBoolean, Periodic {
     private var _isPressed = false
