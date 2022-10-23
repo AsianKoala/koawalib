@@ -43,7 +43,7 @@ abstract class Odometry(
     }
 
     protected fun savePose(p: Pose) {
-        Odometry.lastPose = p
+        lastPose = p
     }
 
     protected fun updatePoseWithDeltas(currPose: Pose, lWheelDelta: Double, rWheelDelta: Double, dx: Double, dy: Double, angleIncrement: Double): Vector {
@@ -59,18 +59,11 @@ abstract class Odometry(
 
         val robotDeltaRelativeMovement = Pose(deltaX, deltaY, angleIncrement)
         robotRelativeMovement = robotRelativeMovement.plusWrap(robotDeltaRelativeMovement)
-
         prevRobotRelativePositions.add(TimePose(robotRelativeMovement))
 
         val incrementX = currPose.heading.cos * deltaY + currPose.heading.sin * deltaX
         val incrementY = currPose.heading.sin * deltaY - currPose.heading.cos * deltaX
-
         return Vector(incrementX, incrementY)
-    }
-
-    fun loadSavedPose() {
-        startPose = Odometry.lastPose
-        pose = Odometry.lastPose
     }
 
     companion object {

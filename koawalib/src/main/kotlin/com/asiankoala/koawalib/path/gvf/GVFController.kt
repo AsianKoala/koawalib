@@ -9,7 +9,7 @@ import kotlin.math.PI
 import kotlin.math.sign
 
 abstract class GVFController(
-    protected val path: Path,
+    val path: Path,
     protected val kN: Double,
     protected val kOmega: Double,
     private val epsilon: Double,

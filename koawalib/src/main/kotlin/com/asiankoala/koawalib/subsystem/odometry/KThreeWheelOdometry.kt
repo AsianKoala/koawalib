@@ -35,7 +35,6 @@ class KThreeWheelOdometry(
         encoders.forEach(KEncoder::update)
 
         val newAngle = (((rightEncoder.pos - leftEncoder.pos) / TRACK_WIDTH) + startPose.heading).angleWrap
-
         val headingDelta = (rightEncoder.delta - leftEncoder.delta) / TRACK_WIDTH
         val auxPredicted = headingDelta * PERP_TRACKER
         val auxDelta = auxEncoder.delta - auxPredicted

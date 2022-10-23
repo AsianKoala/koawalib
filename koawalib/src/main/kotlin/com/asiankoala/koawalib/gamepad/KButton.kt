@@ -39,7 +39,7 @@ open class KButton(
         _hasChanged = _lastState != currentState
         _lastState = currentState
         _isPressed = currentState
-        if(isJustPressed) _isToggled = !_isToggled
+        if (isJustPressed) _isToggled = !_isToggled
     }
 
     override fun invokeBoolean(): Boolean {

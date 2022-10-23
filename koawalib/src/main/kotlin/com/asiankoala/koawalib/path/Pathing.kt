@@ -1,5 +1,8 @@
 package com.asiankoala.koawalib.path
 
+import com.asiankoala.koawalib.command.KScheduler
+import com.asiankoala.koawalib.command.commands.Cmd
+import com.asiankoala.koawalib.command.commands.WaitUntilCmd
 import com.asiankoala.koawalib.math.*
 import org.ejml.simple.SimpleMatrix
 import kotlin.math.*
@@ -406,7 +409,7 @@ open class Path(val interpolator: PiecewiseSplineInterpolator) {
     operator fun get(s: Double, n: Int = 0) = interpolator[s, n]
 
     // yoinked this from rr
-    fun project(p: Vector, pGuess: Double) = (1..10).fold(pGuess) { s, _ ->
+    fun project(p: Vector, pGuess: Double = length / 2.0) = (1..10).fold(pGuess) { s, _ ->
         clamp(s + ((p - this[s].vec) dot this[s, 1].vec), 0.0, length)
     }
 
