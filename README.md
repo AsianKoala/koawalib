@@ -14,7 +14,7 @@ repositories {
 ```
 - Then add this line to your ```dependencies``` block, where "1.1.0" is a release tag
 ```
-implementation 'com.github.AsianKoala:koawalib:1.1.0'
+implementation 'com.github.AsianKoala:koawalib:1.3.7'
 ```
 
 - #### Snapshot
