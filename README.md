@@ -5,7 +5,7 @@ koawalib is a general purpose FTC library written in Kotlin
 #### Easy Way (creating a new repo)
 Go to [the template repo](https://github.com/AsianKoala/koawalib-template) and fork/clone it.
 
-#### Hard Way (adding koawalib to your existing repo)
+#### Easy-ish way (adding koawalib to your existing repo)
 - Add the following lines before the ```dependencies``` block in ```/TeamCode/build.gradle```
 ```
 repositories {
