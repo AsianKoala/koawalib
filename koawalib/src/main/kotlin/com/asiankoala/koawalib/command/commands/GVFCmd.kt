@@ -12,7 +12,7 @@ class GVFCmd(
     private vararg val cmds: Pair<Cmd, Vector>
 ) : Cmd() {
     override fun initialize() {
-        for(cmd in cmds) {
+        for (cmd in cmds) {
             val s = controller.path.project(cmd.second)
             + WaitUntilCmd { controller.path.project(drive.pose.vec) > s }
                 .andThen(cmd.first)

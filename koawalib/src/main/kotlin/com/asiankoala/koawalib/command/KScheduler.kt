@@ -91,10 +91,8 @@ object KScheduler {
      * @param requestedSubsystems subsystems to register
      */
     fun registerSubsystem(vararg requestedSubsystems: Subsystem) {
-        requestedSubsystems.forEach {
-            Logger.logInfo("registered subsystem ${it.name}")
-            subsystems.add(it)
-        }
+        requestedSubsystems.forEach { Logger.logInfo("registered subsystem ${it.name}") }
+        subsystems.addAll(requestedSubsystems.toSet())
     }
 
     /**

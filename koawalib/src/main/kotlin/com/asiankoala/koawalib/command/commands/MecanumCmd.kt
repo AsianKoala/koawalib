@@ -35,7 +35,7 @@ import kotlin.math.sign
  * @param heading heading supplier
  * @param fieldCentricHeadingScalar angle to start deccel for field centric heading
  */
-class MecanumCmd(
+open class MecanumCmd(
     private val drive: KMecanumDrive,
     private val leftStick: Stick,
     private val rightStick: Stick,
@@ -51,24 +51,20 @@ class MecanumCmd(
     private val heading: () -> Double = { Double.NaN },
     private val fieldCentricHeadingScalar: Double = 90.0.radians,
 ) : Cmd() {
-
-    private fun transferFunction(s: Double, k: Double, x: Double): Double {
+    private fun joystickFunction(s: Double, k: Double, x: Double): Double {
         return max(0.0, s * x * (k * x.pow(3) - k + 1)) * x.sign
     }
 
-    /**
-     * Sets scaled power to mecanum drive
-     */
-    override fun execute() {
+    protected open fun processPowers(): Pose {
         val xRaw = leftStick.xSupplier.invoke()
         val yRaw = -leftStick.ySupplier.invoke()
         val rRaw = -rightStick.xSupplier.invoke()
 
-        val xOutput = transferFunction(xScalar, xCubic, xRaw)
-        val yOutput = transferFunction(yScalar, yCubic, yRaw)
-        val rOutput = transferFunction(rScalar, rCubic, rRaw)
+        val xOutput = joystickFunction(xScalar, xCubic, xRaw)
+        val yOutput = joystickFunction(yScalar, yCubic, yRaw)
+        val rOutput = joystickFunction(rScalar, rCubic, rRaw)
 
-        val final = if (isTranslationFieldCentric) {
+        return if (isTranslationFieldCentric) {
             val translationVector = Vector(xOutput, yOutput)
 
             val headingInvoked = heading.invoke()
@@ -78,7 +74,6 @@ class MecanumCmd(
                 val stickAtan = rightStick.angle
                 val deltaAngle = (headingInvoked - stickAtan).angleWrap
                 val rLockScaled = deltaAngle / fieldCentricHeadingScalar
-
                 rLockScaled
             } else {
                 rOutput
@@ -88,11 +83,13 @@ class MecanumCmd(
         } else {
             Pose(xOutput, yOutput, rOutput)
         }
-
-        drive.powers = final
     }
 
-    override val isFinished: Boolean
+    final override fun execute() {
+        drive.powers = processPowers()
+    }
+
+    final override val isFinished: Boolean
         get() = false
 
     init {
