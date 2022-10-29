@@ -5,7 +5,6 @@ import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.subsystem.Subsystem
 import com.asiankoala.koawalib.util.OpModeState
 import com.asiankoala.koawalib.util.internal.disjoint
-import kotlin.collections.ArrayDeque
 import kotlin.collections.set
 
 /**

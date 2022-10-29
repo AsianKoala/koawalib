@@ -1,8 +1,6 @@
 package com.asiankoala.koawalib.gamepad
 
-import com.asiankoala.koawalib.gamepad.functionality.ButtonFunc
-import com.asiankoala.koawalib.util.Periodic
-import com.asiankoala.koawalib.util.internal.KBoolean
+import com.asiankoala.koawalib.gamepad.functionality.ButtonProcessing
 
 /**
  * Button functionality
@@ -13,35 +11,7 @@ import com.asiankoala.koawalib.util.internal.KBoolean
  */
 open class KButton(
     private val buttonState: () -> Boolean
-) : ButtonFunc, KBoolean, Periodic {
-    private var _isPressed = false
-    private var _isToggled = false
-    private var _hasChanged: Boolean = false
-    private var _lastState: Boolean = false
-
-    override val isPressed: Boolean
-        get() = _isPressed
-
-    override val isToggled: Boolean
-        get() = _isToggled
-
-    override val isJustPressed: Boolean
-        get() = isPressed && _hasChanged
-
-    override val isJustReleased: Boolean
-        get() = !isPressed && _hasChanged
-
-    override val isReleased: Boolean
-        get() = !isPressed
-
-    override fun periodic() {
-        val currentState = invokeBoolean()
-        _hasChanged = _lastState != currentState
-        _lastState = currentState
-        _isPressed = currentState
-        if (isJustPressed) _isToggled = !_isToggled
-    }
-
+) : ButtonProcessing() {
     override fun invokeBoolean(): Boolean {
         return buttonState.invoke()
     }
