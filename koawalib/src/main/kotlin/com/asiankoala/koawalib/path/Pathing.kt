@@ -1,7 +1,6 @@
 package com.asiankoala.koawalib.path
 
 import com.asiankoala.koawalib.math.*
-import com.asiankoala.koawalib.util.Alliance
 import org.ejml.simple.SimpleMatrix
 import kotlin.math.*
 
@@ -331,12 +330,12 @@ val CUBIC_HERMITE_MATRIX = SimpleMatrix(
 )
 
 fun interface HeadingController {
-    val flip get() = HeadingController { (update(it) + 180.0.radians).angleWrap }
+    fun flip() = HeadingController { (update(it) + 180.0.radians).angleWrap }
     fun update(t: Vector): Double
 }
 
 val DEFAULT_HEADING_CONTROLLER = HeadingController { it.angle }
-val FLIPPED_HEADING_CONTROLLER = DEFAULT_HEADING_CONTROLLER.flip
+val FLIPPED_HEADING_CONTROLLER = DEFAULT_HEADING_CONTROLLER.flip()
 
 // headingFunction inputs are (spline, s (into spline), n)
 class HermiteSplineInterpolator(

@@ -64,5 +64,10 @@ object Testing {
 //        val y = path.interpolator.piecewiseCurve[0].y
 //        println(x[0.0, 1])
 //        println(x.coeffs[5])
+
+        val a = HeadingController { 0.0 }
+        val b = HeadingControllerThatWorks { 0.0 }
+        b.flipBruh()
+        a.flip
     }
 }
