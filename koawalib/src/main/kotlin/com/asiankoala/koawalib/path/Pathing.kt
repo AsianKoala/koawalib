@@ -1,6 +1,7 @@
 package com.asiankoala.koawalib.path
 
 import com.asiankoala.koawalib.math.*
+import com.asiankoala.koawalib.util.Alliance
 import org.ejml.simple.SimpleMatrix
 import kotlin.math.*
 
@@ -330,11 +331,12 @@ val CUBIC_HERMITE_MATRIX = SimpleMatrix(
 )
 
 fun interface HeadingController {
+    val flip get() = HeadingController { (update(it) + 180.0.radians).angleWrap }
     fun update(t: Vector): Double
 }
 
 val DEFAULT_HEADING_CONTROLLER = HeadingController { it.angle }
-val REVERSED_HEADING_CONTROLLER = HeadingController { (it.angle + PI).angleWrap }
+val FLIPPED_HEADING_CONTROLLER = DEFAULT_HEADING_CONTROLLER.flip
 
 // headingFunction inputs are (spline, s (into spline), n)
 class HermiteSplineInterpolator(
@@ -371,11 +373,9 @@ class HermiteSplineInterpolator(
     override fun interpolate() {
         var curr = controlPoses[0]
         for (target in controlPoses.slice(1 until controlPoses.size)) {
-            val cv = curr.vec
-            val tv = target.vec
-            val r = cv.dist(tv)
-            val s = HermiteControlVector2d(cv, Vector.fromPolar(r, curr.heading))
-            val e = HermiteControlVector2d(tv, Vector.fromPolar(r, target.heading))
+            val r = curr.vec.dist(target.vec)
+            val s = HermiteControlVector2d(curr.vec, Vector.fromPolar(r, curr.heading))
+            val e = HermiteControlVector2d(target.vec, Vector.fromPolar(r, target.heading))
             val curve = fitSplineToControlVectors(s, e)
             piecewiseCurve.add(curve)
             arcLengthSteps.add(_length)
@@ -415,5 +415,14 @@ open class Path(val interpolator: PiecewiseSplineInterpolator) {
     }
 }
 
-class CubicPath(vararg controlPoses: Pose) : Path(HermiteSplineInterpolator(DEFAULT_HEADING_CONTROLLER, *controlPoses))
-class ReversedCubicPath(vararg controlPoses: Pose) : Path(HermiteSplineInterpolator(REVERSED_HEADING_CONTROLLER, *controlPoses))
+class HermitePath(
+    headingController: HeadingController,
+    private vararg val controlPoses: Pose
+) : Path(HermiteSplineInterpolator(headingController, *controlPoses)) {
+    fun map(hc: HeadingController, flipFunc: (Pose) -> Pose): HermitePath {
+        return HermitePath(
+            hc,
+            *controlPoses.map(flipFunc).toTypedArray()
+        )
+    }
+}
