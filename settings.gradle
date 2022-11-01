@@ -6,5 +6,5 @@ pluginManagement {
         mavenCentral()
     }
 }
-rootProject.name = "KoawaLib"
-include ':koawalib'
+rootProject.name = "koawalib"
+include ':core'

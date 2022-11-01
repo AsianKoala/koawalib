@@ -112,11 +112,3 @@ tasks.dokkaHtml.configure {
     outputDirectory.set(file("../docs/"))
 }
 
-sourceSets {
-    test {
-        java {
-            srcDirs = ["src/test"]
-        }
-    }
-}
-
