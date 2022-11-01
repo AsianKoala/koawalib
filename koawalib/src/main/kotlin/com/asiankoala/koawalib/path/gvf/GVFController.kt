@@ -6,6 +6,7 @@ import com.asiankoala.koawalib.math.Vector
 import com.asiankoala.koawalib.path.Path
 import com.asiankoala.koawalib.util.Speeds
 import kotlin.math.PI
+import kotlin.math.absoluteValue
 import kotlin.math.sign
 
 abstract class GVFController(
@@ -13,6 +14,7 @@ abstract class GVFController(
     protected val kN: Double,
     protected val kOmega: Double,
     private val epsilon: Double,
+    private val thetaEpsilon: Double,
     private val errorMap: (Double) -> Double = { it },
 ) {
     var isFinished = false
@@ -39,7 +41,9 @@ abstract class GVFController(
         gvfVec = gvfVecAt().unit
         headingResult = headingControl(currVel)
         vectorResult = vectorControl(currVel)
-        isFinished = path.length - s < epsilon && pose.vec.dist(path.end.vec) < epsilon
+        isFinished = path.length - s < epsilon
+                && pose.vec.dist(path.end.vec) < epsilon
+                && headingResult.second.absoluteValue < thetaEpsilon
         val speeds = Speeds()
         speeds.setFieldCentric(Pose(vectorResult, headingResult.first))
         return speeds
