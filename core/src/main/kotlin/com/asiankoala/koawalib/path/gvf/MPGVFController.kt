@@ -1,7 +1,5 @@
 package com.asiankoala.koawalib.path.gvf
 
-import com.asiankoala.koawalib.control.controller.PIDFController
-import com.asiankoala.koawalib.control.controller.PIDGains
 import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.Vector
@@ -14,6 +12,8 @@ import kotlin.math.PI
 import kotlin.math.absoluteValue
 import kotlin.math.sign
 
+// pretty mid motion profiled gvf
+// NEEDS TESTING!!!
 class MPGVFController(
     path: Path,
     kN: Double,
@@ -24,7 +24,7 @@ class MPGVFController(
     private val kStatic: Double,
     private val kV: Double,
     private val kA: Double,
-    private val tuning: Boolean = false,
+    private val kIsTuning: Boolean = false,
     errorMap: (Double) -> Double = { it },
 ) : GVFController(path, kN, epsilon, thetaEpsilon, errorMap) {
     private val profile = OnlineProfile(
@@ -37,10 +37,12 @@ class MPGVFController(
     private fun feedforwardMap(velAccel: Pair<Double, Double>) =
         kStatic * velAccel.first.sign + velAccel.first * kV + velAccel.second * kA
 
-    // lol i'm lazy af
+    // lol i'm lazy af. just a simple p controller our target heading
+    // might be enough? to fix tho i would have to rework how my pathing system
+    // deals with heading. just needs a bit of testing tbh
     override fun headingControl(): Pair<Double, Double> {
         val error = (path[s].heading - pose.heading).angleWrap.degrees
-        return Pair(error * profile[s].v * kOmega, error)
+        return Pair(error * kOmega * profile[s].v, error)
     }
 
     // d/ds v(p(s)) = v(p(s)) * v'(s)
@@ -58,8 +60,8 @@ class MPGVFController(
         val vels = KMecanumDrive.mecKinematics(Pose(vel, 0.0))
         val accels = KMecanumDrive.mecKinematics(Pose(accel, 0.0))
         val powers = vels.zip(accels).map(::feedforwardMap) // kotlin syntax so clean
-        val res = Speeds().apply { setWheels(powers, pose.heading) } // don't really like this
-        if(tuning) Logger.addVar("target velocity", state.v)
+        val res = Speeds().apply { setWheels(powers, pose.heading) }
+        if(kIsTuning) Logger.addVar("target velocity", state.v)
         return res.getFieldCentric().vec
     }
 
