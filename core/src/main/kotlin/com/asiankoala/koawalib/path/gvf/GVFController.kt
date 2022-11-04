@@ -42,9 +42,9 @@ abstract class GVFController(
         gvfVec = gvfVecAt()
         headingResult = headingControl()
         vectorResult = vectorControl()
-        isFinished = path.length - s < epsilon
-                && pose.vec.dist(path.end.vec) < epsilon
-                && headingResult.second.absoluteValue < thetaEpsilon
+        isFinished = path.length - s < epsilon &&
+            pose.vec.dist(path.end.vec) < epsilon &&
+            headingResult.second.absoluteValue < thetaEpsilon
         val speeds = Speeds()
         speeds.setFieldCentric(Pose(vectorResult, headingResult.first))
         return speeds

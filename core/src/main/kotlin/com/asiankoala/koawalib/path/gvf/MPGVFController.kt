@@ -61,7 +61,7 @@ class MPGVFController(
         val accels = KMecanumDrive.mecKinematics(Pose(accel, 0.0))
         val powers = vels.zip(accels).map(::feedforwardMap) // kotlin syntax so clean
         val res = Speeds().apply { setWheels(powers, pose.heading) }
-        if(kIsTuning) Logger.addVar("target velocity", state.v)
+        if (kIsTuning) Logger.addVar("target velocity", state.v)
         return res.getFieldCentric().vec
     }
 
@@ -71,9 +71,9 @@ class MPGVFController(
         gvfVec = gvfVecAt()
         headingResult = headingControl()
         vectorResult = vectorControl()
-        isFinished = path.length - s < epsilon
-                && pose.vec.dist(path.end.vec) < epsilon
-                && headingResult.second.absoluteValue < thetaEpsilon
+        isFinished = path.length - s < epsilon &&
+            pose.vec.dist(path.end.vec) < epsilon &&
+            headingResult.second.absoluteValue < thetaEpsilon
         val res = Speeds()
         res.setFieldCentric(Pose(vectorResult, headingResult.first))
         return res

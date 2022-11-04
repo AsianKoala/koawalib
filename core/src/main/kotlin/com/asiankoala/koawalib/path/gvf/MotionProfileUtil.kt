@@ -29,15 +29,15 @@ class DispProfile(
     vararg val periods: DispPeriod
 ) {
     operator fun get(x: Double): DispState {
-        if(x < periods[0].start.x) return periods[0].start
-        if(x > periods.last().end.x) return periods.last().end
+        if (x < periods[0].start.x) return periods[0].start
+        if (x > periods.last().end.x) return periods.last().end
         periods.fold(0.0) { acc, dispPeriod ->
-            if(acc + dispPeriod.dx > x) return dispPeriod[x - acc]
+            if (acc + dispPeriod.dx > x) return dispPeriod[x - acc]
             acc + dispPeriod.dx
         }
         throw Exception("couldn't find disp state")
     }
-    
+
     init {
         require(periods[0].start.x < periods.last().end.x)
     }
@@ -90,8 +90,8 @@ fun forwardPass(planningPoints: List<PlanningPoint>): List<PlanningPoint> {
     var currConstraint = planningPoints[0]
     val newPoints = mutableListOf<PlanningPoint>()
     newPoints.add(planningPoints[0])
-    for(point in planningPoints.slice(1 .. planningPoints.size)) {
-        if(point.a == null) {
+    for (point in planningPoints.slice(1..planningPoints.size)) {
+        if (point.a == null) {
             val ds = point.x - currConstraint.x
             val v2 = currConstraint.v * currConstraint.v
             val newV = sqrt(v2 + 2.0 * currConstraint.a!! * ds)
