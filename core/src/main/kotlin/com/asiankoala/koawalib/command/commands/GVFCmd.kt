@@ -22,7 +22,6 @@ class GVFCmd(
     override fun execute() {
         drive.powers = controller.update(
             drive.pose,
-            Speeds().apply { setRobotCentric(drive.vel, drive.pose.heading) }
         ).getRobotCentric(drive.pose.heading)
     }
 

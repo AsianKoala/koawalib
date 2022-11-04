@@ -22,20 +22,20 @@ import kotlin.math.min
 class SimpleGVFController(
     path: Path,
     kN: Double,
-    kOmega: Double,
+    private val kOmega: Double,
     private val kF: Double,
     private val kS: Double,
     epsilon: Double,
     thetaEpsilon: Double,
     errorMap: (Double) -> Double = { it },
-) : GVFController(path, kN, kOmega, epsilon, thetaEpsilon, errorMap) {
-    override fun headingControl(vel: Speeds): Pair<Double, Double> {
+) : GVFController(path, kN, epsilon, thetaEpsilon, errorMap) {
+    override fun headingControl(): Pair<Double, Double> {
         val error = (path[s].heading - pose.heading).angleWrap.degrees
         val result = kOmega * error
         return Pair(result, error)
     }
 
-    override fun vectorControl(vel: Speeds): Vector {
+    override fun vectorControl(): Vector {
         return gvfVec * kS * min(1.0, (path.length - s) / kF)
     }
 
