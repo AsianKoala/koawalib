@@ -22,6 +22,7 @@ abstract class GVFController(
     protected var pose: Pose = Pose()
     protected var s: Double = 0.0
     protected var gvfVec = Vector()
+    protected var md = Vector()
     protected var tangent = Vector()
     protected var normal = Vector()
     protected var error = 0.0
@@ -40,6 +41,7 @@ abstract class GVFController(
         pose = currPose
         s = path.project(pose.vec, s)
         gvfVec = gvfVecAt()
+        md = gvfVec.unit
         headingResult = headingControl()
         vectorResult = vectorControl()
         isFinished = path.length - s < epsilon &&
@@ -56,6 +58,6 @@ abstract class GVFController(
         val displacementVec = path[s].vec - pose.vec
         error = displacementVec.norm * (displacementVec cross tangent).sign
         Logger.logInfo("s: $s, d: $tangent, r: $displacementVec, e: $error")
-        return (tangent - normal * kN * errorMap.invoke(error)).unit
+        return tangent - normal * kN * errorMap.invoke(error)
     }
 }

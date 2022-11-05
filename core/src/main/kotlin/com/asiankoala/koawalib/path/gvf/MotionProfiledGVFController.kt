@@ -10,11 +10,12 @@ import com.asiankoala.koawalib.subsystem.drive.KMecanumDrive
 import com.asiankoala.koawalib.util.Speeds
 import kotlin.math.PI
 import kotlin.math.absoluteValue
+import kotlin.math.pow
 import kotlin.math.sign
 
 // pretty mid motion profiled gvf
 // NEEDS TESTING!!!
-class MPGVFController(
+class MotionProfiledGVFController(
     path: Path,
     kN: Double,
     epsilon: Double,
@@ -37,6 +38,9 @@ class MPGVFController(
     private fun feedforwardMap(velAccel: Pair<Double, Double>) =
         kStatic * velAccel.first.sign + velAccel.first * kV + velAccel.second * kA
 
+    // the vector triple product BAC-CAB identity
+    private fun tripleProduct(a: Vector, b: Vector, c: Vector) = b * (a dot c) - c * (a dot b)
+
     // lol i'm lazy af. just a simple p controller our target heading
     // might be enough? to fix tho i would have to rework how my pathing system
     // deals with heading. just needs a bit of testing tbh
@@ -54,9 +58,11 @@ class MPGVFController(
     // v' = t' - k_n * (n' * e + n)
     override fun vectorControl(): Vector {
         val state = profile[s]
-        val vel = gvfVec * state.v
+        val vel = md * state.v
         val dvds = path[s, 2].vec - (path[s, 2].vec.rotate(PI / 2.0) * error + normal) * kN
-        val accel = dvds.unit * state.v * state.v + gvfVec * state.a
+        // from https://math.stackexchange.com/questions/2983445/unit-vector-differentiation
+        val mdDot = tripleProduct(gvfVec, dvds, gvfVec) / gvfVec.norm.pow(3)
+        val accel = mdDot * state.v * state.v + md * state.a
         val vels = KMecanumDrive.mecKinematics(Pose(vel, 0.0))
         val accels = KMecanumDrive.mecKinematics(Pose(accel, 0.0))
         val powers = vels.zip(accels).map(::feedforwardMap) // kotlin syntax so clean
