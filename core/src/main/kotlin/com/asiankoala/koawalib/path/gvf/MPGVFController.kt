@@ -45,8 +45,8 @@ class MPGVFController(
         return Pair(error * kOmega * profile[s].v, error)
     }
 
-    // d/ds v(p(s)) = v(p(s)) * v'(s)
-    // d^2/ds^2 = v'(p(s))  * p'(s) * p'(s) + v(p(s)) * p''(s)
+    // d/ds v(p(s)) = v'(p(s)) * p'(s)
+    // d^2/ds^2 = v''(p(s)) * p'(s) * p'(s) + v(p(s)) * p''(s)
     // now we need to differentiate our gvf
     // v'(s) = t' - kn * (n' * e + e' * n)
     // bc im lazy lets just assume linear error map
