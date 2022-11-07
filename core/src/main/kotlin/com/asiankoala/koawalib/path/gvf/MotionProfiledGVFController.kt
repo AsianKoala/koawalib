@@ -34,6 +34,8 @@ class MotionProfiledGVFController(
         constraints
     )
 
+    private var state = DispState()
+
     // basic feedforward
     private fun feedforwardMap(velAccel: Pair<Double, Double>) =
         kStatic * velAccel.first.sign + velAccel.first * kV + velAccel.second * kA
@@ -46,7 +48,7 @@ class MotionProfiledGVFController(
     // deals with heading. just needs a bit of testing tbh
     override fun headingControl(): Pair<Double, Double> {
         val error = (path[s].heading - pose.heading).angleWrap.degrees
-        return Pair(error * kOmega * profile[s].v, error)
+        return Pair(error * kOmega * state.v, error)
     }
 
     // d/ds v(p(s)) = v'(p(s)) * p'(s)
@@ -57,7 +59,6 @@ class MotionProfiledGVFController(
     // so e' = 1.0
     // v' = t' - k_n * (n' * e + n)
     override fun vectorControl(): Vector {
-        val state = profile[s]
         val vel = md * state.v
         val dvds = path[s, 2].vec - (path[s, 2].vec.rotate(PI / 2.0) * error + normal) * kN
         // from https://math.stackexchange.com/questions/2983445/unit-vector-differentiation
@@ -74,7 +75,9 @@ class MotionProfiledGVFController(
     override fun update(currPose: Pose): Speeds {
         pose = currPose
         s = path.project(pose.vec, s)
+        state = profile[s]
         gvfVec = gvfVecAt()
+        md = gvfVec.unit
         headingResult = headingControl()
         vectorResult = vectorControl()
         isFinished = path.length - s < epsilon &&

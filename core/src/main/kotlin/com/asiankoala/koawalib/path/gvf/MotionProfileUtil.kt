@@ -64,10 +64,11 @@ class OnlineProfile(
      */
     operator fun get(x: Double): DispState {
         val dt = Clock.seconds - lastTime
-        val achievableVel = lastVel * constraints.accel * dt
+        val achievableVel = lastVel + constraints.accel * dt
         // vf^2 = vi^2 + 2as
         // sqrt(vf^2 - 2as) = vi
-        val endOfProfileVel = sqrt(end.v * end.v - 2.0 * constraints.accel * (end.x - x))
+        val insqrt = end.v * end.v - 2.0 * constraints.accel * (end.x - x)
+        val endOfProfileVel = if(insqrt >= 0.0) sqrt(insqrt) else Double.POSITIVE_INFINITY
         val userVel = constraints.vel
         // now run a forward pass to find the limiting vel
         // described in diagram (b) of 3.2 of sprunk paper

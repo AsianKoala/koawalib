@@ -30,7 +30,7 @@ class SimpleGVFController(
 ) : GVFController(path, kN, epsilon, thetaEpsilon, errorMap) {
     override fun headingControl(): Pair<Double, Double> {
         val error = (path[s].heading - pose.heading).angleWrap.degrees
-        val result = kOmega * error
+        val result = error / kOmega
         return Pair(result, error)
     }
 
