@@ -47,44 +47,57 @@ class DispProfile(
 
 data class Constraints(val vel: Double, val accel: Double)
 
-// credit to henopied for this
+// credit to henopied
 class OnlineProfile(
-    start: DispState,
-    private val end: DispState,
+    startState: DispState,
+    endState: DispState,
     private val constraints: Constraints
 ) {
-    private val dispOffset = start.x
-    private var multiplier = if(end.x > start.x) 1.0 else -1.0
-    private var lastVel = start.v // this is always 0.0 cause we force profiles to start 0.0
-    private var lastTime = Clock.seconds
+    private val dispOffset = startState.x
+    private var multiplier = if (endState.x > startState.x) 1.0 else -1.0
+    private val end = DispState(dispMap(endState.x), endState.v * multiplier)
+    private var lastVel = startState.v * multiplier
+    private var lastTime: Double? = null
 
-    private fun internalGet(x: Double): DispState {
-        val dt = Clock.seconds - lastTime
-        val achievableVel = lastVel + constraints.accel * dt
-        // vf^2 = vi^2 + 2as -> vi = sqrt(vf^2 - 2as)
-        // reverse displacement to guarantee that function is defined
-        val ds = min(0.0, (x - end.x).absoluteValue)
-        val endOfProfileVel = sqrt(end.v * end.v - 2.0 * constraints.accel * ds)
-        val userVel = constraints.vel
-        // now run a forward pass to find the limiting vel
-        // described in diagram (b) of 3.2 of sprunk paper
-        val constrainedVel = minOf(achievableVel, endOfProfileVel, userVel)
-        val constrainedAccel = (constrainedVel - lastVel) / dt
-        lastVel = constrainedVel
-        lastTime = Clock.seconds
-        return DispState(x, constrainedVel, constrainedAccel)
-    }
+    private fun dispMap(x: Double) = multiplier * (x - dispOffset)
 
     /**
-     * @param x absolute position along motion profile (NOT RELATIVE TO START)
-     * basically we want to do a forward pass (sprunk 2008)
-     * ur velocity planning points are:
+     * @param x displacement along motion profile (RELATIVE TO START)
+     * basically we want to do a forward pass (sprunk 2008) on our vels
+     * the velocity planning points are:
      * 1. achievable vel from last vel (using constraint)
      * 2. vel to reach end of profile
      * 3. vel from user
      */
+    private fun internalGet(x: Double): DispState {
+        // guarantee we have a realistic dt
+        return lastTime?.let {
+            val dt = Clock.seconds - it
+            val achievableVel = lastVel + constraints.accel * dt
+            // vf^2 = vi^2 + 2as -> vi = sqrt(vf^2 - 2as)
+            // reverse displacement so function is defined
+            val ds = min(0.0,x - end.x)
+            val endOfProfileVel = sqrt(end.v * end.v - 2.0 * constraints.accel * ds)
+            val userVel = constraints.vel
+            // now run a forward pass to find the limiting vel
+            // described in diagram (b) of 3.2 of sprunk paper
+            val constrainedVel = minOf(achievableVel, endOfProfileVel, userVel)
+            val constrainedAccel = (constrainedVel - lastVel) / dt
+            lastVel = constrainedVel
+            lastTime = Clock.seconds
+            DispState(
+                x * multiplier + dispOffset,
+                constrainedVel * multiplier,
+                constrainedAccel * multiplier
+            )
+        } ?: run {
+            lastTime = Clock.seconds
+            DispState()
+        }
+    }
+
     operator fun get(x: Double): DispState {
-        return internalGet(multiplier * (x - dispOffset))
+        return internalGet(dispMap(x))
     }
 }
 
