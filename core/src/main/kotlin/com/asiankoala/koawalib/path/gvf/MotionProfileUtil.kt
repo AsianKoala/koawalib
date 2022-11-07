@@ -1,6 +1,8 @@
 package com.asiankoala.koawalib.path.gvf
 
 import com.asiankoala.koawalib.util.Clock
+import kotlin.math.absoluteValue
+import kotlin.math.min
 import kotlin.math.sqrt
 
 // monotonically increasing, starting at 0
@@ -51,8 +53,27 @@ class OnlineProfile(
     private val end: DispState,
     private val constraints: Constraints
 ) {
+    private val dispOffset = start.x
+    private var multiplier = if(end.x > start.x) 1.0 else -1.0
     private var lastVel = start.v // this is always 0.0 cause we force profiles to start 0.0
     private var lastTime = Clock.seconds
+
+    private fun internalGet(x: Double): DispState {
+        val dt = Clock.seconds - lastTime
+        val achievableVel = lastVel + constraints.accel * dt
+        // vf^2 = vi^2 + 2as -> vi = sqrt(vf^2 - 2as)
+        // reverse displacement to guarantee that function is defined
+        val ds = min(0.0, (x - end.x).absoluteValue)
+        val endOfProfileVel = sqrt(end.v * end.v - 2.0 * constraints.accel * ds)
+        val userVel = constraints.vel
+        // now run a forward pass to find the limiting vel
+        // described in diagram (b) of 3.2 of sprunk paper
+        val constrainedVel = minOf(achievableVel, endOfProfileVel, userVel)
+        val constrainedAccel = (constrainedVel - lastVel) / dt
+        lastVel = constrainedVel
+        lastTime = Clock.seconds
+        return DispState(x, constrainedVel, constrainedAccel)
+    }
 
     /**
      * @param x absolute position along motion profile (NOT RELATIVE TO START)
@@ -63,20 +84,7 @@ class OnlineProfile(
      * 3. vel from user
      */
     operator fun get(x: Double): DispState {
-        val dt = Clock.seconds - lastTime
-        val achievableVel = lastVel + constraints.accel * dt
-        // vf^2 = vi^2 + 2as
-        // sqrt(vf^2 - 2as) = vi
-        val insqrt = end.v * end.v - 2.0 * constraints.accel * (end.x - x)
-        val endOfProfileVel = if(insqrt >= 0.0) sqrt(insqrt) else Double.POSITIVE_INFINITY
-        val userVel = constraints.vel
-        // now run a forward pass to find the limiting vel
-        // described in diagram (b) of 3.2 of sprunk paper
-        val constrainedVel = minOf(achievableVel, endOfProfileVel, userVel)
-        val constrainedAccel = (constrainedVel - lastVel) / dt
-        lastVel = constrainedVel
-        lastTime = Clock.seconds
-        return DispState(x, constrainedVel, constrainedAccel)
+        return internalGet(multiplier * (x - dispOffset))
     }
 }
 
