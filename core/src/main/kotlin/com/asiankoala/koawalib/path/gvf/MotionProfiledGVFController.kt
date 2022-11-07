@@ -21,10 +21,10 @@ class MotionProfiledGVFController(
     epsilon: Double,
     thetaEpsilon: Double,
     constraints: Constraints,
-    private val kOmega: Double,
     private val kStatic: Double,
     private val kV: Double,
     private val kA: Double,
+    private val kOmega: Double,
     private val kIsTuning: Boolean = false,
     errorMap: (Double) -> Double = { it },
 ) : GVFController(path, kN, epsilon, thetaEpsilon, errorMap) {
