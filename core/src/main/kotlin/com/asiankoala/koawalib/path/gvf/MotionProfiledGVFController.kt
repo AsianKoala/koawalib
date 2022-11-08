@@ -79,6 +79,7 @@ class MotionProfiledGVFController(
     private fun vectorControl(): Pair<Vector, Vector> {
         val v = calcGVF()
         val md = v.unit
+        Logger.addTelemetryData("md", md)
         val vel = md * state.v
         val dvds = path[s, 2].vec - (path[s, 2].vec.rotate(PI / 2.0) * error + normal) * kN
         // from https://math.stackexchange.com/questions/2983445/unit-vector-differentiation
