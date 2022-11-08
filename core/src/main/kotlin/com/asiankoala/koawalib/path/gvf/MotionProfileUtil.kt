@@ -76,7 +76,7 @@ class OnlineProfile(
             val achievableVel = lastVel + constraints.accel * dt
             // vf^2 = vi^2 + 2as -> vi = sqrt(vf^2 - 2as)
             // reverse displacement so function is defined
-            val ds = min(0.0,x - end.x)
+            val ds = min(0.0, x - end.x)
             val endOfProfileVel = sqrt(end.v * end.v - 2.0 * constraints.accel * ds)
             val userVel = constraints.vel
             // now run a forward pass to find the limiting vel
