@@ -1,10 +1,10 @@
 package com.asiankoala.koawalib.util
 
 import com.asiankoala.koawalib.math.Pose
+import com.asiankoala.koawalib.subsystem.drive.KMecanumDrive
 import kotlin.math.PI
 
 class Speeds {
-    // internally field centric
     private var internalSpeed = Pose()
 
     private fun Pose.convert(h: Double) = Pose(this.vec.rotate(PI / 2.0 - h), heading)
@@ -21,14 +21,7 @@ class Speeds {
         internalSpeed = speeds.convert(heading)
     }
 
-    fun getWheels(heading: Double): List<Double> {
-        val drivePowers = getRobotCentric(heading)
-        val fl = drivePowers.y + drivePowers.x - drivePowers.heading
-        val bl = drivePowers.y - drivePowers.x - drivePowers.heading
-        val br = drivePowers.y + drivePowers.x + drivePowers.heading
-        val fr = drivePowers.y - drivePowers.x + drivePowers.heading
-        return listOf(fl, bl, br, fr)
-    }
+    fun getWheels(heading: Double) = KMecanumDrive.mecKinematics(getRobotCentric(heading))
 
     fun setWheels(wheels: List<Double>, heading: Double) {
         val (_, bl, br, fr) = wheels

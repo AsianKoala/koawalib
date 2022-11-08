@@ -11,17 +11,16 @@ class GVFCmd(
     private vararg val cmds: Pair<Cmd, Vector>
 ) : Cmd() {
     override fun initialize() {
-        for (cmd in cmds) {
-            val s = controller.path.project(cmd.second)
-            + WaitUntilCmd { controller.path.project(drive.pose.vec) > s }
-                .andThen(cmd.first)
-        }
+        // TODO: better gvf cmd integration
+//        for (cmd in cmds) {
+//            val s = controller.path.project(cmd.second)
+//            + WaitUntilCmd { controller.path.project(drive.pose.vec) > s }
+//                .andThen(cmd.first)
+//        }
     }
 
     override fun execute() {
-        drive.powers = controller.update(
-            drive.pose,
-        ).getRobotCentric(drive.pose.heading)
+        drive.powers = controller.update(drive.pose)
     }
 
     override fun end() {

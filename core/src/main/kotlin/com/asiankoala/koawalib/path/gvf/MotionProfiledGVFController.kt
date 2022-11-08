@@ -16,25 +16,43 @@ import kotlin.math.sign
 // pretty mid motion profiled gvf
 // NEEDS TESTING!!!
 class MotionProfiledGVFController(
-    path: Path,
-    kN: Double,
-    epsilon: Double,
-    thetaEpsilon: Double,
+    private val path: Path,
+    private val kN: Double,
+    private val epsilon: Double,
+    private val thetaEpsilon: Double,
     constraints: Constraints,
+    private val kOmega: Double,
     private val kStatic: Double,
     private val kV: Double,
     private val kA: Double,
-    private val kOmega: Double,
     private val kIsTuning: Boolean = false,
-    errorMap: (Double) -> Double = { it },
-) : GVFController(path, kN, epsilon, thetaEpsilon, errorMap) {
+    private val errorMap: (Double) -> Double = { it }
+) : GVFController {
+    private var pose: Pose = Pose()
+    private var s: Double = 0.0
     private val profile = OnlineProfile(
         DispState(),
         DispState(path.length, 0.0, 0.0),
         constraints
     )
-
     private var state = DispState()
+    private var normal = Vector()
+    private var error = 0.0
+    private var headingError = 0.0
+
+    override val isFinished: Boolean
+        get() = path.length - s < epsilon &&
+                pose.vec.dist(path.end.vec) < epsilon &&
+                headingError.absoluteValue < thetaEpsilon
+
+    private fun calcGVF(): Vector {
+        val tangent = path[s, 1].vec
+        normal = tangent.rotate(PI / 2.0)
+        val displacementVec = path[s].vec - pose.vec
+        error = displacementVec.norm * (displacementVec cross tangent).sign
+        Logger.logInfo("s: $s, d: $tangent, r: $displacementVec, e: $error")
+        return tangent - normal * kN * errorMap.invoke(error)
+    }
 
     // basic feedforward
     private fun feedforwardMap(velAccel: Pair<Double, Double>) =
@@ -46,8 +64,8 @@ class MotionProfiledGVFController(
     // lol i'm lazy af. just a simple p controller our target heading
     // might be enough? to fix tho i would have to rework how my pathing system
     // deals with heading. just needs a bit of testing tbh
-    override fun headingControl(): Pair<Double, Double> {
-        val error = (path[s].heading - pose.heading).angleWrap.degrees
+    private fun headingControl(): Pair<Double, Double> {
+        headingError = (path[s].heading - pose.heading).angleWrap.degrees
         return Pair(error * kOmega * state.v, error)
     }
 
@@ -58,33 +76,37 @@ class MotionProfiledGVFController(
     // bc im lazy lets just assume linear error map
     // so e' = 1.0
     // v' = t' - k_n * (n' * e + n)
-    override fun vectorControl(): Vector {
+    private fun vectorControl(): Pair<Vector, Vector> {
+        val v = calcGVF()
+        val md = v.unit
         val vel = md * state.v
         val dvds = path[s, 2].vec - (path[s, 2].vec.rotate(PI / 2.0) * error + normal) * kN
         // from https://math.stackexchange.com/questions/2983445/unit-vector-differentiation
-        val mdDot = tripleProduct(gvfVec, dvds, gvfVec) / gvfVec.norm.pow(3)
+        val mdDot = tripleProduct(v, dvds, v) / v.norm.pow(3)
         val accel = mdDot * state.v * state.v + md * state.a
-        val vels = KMecanumDrive.mecKinematics(Pose(vel, 0.0))
-        val accels = KMecanumDrive.mecKinematics(Pose(accel, 0.0))
-        val powers = vels.zip(accels).map(::feedforwardMap) // kotlin syntax so clean
-        val res = Speeds().apply { setWheels(powers, pose.heading) }
-        if (kIsTuning) Logger.addVar("target velocity", state.v)
-        return res.getFieldCentric().vec
+        return Pair(vel, accel)
     }
 
-    override fun update(currPose: Pose): Speeds {
+    private fun calcFeedforward(vel: Pose, accel: Pose): Pose {
+        val vels = KMecanumDrive.mecKinematics(vel)
+        val accels = KMecanumDrive.mecKinematics(accel)
+        val powers = vels.zip(accels).map(::feedforwardMap) // kotlin syntax so clean
+        return Speeds()
+            .apply { setWheels(powers, pose.heading) }
+            .getRobotCentric(pose.heading)
+    }
+
+    override fun update(currPose: Pose): Pose {
         pose = currPose
         s = path.project(pose.vec, s)
         state = profile[s]
-        gvfVec = gvfVecAt()
-        md = gvfVec.unit
-        headingResult = headingControl()
-        vectorResult = vectorControl()
-        isFinished = path.length - s < epsilon &&
-            pose.vec.dist(path.end.vec) < epsilon &&
-            headingResult.second.absoluteValue < thetaEpsilon
-        val res = Speeds()
-        res.setFieldCentric(Pose(vectorResult, headingResult.first))
-        return res
+        if (kIsTuning) Logger.addVar("target velocity", state.v)
+
+        val headingResult = headingControl()
+        val vectorResult = vectorControl()
+        val vel = Pose(vectorResult.first, headingResult.first)
+        val accel = Pose(vectorResult.second, 0.0)
+
+        return calcFeedforward(vel, accel)
     }
 }

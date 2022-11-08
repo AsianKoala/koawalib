@@ -80,7 +80,6 @@ class OnlineProfile(
             val endOfProfileVel = sqrt(end.v * end.v - 2.0 * constraints.accel * ds)
             val userVel = constraints.vel
             // now run a forward pass to find the limiting vel
-            // described in diagram (b) of 3.2 of sprunk paper
             val constrainedVel = minOf(achievableVel, endOfProfileVel, userVel)
             val constrainedAccel = (constrainedVel - lastVel) / dt
             lastVel = constrainedVel
@@ -112,17 +111,19 @@ fun forwardPass(planningPoints: List<PlanningPoint>): List<PlanningPoint> {
     var currConstraint = planningPoints[0]
     val newPoints = mutableListOf<PlanningPoint>()
     newPoints.add(planningPoints[0])
-    for (point in planningPoints.slice(1..planningPoints.size)) {
-        if (point.a == null) {
-            val ds = point.x - currConstraint.x
-            val v2 = currConstraint.v * currConstraint.v
-            val newV = sqrt(v2 + 2.0 * currConstraint.a!! * ds)
-            newPoints.add(PlanningPoint(point.x, newV))
-        } else {
-            currConstraint = point
-            newPoints.add(point)
+    planningPoints
+        .drop(1)
+        .forEach { point ->
+            if (point.a == null) {
+                val ds = point.x - currConstraint.x
+                val v2 = currConstraint.v * currConstraint.v
+                val newV = sqrt(v2 + 2.0 * currConstraint.a!! * ds)
+                newPoints.add(PlanningPoint(point.x, newV))
+            } else {
+                currConstraint = point
+                newPoints.add(point)
+            }
         }
-    }
     return newPoints
 }
 
