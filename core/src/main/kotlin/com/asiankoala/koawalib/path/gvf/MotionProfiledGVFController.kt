@@ -66,7 +66,7 @@ class MotionProfiledGVFController(
     // deals with heading. just needs a bit of testing tbh
     private fun headingControl(): Pair<Double, Double> {
         headingError = (path[s].heading - pose.heading).angleWrap.degrees
-        return Pair(error * kOmega * state.v, error)
+        return Pair(error / kOmega * state.v, error)
     }
 
     // d/ds v(p(s)) = v'(p(s)) * p'(s)
