@@ -1,7 +1,6 @@
 package com.asiankoala.koawalib.path.gvf
 
 import com.asiankoala.koawalib.util.Clock
-import kotlin.math.absoluteValue
 import kotlin.math.min
 import kotlin.math.sqrt
 

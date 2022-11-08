@@ -65,8 +65,8 @@ class SimpleGVFController(
         val headingResult = headingControl()
         val vectorResult = vectorControl(calcGVF())
         isFinished = path.length - s < epsilon &&
-                pose.vec.dist(path.end.vec) < epsilon &&
-                headingResult.second.absoluteValue < thetaEpsilon
+            pose.vec.dist(path.end.vec) < epsilon &&
+            headingResult.second.absoluteValue < thetaEpsilon
         return Speeds()
             .apply { setFieldCentric(Pose(vectorResult, headingResult.first)) }
             .getRobotCentric(pose.heading)

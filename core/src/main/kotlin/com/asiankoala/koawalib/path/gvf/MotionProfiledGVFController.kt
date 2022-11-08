@@ -42,8 +42,8 @@ class MotionProfiledGVFController(
 
     override val isFinished: Boolean
         get() = path.length - s < epsilon &&
-                pose.vec.dist(path.end.vec) < epsilon &&
-                headingError.absoluteValue < thetaEpsilon
+            pose.vec.dist(path.end.vec) < epsilon &&
+            headingError.absoluteValue < thetaEpsilon
 
     private fun calcGVF(): Vector {
         val tangent = path[s, 1].vec
