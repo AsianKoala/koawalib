@@ -81,6 +81,7 @@ class MotionProfiledGVFController(
         val md = v.unit
         Logger.addTelemetryData("md", md)
         val vel = md * state.v
+        Logger.addTelemetryData("vel", vel)
         val dvds = path[s, 2].vec - (path[s, 2].vec.rotate(PI / 2.0) * error + normal) * kN
         // from https://math.stackexchange.com/questions/2983445/unit-vector-differentiation
         val mdDot = tripleProduct(v, dvds, v) / v.norm.pow(3)
@@ -90,6 +91,7 @@ class MotionProfiledGVFController(
 
     private fun calcFeedforward(vel: Pose, accel: Pose): Pose {
         val vels = KMecanumDrive.mecKinematics(vel)
+        Logger.addTelemetryData("vels", vels)
         val accels = KMecanumDrive.mecKinematics(accel)
         val powers = vels.zip(accels).map(::feedforwardMap) // kotlin syntax so clean
         return Speeds()
@@ -102,12 +104,10 @@ class MotionProfiledGVFController(
         s = path.project(pose.vec, s)
         state = profile[s]
         if (kIsTuning) Logger.addVar("target velocity", state.v)
-
         val headingResult = headingControl()
         val vectorResult = vectorControl()
         val vel = Pose(vectorResult.first, headingResult.first)
         val accel = Pose(vectorResult.second, 0.0)
-
         return calcFeedforward(vel, accel)
     }
 }
