@@ -34,25 +34,28 @@ class SimpleGVFController(
     private val thetaEpsilon: Double,
     private val errorMap: (Double) -> Double = { it },
 ) : GVFController {
-    override var isFinished = false
-        private set
+    override val isFinished
+        get() = path.length - s < epsilon &&
+                    pose.vec.dist(path.end.vec) < epsilon &&
+                    headingError.absoluteValue < thetaEpsilon
 
     private var pose: Pose = Pose()
     private var s: Double = 0.0
+    private var headingError = 0.0
 
     private fun calcGVF(): Vector {
         val tangent = path[s, 1].vec
         val normal = tangent.rotate(PI / 2.0)
         val displacementVec = path[s].vec - pose.vec
         val error = displacementVec.norm * (displacementVec cross tangent).sign
-        Logger.logInfo("s: $s, d: $tangent, r: $displacementVec, e: $error")
+        Logger.addTelemetryLine("s: $s, d: $tangent, r: $displacementVec, e: $error")
         return tangent - normal * kN * errorMap.invoke(error)
     }
 
     private fun headingControl(): Pair<Double, Double> {
-        val error = (path[s].heading - pose.heading).angleWrap.degrees
-        val result = error / kOmega
-        return Pair(result, error)
+        headingError = (path[s].heading - pose.heading).angleWrap.degrees
+        val result = headingError / kOmega
+        return Pair(result, headingError)
     }
 
     private fun vectorControl(v: Vector): Vector {
@@ -64,12 +67,9 @@ class SimpleGVFController(
         s = path.project(pose.vec, s)
         val headingResult = headingControl()
         val vectorResult = vectorControl(calcGVF())
-        isFinished = path.length - s < epsilon &&
-            pose.vec.dist(path.end.vec) < epsilon &&
-            headingResult.second.absoluteValue < thetaEpsilon
-        return Speeds()
-            .apply { setFieldCentric(Pose(vectorResult, headingResult.first)) }
-            .getRobotCentric(pose.heading)
+        val res = Speeds()
+        res.setFieldCentric(Pose(vectorResult, headingResult.first))
+        return res.getRobotCentric(pose.heading)
     }
 
     init {
