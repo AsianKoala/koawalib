@@ -148,42 +148,30 @@ class Arc(
 // r'(s) = r'(t(s)) * t'(s)
 // r''(s) = r''(t(s)) * t'(s) * t'(s) + r'(t(s)) * t''(s)
 // r''(s) = r''(t(s)) * t'(s)^2 + r'(t(s)) * t''(s)
-// s(t) = int 0->t |r'(u)| du
-// s(t) = int 0-> sqrt((dx/du)^2 + (dy/du)^2) du
-// s'(t) = |r'(t)|
-// ok that's pretty chill, now lets take another deriv
-// first have to expand out |r'(t)|
-// s'(t) = |r'(t)|
-// = sqrt(x'(t)^2 + y'(t)^2)
-// s''(t) = d/dt (x'(t)^2 + y'(t)^2)^(1/2)
-// = (x'(t)^2 + y'(t)^2)^(-1/2) * d/dt [x'(t)^2 + y'(t)^2]
-// = (x'(t)^2 + y'(t)^2)^(-1/2) * 2 * x'(t) * x''(t) + 2 * y'(t) * y''(t)
-// = (x'(t)^2 + y'(t)^2)^(-1/2) * (2 * ((x'(t) * x''(t) + y'(t) * y''(t))
-// = (2 * ((x'(t) * x''(t) + y'(t) * y''(t)))) / sqrt(x'(t)^2 + y'(t)^2
-// this is pretty much unusable in it's current form, so lets just convert it back to vectors
-// now that we've finished differentiation
-// s''(t) = (2 * r'(t) dot r''(t)') / |r'(t)|
+// s(t) = 0 -> t int |r'(u)| du
+// s' = ||r'||
+// now to find s'', we know d/dt ||v|| = (v dot v') / |v|
+// s'' = (r' dot r'') / |r'|
 // now the rest is pretty obvious from here..
 // to find t'(s) and t''(s), just use inverse function theorem
 // t'(s) = 1 / s'(t)
 // t''(s) is a bit more complicated but lets just solve for it here
 // t(s(t)) = t
 // t'(s(t)) * s'(t) = 1 (obviouly can see previous thing from here)
-// t''(s(t)) * s'(t) * s'(t) + s''(t) * t'(s(t)) = 0
-// t''(s(t)) * s'(t)^2 + s''(t) * t'(s(t)) = 0
-// t''(s(t)) * s'(t)^2 + s''(t) / s'(t) = 0
-// t''(s(t)) = -s''(t) / s'(t)^3
+// t'' * s' * s' + s'' * t' = 0
+// t'' * s'^2 + s'' * t' = 0
+// t'' * s'^2 + s'' / s' = 0
+// t'' = -s'' / s'^3
 // and there we go
 // in summary, these are the equations we need:
-// s'(t) = |r'(t)|
-// s''(t) = (2 * r'(t) dot r''(t)') / |r'(t)|
-// t'(s) = 1 / s'(t)
-// t''(s(t)) = -s''(t) / s'(t)^3
-// r(s) = r(t(s))
-// r'(s) = r'(t(s)) * t'(s) = r'(t) / |r'(t)|
-// r''(s) = r''(t(s)) * t'(s)^2 + r'(t(s)) * t''(s)
-// did i really just type all of this out instead of
-// doing it on paper? yes. am i lazy? yes.
+// s' = ||r'||
+// s'' = (r' dot r'') / |r'|
+// t' = 1 / s'(t)
+// t'' = -s''(t) / s'(t)^3
+// r = r(t)
+// r' = r' / |r'(t)|
+// r'' = r'' * t'(s)^2 + r'(t(s)) * t''(s)
+// update november 09 2022: my old self is stupid as fuck
 interface SmoothCurve {
     val x: Polynomial
     val y: Polynomial
@@ -195,7 +183,7 @@ interface SmoothCurve {
     private fun dsdt(t: Double, n: Int = 1): Double {
         return when (n) {
             1 -> rt(t, 1).norm
-            2 -> (2 * (rt(t, 1) dot rt(t, 2))) / dsdt(t)
+            2 -> (rt(t, 1) dot rt(t, 2)) / rt(t, 1).norm
             else -> throw Exception("im not implementing any more derivatives")
         }
     }
