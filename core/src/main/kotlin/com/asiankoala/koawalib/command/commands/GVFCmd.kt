@@ -12,11 +12,11 @@ class GVFCmd(
 ) : Cmd() {
     override fun initialize() {
         // TODO: better gvf cmd integration
-//        for (cmd in cmds) {
-//            val s = controller.path.project(cmd.second)
-//            + WaitUntilCmd { controller.path.project(drive.pose.vec) > s }
-//                .andThen(cmd.first)
-//        }
+       for (cmd in cmds) {
+           val s = controller.path.project(cmd.second)
+           + WaitUntilCmd { controller.s > s }
+               .andThen(cmd.first)
+       }
     }
 
     override fun execute() {

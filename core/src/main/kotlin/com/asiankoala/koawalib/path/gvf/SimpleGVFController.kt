@@ -33,14 +33,14 @@ class SimpleGVFController(
     private val thetaEpsilon: Double,
     private val errorMap: (Double) -> Double = { it },
 ) : GVFController {
+    private var pose: Pose = Pose()
+    private var headingError = 0.0
+
+    override var s: Double = 0.0
     override val isFinished
         get() = path.length - s < epsilon &&
             pose.vec.dist(path.end.vec) < epsilon &&
             headingError.absoluteValue < thetaEpsilon
-
-    private var pose: Pose = Pose()
-    private var s: Double = 0.0
-    private var headingError = 0.0
 
     private fun calcGVF(): Vector {
         val tangent = path[s, 1].vec

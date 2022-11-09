@@ -26,7 +26,6 @@ class MotionProfiledGVFController(
     private val errorMap: (Double) -> Double = { it }
 ) : GVFController {
     private var pose: Pose = Pose()
-    private var s: Double = 0.0
     private val profile = OnlineProfile(
         DispState(),
         DispState(path.length, 0.0, 0.0),
@@ -37,6 +36,7 @@ class MotionProfiledGVFController(
     private var trackingError = 0.0
     private var headingError = 0.0
 
+    override var s: Double = 0.0
     override val isFinished: Boolean
         get() = path.length - s < epsilon &&
             pose.vec.dist(path.end.vec) < epsilon &&
