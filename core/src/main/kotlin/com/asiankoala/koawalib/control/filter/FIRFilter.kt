@@ -9,7 +9,7 @@ open class FIRFilter(
     private val inputs: Queue<Double> = LinkedList()
     fun update(input: Double): Double {
         inputs.add(input)
-        if(inputs.size > bn.size) inputs.remove()
+        if (inputs.size > bn.size) inputs.remove()
         return inputs.zip(bn).sumOf { it.first * it.second }
     }
 }

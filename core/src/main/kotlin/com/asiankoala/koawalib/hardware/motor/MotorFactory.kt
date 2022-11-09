@@ -92,11 +92,17 @@ class MotorFactory(name: String) {
         pidGains: PIDGains,
         ffGains: FFGains,
         allowedPositionError: Double,
-        disabledPosition: DisabledPosition = DisabledPosition.NONE,
+        disabledPosition: Double? = null,
         bounds: Bounds = Bounds(),
     ): MotorFactory {
         instance.mode = MotorControlModes.POSITION
-        instance.controller = PositionMotorController(instance.encoder, pidGains, ffGains, allowedPositionError, disabledPosition, bounds)
+        instance.controller = PositionMotorController(
+            instance.encoder,
+            pidGains,
+            ffGains, allowedPositionError,
+            disabledPosition?.let { DisabledPosition(it) } ?: DisabledPosition.NONE,
+            bounds
+        )
         return this
     }
 
@@ -121,10 +127,17 @@ class MotorFactory(name: String) {
         ffGains: FFGains,
         constraints: MotionConstraints,
         allowedPositionError: Double,
-        disabledPosition: DisabledPosition = DisabledPosition.NONE,
+        disabledPosition: Double? = null,
     ): MotorFactory {
         instance.mode = MotorControlModes.MOTION_PROFILE
-        instance.controller = MotionProfileMotorController(instance.encoder, pidGains, ffGains, constraints, allowedPositionError, disabledPosition)
+        instance.controller = MotionProfileMotorController(
+            instance.encoder,
+            pidGains,
+            ffGains,
+            constraints,
+            allowedPositionError,
+            disabledPosition?.let { DisabledPosition(it) } ?: DisabledPosition.NONE,
+        )
         return this
     }
 

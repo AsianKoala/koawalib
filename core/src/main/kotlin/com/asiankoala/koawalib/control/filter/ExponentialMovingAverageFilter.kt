@@ -11,9 +11,9 @@ class ExponentialMovingAverageFilter(
 
     private fun update(input: Double): Double {
         inputs.add(input)
-        if(inputs.size > n + 1) inputs.remove()
+        if (inputs.size > n + 1) inputs.remove()
         val sum = inputs.zip(List(n) { (1.0 - alpha).pow(it) }).sumOf { it.first * it.second }
-        val weight = alpha *  List(n) { (1.0 - alpha).pow(n + it) }.sum()
+        val weight = alpha * List(n) { (1.0 - alpha).pow(n + it) }.sum()
         return sum / weight
     }
 }

@@ -3,7 +3,7 @@ package com.asiankoala.koawalib.control.motor
 import com.asiankoala.koawalib.math.epsilonEquals
 import kotlin.math.absoluteValue
 
-class DisabledPosition(
+internal class DisabledPosition(
     private val position: Double,
 ) {
     internal var enabled: Boolean = true
