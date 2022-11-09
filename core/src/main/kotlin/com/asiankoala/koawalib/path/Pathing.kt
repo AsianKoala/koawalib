@@ -8,20 +8,20 @@ import kotlin.math.*
 sources i used to create my path generation system:
 -------------------------------------------------
 
-*************************THE GOAT PAPER ****************************
+*************************THE GOAT PAPERS ****************************
 https://people.cs.clemson.edu/~dhouse/courses/405/notes/splines.pdf
-this paper basically wrote the entirety of my path generation system
+http://www2.informatik.uni-freiburg.de/~lau/students/Sprunk2008.pdf
+basically wrote the entirety of my path generation system
 ********************************************************************
 
-https://pomax.github.io/bezierinfo/#arclength (amazing primer on bezier curves, which can be applied to splines)
-https://pomax.github.io/bezierinfo/legendre-gauss.html (for my gaussian-legendre weights)
-https://www.wolframalpha.com/input?i=row+reduce+%5B%5B0%2C0%2C0%2C0%2C0%2Cf%2Cu%5D%2C%5B0%2C0%2C0%2C0%2Ce%2C0%2Cv%5D%2C%5B0%2C0%2C0%2C2d%2C0%2C0%2Cw%5D%2C%5Ba%2Cb%2Cc%2Cd%2Ce%2Cf%2Cx%5D%2C%5B5a%2C4b%2C3c%2C2d%2C1e%2C0%2Cy%5D%2C%5B20a%2C12b%2C6c%2C2d%2C0%2C0%2Cz%5D%5D
-the above link is what i used to generate splines themselves, as well as the first link
+other great resources:
+https://pomax.github.io/bezierinfo/#arclength (amazing primer on bezier curves)
 https://www.youtube.com/watch?v=unWguclP-Ds&list=PLC8FC40C714F5E60F&index=2
-great channel on numerically computing anything (integrals, derivatives, etc.)
 https://github.com/GrappleRobotics/Pathfinder/tree/master/Pathfinder/src/include/grpl/pf/path
-this is the basis of my arc approximation
-of course, credit given to rr for the idea of using splines for paths, as well as its projection algorithm
+https://math.stackexchange.com/questions/93496/point-projection-on-curve
+https://www.youtube.com/watch?v=W7S94pq5Xuo
+https://math.stackexchange.com/questions/2983445/unit-vector-differentiation
+of course, credit given to rr for the original inspiration to make my own path generation system
  */
 
 class Polynomial(coeffVec: SimpleMatrix) {

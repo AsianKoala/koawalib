@@ -1,6 +1,5 @@
 package com.asiankoala.koawalib.path.gvf
 
-import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.util.Clock
 import kotlin.math.min
 import kotlin.math.sqrt
@@ -84,10 +83,6 @@ class OnlineProfile(
             val constrainedAccel = (constrainedVel - lastVel) / dt
             lastVel = constrainedVel
             lastTime = Clock.seconds
-            Logger.addTelemetryData("achievable", achievableVel)
-            Logger.addTelemetryData("end of profile", endOfProfileVel)
-            Logger.addTelemetryData("user vel", userVel)
-            Logger.addTelemetryData("ds", ds)
             DispState(
                 x * multiplier + dispOffset,
                 constrainedVel * multiplier,

@@ -1,6 +1,5 @@
 package com.asiankoala.koawalib.path.gvf
 
-import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.Vector
 import com.asiankoala.koawalib.math.angleWrap
@@ -36,8 +35,8 @@ class SimpleGVFController(
 ) : GVFController {
     override val isFinished
         get() = path.length - s < epsilon &&
-                    pose.vec.dist(path.end.vec) < epsilon &&
-                    headingError.absoluteValue < thetaEpsilon
+            pose.vec.dist(path.end.vec) < epsilon &&
+            headingError.absoluteValue < thetaEpsilon
 
     private var pose: Pose = Pose()
     private var s: Double = 0.0
@@ -48,7 +47,6 @@ class SimpleGVFController(
         val normal = tangent.rotate(PI / 2.0)
         val displacementVec = path[s].vec - pose.vec
         val error = displacementVec.norm * (displacementVec cross tangent).sign
-        Logger.addTelemetryLine("s: $s, d: $tangent, r: $displacementVec, e: $error")
         return tangent - normal * kN * errorMap.invoke(error)
     }
 
