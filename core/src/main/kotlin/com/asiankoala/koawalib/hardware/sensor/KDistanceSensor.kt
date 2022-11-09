@@ -11,7 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
  */
 @Suppress("unused")
 class KDistanceSensor(
-    name: String, 
+    name: String,
     private val dt: Double
 ) : KDevice<DistanceSensor>(name), Periodic {
     private var lastReadTime = Clock.seconds
@@ -21,7 +21,7 @@ class KDistanceSensor(
 
     override fun periodic() {
         val t = Clock.seconds
-        if(t - lastReadTime > dt) {
+        if (t - lastReadTime > dt) {
             lastRead = device.getDistance(DistanceUnit.MM)
             lastReadTime = t
         }
