@@ -121,10 +121,9 @@ class Arc(
             length = delta.norm
             angleOffset = atan2(delta.y, delta.x)
         } else {
-            // todo: check if this works
-            val sNN = start.normSq
-            val mNN = mid.normSq
-            val eNN = end.normSq
+            val sNN = start.norm * start.norm
+            val mNN = mid.norm * mid.norm
+            val eNN = end.norm * end.norm
             val r = SimpleMatrix(
                 2, 1, true,
                 doubleArrayOf(

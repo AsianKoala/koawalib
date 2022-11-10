@@ -14,7 +14,6 @@ data class Vector(
     val y: Double = 0.0
 ) {
     val norm get() = hypot(x, y)
-    val normSq get() = x.pow(2) + y.pow(2)
     val angle get() = atan2(y, x)
     val unit get() = this / norm
 
