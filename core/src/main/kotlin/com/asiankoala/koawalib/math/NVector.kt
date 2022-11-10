@@ -11,6 +11,8 @@ class NVector(
     private val elems: List<Double>
 ) {
     constructor(vararg elems: Double) : this(elems.toList())
+    constructor(n: Int, init: (Int) -> Double) : this(List(n, init))
+
     val n = elems.size
     val norm = sqrt(elems.sumOf { it * it })
     val unit = this / norm
@@ -28,6 +30,9 @@ class NVector(
     infix fun push(other: NVector) = NVector(elems + other.elems)
     infix fun pop(m: Int) = NVector(elems.dropLast(m))
     infix fun restrict(m: Int) = this pop max(0, n - m)
+    infix fun map(op: (Double) -> Double) = NVector(elems.map(op))
+    infix fun mapIndexed(op: (Int, Double) -> Double) = NVector(elems.mapIndexed(op))
+
     operator fun plus(other: NVector) = zipOp(other) { it.first + it.second }
     operator fun minus(other: NVector) = zipOp(other) { it.first - it.second }
     operator fun times(scalar: Double) = NVector(elems.map { it * scalar })

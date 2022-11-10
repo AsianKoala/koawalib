@@ -35,7 +35,7 @@ import kotlin.math.sign
  * @param heading heading supplier
  * @param fieldCentricHeadingScalar angle to start deccel for field centric heading
  */
-open class MecanumCmd(
+class MecanumCmd(
     private val drive: KMecanumDrive,
     private val leftStick: Stick,
     private val rightStick: Stick,
@@ -55,7 +55,7 @@ open class MecanumCmd(
         return max(0.0, s * x * (k * x.pow(3) - k + 1)) * x.sign
     }
 
-    protected open fun processPowers(): Pose {
+    private fun processPowers(): Pose {
         val xRaw = leftStick.xSupplier.invoke()
         val yRaw = -leftStick.ySupplier.invoke()
         val rRaw = -rightStick.xSupplier.invoke()
@@ -88,11 +88,11 @@ open class MecanumCmd(
         }
     }
 
-    final override fun execute() {
+    override fun execute() {
         drive.powers = processPowers()
     }
 
-    final override val isFinished: Boolean
+    override val isFinished: Boolean
         get() = false
 
     init {

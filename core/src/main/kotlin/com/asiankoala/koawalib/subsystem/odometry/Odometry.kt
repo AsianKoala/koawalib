@@ -58,7 +58,11 @@ abstract class Odometry(
         }
 
         val robotDeltaRelativeMovement = Pose(deltaX, deltaY, angleIncrement)
-        robotRelativeMovement = robotRelativeMovement.plusWrap(robotDeltaRelativeMovement)
+//        robotRelativeMovement = robotRelativeMovement.plusWrap(robotDeltaRelativeMovement)
+        robotRelativeMovement = Pose(
+            robotRelativeMovement.vec + robotDeltaRelativeMovement.vec,
+            (robotRelativeMovement.heading + robotDeltaRelativeMovement.heading).angleWrap
+        )
         prevRobotRelativePositions.add(TimePose(robotRelativeMovement))
 
         val incrementX = currPose.heading.cos * deltaY + currPose.heading.sin * deltaX
