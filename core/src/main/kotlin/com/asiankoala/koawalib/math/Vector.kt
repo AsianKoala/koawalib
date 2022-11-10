@@ -2,7 +2,6 @@ package com.asiankoala.koawalib.math
 
 import kotlin.math.atan2
 import kotlin.math.hypot
-import kotlin.math.pow
 
 /**
  * Represents 2D Vectors

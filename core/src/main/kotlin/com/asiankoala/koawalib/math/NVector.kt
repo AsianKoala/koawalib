@@ -5,16 +5,17 @@ import kotlin.math.sqrt
 
 /**
  * Represents N dimensional vectors
+ * Pretty useless but it was fun to write
  */
 class NVector(
-    val elems: List<Double>
+    private val elems: List<Double>
 ) {
     constructor(vararg elems: Double) : this(elems.toList())
     val n = elems.size
     val norm = sqrt(elems.sumOf { it * it })
     val unit = this / norm
-    val as2dVec = this pop (max(0, n - 2))
-    val asPose = this pop(max(0, n - 3))
+    val as2dVec = (this restrict 2).let { Vector(it[0], it[1]) }
+    val asPose = (this restrict 3).let { Pose(it[0], it[1], it[2]) }
 
     private fun zipOp(other: NVector, op: (Pair<Double, Double>) -> Double): NVector {
         require(n == other.n)
@@ -25,9 +26,11 @@ class NVector(
     infix fun dist(other: NVector) = (this - other).norm
     infix fun push(elem: Double) = NVector(elems + elem)
     infix fun push(other: NVector) = NVector(elems + other.elems)
-    infix fun pop(n: Int) = NVector(elems.dropLast(n))
+    infix fun pop(m: Int) = NVector(elems.dropLast(m))
+    infix fun restrict(m: Int) = this pop max(0, n - m)
     operator fun plus(other: NVector) = zipOp(other) { it.first + it.second }
     operator fun minus(other: NVector) = zipOp(other) { it.first - it.second }
     operator fun times(scalar: Double) = NVector(elems.map { it * scalar })
     operator fun div(scalar: Double) = NVector(elems.map { it / scalar })
+    operator fun get(n: Int) = elems[n]
 }
