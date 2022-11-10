@@ -1,6 +1,5 @@
 package com.asiankoala.koawalib.path.gvf
 
-import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.Vector
 import com.asiankoala.koawalib.math.angleWrap
@@ -22,7 +21,6 @@ class MotionProfiledGVFController(
     private val kStatic: Double,
     private val kV: Double,
     private val kA: Double,
-    private val kIsTuning: Boolean = false,
     private val errorMap: (Double) -> Double = { it }
 ) : GVFController {
     private var pose: Pose = Pose()
@@ -31,10 +29,12 @@ class MotionProfiledGVFController(
         DispState(path.length, 0.0, 0.0),
         constraints
     )
-    private var state = DispState()
     private var normal = Vector()
     private var trackingError = 0.0
     private var headingError = 0.0
+
+    var state = DispState() // need to be public for tuning
+        private set
 
     override var s: Double = 0.0
     override val isFinished: Boolean
@@ -88,7 +88,6 @@ class MotionProfiledGVFController(
         pose = currPose
         s = path.project(pose.vec, s)
         state = profile[s]
-        if (kIsTuning) Logger.addVar("target velocity", state.v)
         val headingResult = headingControl()
         val vectorResult = vectorControl()
         return Speeds().apply {
