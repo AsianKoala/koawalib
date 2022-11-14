@@ -12,6 +12,7 @@ class NVector(
 ) {
     constructor(vararg elems: Double) : this(elems.toList())
     constructor(n: Int, init: (Int) -> Double) : this(List(n, init))
+    constructor(n: Int) : this(List(n) { 0.0 })
 
     val n = elems.size
     val norm = sqrt(elems.sumOf { it * it })
