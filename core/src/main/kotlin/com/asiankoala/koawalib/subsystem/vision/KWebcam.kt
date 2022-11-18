@@ -7,7 +7,7 @@ import org.openftc.easyopencv.OpenCvCameraFactory
 import org.openftc.easyopencv.OpenCvCameraRotation
 import org.openftc.easyopencv.OpenCvPipeline
 
-class Webcam(
+class KWebcam(
     deviceName: String,
     pipeline: OpenCvPipeline,
     private val width: Int = 800,
