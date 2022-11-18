@@ -80,6 +80,7 @@ dependencies {
     testImplementation 'org.jetbrains.kotlin:kotlin-test'
     implementation 'com.acmerobotics.dashboard:dashboard:0.4.5'
     implementation 'com.github.Eeshwar-Krishnan:PhotonFTC:v2.0.1'
+    implementation 'org.openftc:easyopencv:1.5.2'
 
     ktlint("com.pinterest:ktlint:0.42.1") {
         attributes {
