@@ -23,11 +23,13 @@ class KMotor internal constructor(name: String) : KDevice<DcMotorEx>(name) {
 
     private var powerMultiplier = 1.0
     private var disabled = false
+    private var encoderCreated = false
     private val cmd = LoopCmd(this::update).withName("$name motor")
 
     private fun update() {
+        if (encoderCreated) encoder.update()
         if (mode == MotorControlModes.OPEN_LOOP) return
-        controller.updateEncoder()
+        controller.currentState = MotionState(encoder.pos, encoder.vel)
         controller.update()
         this.power = controller.output
     }
@@ -106,20 +108,16 @@ class KMotor internal constructor(name: String) : KDevice<DcMotorEx>(name) {
     }
 
     fun enable() {
-        power = 0.0
         disabled = false
-        if (mode != MotorControlModes.OPEN_LOOP) {
-            encoder.enable()
-        }
+        power = 0.0
+        if (encoderCreated) encoder.enable()
         cmd.schedule()
     }
 
     fun disable() {
-        power = 0.0
         disabled = true
-        if (mode != MotorControlModes.OPEN_LOOP) {
-            encoder.disable()
-        }
+        power = 0.0
+        if (encoderCreated) encoder.disable()
         cmd.cancel()
     }
 

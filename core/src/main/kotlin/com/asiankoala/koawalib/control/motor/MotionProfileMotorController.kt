@@ -4,19 +4,17 @@ import com.asiankoala.koawalib.control.controller.PIDGains
 import com.asiankoala.koawalib.control.profile.MotionConstraints
 import com.asiankoala.koawalib.control.profile.MotionProfile
 import com.asiankoala.koawalib.control.profile.MotionState
-import com.asiankoala.koawalib.hardware.motor.KEncoder
 import com.asiankoala.koawalib.logger.Logger
 import com.qualcomm.robotcore.util.ElapsedTime
 import kotlin.math.absoluteValue
 
 internal class MotionProfileMotorController(
-    encoder: KEncoder,
     pid: PIDGains,
     private val ff: FFGains,
     private val constraints: MotionConstraints,
     private val allowedPositionError: Double,
     private val disabledPosition: DisabledPosition,
-) : MotorController(pid, ff, encoder) {
+) : MotorController(pid, ff) {
     private var profile: MotionProfile? = null
     private val timer = ElapsedTime()
     internal var setpoint = MotionState(currentState.x)

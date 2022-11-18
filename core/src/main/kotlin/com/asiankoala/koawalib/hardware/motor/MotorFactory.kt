@@ -67,6 +67,13 @@ class MotorFactory(name: String) {
         return this
     }
 
+    fun pairEncoder(motor: KMotor, ticksPerUnit: Double, isRevEncoder: Boolean): MotorFactory {
+        instance.encoder = KEncoder(motor, ticksPerUnit)
+        encoderCreated = true
+        Logger.logInfo("encoder for motor ${instance.deviceName} paired with encoder on motor ${motor.deviceName}'s port")
+        return this
+    }
+
     /**
      * Zero the encoder associated with this motor
      */
@@ -97,9 +104,9 @@ class MotorFactory(name: String) {
     ): MotorFactory {
         instance.mode = MotorControlModes.POSITION
         instance.controller = PositionMotorController(
-            instance.encoder,
             pidGains,
-            ffGains, allowedPositionError,
+            ffGains,
+            allowedPositionError,
             disabledPosition?.let { DisabledPosition(it) } ?: DisabledPosition.NONE,
             bounds
         )
@@ -131,7 +138,6 @@ class MotorFactory(name: String) {
     ): MotorFactory {
         instance.mode = MotorControlModes.MOTION_PROFILE
         instance.controller = MotionProfileMotorController(
-            instance.encoder,
             pidGains,
             ffGains,
             constraints,

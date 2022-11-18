@@ -4,13 +4,11 @@ import com.asiankoala.koawalib.control.controller.Bounds
 import com.asiankoala.koawalib.control.controller.PIDFController
 import com.asiankoala.koawalib.control.controller.PIDGains
 import com.asiankoala.koawalib.control.profile.MotionState
-import com.asiankoala.koawalib.hardware.motor.KEncoder
 import com.asiankoala.koawalib.logger.Logger
 
 internal abstract class MotorController(
     pidGains: PIDGains,
     ffGains: FFGains,
-    private val encoder: KEncoder,
     bounds: Bounds = Bounds()
 ) {
     protected abstract fun setTarget(requestedState: MotionState)
@@ -30,13 +28,8 @@ internal abstract class MotorController(
     }
 
     var output = 0.0; protected set
-    var targetState = MotionState(encoder.pos); protected set
-    var currentState = MotionState(encoder.pos); private set
-
-    fun updateEncoder() {
-        encoder.update()
-        currentState = MotionState(encoder.pos, encoder.vel)
-    }
+    var targetState = MotionState(0.0); protected set
+    var currentState = MotionState(0.0); internal set
 
     fun setProfileTarget(x: Double, v: Double = 0.0) {
         setTarget(MotionState(x, v))

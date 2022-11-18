@@ -15,7 +15,6 @@ data class Pose(
     constructor(p: Vector, h: Double) : this(p.x, p.y, h)
     val vec get() = Vector(x, y)
 
-
     /**
      * String of x, y, and heading in degrees
      */

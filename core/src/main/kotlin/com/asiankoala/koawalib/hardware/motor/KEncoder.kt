@@ -73,12 +73,6 @@ class KEncoder(
         _accel = 0.0
     }
 
-    fun zero(newPosition: Double = 0.0): KEncoder {
-        internalReset()
-        offset = newPosition * ticksPerUnit - _pos
-        return this
-    }
-
     internal fun update() {
         if (!disabled) {
             val seconds = Clock.seconds
@@ -90,6 +84,12 @@ class KEncoder(
         } else {
             Logger.logWarning("encoder queried when disabled")
         }
+    }
+
+    fun zero(newPosition: Double = 0.0): KEncoder {
+        internalReset()
+        offset = newPosition * ticksPerUnit - _pos
+        return this
     }
 
     fun disable() {
