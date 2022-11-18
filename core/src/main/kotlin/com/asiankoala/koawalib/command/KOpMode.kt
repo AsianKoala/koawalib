@@ -27,7 +27,6 @@ abstract class KOpMode(
     protected val driver: KGamepad by lazy { KGamepad(gamepad1) }
     protected val gunner: KGamepad by lazy { KGamepad(gamepad2) }
 
-    // let this be public for user opmodes
     private var opModeTimer = ElapsedTime()
     private var loopTimer = ElapsedTime()
     private lateinit var hubs: List<LynxModule>
@@ -43,7 +42,6 @@ abstract class KOpMode(
 
     private fun setupHardware() {
         KDevice.hardwareMap = hardwareMap
-
         if (photonEnabled) {
             PhotonCore.enable()
             PhotonCore.CONTROL_HUB.bulkCachingMode = LynxModule.BulkCachingMode.MANUAL
@@ -52,7 +50,6 @@ abstract class KOpMode(
             hubs = hardwareMap.getAll(LynxModule::class.java)
             hubs.forEach { it.bulkCachingMode = LynxModule.BulkCachingMode.MANUAL }
         }
-
         voltageSensor = hardwareMap.voltageSensor.iterator().next()
     }
 
@@ -133,7 +130,6 @@ abstract class KOpMode(
 
     override fun runOpMode() {
         mainStateMachine.start()
-
         while (mainStateMachine.running) {
             mainStateMachine.update()
             opModeState = mainStateMachine.state
