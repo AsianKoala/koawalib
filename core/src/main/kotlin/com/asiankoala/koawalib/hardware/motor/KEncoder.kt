@@ -11,7 +11,7 @@ import kotlin.math.sign
 class KEncoder(
     private val motor: KMotor,
     private val ticksPerUnit: Double,
-    private val isRevEncoder: Boolean = false
+    private val isRevEncoder: Boolean
 ) {
     private var offset = 0.0
     private var multiplier = 1.0

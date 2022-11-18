@@ -60,15 +60,15 @@ class MotorFactory(name: String) {
     /**
      * Created an encoder association with this motor
      */
-    fun createEncoder(ticksPerUnit: Double, isRevEncoder: Boolean): MotorFactory {
+    fun createEncoder(ticksPerUnit: Double, isRevEncoder: Boolean = false): MotorFactory {
         instance.encoder = KEncoder(instance, ticksPerUnit, isRevEncoder)
         encoderCreated = true
         Logger.logInfo("encoder created in associating with motor ${instance.deviceName}")
         return this
     }
 
-    fun pairEncoder(motor: KMotor, ticksPerUnit: Double, isRevEncoder: Boolean): MotorFactory {
-        instance.encoder = KEncoder(motor, ticksPerUnit)
+    fun pairEncoder(motor: KMotor, ticksPerUnit: Double, isRevEncoder: Boolean = false): MotorFactory {
+        instance.encoder = KEncoder(motor, ticksPerUnit, isRevEncoder)
         encoderCreated = true
         Logger.logInfo("encoder for motor ${instance.deviceName} paired with encoder on motor ${motor.deviceName}'s port")
         return this
@@ -122,7 +122,7 @@ class MotorFactory(name: String) {
         allowedVelocityError: Double,
     ): MotorFactory {
         instance.mode = MotorControlModes.VELOCITY
-        instance.controller = VelocityMotorController(instance.encoder, pidGains, kF, allowedVelocityError)
+        instance.controller = VelocityMotorController(pidGains, kF, allowedVelocityError)
         return this
     }
 
