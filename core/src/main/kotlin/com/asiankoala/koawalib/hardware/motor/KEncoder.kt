@@ -20,20 +20,18 @@ class KEncoder(
     private var _accel = 0.0
     private val prevPos = ArrayList<Pair<Double, Double>>()
     private val prevVel = ArrayList<Pair<Double, Double>>()
-    private val velStats = MovingStatistics(5)
-    private val accelStats = MovingStatistics(5)
+    private val velStats = MovingStatistics(LOOK_BEHIND)
+    private val accelStats = MovingStatistics(LOOK_BEHIND)
     private var disabled = false
 
     val pos get() = (_pos + offset) / ticksPerUnit
-
     val vel get() = velStats.mean / ticksPerUnit
-
     val accel get() = accelStats.mean / ticksPerUnit
-
     val delta get() = (
         prevPos[prevPos.size - 1].second -
             prevPos[prevPos.size - 2].second
         ) / ticksPerUnit
+
 
     val reverse: KEncoder
         get() {
@@ -102,7 +100,7 @@ class KEncoder(
     }
 
     companion object {
-        private const val LOOK_BEHIND = 1
+        private const val LOOK_BEHIND = 5
         private const val CPS_STEP = 0x10000
 
         private fun inverseOverflow(input: Double, estimate: Double): Double {

@@ -10,7 +10,6 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple
 
 class MotorFactory(name: String) {
     private val instance = KMotor(name)
-    private var encoderCreated = false
 
     /**
      * Return this motor with brake mode
@@ -57,28 +56,32 @@ class MotorFactory(name: String) {
             return this
         }
 
-    /**
-     * Created an encoder association with this motor
-     */
-    fun createEncoder(ticksPerUnit: Double, isRevEncoder: Boolean = false): MotorFactory {
-        instance.encoder = KEncoder(instance, ticksPerUnit, isRevEncoder)
-        encoderCreated = true
-        Logger.logInfo("encoder created in associating with motor ${instance.deviceName}")
-        return this
-    }
 
-    fun pairEncoder(motor: KMotor, ticksPerUnit: Double, isRevEncoder: Boolean = false): MotorFactory {
+    fun pairEncoder(
+        motor: KMotor,
+        ticksPerUnit: Double,
+        isRevEncoder: Boolean = false)
+    : MotorFactory {
         instance.encoder = KEncoder(motor, ticksPerUnit, isRevEncoder)
-        encoderCreated = true
+        instance.encoderCreated = true
         Logger.logInfo("encoder for motor ${instance.deviceName} paired with encoder on motor ${motor.deviceName}'s port")
         return this
     }
 
     /**
+     * Created an encoder association with this motor
+     */
+    fun createEncoder(
+        ticksPerUnit: Double,
+        isRevEncoder: Boolean = false
+    ) = pairEncoder(instance, ticksPerUnit, isRevEncoder)
+
+
+    /**
      * Zero the encoder associated with this motor
      */
     fun zero(newPosition: Double = 0.0): MotorFactory {
-        if (!encoderCreated) throw Exception("encoder has not been created yet")
+        if (!instance.encoderCreated) throw Exception("encoder has not been created yet")
         instance.encoder.zero(newPosition)
         return this
     }
@@ -88,6 +91,7 @@ class MotorFactory(name: String) {
      */
     val reverseEncoder: MotorFactory
         get() {
+            if (!instance.encoderCreated) throw Exception("encoder has not been created yet")
             instance.encoder.reverse
             return this
         }
@@ -151,24 +155,18 @@ class MotorFactory(name: String) {
      * Build the motor from the motor factory
      */
     fun build(): KMotor {
-        if (!encoderCreated && instance.mode != MotorControlModes.OPEN_LOOP) {
+        if (!instance.encoderCreated && instance.mode != MotorControlModes.OPEN_LOOP)
             throw Exception()
-        }
 
-        if (instance.mode != MotorControlModes.OPEN_LOOP) {
-            instance.enable()
-            val information = "\n" +
-                "name: ${instance.deviceName}\n" +
-                "mode: ${instance.mode}\n" +
-                "direction: ${instance.direction}\n" +
-                "zeroPowerBehavior: ${instance.zeroPowerBehavior}\n" +
-                "isVoltageCorrected: ${instance.isVoltageCorrected}\n"
-            Logger.logInfo(
-                "scheduled motor with information: " +
-                    information
-            )
-        }
+        instance.enable()
+        val information = "\n" +
+            "name: ${instance.deviceName}\n" +
+            "mode: ${instance.mode}\n" +
+            "direction: ${instance.direction}\n" +
+            "zeroPowerBehavior: ${instance.zeroPowerBehavior}\n" +
+            "isVoltageCorrected: ${instance.isVoltageCorrected}\n"
 
+        Logger.logInfo("scheduled motor with information: $information")
         return instance
     }
 }

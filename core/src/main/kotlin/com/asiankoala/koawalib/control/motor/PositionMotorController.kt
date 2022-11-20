@@ -22,7 +22,7 @@ internal class PositionMotorController(
     override fun isAtTarget(): Boolean = (currentState.x - targetState.x).absoluteValue < allowedPositionError
 
     override fun update() {
-        output = controller.update(currentState.x, currentState.v) + ff.calc(targetState.x)
+        output = controller.update(currentState.x, currentState.v) + ff.calc(currentState.x)
         if (disabledPosition.shouldDisable(targetState.x, currentState.x, allowedPositionError)) {
             output = 0.0
             Logger.addTelemetryLine("controller disabled")

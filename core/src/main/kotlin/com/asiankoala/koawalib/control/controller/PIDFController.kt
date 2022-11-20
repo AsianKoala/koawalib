@@ -5,7 +5,7 @@ import com.asiankoala.koawalib.util.Clock
 import kotlin.math.abs
 import kotlin.math.sign
 
-// this is the old rr PIDFController that got removed
+// this is the old rr PIDFController that got removed in RR2
 class PIDFController constructor(
     private val pid: PIDGains,
     private val kV: Double = 0.0,
@@ -85,8 +85,6 @@ class PIDFController constructor(
             lastError = error
             lastUpdateTimestamp = currentTimestamp
 
-            // note: we'd like to refactor this with Kinematics.calculateMotorFeedforward() but kF complicates the
-            // determination of the sign of kStatic
             val baseOutput = pid.kP * error + pid.kI * errorSum +
                 pid.kD * (measuredVelocity?.let { targetVelocity - it } ?: errorDeriv) +
                 kV * targetVelocity + kA * targetAcceleration + kF(measuredPosition, measuredVelocity)

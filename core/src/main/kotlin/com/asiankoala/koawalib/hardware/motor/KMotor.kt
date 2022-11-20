@@ -23,7 +23,7 @@ class KMotor internal constructor(name: String) : KDevice<DcMotorEx>(name) {
 
     private var powerMultiplier = 1.0
     private var disabled = false
-    private var encoderCreated = false
+    internal var encoderCreated = false
     private val cmd = LoopCmd(this::update).withName("$name motor")
 
     private fun update() {
@@ -81,9 +81,7 @@ class KMotor internal constructor(name: String) : KDevice<DcMotorEx>(name) {
     }
 
     val pos: Double get() = encoder.pos
-
     val vel: Double get() = encoder.vel
-
     val accel: Double get() = encoder.accel
 
     fun setPositionTarget(x: Double) {
