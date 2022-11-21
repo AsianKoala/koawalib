@@ -9,4 +9,4 @@ internal inline fun <T, R> Iterable<T>.containsBy(mapper: (T) -> R, key: R) =
     this.map(mapper).contains(key)
 
 internal inline fun <T> T.cond(cond: Boolean, f: (T) -> T) =
-    if(cond) this else f.invoke(this)
+    if(cond) f.invoke(this) else this
