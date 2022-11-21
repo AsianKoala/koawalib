@@ -5,6 +5,7 @@ import com.asiankoala.koawalib.control.controller.PIDGains
 import com.asiankoala.koawalib.control.motor.*
 import com.asiankoala.koawalib.control.profile.MotionConstraints
 import com.asiankoala.koawalib.logger.Logger
+import com.asiankoala.koawalib.util.internal.cond
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 
@@ -48,7 +49,7 @@ class MotorFactory(name: String) {
         }
 
     /**
-     * Return this motor with voltage correction
+     * Return this motor with voltage correction enabled
      */
     val voltageCorrected: MotorFactory
         get() {
@@ -56,13 +57,15 @@ class MotorFactory(name: String) {
             return this
         }
 
+    /**
+     * Pair this motor's encoder with another motor's encoder
+     */
     fun pairEncoder(
         motor: KMotor,
-        ticksPerUnit: Double,
-        isRevEncoder: Boolean = false
+        encoderFactory: EncoderFactory
     ): MotorFactory {
-        instance.encoder = KEncoder(motor, ticksPerUnit, isRevEncoder)
-        instance.encoderCreated = true
+        motor.encoder = encoderFactory.build(instance)
+        motor.encoderCreated = true
         Logger.logInfo("encoder for motor ${instance.deviceName} paired with encoder on motor ${motor.deviceName}'s port")
         return this
     }
@@ -71,28 +74,8 @@ class MotorFactory(name: String) {
      * Created an encoder association with this motor
      */
     fun createEncoder(
-        ticksPerUnit: Double,
-        isRevEncoder: Boolean = false
-    ) = pairEncoder(instance, ticksPerUnit, isRevEncoder)
-
-    /**
-     * Zero the encoder associated with this motor
-     */
-    fun zero(newPosition: Double = 0.0): MotorFactory {
-        if (!instance.encoderCreated) throw Exception("encoder has not been created yet")
-        instance.encoder.zero(newPosition)
-        return this
-    }
-
-    /**
-     * Reverse the encoder associated with this motor
-     */
-    val reverseEncoder: MotorFactory
-        get() {
-            if (!instance.encoderCreated) throw Exception("encoder has not been created yet")
-            instance.encoder.reverse
-            return this
-        }
+        encoderFactory: EncoderFactory
+    ) = pairEncoder(instance, encoderFactory)
 
     /**
      * Enable position PID control in the motor

@@ -8,7 +8,7 @@ import kotlin.math.abs
 import kotlin.math.sign
 
 // @Suppress("unused")
-class KEncoder(
+class KEncoder internal constructor(
     private val motor: KMotor,
     private val ticksPerUnit: Double,
     private val isRevEncoder: Boolean

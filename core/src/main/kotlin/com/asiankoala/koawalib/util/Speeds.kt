@@ -20,14 +20,4 @@ class Speeds {
     fun setRobotCentric(speeds: Pose, heading: Double) {
         internalSpeed = speeds.convert(heading)
     }
-
-    fun getWheels(heading: Double) = KMecanumDrive.mecKinematics(getRobotCentric(heading))
-
-    fun setWheels(wheels: List<Double>, heading: Double) {
-        val (_, bl, br, fr) = wheels
-        val x = (br - fr) / 2
-        val h = (fr - bl) / 2
-        val y = br - x - h
-        setRobotCentric(Pose(x, y, h), heading)
-    }
 }
