@@ -56,12 +56,11 @@ class MotorFactory(name: String) {
             return this
         }
 
-
     fun pairEncoder(
         motor: KMotor,
         ticksPerUnit: Double,
-        isRevEncoder: Boolean = false)
-    : MotorFactory {
+        isRevEncoder: Boolean = false
+    ): MotorFactory {
         instance.encoder = KEncoder(motor, ticksPerUnit, isRevEncoder)
         instance.encoderCreated = true
         Logger.logInfo("encoder for motor ${instance.deviceName} paired with encoder on motor ${motor.deviceName}'s port")
@@ -75,7 +74,6 @@ class MotorFactory(name: String) {
         ticksPerUnit: Double,
         isRevEncoder: Boolean = false
     ) = pairEncoder(instance, ticksPerUnit, isRevEncoder)
-
 
     /**
      * Zero the encoder associated with this motor

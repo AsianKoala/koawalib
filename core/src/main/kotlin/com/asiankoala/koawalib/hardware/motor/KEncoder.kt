@@ -32,7 +32,6 @@ class KEncoder(
             prevPos[prevPos.size - 2].second
         ) / ticksPerUnit
 
-
     val reverse: KEncoder
         get() {
             multiplier *= -1.0
