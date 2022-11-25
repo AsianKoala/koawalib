@@ -23,11 +23,18 @@ open class KMecanumDrive(
     }
 
     companion object {
+        /**
+         * Given a robot at (0,0) facing 0 degrees
+         * +x power moves along +y axis, -x power moves along -y axis
+         * +y power moves along +x axis, -y power moves along -x axis
+         * +h power rotates counter clockwise (increasing angle),
+         * -h power rotates clockwise (decreasing angle)
+         */
         fun mecKinematics(drivePowers: Pose): List<Double> {
-            val fl = drivePowers.y + drivePowers.x + drivePowers.heading
-            val bl = drivePowers.y - drivePowers.x + drivePowers.heading
-            val br = drivePowers.y + drivePowers.x - drivePowers.heading
-            val fr = drivePowers.y - drivePowers.x - drivePowers.heading
+            val fl = drivePowers.y + drivePowers.x - drivePowers.heading
+            val bl = drivePowers.y - drivePowers.x - drivePowers.heading
+            val br = drivePowers.y + drivePowers.x + drivePowers.heading
+            val fr = drivePowers.y - drivePowers.x + drivePowers.heading
             return listOf(fl, bl, br, fr)
         }
     }
