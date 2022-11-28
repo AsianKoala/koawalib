@@ -9,7 +9,7 @@ class GVFCmd(
     private val drive: KMecanumOdoDrive,
     private val controller: GVFController,
     vararg cmds: Pair<Cmd, Vector>,
-    private val requireCmdsFinished: Boolean
+    private val requireCmdsFinished: Boolean = false
 ) : Cmd() {
     private val projCmds: List<Pair<Double, Cmd>>
     private var idx = 0
