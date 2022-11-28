@@ -296,14 +296,9 @@ data class HermiteControlVector1d(
     operator fun get(n: Int) = derivatives[n]
 }
 
-data class HermiteControlVector2d(zero: Vector, first: Vector) {
-    val x: HermiteControlVector1d
-    val y: HermiteControlVector1d
-
-    init {
-        x = HermiteControlVector1d(zero.x, first.x)
-        y = HermiteControlVector1d(zero.y, first.y)
-    }
+class HermiteControlVector2d(zero: Vector, first: Vector) {
+    val x = HermiteControlVector1d(zero.x, first.x)
+    val y = HermiteControlVector1d(zero.y, first.y)
 }
 
 val CUBIC_HERMITE_MATRIX = SimpleMatrix(
