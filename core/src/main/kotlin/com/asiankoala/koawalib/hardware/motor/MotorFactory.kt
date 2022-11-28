@@ -12,7 +12,7 @@ class MotorFactory(name: String) {
     private val instance = KMotor(name)
 
     /**
-     * Return this motor with brake mode
+     * Set the motor mode to brake
      */
     val brake: MotorFactory
         get() {
@@ -21,7 +21,7 @@ class MotorFactory(name: String) {
         }
 
     /**
-     * Return this motor with float mode
+     * Set the motor mode to float
      */
     val float: MotorFactory
         get() {
@@ -30,7 +30,7 @@ class MotorFactory(name: String) {
         }
 
     /**
-     * Return this motor with direction forward
+     * Set this motor's direction to forward (NOTE: Does not change encoder direction)
      */
     val forward: MotorFactory
         get() {
@@ -39,7 +39,7 @@ class MotorFactory(name: String) {
         }
 
     /**
-     * Return this motor with direction reversed
+     * Set this motor's direction to reverse (NOTE: Does not change encoder direction)
      */
     val reverse: MotorFactory
         get() {
@@ -48,11 +48,23 @@ class MotorFactory(name: String) {
         }
 
     /**
-     * Return this motor with voltage correction enabled
+     * Enable voltage correction
      */
     val voltageCorrected: MotorFactory
         get() {
             instance.isVoltageCorrected = true
+            return this
+        }
+
+    val lowPriority: MotorFactory
+        get() {
+            instance.priority = KMotor.Priority.LOW
+            return this
+        }
+
+    val highPriority: MotorFactory
+        get() {
+            instance.priority = KMotor.Priority.HIGH
             return this
         }
 

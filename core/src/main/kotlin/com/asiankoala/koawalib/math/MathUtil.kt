@@ -4,7 +4,6 @@ import kotlin.math.*
 
 const val EPSILON = 1e-6
 const val TAU = 2 * PI
-const val VOLTAGE_CONSTANT = 12.0
 
 infix fun Double.epsilonEquals(other: Double) = (this - other).absoluteValue < EPSILON
 infix fun Double.epsilonNotEqual(other: Double) = (this - other).absoluteValue > EPSILON
@@ -30,29 +29,19 @@ fun clamp(x: Double, a: Double, b: Double): Double {
     return x
 }
 
-fun assertPositive(value: Double) {
-    if (value.sign < 0.0) throw Exception("value $value must be positive")
-}
-
-fun cubicScaling(k: Double, x: Double): Double {
-    return (1 - k) * x + k * x * x * x
-}
-
 fun inputModulus(input: Double, minimumInput: Double, maximumInput: Double): Double {
     var inp = input
     val modulus = maximumInput - minimumInput
 
-    // Wrap input if it's above the maximum input
     val numMax = ((inp - minimumInput) / modulus).toInt()
     inp -= numMax * modulus
 
-    // Wrap input if it's below the minimum input
     val numMin = ((inp - maximumInput) / modulus).toInt()
     inp -= numMin * modulus
     return inp
 }
 
-fun stupidSign(a: Double): Int = if (a > 0) 1 else -1
+fun nonzeroSign(a: Double): Int = if (a > 0) 1 else -1
 
 val Double.sin get() = sin(this)
 val Double.cos get() = cos(this)
@@ -100,17 +89,17 @@ fun lineCircleIntersection(
 
     // discriminant = 0 for 1 intersection, >0 for 2
     val intersections = ArrayList<Vector>()
-    val xLeft = D * deltas.y
-    val yLeft = -D * deltas.x
-    val xRight = stupidSign(deltas.y) * deltas.x * sqrt(discriminant)
-    val yRight = deltas.y.absoluteValue * sqrt(discriminant)
     val div = deltas.norm.pow(2)
+    val left = Vector(D * deltas.y, -D * deltas.x) / div
+    val right = Vector(
+        nonzeroSign(deltas.y) * deltas.x * sqrt(discriminant),
+        deltas.y.absoluteValue * sqrt(discriminant)
+    ) / div
     if (discriminant == 0.0) {
-        intersections.add(Vector(xLeft / div, yLeft / div))
+        intersections.add(left)
     } else {
-        // add 2 points, one with positive right side and one with negative right side
-        intersections.add(Vector((xLeft + xRight) / div, (yLeft + yRight) / div))
-        intersections.add(Vector((xLeft - xRight) / div, (yLeft - yRight) / div))
+        intersections.add(left + right)
+        intersections.add(left - right)
     }
     return intersections.map { it + center }
 }

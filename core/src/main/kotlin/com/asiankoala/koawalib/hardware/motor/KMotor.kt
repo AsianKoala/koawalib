@@ -7,32 +7,32 @@ import com.asiankoala.koawalib.control.motor.MotorController
 import com.asiankoala.koawalib.control.profile.MotionState
 import com.asiankoala.koawalib.hardware.KDevice
 import com.asiankoala.koawalib.logger.Logger
+import com.asiankoala.koawalib.math.clamp
 import com.asiankoala.koawalib.math.d
 import com.asiankoala.koawalib.math.epsilonNotEqual
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
-import com.qualcomm.robotcore.util.Range
 import kotlin.math.absoluteValue
 
 @Suppress("unused")
 class KMotor internal constructor(name: String) : KDevice<DcMotorEx>(name) {
-    lateinit var encoder: KEncoder
-    internal var mode = MotorControlModes.OPEN_LOOP
-    internal lateinit var controller: MotorController
-
+    enum class Priority { HIGH, LOW }
+    private val cmd = LoopCmd(this::update).withName("$name motor")
     private var powerMultiplier = 1.0
     private var disabled = false
+    private var lastUpdateIter = 0
+    internal lateinit var controller: MotorController
+    internal var mode = MotorControlModes.OPEN_LOOP
     internal var encoderCreated = false
-    private val cmd = LoopCmd(this::update).withName("$name motor")
+    internal var isVoltageCorrected = false
+    internal val rawMotorPosition get() = device.currentPosition.d
+    internal val rawMotorVelocity get() = device.velocity
+    internal var priority = Priority.HIGH
+    lateinit var encoder: KEncoder internal set
 
-    private fun update() {
-        if (encoderCreated) encoder.update()
-        if (mode == MotorControlModes.OPEN_LOOP) return
-        controller.currentState = MotionState(encoder.pos, encoder.vel)
-        controller.update()
-        this.power = controller.output
-    }
+    val pos: Double get() = encoder.pos
+    val vel: Double get() = encoder.vel
 
     internal var zeroPowerBehavior: DcMotor.ZeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
         set(value) {
@@ -50,17 +50,16 @@ class KMotor internal constructor(name: String) : KDevice<DcMotorEx>(name) {
             field = value
         }
 
-    internal var isVoltageCorrected = false
-    internal val rawMotorPosition get() = device.currentPosition.d
-    internal val rawMotorVelocity get() = device.velocity
-
     var power: Double = 0.0
         set(value) {
-            var clipped = Range.clip(value, -1.0, 1.0) * powerMultiplier
-            if (isVoltageCorrected) clipped *= (12.0 / lastVoltageRead)
-            if (clipped epsilonNotEqual field && (clipped == 0.0 || clipped.absoluteValue == 1.0 || (clipped - field).absoluteValue > 0.005)) {
-                field = clipped
-                device.power = clipped
+            var clamped = clamp(value, -1.0, 1.0) * powerMultiplier
+            if (isVoltageCorrected) clamped = clamp(clamped * (VOLTAGE_CONSTANT / lastVoltageRead), -1.0, 1.0)
+            if (clamped epsilonNotEqual field
+                && (clamped == 0.0 || clamped.absoluteValue == 1.0 || (clamped - field).absoluteValue > 0.005)
+                && (priority == Priority.HIGH || iter - lastUpdateIter > 3)) {
+                field = clamped
+                device.power = clamped
+                lastUpdateIter = iter
             }
         }
 
@@ -80,8 +79,13 @@ class KMotor internal constructor(name: String) : KDevice<DcMotorEx>(name) {
         }
     }
 
-    val pos: Double get() = encoder.pos
-    val vel: Double get() = encoder.vel
+    private fun update() {
+        if (encoderCreated) encoder.update()
+        if (mode == MotorControlModes.OPEN_LOOP) return
+        controller.currentState = MotionState(encoder.pos, encoder.vel)
+        controller.update()
+        this.power = controller.output
+    }
 
     fun setPositionTarget(x: Double) {
         if (mode != MotorControlModes.POSITION) throw Exception("motor must be position controlled")
@@ -124,6 +128,12 @@ class KMotor internal constructor(name: String) : KDevice<DcMotorEx>(name) {
     }
 
     companion object {
+        private var iter = 0
+        private const val VOLTAGE_CONSTANT = 12.0
         internal var lastVoltageRead = Double.NaN
+
+        internal fun updatePriorityIter() {
+            iter++
+        }
     }
 }
