@@ -1,7 +1,6 @@
 package com.asiankoala.koawalib.util
 
 import com.asiankoala.koawalib.math.Pose
-import com.asiankoala.koawalib.subsystem.drive.KMecanumDrive
 import kotlin.math.PI
 
 class Speeds {

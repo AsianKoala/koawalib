@@ -16,7 +16,7 @@ class GVFCmd(
 
     override fun execute() {
         drive.powers = controller.update(drive.pose)
-        if(idx < projCmds.size && controller.s > projCmds[idx].first) {
+        if (idx < projCmds.size && controller.s > projCmds[idx].first) {
             + projCmds[idx].second
             idx++
         }
@@ -27,8 +27,8 @@ class GVFCmd(
     }
 
     override val isFinished: Boolean
-        get() = controller.isFinished
-                && (!requireCmdsFinished || (requireCmdsFinished && idx >= projCmds.size))
+        get() = controller.isFinished &&
+            (!requireCmdsFinished || (requireCmdsFinished && idx >= projCmds.size))
 
     init {
         addRequirements(drive)
