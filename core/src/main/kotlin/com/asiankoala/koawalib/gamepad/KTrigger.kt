@@ -22,7 +22,7 @@ class KTrigger(
         }
     }
 
-    override fun invokeBoolean(): Boolean {
+    override fun invoke(): Boolean {
         return if (debouncerEnabled) debouncerState else isTriggerPressed
     }
 }

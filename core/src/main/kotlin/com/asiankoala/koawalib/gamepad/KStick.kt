@@ -15,13 +15,13 @@ class KStick(
 
     override val xAxis
         get() = if (isXRateLimited) {
-            xRateLimiter!!.calculate(stickXAxis.invokeDouble())
-        } else stickXAxis.invokeDouble()
+            xRateLimiter!!.calculate(stickXAxis.invoke())
+        } else stickXAxis.invoke()
 
     override val yAxis
         get() = if (isYRateLimited) {
-            stickYAxis.invokeDouble()
-        } else stickYAxis.invokeDouble()
+            yRateLimiter!!.calculate(stickYAxis.invoke())
+        } else stickYAxis.invoke()
 
     val xInverted
         get() = KStick(

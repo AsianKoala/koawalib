@@ -12,7 +12,5 @@ import com.asiankoala.koawalib.gamepad.functionality.ButtonProcessing
 open class KButton(
     private val buttonState: () -> Boolean
 ) : ButtonProcessing() {
-    override fun invokeBoolean(): Boolean {
-        return buttonState.invoke()
-    }
+    override fun invoke() = buttonState.invoke()
 }
