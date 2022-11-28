@@ -41,7 +41,7 @@ internal class MotionProfileMotorController(
             targetAcceleration = setpoint.a
         }
 
-        output = controller.update(currentState.x, currentState.v) + ff.calc(setpoint.x)
+        output = controller.update(currentState.x, currentState.v) + ff.calc(currentState.x)
 
         if (disabledPosition.shouldDisable(targetState.x, currentState.x, allowedPositionError)) {
             output = 0.0

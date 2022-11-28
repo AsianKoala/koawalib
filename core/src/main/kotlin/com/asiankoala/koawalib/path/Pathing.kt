@@ -296,7 +296,7 @@ data class HermiteControlVector1d(
     operator fun get(n: Int) = derivatives[n]
 }
 
-class HermiteControlVector2d(zero: Vector, first: Vector) {
+data class HermiteControlVector2d(zero: Vector, first: Vector) {
     val x: HermiteControlVector1d
     val y: HermiteControlVector1d
 

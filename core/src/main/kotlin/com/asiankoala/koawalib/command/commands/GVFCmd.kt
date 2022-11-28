@@ -8,18 +8,18 @@ import com.asiankoala.koawalib.subsystem.drive.KMecanumOdoDrive
 class GVFCmd(
     private val drive: KMecanumOdoDrive,
     private val controller: GVFController,
-    private vararg val cmds: Pair<Cmd, Vector>
+    vararg cmds: Pair<Cmd, Vector>,
+    private val requireCmdsFinished: Boolean
 ) : Cmd() {
-    override fun initialize() {
-        // for (cmd in cmds) {
-        //     val s = controller.path.project(cmd.second)
-        //     + WaitUntilCmd { controller.s > s }
-        //         .andThen(cmd.first)
-        // }
-    }
+    private val projCmds: List<Pair<Double, Cmd>>
+    private var idx = 0
 
     override fun execute() {
         drive.powers = controller.update(drive.pose)
+        if(idx < projCmds.size && controller.s > projCmds[idx].first) {
+            + projCmds[idx].second
+            idx++
+        }
     }
 
     override fun end() {
@@ -28,8 +28,16 @@ class GVFCmd(
 
     override val isFinished: Boolean
         get() = controller.isFinished
+                && (!requireCmdsFinished || (requireCmdsFinished && idx >= projCmds.size))
 
     init {
         addRequirements(drive)
+        val temp = mutableListOf<Pair<Double, Cmd>>()
+        cmds.forEach {
+            val s = controller.path.project(it.second)
+            temp.add(Pair(s, it.first))
+        }
+        temp.sortBy { it.first }
+        projCmds = temp
     }
 }

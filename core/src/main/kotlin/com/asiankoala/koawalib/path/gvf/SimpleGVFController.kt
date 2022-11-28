@@ -24,7 +24,7 @@ import kotlin.math.sign
  *  @property isFinished path finish state
  */
 class SimpleGVFController(
-    private val path: Path,
+    override val path: Path,
     private val kN: Double,
     private val kOmega: Double,
     private val kF: Double,

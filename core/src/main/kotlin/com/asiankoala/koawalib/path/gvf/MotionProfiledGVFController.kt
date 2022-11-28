@@ -12,7 +12,7 @@ import kotlin.math.pow
 import kotlin.math.sign
 
 class MotionProfiledGVFController(
-    private val path: Path,
+    override val path: Path,
     private val kN: Double,
     private val epsilon: Double,
     private val thetaEpsilon: Double,
