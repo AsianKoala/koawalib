@@ -82,7 +82,6 @@ class KMotor internal constructor(name: String) : KDevice<DcMotorEx>(name) {
 
     val pos: Double get() = encoder.pos
     val vel: Double get() = encoder.vel
-    val accel: Double get() = encoder.accel
 
     fun setPositionTarget(x: Double) {
         if (mode != MotorControlModes.POSITION) throw Exception("motor must be position controlled")
