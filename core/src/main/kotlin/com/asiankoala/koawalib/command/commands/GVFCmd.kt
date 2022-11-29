@@ -13,13 +13,15 @@ class GVFCmd(
 ) : Cmd() {
     private val projCmd = SequentialGroup(
         *cmds
-        .map { Pair(it.first, controller.path.project(it.second)) }
-        .sortedBy { it.second }
-        .flatMap { listOf(
-            WaitUntilCmd { controller.s > it.second },
-            it.first
-        ) }
-        .toTypedArray()
+            .map { Pair(it.first, controller.path.project(it.second)) }
+            .sortedBy { it.second }
+            .flatMap {
+                listOf(
+                    WaitUntilCmd { controller.s > it.second },
+                    it.first
+                )
+            }
+            .toTypedArray()
     )
 
     override fun initialize() {
