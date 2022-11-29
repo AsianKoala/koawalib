@@ -16,8 +16,8 @@ class GVFCmd(
         .map { Pair(it.first, controller.path.project(it.second)) }
         .sortedBy { it.second }
         .flatMap { listOf(
-            WaitUntilCmd { controller.s > it.second }
-                .andThen(it.first)
+            WaitUntilCmd { controller.s > it.second },
+            it.first
         ) }
         .toTypedArray()
     )
