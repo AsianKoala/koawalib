@@ -11,7 +11,7 @@ class GVFCmd(
     private val controller: GVFController,
     vararg cmds: Pair<Cmd, Vector>,
 ) : Cmd() {
-    private val projCmd: Cmd? = if(cmds.isNotEmpty()) {
+    private val projCmd: Cmd? = if (cmds.isNotEmpty()) {
         SequentialGroup(
             *cmds
                 .map { Pair(it.first, controller.path.project(it.second)) }
