@@ -53,7 +53,6 @@ open class SequentialGroup(vararg cmds: Cmd) : Cmd(), Group {
 
     init {
         addCommands(*cmds)
-
         if (this.cmds.isEmpty()) Logger.logWarning("sequential group $name is empty")
     }
 }

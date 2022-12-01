@@ -11,21 +11,23 @@ class GVFCmd(
     private val controller: GVFController,
     vararg cmds: Pair<Cmd, Vector>,
 ) : Cmd() {
-    private val projCmd = SequentialGroup(
-        *cmds
-            .map { Pair(it.first, controller.path.project(it.second)) }
-            .sortedBy { it.second }
-            .flatMap {
-                listOf(
-                    WaitUntilCmd { controller.s > it.second },
-                    it.first
-                )
-            }
-            .toTypedArray()
-    )
+    private val projCmd: Cmd? = if(cmds.isNotEmpty()) {
+        SequentialGroup(
+            *cmds
+                .map { Pair(it.first, controller.path.project(it.second)) }
+                .sortedBy { it.second }
+                .flatMap {
+                    listOf(
+                        WaitUntilCmd { controller.s > it.second },
+                        it.first
+                    )
+                }
+                .toTypedArray()
+        )
+    } else null
 
     override fun initialize() {
-        + projCmd
+        projCmd?.schedule()
     }
 
     override fun execute() {
