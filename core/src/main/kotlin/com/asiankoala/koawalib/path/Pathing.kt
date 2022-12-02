@@ -407,3 +407,5 @@ class HermitePath(
         )
     }
 }
+
+data class ProjQuery(val v: Vector, val t: Double? = null)
