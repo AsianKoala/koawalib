@@ -75,7 +75,7 @@ class MotorFactory(name: String) {
         motor: KMotor,
         encoderFactory: EncoderFactory
     ): MotorFactory {
-        motor.encoder = encoderFactory.build(instance)
+        instance.encoder = encoderFactory.build(motor)
         instance.encoderCreated = true
         Logger.logInfo("encoder for motor ${instance.deviceName} paired with encoder on motor ${motor.deviceName}'s port")
         return this
