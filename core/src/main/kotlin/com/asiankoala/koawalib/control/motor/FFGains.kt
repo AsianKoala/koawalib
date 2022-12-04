@@ -1,5 +1,6 @@
 package com.asiankoala.koawalib.control.motor
 
+import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.math.cos
 import com.asiankoala.koawalib.math.radians
 
