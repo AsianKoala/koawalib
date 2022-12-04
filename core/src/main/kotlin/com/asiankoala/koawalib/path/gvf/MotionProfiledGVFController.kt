@@ -57,7 +57,7 @@ class MotionProfiledGVFController(
     // might be enough? to fix tho i would have to rework how my pathing system
     // deals with heading. just needs a bit of testing tbh
     private fun headingControl(): Pair<Double, Double> {
-        headingError = (path[s].h - pose.h).angleWrap.degrees
+        headingError = (path[s].heading - pose.heading).angleWrap.degrees
         return Pair(headingError / kOmega * state.v, headingError)
     }
 
@@ -100,6 +100,6 @@ class MotionProfiledGVFController(
                     calcHeadingFF(headingResult.first)
                 )
             )
-        }.getRobotCentric(pose.h)
+        }.getRobotCentric(pose.heading)
     }
 }

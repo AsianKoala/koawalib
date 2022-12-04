@@ -51,7 +51,7 @@ class SimpleGVFController(
     }
 
     private fun headingControl(): Pair<Double, Double> {
-        headingError = (path[s].h - pose.h).angleWrap.degrees
+        headingError = (path[s].heading - pose.heading).angleWrap.degrees
         val result = headingError / kOmega
         return Pair(result, headingError)
     }
@@ -67,7 +67,7 @@ class SimpleGVFController(
         val vectorResult = vectorControl(calcGVF())
         val res = Speeds()
         res.setFieldCentric(Pose(vectorResult, headingResult.first))
-        return res.getRobotCentric(pose.h)
+        return res.getRobotCentric(pose.heading)
     }
 
     init {

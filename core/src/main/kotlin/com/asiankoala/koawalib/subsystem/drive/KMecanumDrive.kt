@@ -31,10 +31,10 @@ open class KMecanumDrive(
          * -h power rotates clockwise (decreasing angle)
          */
         fun mecKinematics(vel: Pose) = listOf(
-            vel.y + vel.x - vel.h,
-            vel.y - vel.x - vel.h,
-            vel.y + vel.x + vel.h,
-            vel.y - vel.x + vel.h
+            vel.y + vel.x - vel.heading,
+            vel.y - vel.x - vel.heading,
+            vel.y + vel.x + vel.heading,
+            vel.y - vel.x + vel.heading
         )
     }
 }
