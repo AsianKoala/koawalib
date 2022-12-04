@@ -30,12 +30,11 @@ open class KMecanumDrive(
          * +h power rotates counter clockwise (increasing angle),
          * -h power rotates clockwise (decreasing angle)
          */
-        fun mecKinematics(drivePowers: Pose): List<Double> {
-            val fl = drivePowers.y - drivePowers.x - drivePowers.heading
-            val bl = drivePowers.y + drivePowers.x - drivePowers.heading
-            val br = drivePowers.y - drivePowers.x + drivePowers.heading
-            val fr = drivePowers.y + drivePowers.x + drivePowers.heading
-            return listOf(fl, bl, br, fr)
-        }
+        fun mecKinematics(vel: Pose) = listOf(
+            vel.y + vel.x - vel.h,
+            vel.y - vel.x - vel.h,
+            vel.y + vel.x + vel.h,
+            vel.y - vel.x + vel.h
+        )
     }
 }

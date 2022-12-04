@@ -6,18 +6,17 @@ import com.asiankoala.koawalib.subsystem.odometry.Odometry
 open class KMecanumOdoDrive(
     fl: KMotor,
     bl: KMotor,
-    fr: KMotor,
     br: KMotor,
+    fr: KMotor,
     private val odometry: Odometry,
     private val shouldTelemetryOdo: Boolean
-) : KMecanumDrive(fl, bl, fr, br) {
+) : KMecanumDrive(fl, bl, br, fr) {
 
     val pose get() = odometry.pose
     val vel get() = odometry.velocity
 
     override fun periodic() {
         super.periodic()
-
         if (shouldTelemetryOdo) {
             odometry.updateTelemetry()
         }

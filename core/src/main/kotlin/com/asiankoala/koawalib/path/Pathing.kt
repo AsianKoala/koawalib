@@ -355,8 +355,8 @@ class HermiteSplineInterpolator(
         var curr = controlPoses[0]
         for (target in controlPoses.slice(1 until controlPoses.size)) {
             val r = curr.vec.dist(target.vec)
-            val s = HermiteControlVector2d(curr.vec, Vector.fromPolar(r, curr.heading))
-            val e = HermiteControlVector2d(target.vec, Vector.fromPolar(r, target.heading))
+            val s = HermiteControlVector2d(curr.vec, Vector.fromPolar(r, curr.h))
+            val e = HermiteControlVector2d(target.vec, Vector.fromPolar(r, target.h))
             val curve = fitSplineToControlVectors(s, e)
             piecewiseCurve.add(curve)
             arcLengthSteps.add(_length)

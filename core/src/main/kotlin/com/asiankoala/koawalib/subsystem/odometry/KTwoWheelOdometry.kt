@@ -21,7 +21,7 @@ class KTwoWheelOdometry(
     private var lastAngle = Double.NaN
 
     private fun getHeading(): Double {
-        return (imu.heading + startPose.heading).angleWrap
+        return (imu.heading + startPose.h).angleWrap
     }
 
     override fun reset() {

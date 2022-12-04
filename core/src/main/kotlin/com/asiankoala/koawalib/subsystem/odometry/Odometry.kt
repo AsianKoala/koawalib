@@ -31,7 +31,7 @@ abstract class Odometry(
             val scalar = (curr.timestamp - old.timestamp).toDouble() / 1000.0
 
             val dirVel = (curr.pose.vec - old.pose.vec) / scalar
-            val angularVel = (curr.pose.heading - old.pose.heading) * (1 / scalar)
+            val angularVel = (curr.pose.h - old.pose.h) * (1 / scalar)
 
             return Pose(dirVel, angularVel.angleWrap)
         }
@@ -61,12 +61,12 @@ abstract class Odometry(
 //        robotRelativeMovement = robotRelativeMovement.plusWrap(robotDeltaRelativeMovement)
         robotRelativeMovement = Pose(
             robotRelativeMovement.vec + robotDeltaRelativeMovement.vec,
-            (robotRelativeMovement.heading + robotDeltaRelativeMovement.heading).angleWrap
+            (robotRelativeMovement.h + robotDeltaRelativeMovement.h).angleWrap
         )
         prevRobotRelativePositions.add(TimePose(robotRelativeMovement))
 
-        val incrementX = currPose.heading.cos * deltaY + currPose.heading.sin * deltaX
-        val incrementY = currPose.heading.sin * deltaY - currPose.heading.cos * deltaX
+        val incrementX = currPose.h.cos * deltaY + currPose.h.sin * deltaX
+        val incrementY = currPose.h.sin * deltaY - currPose.h.cos * deltaX
         return Vector(incrementX, incrementY)
     }
 

@@ -6,7 +6,7 @@ import kotlin.math.PI
 class Speeds {
     private var internalSpeed = Pose()
 
-    private fun Pose.convert(h: Double) = Pose(this.vec.rotate(PI / 2.0 - h), heading)
+    private fun Pose.convert(h: Double) = Pose(this.vec.rotate(PI / 2.0 - h), this.h)
 
     fun getFieldCentric(): Pose = internalSpeed
 
