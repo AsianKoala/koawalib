@@ -3,7 +3,6 @@ package com.asiankoala.koawalib.gamepad
 import com.asiankoala.koawalib.control.filter.SlewRateLimiter
 import com.asiankoala.koawalib.gamepad.functionality.Stick
 import com.asiankoala.koawalib.util.internal.cond
-import kotlin.math.absoluteValue
 
 class KStick(
     private val stickXAxis: KAxis,
@@ -20,7 +19,6 @@ class KStick(
                 .cond(deadzone != null && x in -deadzone!!..deadzone!!) { 0.0 }
                 .cond(xRateLimiter != null) { xRateLimiter!!.calculate(it) }
         }
-
 
     override val yAxis: Double
         get() {
