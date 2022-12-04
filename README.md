@@ -32,5 +32,5 @@ implementation 'com.github.AsianKoala:koawalib:1.3.7'
     ```
 
 ## Example Usage
-[my personal code repo](https://github.com/ftc-noteam/PP-Public)  
+[my personal code repo](https://github.com/ftc-noteam/PowerPlay)  
 [koawalib docs](https://asiankoala.github.io/koawalib/)  
