@@ -75,7 +75,7 @@ class MotionProfile(vararg _periods: MotionPeriod, reversed: Boolean) {
                 deccelPeriod = MotionPeriod(accelPeriod.endState.copy(a = -newA), dt)
             }
 
-            return MotionProfile(accelPeriod, cruisePeriod, deccelPeriod, reversed = true)
+            return MotionProfile(accelPeriod, cruisePeriod, deccelPeriod, reversed = isReversed)
         }
     }
 }

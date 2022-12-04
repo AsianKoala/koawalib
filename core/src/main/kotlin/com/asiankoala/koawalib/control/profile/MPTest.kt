@@ -13,8 +13,8 @@ import jetbrains.letsPlot.theme
 internal object MPTest {
     @JvmStatic
     fun main(args: Array<String>) {
-        val start = MotionState(-69.0)
-        val end = MotionState(0.0)
+        val end = MotionState(-66.0)
+        val start = MotionState(130.0)
         val constraints = MotionConstraints(180.0, 180.0)
         val profile = MotionProfile.generateTrapezoidal(start, end, constraints)
 
