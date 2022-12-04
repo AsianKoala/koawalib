@@ -6,7 +6,7 @@ data class MotionPeriod(
 ) {
     val endState: MotionState
     val dx: Double
-    val flipped get() = MotionPeriod(endState.copy(v = -endState.v), -dt)
+    val flipped get() = MotionPeriod(endState.copy(v = -endState.v), dt)
 
     operator fun get(t: Double) = startState[t]
 

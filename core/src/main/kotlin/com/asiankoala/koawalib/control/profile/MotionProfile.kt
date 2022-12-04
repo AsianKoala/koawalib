@@ -46,6 +46,10 @@ class MotionProfile(vararg _periods: MotionPeriod, reversed: Boolean) {
                 start = endState
             }
 
+            println("reversed: $isReversed")
+            println("start: $start")
+            println("end: $end")
+
             start = start.copy(a = constraints.accel)
             end = end.copy(a = constraints.deccel)
 
@@ -71,7 +75,7 @@ class MotionProfile(vararg _periods: MotionPeriod, reversed: Boolean) {
                 deccelPeriod = MotionPeriod(accelPeriod.endState.copy(a = -newA), dt)
             }
 
-            return MotionProfile(accelPeriod, cruisePeriod, deccelPeriod, reversed = isReversed)
+            return MotionProfile(accelPeriod, cruisePeriod, deccelPeriod, reversed = true)
         }
     }
 }
