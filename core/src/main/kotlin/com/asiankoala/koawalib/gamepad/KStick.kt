@@ -2,6 +2,8 @@ package com.asiankoala.koawalib.gamepad
 
 import com.asiankoala.koawalib.control.filter.SlewRateLimiter
 import com.asiankoala.koawalib.gamepad.functionality.Stick
+import com.asiankoala.koawalib.util.internal.cond
+import kotlin.math.absoluteValue
 
 class KStick(
     private val stickXAxis: KAxis,
@@ -9,19 +11,24 @@ class KStick(
     private val stickButton: KButton,
     private var xRateLimiter: SlewRateLimiter? = null,
     private var yRateLimiter: SlewRateLimiter? = null,
+    private var deadzone: Double? = null
 ) : Stick {
-    private var isXRateLimited = xRateLimiter != null
-    private var isYRateLimited = yRateLimiter != null
+    override val xAxis: Double
+        get() {
+            val x = stickXAxis.invoke()
+            return x
+                .cond(deadzone != null && x in -deadzone!!..deadzone!!) { 0.0 }
+                .cond(xRateLimiter != null) { xRateLimiter!!.calculate(it) }
+        }
 
-    override val xAxis
-        get() = if (isXRateLimited) {
-            xRateLimiter!!.calculate(stickXAxis.invoke())
-        } else stickXAxis.invoke()
 
-    override val yAxis
-        get() = if (isYRateLimited) {
-            yRateLimiter!!.calculate(stickYAxis.invoke())
-        } else stickYAxis.invoke()
+    override val yAxis: Double
+        get() {
+            val y = stickYAxis.invoke()
+            return y
+                .cond(deadzone != null && y in -deadzone!!..deadzone!!) { 0.0 }
+                .cond(yRateLimiter != null) { yRateLimiter!!.calculate(it) }
+        }
 
     val xInverted
         get() = KStick(
@@ -29,7 +36,8 @@ class KStick(
             stickYAxis,
             stickButton,
             xRateLimiter,
-            yRateLimiter
+            yRateLimiter,
+            deadzone
         )
 
     val yInverted
@@ -38,7 +46,8 @@ class KStick(
             stickYAxis.inverted(),
             stickButton,
             xRateLimiter,
-            yRateLimiter
+            yRateLimiter,
+            deadzone
         )
 
     override fun periodic() {
@@ -47,11 +56,13 @@ class KStick(
 
     fun setXRateLimiter(rateLimiter: SlewRateLimiter) {
         xRateLimiter = rateLimiter
-        isXRateLimited = true
     }
 
     fun setYRateLimiter(rateLimiter: SlewRateLimiter) {
         yRateLimiter = rateLimiter
-        isYRateLimited = true
+    }
+
+    fun setDeadzone(threshold: Double) {
+        deadzone = threshold
     }
 }
