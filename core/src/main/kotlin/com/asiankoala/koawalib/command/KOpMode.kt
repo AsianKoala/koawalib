@@ -65,7 +65,7 @@ abstract class KOpMode(
         + LoopCmd(gunner::periodic).withName("gunner gamepad periodic")
         + LoopCmd(::handleBulkCaching).withName("clear bulk data periodic")
         + LoopCmd(::handleLoopMsTelemetry).withName("loop ms telemetry periodic")
-        + LoopCmd({ KMotor.lastVoltageRead = voltageSensor.voltage }).withName("voltage sensor periodic")
+//        + LoopCmd({ KMotor.lastVoltageRead = voltageSensor.voltage }).withName("voltage sensor periodic")
         + LoopCmd(KMotor::updatePriorityIter).withName("motor priority periodic")
         Logger.logInfo("periodics scheduled")
     }

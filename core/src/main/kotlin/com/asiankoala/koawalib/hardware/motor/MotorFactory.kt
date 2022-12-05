@@ -49,13 +49,13 @@ class MotorFactory(name: String) {
         }
 
     /**
-     * Enable voltage correction
-     */
-    val voltageCorrected: MotorFactory
-        get() {
-            instance.isVoltageCorrected = true
-            return this
-        }
+//     * Enable voltage correction
+//     */
+//    val voltageCorrected: MotorFactory
+//        get() {
+//            instance.isVoltageCorrected = true
+//            return this
+//        }
 
     val lowPriority: MotorFactory
         get() {
@@ -156,8 +156,8 @@ class MotorFactory(name: String) {
             "name: ${instance.deviceName}\n" +
             "mode: ${instance.mode}\n" +
             "direction: ${instance.direction}\n" +
-            "zeroPowerBehavior: ${instance.zeroPowerBehavior}\n" +
-            "isVoltageCorrected: ${instance.isVoltageCorrected}\n"
+            "zeroPowerBehavior: ${instance.zeroPowerBehavior}\n"
+//            "isVoltageCorrected: ${instance.isVoltageCorrected}\n"
 
         Logger.logInfo("scheduled motor with information: $information")
 
