@@ -4,6 +4,7 @@ import com.asiankoala.koawalib.control.controller.Bounds
 import com.asiankoala.koawalib.control.controller.PIDGains
 import com.asiankoala.koawalib.control.motor.*
 import com.asiankoala.koawalib.control.profile.MotionConstraints
+import com.asiankoala.koawalib.control.profile.MotionState
 import com.asiankoala.koawalib.logger.Logger
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorSimple
@@ -159,6 +160,12 @@ class MotorFactory(name: String) {
             "isVoltageCorrected: ${instance.isVoltageCorrected}\n"
 
         Logger.logInfo("scheduled motor with information: $information")
+
+        if (instance.mode != MotorControlModes.OPEN_LOOP) {
+            instance.encoder.update()
+            instance.controller.currentState = MotionState(instance.encoder.pos, instance.encoder.vel)
+            Logger.logInfo("set controller state to", instance.controller.currentState)
+        }
         return instance
     }
 }

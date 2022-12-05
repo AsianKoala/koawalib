@@ -1,14 +1,10 @@
 package com.asiankoala.koawalib.control.profile
 
-import com.asiankoala.koawalib.path.gvf.Constraints
-import com.asiankoala.koawalib.path.gvf.DispState
-import com.asiankoala.koawalib.path.gvf.OnlineProfile
 import jetbrains.letsPlot.elementRect
 import jetbrains.letsPlot.export.ggsave
 import jetbrains.letsPlot.geom.geomPoint
 import jetbrains.letsPlot.ggplot
 import jetbrains.letsPlot.theme
-
 
 internal object MPTest {
     @JvmStatic
@@ -25,7 +21,7 @@ internal object MPTest {
         val resolution = 0.01
         var t = 0.0
 
-        while(t < profile.duration) {
+        while (t < profile.duration) {
             val state = profile[t]
             st.add(t)
             sx.add(state.x)
@@ -65,10 +61,10 @@ internal object MPTest {
     ) {
         val data = mapOf<String, Any>("t" to st, "x" to sx, "v" to sv, "a" to sa)
         val fig = ggplot(data) +
-                geomPoint(color = "blue", size = 1.0) { x = "t"; y = "x" } +
-                geomPoint(color = "green", size = 1.0) { x = "t"; y = "v" } +
-                geomPoint(color = "red", size = 1.0) { x = "t"; y = "a" } +
-                theme(plotBackground = elementRect(fill = "black"))
+            geomPoint(color = "blue", size = 1.0) { x = "t"; y = "x" } +
+            geomPoint(color = "green", size = 1.0) { x = "t"; y = "v" } +
+            geomPoint(color = "red", size = 1.0) { x = "t"; y = "a" } +
+            theme(plotBackground = elementRect(fill = "black"))
         ggsave(fig, "plot.png")
     }
 
@@ -78,8 +74,8 @@ internal object MPTest {
     ) {
         val data = mapOf<String, Any>("x" to sx, "v" to sv)
         val fig = ggplot(data) +
-                geomPoint(color = "blue", size = 1.0) { x = "x"; y = "v" } +
-                theme(plotBackground = elementRect(fill = "black"))
+            geomPoint(color = "blue", size = 1.0) { x = "x"; y = "v" } +
+            theme(plotBackground = elementRect(fill = "black"))
         ggsave(fig, "plot.png")
     }
 }
