@@ -9,8 +9,8 @@ import kotlin.math.hypot
  * @property angle angle vector makes with the x axis
  */
 data class Vector(
-    val x: Double = 0.0,
-    val y: Double = 0.0
+    @JvmField var x: Double = 0.0,
+    @JvmField var y: Double = 0.0
 ) {
     val norm get() = hypot(x, y)
     val angle get() = atan2(y, x)
