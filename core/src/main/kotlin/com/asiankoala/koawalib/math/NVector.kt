@@ -14,11 +14,11 @@ class NVector(
     constructor(n: Int, init: (Int) -> Double) : this(List(n, init))
     constructor(n: Int) : this(List(n) { 0.0 })
 
-    val n = elems.size
-    val norm = sqrt(elems.sumOf { it * it })
-    val unit = this / norm
-    val as2dVec = (this restrict 2).let { Vector(it[0], it[1]) }
-    val asPose = (this restrict 3).let { Pose(it[0], it[1], it[2]) }
+    val n get() = elems.size
+    val norm get() = sqrt(elems.sumOf { it * it })
+    val unit get() = this / norm
+    val as2dVec get() = (this restrict 2).let { Vector(it[0], it[1]) }
+    val asPose get() = (this restrict 3).let { Pose(it[0], it[1], it[2]) }
 
     private fun zipOp(other: NVector, op: (Pair<Double, Double>) -> Double): NVector {
         require(n == other.n)
