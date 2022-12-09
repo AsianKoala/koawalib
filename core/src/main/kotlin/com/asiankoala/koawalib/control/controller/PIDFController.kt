@@ -1,5 +1,6 @@
 package com.asiankoala.koawalib.control.controller
 
+import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.math.epsilonEquals
 import com.asiankoala.koawalib.util.Clock
 import kotlin.math.abs
@@ -89,6 +90,11 @@ class PIDFController constructor(
                 pid.kD * (measuredVelocity?.let { targetVelocity - it } ?: errorDeriv) +
                 kV * targetVelocity + kA * targetAcceleration + kF(measuredPosition, measuredVelocity)
             val output = if (baseOutput epsilonEquals 0.0) 0.0 else baseOutput + sign(baseOutput) * kStatic
+
+            Logger.addTelemetryData("kp", pid.kP * error)
+            Logger.addTelemetryData("error", error)
+            Logger.addTelemetryData("curr", measuredPosition)
+            Logger.addTelemetryData("target", targetPosition)
 
             output
         }

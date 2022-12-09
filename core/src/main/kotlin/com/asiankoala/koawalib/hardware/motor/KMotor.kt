@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import kotlin.math.absoluteValue
+import kotlin.math.sign
 
 @Suppress("unused")
 class KMotor internal constructor(name: String) : KDevice<DcMotorEx>(name) {
@@ -30,6 +31,7 @@ class KMotor internal constructor(name: String) : KDevice<DcMotorEx>(name) {
     internal val rawMotorVelocity get() = device.velocity
     internal var priority = Priority.HIGH
     lateinit var encoder: KEncoder internal set
+    internal var ks = 0.0
 
     val pos: Double get() = encoder.pos
     val vel: Double get() = encoder.vel
@@ -52,14 +54,13 @@ class KMotor internal constructor(name: String) : KDevice<DcMotorEx>(name) {
 
     var power: Double = 0.0
         set(value) {
-            var clamped = clamp(value, -1.0, 1.0) * powerMultiplier
-//            if (isVoltageCorrected) clamped = clamp(clamped * (VOLTAGE_CONSTANT / lastVoltageRead), -1.0, 1.0)
+            val clamped = clamp(value, -1.0, 1.0) * powerMultiplier
             if (clamped epsilonNotEqual field &&
                 (clamped == 0.0 || clamped.absoluteValue == 1.0 || (clamped - field).absoluteValue > 0.005) &&
                 (priority == Priority.HIGH || iter - lastUpdateIter > 3)
             ) {
                 field = clamped
-                device.power = clamped
+                device.power = clamped + clamped.sign * ks
                 lastUpdateIter = iter
             }
         }

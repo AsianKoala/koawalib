@@ -144,6 +144,11 @@ class MotorFactory(name: String) {
         return this
     }
 
+    fun withStaticFeedforward(ks: Double): MotorFactory {
+        instance.ks = ks
+        return this
+    }
+
     /**
      * Build the motor from the motor factory
      */
@@ -157,7 +162,6 @@ class MotorFactory(name: String) {
             "mode: ${instance.mode}\n" +
             "direction: ${instance.direction}\n" +
             "zeroPowerBehavior: ${instance.zeroPowerBehavior}\n"
-//            "isVoltageCorrected: ${instance.isVoltageCorrected}\n"
 
         Logger.logInfo("scheduled motor with information: $information")
 
