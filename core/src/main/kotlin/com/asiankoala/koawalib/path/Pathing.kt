@@ -397,7 +397,7 @@ open class Path(val interpolator: PiecewiseSplineInterpolator) {
 }
 
 class HermitePath(
-    headingController: HeadingController,
+    val headingController: HeadingController,
     private vararg val controlPoses: Pose
 ) : Path(HermiteSplineInterpolator(headingController, *controlPoses)) {
     fun map(hc: HeadingController, flipFunc: (Pose) -> Pose): HermitePath {
