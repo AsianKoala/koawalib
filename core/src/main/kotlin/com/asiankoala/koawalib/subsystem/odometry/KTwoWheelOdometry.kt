@@ -24,8 +24,9 @@ class KTwoWheelOdometry(
         return (imu.heading + startPose.heading).angleWrap
     }
 
-    override fun reset() {
+    override fun reset(p: Pose) {
         encoders.forEach(KEncoder::zero)
+        pose = p
     }
 
     override fun updateTelemetry() {

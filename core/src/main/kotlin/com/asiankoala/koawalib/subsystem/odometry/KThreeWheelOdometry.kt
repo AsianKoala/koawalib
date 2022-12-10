@@ -27,8 +27,10 @@ class KThreeWheelOdometry(
         Logger.addTelemetryData("delta tracker", accumulatedAux - accumulatedAuxPrediction)
     }
 
-    override fun reset() {
+    override fun reset(p: Pose) {
         encoders.forEach(KEncoder::zero)
+        pose = p
+        startPose = p
     }
 
     override fun periodic() {

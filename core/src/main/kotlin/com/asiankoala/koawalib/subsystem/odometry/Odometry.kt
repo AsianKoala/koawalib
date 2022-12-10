@@ -12,7 +12,7 @@ abstract class Odometry(
     internal data class TimePose(val pose: Pose, val timestamp: Long = System.currentTimeMillis())
 
     abstract fun updateTelemetry()
-    abstract fun reset()
+    abstract fun reset(p: Pose)
     private val prevRobotRelativePositions: ArrayList<TimePose> = ArrayList()
     private var robotRelativeMovement: Pose = Pose()
     var pose = startPose
