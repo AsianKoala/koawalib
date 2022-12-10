@@ -31,8 +31,8 @@ internal abstract class MotorController(
     var targetState = MotionState(0.0); protected set
     var currentState = MotionState(0.0); internal set
 
-    fun setProfileTarget(x: Double, v: Double = 0.0) {
-        setTarget(MotionState(x, v))
+    fun setProfileTarget(x: Double) {
+        setTarget(MotionState(x))
     }
 
     fun setTargetPosition(x: Double) {

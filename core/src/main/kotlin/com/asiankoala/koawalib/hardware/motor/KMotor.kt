@@ -87,6 +87,7 @@ class KMotor internal constructor(name: String) : KDevice<DcMotorEx>(name) {
         controller.currentState = MotionState(encoder.pos, encoder.vel)
         controller.update()
         this.power = controller.output
+        Logger.addTelemetryLine("updating motor controller for $deviceName")
     }
 
     fun setPositionTarget(x: Double) {
@@ -100,9 +101,9 @@ class KMotor internal constructor(name: String) : KDevice<DcMotorEx>(name) {
         controller.setTargetVelocity(v)
     }
 
-    fun setProfileTarget(x: Double, v: Double = 0.0) {
+    fun setProfileTarget(x: Double) {
         if (mode != MotorControlModes.MOTION_PROFILE) throw Exception("motor must be motion profiled")
-        controller.setProfileTarget(x, v)
+        controller.setProfileTarget(x)
     }
 
     fun isAtTarget(): Boolean {

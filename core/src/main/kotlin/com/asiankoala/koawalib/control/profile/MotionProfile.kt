@@ -18,11 +18,13 @@ class MotionProfile(vararg _periods: MotionPeriod, reversed: Boolean) {
     val duration: Double
 
     operator fun get(t: Double): MotionState {
+        if(t >= duration) return endState
+        if(t <= 0.0) return startState
         periods.fold(0.0) { acc, it ->
             if (t <= it.dt + acc) return it[t - acc]
             it.dt + acc
         }
-        return endState
+        throw Exception("HUUUUUUUUUUUUUUUUH??????????????????")
     }
 
     init {

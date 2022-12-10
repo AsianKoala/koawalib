@@ -24,7 +24,7 @@ internal class MotionProfileMotorController(
         controller.reset()
         timer.reset()
         targetState = requestedState
-        profile = MotionProfile.generateTrapezoidal(currentState, targetState, constraints)
+        profile = MotionProfile.generateTrapezoidal(currentState.copy(v = 0.0, a = 0.0), targetState.copy(v = 0.0, a = 0.0), constraints)
         Logger.logInfo("created profile with startState", currentState)
         Logger.logInfo("created profile with endState", targetState)
     }
@@ -35,6 +35,7 @@ internal class MotionProfileMotorController(
 
     override fun update() {
         profile?.let {
+            Logger.addTelemetryData("theoretical stop", it[it.duration - 0.01])
             setpoint = it[timer.seconds()]
             Logger.addTelemetryData("setpoint set to", setpoint)
         }

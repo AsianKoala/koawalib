@@ -11,7 +11,7 @@ open class KMecanumDrive(
     br: KMotor,
     fr: KMotor
 ) : Subsystem() {
-    private val motors = listOf(fl, bl, br, fr)
+    val motors = listOf(fl, bl, br, fr)
 
     var powers = Pose()
 

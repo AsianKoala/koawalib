@@ -23,6 +23,9 @@ abstract class ButtonProcessing : ButtonFunc, () -> Boolean, Periodic {
     override val isReleased: Boolean
         get() = !isPressed
 
+    override val isUntoggled: Boolean
+        get() = !isToggled
+
     override fun periodic() {
         val currentState = invoke()
         _hasChanged = _lastState != currentState
