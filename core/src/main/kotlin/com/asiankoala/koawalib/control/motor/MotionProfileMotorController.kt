@@ -35,16 +35,16 @@ internal class MotionProfileMotorController(
 
     override fun update() {
         profile?.let {
-            Logger.addTelemetryData("theoretical stop", it[it.duration - 0.01])
+//            Logger.addTelemetryData("theoretical stop", it[it.duration - 0.01])
             setpoint = it[timer.seconds()]
-            Logger.addTelemetryData("setpoint set to", setpoint)
+//            Logger.addTelemetryData("setpoint set to", setpoint)
         }
 
         controller.apply {
             targetPosition = setpoint.x
             targetVelocity = setpoint.v
             targetAcceleration = setpoint.a
-            Logger.addTelemetryData("controller target position set to", targetPosition)
+//            Logger.addTelemetryData("controller target position set to", targetPosition)
         }
 
         output = controller.update(currentState.x, currentState.v) + ff.calc(currentState.x)
