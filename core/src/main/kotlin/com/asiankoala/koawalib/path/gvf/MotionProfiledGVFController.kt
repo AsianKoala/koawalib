@@ -1,5 +1,6 @@
 package com.asiankoala.koawalib.path.gvf
 
+import com.asiankoala.koawalib.control.profile.v2.OnlineProfile
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.Vector
 import com.asiankoala.koawalib.math.angleWrap
