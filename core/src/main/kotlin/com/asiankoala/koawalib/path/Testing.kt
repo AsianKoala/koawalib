@@ -3,12 +3,9 @@ package com.asiankoala.koawalib.path
 import com.asiankoala.koawalib.control.controller.ADRC
 import com.asiankoala.koawalib.control.profile.MotionState
 import com.asiankoala.koawalib.math.d
-import com.qualcomm.robotcore.util.ElapsedTime
-import jetbrains.letsPlot.elementRect
 import jetbrains.letsPlot.export.ggsave
 import jetbrains.letsPlot.geom.geomPoint
 import jetbrains.letsPlot.ggplot
-import jetbrains.letsPlot.theme
 
 object Testing {
     @JvmStatic
@@ -96,7 +93,7 @@ object Testing {
                 else -> 10.0
             }
             val y = system.update(u)
-            u = adrc.call(y, u, r)
+            u = adrc.update(y, u, r)
             ts.add(i.d / 1000.0)
             ys.add(y)
             us.add(u)

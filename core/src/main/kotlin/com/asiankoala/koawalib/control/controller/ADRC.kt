@@ -5,6 +5,9 @@ import org.ejml.simple.SimpleMatrix
 import kotlin.math.exp
 import kotlin.math.pow
 
+/**
+ *
+ */
 class ADRC(
     delta: Double,
     private val b0: Double,
@@ -26,21 +29,20 @@ class ADRC(
     private val kD: Double
     private var ukm1 = 0.0
 
-    // given by the equation x_hat[k+1] = A_d * x_hat[k] + B_d * u[k] + L_d * (y[k] - y_hat[k])
-    private fun updateLuenBergerObserver(y: Double, ukm1: Double) {
-        xHat = Ad.mult(xHat) + Bd.scale(ukm1) + Ld.scale(y)
-    }
-
     private fun limit(u: Double): Double {
         val deltaU = clamp(u - ukm1, -duConstraint, duConstraint)
         ukm1 = clamp(deltaU + ukm1, -uConstraint, uConstraint)
         return ukm1
     }
 
-    fun call(y: Double, inp: Double, r: Double): Double {
+    // given by the equation x_hat[k+1] = A_d * x_hat[k] + B_d * u[k] + L_d * (y[k] - y_hat[k])
+    private fun updateLuenBergerObserver(y: Double, ukm1: Double) {
+        xHat = Ad.mult(xHat) + Bd.scale(ukm1) + Ld.scale(y)
+    }
+
+    fun update(y: Double, inp: Double, r: Double): Double {
         var u = inp
         updateLuenBergerObserver(y, u)
-        // w = [kP / b0, 1.0 / b0]
         u = (kP / b0) * r - W.transpose().mult(xHat)[0]
         u = limit(u)
         return u
