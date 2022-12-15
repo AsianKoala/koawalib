@@ -1,6 +1,5 @@
 package com.asiankoala.koawalib.control.controller
 
-import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.math.epsilonEquals
 import com.asiankoala.koawalib.util.Clock
 import kotlin.math.abs

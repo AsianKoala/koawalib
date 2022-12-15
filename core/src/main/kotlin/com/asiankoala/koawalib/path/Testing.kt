@@ -85,7 +85,7 @@ object Testing {
         val us = ArrayList<Double>()
         val rs = ArrayList<Double>()
         val system = System()
-        for(i in 0..sample) {
+        for (i in 0..sample) {
             val r = when {
                 i < 1000 -> 1.0
                 i < 2000 -> 5.0
@@ -98,7 +98,6 @@ object Testing {
             ys.add(y)
             us.add(u)
             rs.add(r)
-
         }
 
         plot(ts, ys, us, rs)
@@ -106,7 +105,6 @@ object Testing {
         println(rs.last())
         println(ys.last())
     }
-
 
     private fun plot(
         t: ArrayList<Double>,
@@ -116,9 +114,9 @@ object Testing {
     ) {
         val data = mapOf<String, Any>("t" to t, "y" to a, "u" to b, "r" to c)
         val fig = ggplot(data) +
-                geomPoint(color = "red", size = 0.75) { x = "t"; y = "r" } +
-                geomPoint(color = "blue", size = 0.75) { x = "t"; y = "y" } +
-                geomPoint(color = "green", size = 0.75) { x = "t"; y = "u" }
+            geomPoint(color = "red", size = 0.75) { x = "t"; y = "r" } +
+            geomPoint(color = "blue", size = 0.75) { x = "t"; y = "y" } +
+            geomPoint(color = "green", size = 0.75) { x = "t"; y = "u" }
 //                theme(plotBackground = elementRect(fill = "black"))
         ggsave(fig, "plot.png")
     }

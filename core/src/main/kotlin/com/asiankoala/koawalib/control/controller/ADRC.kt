@@ -87,7 +87,7 @@ class ADRC(
                 (3.0 / (2.0 * delta)) * (1 - zESO).pow(2) * (1.0 + zESO),
                 (1.0 / delta.pow(2)) * (1.0 - zESO).pow(3)
             )
-        ).scale(if(halfGains.first) 0.5 else 1.0)
+        ).scale(if (halfGains.first) 0.5 else 1.0)
 
         W = SimpleMatrix(
             3, 1, true,
@@ -96,7 +96,7 @@ class ADRC(
                 kD / b0,
                 1.0 / b0
             )
-        ).scale(if(halfGains.second) 0.5 else 1.0)
+        ).scale(if (halfGains.second) 0.5 else 1.0)
 
         xHat = SimpleMatrix(3, 1)
 
