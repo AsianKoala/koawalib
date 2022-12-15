@@ -1,5 +1,6 @@
 package com.asiankoala.koawalib.control.controller
 
+import com.asiankoala.koawalib.math.clamp
 import org.ejml.simple.SimpleMatrix
 import kotlin.math.exp
 import kotlin.math.pow
@@ -9,7 +10,9 @@ class ADRC(
     private val b0: Double,
     tSettle: Double,
     kESO: Double,
+    private val duConstraint: Double,
     halfGains: Pair<Boolean, Boolean> = Pair(false, false),
+    private val uConstraint: Double = 1.0,
 ) {
     private val A: SimpleMatrix
     private val B: SimpleMatrix
@@ -21,10 +24,17 @@ class ADRC(
     private var xHat: SimpleMatrix
     private val kP: Double
     private val kD: Double
+    private var ukm1 = 0.0
 
     // given by the equation x_hat[k+1] = A_d * x_hat[k] + B_d * u[k] + L_d * (y[k] - y_hat[k])
     private fun updateLuenBergerObserver(y: Double, ukm1: Double) {
         xHat = Ad.mult(xHat) + Bd.scale(ukm1) + Ld.scale(y)
+    }
+
+    private fun limit(u: Double): Double {
+        val deltaU = clamp(u - ukm1, -duConstraint, duConstraint)
+        ukm1 = clamp(deltaU + ukm1, -uConstraint, uConstraint)
+        return ukm1
     }
 
     fun call(y: Double, inp: Double, r: Double): Double {
@@ -32,6 +42,7 @@ class ADRC(
         updateLuenBergerObserver(y, u)
         // w = [kP / b0, 1.0 / b0]
         u = (kP / b0) * r - W.transpose().mult(xHat)[0]
+        u = limit(u)
         return u
     }
 
@@ -48,7 +59,7 @@ class ADRC(
         B = SimpleMatrix(
             3, 1, true,
             doubleArrayOf(
-                b0 * delta * delta / 2.0
+                b0 * delta * delta / 2.0,
                 b0 * delta,
                 0.0
             )
@@ -72,7 +83,7 @@ class ADRC(
             doubleArrayOf(
                 1.0 - zESO.pow(3),
                 (3.0 / (2.0 * delta)) * (1 - zESO).pow(2) * (1.0 + zESO),
-                (1.0 / (delta * delta)) * (1.0 - zESO).pow(3)
+                (1.0 / delta.pow(2)) * (1.0 - zESO).pow(3)
             )
         ).scale(if(halfGains.first) 0.5 else 1.0)
 

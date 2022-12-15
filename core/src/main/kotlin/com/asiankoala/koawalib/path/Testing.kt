@@ -80,22 +80,28 @@ object Testing {
 //        b.flipBruh()
 //        a.flip
 
-        val adrc = ADRC(dt, 1.0 / 0.028, 0.5, 10.0)
+        val adrc = ADRC(dt, 1.0 / 0.03, 2.0, 7.0, uConstraint = 5.0, duConstraint = 1.0)
         var u = 0.0
-        val sample = 1000 * 2
+        val sample = 4000
         val ts = ArrayList<Double>()
         val ys = ArrayList<Double>()
         val us = ArrayList<Double>()
         val rs = ArrayList<Double>()
-        val r1 = 1.0
         val system = System()
         for(i in 0..sample) {
+            val r = when {
+                i < 1000 -> 1.0
+                i < 2000 -> 5.0
+                i < 4000 -> -5.0
+                else -> 10.0
+            }
             val y = system.update(u)
-            u = adrc.call(y, u, r1)
+            u = adrc.call(y, u, r)
             ts.add(i.d / 1000.0)
             ys.add(y)
             us.add(u)
-            rs.add(r1)
+            rs.add(r)
+
         }
 
         plot(ts, ys, us, rs)
@@ -113,10 +119,10 @@ object Testing {
     ) {
         val data = mapOf<String, Any>("t" to t, "y" to a, "u" to b, "r" to c)
         val fig = ggplot(data) +
-                geomPoint(color = "blue", size = 1.0) { x = "t"; y = "y" } +
-                geomPoint(color = "green", size = 1.0) { x = "t"; y = "u" } +
-                geomPoint(color = "red", size = 1.0) { x = "t"; y = "r" } +
-                theme(plotBackground = elementRect(fill = "black"))
+                geomPoint(color = "red", size = 0.75) { x = "t"; y = "r" } +
+                geomPoint(color = "blue", size = 0.75) { x = "t"; y = "y" } +
+                geomPoint(color = "green", size = 0.75) { x = "t"; y = "u" }
+//                theme(plotBackground = elementRect(fill = "black"))
         ggsave(fig, "plot.png")
     }
 }
@@ -138,4 +144,4 @@ class System {
     }
 }
 
-const val dt = 0.001
+const val dt = 0.007
