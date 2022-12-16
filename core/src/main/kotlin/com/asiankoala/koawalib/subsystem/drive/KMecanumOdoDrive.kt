@@ -11,14 +11,17 @@ open class KMecanumOdoDrive(
     private val odometry: Odometry,
     private val shouldTelemetryOdo: Boolean
 ) : KMecanumDrive(fl, bl, br, fr) {
-
     val pose get() = odometry.pose
     val vel get() = odometry.velocity
 
-    override fun periodic() {
-        super.periodic()
-        if (shouldTelemetryOdo) {
+    protected fun updateOdo() {
+        if(shouldTelemetryOdo) {
             odometry.updateTelemetry()
         }
+    }
+
+    override fun periodic() {
+        super.periodic()
+        updateOdo()
     }
 }
