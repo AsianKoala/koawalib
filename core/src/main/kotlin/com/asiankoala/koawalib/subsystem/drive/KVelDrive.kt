@@ -41,12 +41,12 @@ class KVelDrive(
     }
 
     override fun periodic() {
-        val wheels = if(isVel) {
+        val wheels = if (isVel) {
             List(motors.size) { i ->
                 adrcs[i].update(vels[i], us[i], setpoints[i].first) +
-                        kS * setpoints[i].first.sign +
-                        kV * setpoints[i].first +
-                        kA * setpoints[i].second
+                    kS * setpoints[i].first.sign +
+                    kV * setpoints[i].first +
+                    kA * setpoints[i].second
             }
         } else mecKinematics(powers)
         val absMax = wheels.maxOf { it.absoluteValue }
@@ -55,4 +55,3 @@ class KVelDrive(
         updateOdo()
     }
 }
-

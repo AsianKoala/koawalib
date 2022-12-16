@@ -15,7 +15,7 @@ open class KMecanumOdoDrive(
     val vel get() = odometry.velocity
 
     protected fun updateOdo() {
-        if(shouldTelemetryOdo) {
+        if (shouldTelemetryOdo) {
             odometry.updateTelemetry()
         }
     }
