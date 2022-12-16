@@ -4,7 +4,6 @@ import com.asiankoala.koawalib.control.controller.ADRC
 import com.asiankoala.koawalib.control.controller.ADRCConfig
 import com.asiankoala.koawalib.hardware.motor.KMotor
 import com.asiankoala.koawalib.math.Pose
-import com.asiankoala.koawalib.math.Vector
 import com.asiankoala.koawalib.subsystem.odometry.Odometry
 import kotlin.math.absoluteValue
 import kotlin.math.sign
@@ -35,9 +34,9 @@ class KVelDrive(
         isVel = true
     }
 
-    fun setVelAccel(vel: Vector, accel: Vector) {
-        setpoints = mecKinematics(Pose(vel, 0.0))
-            .zip(mecKinematics(Pose(accel, 0.0)))
+    fun setSetpoint(vel: Pose, accel: Pose) {
+        setpoints = mecKinematics(vel)
+            .zip(mecKinematics(accel))
     }
 
     override fun periodic() {
