@@ -1,6 +1,7 @@
 package com.asiankoala.koawalib.path
 
 import com.asiankoala.koawalib.control.controller.ADRC
+import com.asiankoala.koawalib.control.controller.ADRCConfig
 import com.asiankoala.koawalib.control.profile.MotionState
 import com.asiankoala.koawalib.math.d
 import jetbrains.letsPlot.export.ggsave
@@ -77,7 +78,16 @@ object Testing {
 //        b.flipBruh()
 //        a.flip
 
-        val adrc = ADRC(dt, 1.0 / 0.03, 2.0, 7.0, uConstraint = 5.0, duConstraint = 1.0)
+        val config = ADRCConfig(
+            dt,
+            1.0 / 0.03,
+            2.0,
+            7.0,
+            1.0,
+            Pair(false, false),
+            5.0,
+        )
+        val adrc = ADRC(config)
         var u = 0.0
         val sample = 4000
         val ts = ArrayList<Double>()
