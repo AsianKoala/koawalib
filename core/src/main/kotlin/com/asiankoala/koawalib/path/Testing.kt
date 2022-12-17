@@ -80,11 +80,11 @@ object Testing {
 
         val config = ADRCConfig(
             dt,
-            1.0 / 0.03,
-            2.0,
-            7.0,
+           30.0,
+            4.0,
+            10.0,
             1.0,
-            Pair(false, false),
+            Pair(true, false),
             5.0,
         )
         val adrc = ADRC(config)
@@ -96,12 +96,13 @@ object Testing {
         val rs = ArrayList<Double>()
         val system = System()
         for (i in 0..sample) {
-            val r = when {
-                i < 1000 -> 1.0
-                i < 2000 -> 5.0
-                i < 4000 -> -5.0
-                else -> 10.0
-            }
+//            val r = when {
+//                i < 1000 -> 1.0
+//                i < 2000 -> 5.0
+//                i < 4000 -> -5.0
+//                else -> 10.0
+//            }
+            val r = 5.0
             val y = system.update(u)
             u = adrc.update(y, u, r)
             ts.add(i.d / 1000.0)
