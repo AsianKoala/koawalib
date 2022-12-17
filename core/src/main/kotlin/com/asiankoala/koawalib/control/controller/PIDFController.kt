@@ -20,9 +20,6 @@ class PIDFController constructor(
     private var minInput: Double = 0.0
     private var maxInput: Double = 0.0
 
-    private var minOutput: Double = 0.0
-    private var maxOutput: Double = 0.0
-
     /**
      * Target position (that is, the controller setpoint).
      */
