@@ -43,8 +43,7 @@ class ADRC(
 
     private fun limit(u: Double, ukm1: Double): Double {
         val deltaU = clamp(u - ukm1, -config.duConstraint, config.duConstraint)
-        ukm1 = clamp(deltaU + ukm1, -config.uConstraint, config.uConstraint)
-        return ukm1
+        return clamp(deltaU + ukm1, -config.uConstraint, config.uConstraint)
     }
 
     // given by the equation x_hat[k+1] = A_d * x_hat[k] + B_d * u[k] + L_d * (y[k] - y_hat[k])
