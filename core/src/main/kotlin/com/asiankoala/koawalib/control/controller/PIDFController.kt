@@ -87,11 +87,6 @@ class PIDFController constructor(
                 kV * targetVelocity + kA * targetAcceleration + kF(measuredPosition, measuredVelocity)
             val output = if (baseOutput epsilonEquals 0.0) 0.0 else baseOutput + sign(baseOutput) * kStatic
 
-//            Logger.addTelemetryData("kp", pid.kP * error)
-//            Logger.addTelemetryData("error", error)
-//            Logger.addTelemetryData("curr", measuredPosition)
-//            Logger.addTelemetryData("target", targetPosition)
-
             output
         }
     }
