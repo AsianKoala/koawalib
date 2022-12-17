@@ -40,9 +40,8 @@ class ADRC(
     private var xHat: SimpleMatrix
     private val kP: Double
     private val kD: Double
-    private var ukm1 = 0.0
 
-    private fun limit(u: Double): Double {
+    private fun limit(u: Double, ukm1: Double): Double {
         val deltaU = clamp(u - ukm1, -config.duConstraint, config.duConstraint)
         ukm1 = clamp(deltaU + ukm1, -config.uConstraint, config.uConstraint)
         return ukm1
@@ -53,11 +52,10 @@ class ADRC(
         xHat = Ad.mult(xHat) + Bd.scale(ukm1) + Ld.scale(y)
     }
 
-    fun update(y: Double, i: Double, r: Double): Double {
-        var u = i
-        updateLuenBergerObserver(y, u)
-        u = (kP / config.b0) * r - W.transpose().mult(xHat)[0]
-        u = limit(u)
+    fun update(y: Double, ukm1: Double, r: Double): Double {
+        updateLuenBergerObserver(y, ukm1)
+        var u = (kP / config.b0) * r - W.transpose().mult(xHat)[0]
+        u = limit(u, ukm1)
         return u
     }
 

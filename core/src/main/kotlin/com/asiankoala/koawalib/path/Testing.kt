@@ -80,7 +80,7 @@ object Testing {
 
         val config = ADRCConfig(
             dt,
-           30.0,
+           200.0,
             4.0,
             10.0,
             1.0,
