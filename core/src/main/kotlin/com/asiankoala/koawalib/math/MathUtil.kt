@@ -60,7 +60,7 @@ val Double.angleWrap: Double
 val Double.wrap2PI: Double
     get() {
         var wrapped = this.angleWrap
-        return if(wrapped > 0.0) wrapped else wrapped + PI
+        return if (wrapped > 0.0) wrapped else wrapped + PI
     }
 
 fun project(v: Vector, onto: Vector): Vector {

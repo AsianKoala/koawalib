@@ -43,9 +43,10 @@ abstract class KOpMode(
     private fun setupHardware() {
         KDevice.hardwareMap = hardwareMap
         if (photonEnabled) {
-            PhotonCore.enable()
+            PhotonCore.experimental.setMaximumParallelCommands(8)
             PhotonCore.CONTROL_HUB.bulkCachingMode = LynxModule.BulkCachingMode.MANUAL
             PhotonCore.EXPANSION_HUB.bulkCachingMode = LynxModule.BulkCachingMode.MANUAL
+            PhotonCore.enable()
         } else {
             hubs = hardwareMap.getAll(LynxModule::class.java)
             hubs.forEach { it.bulkCachingMode = LynxModule.BulkCachingMode.MANUAL }

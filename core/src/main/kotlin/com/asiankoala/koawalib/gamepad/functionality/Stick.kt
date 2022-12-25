@@ -13,7 +13,7 @@ import com.asiankoala.koawalib.util.Periodic
  * @property angle angle of stick on [-180,180] interval
  * @property norm magnitude of stick
  */
-interface Stick : Periodic {
+internal interface Stick : Periodic {
     val xAxis: Double
 
     val yAxis: Double
