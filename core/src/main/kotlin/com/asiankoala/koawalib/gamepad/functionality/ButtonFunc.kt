@@ -1,11 +1,8 @@
 package com.asiankoala.koawalib.gamepad.functionality
 
-import com.asiankoala.koawalib.command.KScheduler
 import com.asiankoala.koawalib.command.commands.Cmd
 import com.asiankoala.koawalib.command.commands.WatchdogCmd
 import com.asiankoala.koawalib.logger.Logger
-import com.asiankoala.koawalib.util.OpModeState
-import com.asiankoala.koawalib.util.internal.cond
 
 // todo log button -> cmd somehow
 // e.g. in logcat it should look like this

@@ -8,9 +8,7 @@ import com.asiankoala.koawalib.math.radians
 import com.asiankoala.koawalib.subsystem.drive.KMecanumDrive
 import com.asiankoala.koawalib.util.Alliance
 import kotlin.math.abs
-import kotlin.math.max
 import kotlin.math.pow
-import kotlin.math.sign
 
 /**
  * TeleOp drive control command
