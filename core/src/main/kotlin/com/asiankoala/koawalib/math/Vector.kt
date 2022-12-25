@@ -15,7 +15,7 @@ data class Vector(
     val norm get() = hypot(x, y)
     val angle get() = atan2(y, x)
     val unit get() = this / norm
-    val asN get() = NVector(x, y)
+    val asNVector get() = NVector(x, y)
 
     infix fun dot(other: Vector): Double = other.x * this.x + other.y * this.y
     infix fun cross(other: Vector): Double = x * other.y - y * other.x
