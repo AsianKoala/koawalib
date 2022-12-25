@@ -7,7 +7,6 @@ import com.asiankoala.koawalib.math.angleWrap
 import com.asiankoala.koawalib.math.radians
 import com.asiankoala.koawalib.subsystem.drive.KMecanumDrive
 import com.asiankoala.koawalib.util.Alliance
-import kotlin.math.absoluteValue
 import kotlin.math.max
 import kotlin.math.pow
 import kotlin.math.sign
@@ -53,7 +52,7 @@ class MecanumCmd(
     private val fieldCentricHeadingScalar: Double = 90.0.radians,
 ) : Cmd() {
     private fun joystickFunction(s: Double, k: Double, x: Double): Double {
-        return s * x * (k * x.absoluteValue.pow(3) - k + 1)
+        return max(0.0, s * x * (k * x.pow(3) - k + 1)) * x.sign
     }
 
     private fun processPowers(): Pose {
