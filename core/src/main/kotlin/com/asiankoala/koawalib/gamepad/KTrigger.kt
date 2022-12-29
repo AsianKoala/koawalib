@@ -3,26 +3,28 @@ package com.asiankoala.koawalib.gamepad
 import com.asiankoala.koawalib.control.filter.Debouncer
 import com.asiankoala.koawalib.gamepad.functionality.ButtonProcessing
 
-// todo: find better way to do this
 class KTrigger(
     private val triggerState: () -> Double,
 ) : ButtonProcessing() {
-    var threshold = 0.3
-    var debounceSeconds = 0.25
-    var debouncerEnabled = false
-
+    private var threshold = 0.3
+    private var debouncer: Debouncer? = null
     private val isTriggerPressed get() = triggerState.invoke() > threshold
-    private var debouncer = Debouncer(debounceSeconds)
     private var debouncerState = false
 
     override fun periodic() {
         super.periodic()
-        if (debouncerEnabled) {
-            debouncerState = debouncer.calculate(isTriggerPressed)
-        }
+        debouncer?.let { debouncerState = it.calculate(isTriggerPressed) }
     }
 
     override fun invoke(): Boolean {
-        return if (debouncerEnabled) debouncerState else isTriggerPressed
+        return debouncer?.let { debouncerState } ?: isTriggerPressed
+    }
+
+    fun setDebouncer(d: Debouncer) {
+        debouncer = d
+    }
+
+    fun setThreshold(t: Double) {
+        threshold = t
     }
 }
