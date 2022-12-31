@@ -24,7 +24,7 @@ class MotionProfile(vararg _periods: MotionPeriod, reversed: Boolean) {
             if (t <= it.dt + acc) return it[t - acc]
             it.dt + acc
         }
-        throw Exception("HUUUUUUUUUUUUUUUUH??????????????????")
+        throw Exception("?")
     }
 
     init {
