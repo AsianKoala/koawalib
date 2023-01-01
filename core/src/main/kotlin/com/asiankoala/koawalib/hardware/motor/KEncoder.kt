@@ -69,7 +69,7 @@ class KEncoder internal constructor(
         _vel = 0.0
     }
 
-    internal fun update() {
+    fun update() {
         if (!disabled) {
             val seconds = Clock.seconds
             _pos = motor.rawMotorPosition * multiplier
