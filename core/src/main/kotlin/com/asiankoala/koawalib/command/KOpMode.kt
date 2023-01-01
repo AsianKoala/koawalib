@@ -15,7 +15,7 @@ import com.qualcomm.robotcore.hardware.VoltageSensor
 import com.qualcomm.robotcore.util.ElapsedTime
 
 /**
- * The template opmode for utilizing koawalib. DO NOT OVERRIDE runOpMode(). Iterative OpMode's init, init loop, start, and loop functions have been
+ * The template opmode for utilizing koawalib. Iterative OpMode's init, init loop, start, and loop functions have been
  * implemented with mInit(), mInitLoop(), mStart(), mLoop(), mStop()
  */
 abstract class KOpMode(
