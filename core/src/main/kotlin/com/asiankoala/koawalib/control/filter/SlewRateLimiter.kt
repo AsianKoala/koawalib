@@ -27,7 +27,7 @@ class SlewRateLimiter(
         tkm1 = Clock.seconds
         return ukm1
     }
-    
+
     /**
      * Resets the slew rate limiter to the specified value; ignores the rate limit when doing so.
      *
