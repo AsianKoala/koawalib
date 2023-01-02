@@ -6,15 +6,14 @@ import com.asiankoala.koawalib.util.Clock
 /**
  * A class that limits the rate of change of an input value. Useful for implementing voltage,
  * setpoint, and/or output ramps. A slew-rate limit is most appropriate when the quantity being
- * controlled is a velocity or a voltage
- *
- * note: ported from wpilib
+ * controlled is a velocity or a voltage; when controlling a position, consider using a {@link
+ * package com.asiankoala.koawalib.control.profile.MotionProfile} instead.
  */
-class SlewRateLimiter @JvmOverloads constructor(
-    private val m_rateLimit: Double,
-    private var m_prevVal: Double = 0.0
+class SlewRateLimiter(
+    private val r: Double,
 ) {
-    private var m_prevTime: Double = Clock.seconds
+    private var ukm1 = 0.0
+    private var tkm1 = Clock.seconds
 
     /**
      * Filters the input to limit its slew rate.
@@ -23,24 +22,19 @@ class SlewRateLimiter @JvmOverloads constructor(
      * @return The filtered value, which will not change faster than the slew rate.
      */
     fun calculate(input: Double): Double {
-        val currentTime: Double = Clock.seconds
-        val elapsedTime = currentTime - m_prevTime
-        m_prevVal += clamp(
-            input - m_prevVal,
-            -m_rateLimit * elapsedTime,
-            m_rateLimit * elapsedTime
-        )
-        m_prevTime = currentTime
-        return m_prevVal
+        val dt = Clock.seconds - tkm1
+        ukm1 += clamp(input - ukm1, -r * dt, r * dt)
+        tkm1 = Clock.seconds
+        return ukm1
     }
 
     /**
      * Resets the slew rate limiter to the specified value; ignores the rate limit when doing so.
      *
-     * @param value The value to reset to.
+     * @param u The value to reset to.
      */
-    fun reset(value: Double) {
-        m_prevVal = value
-        m_prevTime = Clock.seconds
+    fun reset(u: Double) {
+        ukm1 = u
+        tkm1 = Clock.seconds
     }
 }

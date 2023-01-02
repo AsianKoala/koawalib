@@ -52,10 +52,15 @@ val Long.d get() = this.toDouble()
 
 val Double.angleWrap: Double
     get() {
-        var wrapped = this
-        while (wrapped > PI) wrapped -= TAU
-        while (wrapped < -PI) wrapped += TAU
+        var wrapped = this % TAU
+        wrapped = (wrapped + TAU) % TAU
         return wrapped
+    }
+
+val Double.wrap2PI: Double
+    get() {
+        var wrapped = this.angleWrap
+        return if (wrapped > 0.0) wrapped else wrapped + PI
     }
 
 fun project(v: Vector, onto: Vector): Vector {

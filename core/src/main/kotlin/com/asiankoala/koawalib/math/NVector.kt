@@ -37,6 +37,9 @@ class NVector(
     operator fun plus(other: NVector) = zipOp(other) { it.first + it.second }
     operator fun minus(other: NVector) = zipOp(other) { it.first - it.second }
     operator fun times(scalar: Double) = NVector(elems.map { it * scalar })
+    operator fun div(other: NVector) = zipOp(other) { it.first / it.second }
+
+    operator fun times(other: NVector) = zipOp(other) { it.first * it.second }
     operator fun div(scalar: Double) = NVector(elems.map { it / scalar })
     operator fun get(n: Int) = elems[n]
 }

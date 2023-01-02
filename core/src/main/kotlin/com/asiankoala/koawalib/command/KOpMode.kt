@@ -15,7 +15,7 @@ import com.qualcomm.robotcore.hardware.VoltageSensor
 import com.qualcomm.robotcore.util.ElapsedTime
 
 /**
- * The template opmode for utilizing koawalib. DO NOT OVERRIDE runOpMode(). Iterative OpMode's init, init loop, start, and loop functions have been
+ * The template opmode for utilizing koawalib. Iterative OpMode's init, init loop, start, and loop functions have been
  * implemented with mInit(), mInitLoop(), mStart(), mLoop(), mStop()
  */
 abstract class KOpMode(
@@ -43,9 +43,10 @@ abstract class KOpMode(
     private fun setupHardware() {
         KDevice.hardwareMap = hardwareMap
         if (photonEnabled) {
-            PhotonCore.enable()
+            PhotonCore.experimental.setMaximumParallelCommands(8)
             PhotonCore.CONTROL_HUB.bulkCachingMode = LynxModule.BulkCachingMode.MANUAL
             PhotonCore.EXPANSION_HUB.bulkCachingMode = LynxModule.BulkCachingMode.MANUAL
+            PhotonCore.enable()
         } else {
             hubs = hardwareMap.getAll(LynxModule::class.java)
             hubs.forEach { it.bulkCachingMode = LynxModule.BulkCachingMode.MANUAL }

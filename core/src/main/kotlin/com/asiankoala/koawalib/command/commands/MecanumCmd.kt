@@ -1,15 +1,14 @@
 package com.asiankoala.koawalib.command.commands
 
-import com.asiankoala.koawalib.gamepad.functionality.Stick
+import com.asiankoala.koawalib.gamepad.KStick
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.Vector
 import com.asiankoala.koawalib.math.angleWrap
 import com.asiankoala.koawalib.math.radians
 import com.asiankoala.koawalib.subsystem.drive.KMecanumDrive
 import com.asiankoala.koawalib.util.Alliance
-import kotlin.math.max
+import kotlin.math.abs
 import kotlin.math.pow
-import kotlin.math.sign
 
 /**
  * TeleOp drive control command
@@ -17,7 +16,7 @@ import kotlin.math.sign
  * f(x) = max(0, s * x * (kx^3 - k + 1)) * sgn(x)
  * e.g. xPower = max(0, xScalar * leftStick.x * (xCubic * leftStick.x ^ 3 - xCubic + 1)
  * see the desmos graph for an understanding of it
- * @see <a href="https://www.desmos.com/calculator/r8hanh49bk">https://www.desmos.com/calculator/r8hanh49bk</a>
+ * @see <a href="https://www.desmos.com/calculator/kpc9dcrlrc">https://www.desmos.com/calculator/kpc9dcrlrc</a>
  * If not using field centric drive, leave everything after rScalar as default
  *
  * @param drive KMecanumDrive reference
@@ -37,8 +36,8 @@ import kotlin.math.sign
  */
 class MecanumCmd(
     private val drive: KMecanumDrive,
-    private val leftStick: Stick,
-    private val rightStick: Stick,
+    private val leftStick: KStick,
+    private val rightStick: KStick,
     private val xScalar: Double = 1.0,
     private val yScalar: Double = 1.0,
     private val rScalar: Double = 1.0,
@@ -52,7 +51,7 @@ class MecanumCmd(
     private val fieldCentricHeadingScalar: Double = 90.0.radians,
 ) : Cmd() {
     private fun joystickFunction(s: Double, k: Double, x: Double): Double {
-        return max(0.0, s * x * (k * x.pow(3) - k + 1)) * x.sign
+        return s * x * (k * abs(x).pow(3) - k + 1)
     }
 
     private fun processPowers(): Pose {
