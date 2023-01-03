@@ -19,6 +19,13 @@ class KServo(name: String) : KDevice<Servo>(name) {
                 field = value
             }
         }
+    private var direction: Servo.Direction = Servo.Direction.FORWARD
+
+    val reverse: KServo
+        get() {
+            direction = Servo.Direction.REVERSE
+            return this
+        }
 
     /**
      * Builder function to set the initialize position of the servo
@@ -27,13 +34,4 @@ class KServo(name: String) : KDevice<Servo>(name) {
         position = startPos
         return this
     }
-
-    var direction: Servo.Direction = Servo.Direction.FORWARD
-        private set
-
-    val reverse: KServo
-        get() {
-            direction = Servo.Direction.REVERSE
-            return this
-        }
 }
