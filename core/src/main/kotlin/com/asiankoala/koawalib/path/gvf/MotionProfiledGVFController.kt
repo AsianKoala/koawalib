@@ -5,10 +5,8 @@ import com.asiankoala.koawalib.control.profile.v2.DispState
 import com.asiankoala.koawalib.control.profile.v2.OnlineProfile
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.Vector
-import com.asiankoala.koawalib.math.angleWrap
-import com.asiankoala.koawalib.math.degrees
 import com.asiankoala.koawalib.path.Path
-import com.asiankoala.koawalib.util.Speeds
+import com.asiankoala.koawalib.subsystem.drive.KMecanumOdoDrive
 import kotlin.math.PI
 import kotlin.math.absoluteValue
 import kotlin.math.pow
@@ -16,12 +14,13 @@ import kotlin.math.sign
 
 class MotionProfiledGVFController(
     override val path: Path,
+    override val drive: KMecanumOdoDrive,
     private val kN: Double,
     private val epsilon: Double,
     private val thetaEpsilon: Double,
     constraints: Constraints,
     private val kOmega: Double,
-    private val kStatic: Double,
+    private val kS: Double,
     private val kV: Double,
     private val kA: Double,
     private val errorMap: (Double) -> Double = { it }
@@ -56,12 +55,14 @@ class MotionProfiledGVFController(
     // the vector triple product BAC-CAB identity
     private fun tripleProduct(a: Vector, b: Vector, c: Vector) = b * (a dot c) - c * (a dot b)
 
-    // lol i'm lazy af. just a simple p controller our target heading
-    // might be enough? to fix tho i would have to rework how my pathing system
-    // deals with heading. just needs a bit of testing tbh
-    private fun headingControl(): Pair<Double, Double> {
-        headingError = (path[s].heading - pose.heading).angleWrap.degrees
-        return Pair(headingError / kOmega * state.v, headingError)
+    // TODO: fix heading controllers
+    // assumes heading is tangent to the path
+    // returns velocity
+    // h(p(s)) = v'(p(s))
+    // h'(p(s)) = v''(p(s)) * p'(s)
+    private fun headingControl(): Double {
+//        headingError = (path[s].heading - pose.heading).angleWrap.degrees
+        return path[s, 2].heading * state.v
     }
 
     // d/ds v(p(s)) = v'(p(s)) * p'(s)
@@ -72,6 +73,7 @@ class MotionProfiledGVFController(
     // so e' = 1.0
     // v' = t' - k_n * (n' * e + n)
     // now plug this into d^2/ds^2 and we chilling
+    // returns vel and accel vectors
     private fun vectorControl(): Pair<Vector, Vector> {
         val vs = calcGVF()
         val ms = vs.unit
@@ -84,25 +86,22 @@ class MotionProfiledGVFController(
         return Pair(vel, accel)
     }
 
-    private fun calcVecFF(vel: Vector, accel: Vector) = vel.unit * kStatic + vel * kV + accel * kA
-    private fun calcHeadingFF(vel: Double) = kStatic * vel.sign + vel * kV
+    private fun calcVecFF(vel: Vector, accel: Vector) = vel.unit * kS + vel * kV + accel * kA
+    private fun calcHeadingFF(vel: Double) = kS * vel.sign + vel * kV
 
-    override fun update(currPose: Pose): Pose {
-        pose = currPose
+    // we use a PV controller on the heading beacuse im lazy
+    private fun setDriveSetpoints(vel: Vector, accel: Vector, headingVel: Double) {
+        val headingOutput = headingError * kOmega + calcHeadingFF(headingVel)
+        val ffOutput = Pose(calcVecFF(vel, accel), headingOutput)
+        drive.powers = ffOutput
+    }
+
+    override fun update() {
+        pose = drive.pose
         s = path.project(pose.vec, s)
         state = profile[s]
-        val headingResult = headingControl()
         val vectorResult = vectorControl()
-        return Speeds().apply {
-            setFieldCentric(
-                Pose(
-                    calcVecFF(
-                        vectorResult.first,
-                        vectorResult.second
-                    ),
-                    calcHeadingFF(headingResult.first)
-                )
-            )
-        }.getRobotCentric(pose.heading)
+        val headingVel = headingControl()
+        setDriveSetpoints(vectorResult.first, vectorResult.second, headingVel)
     }
 }

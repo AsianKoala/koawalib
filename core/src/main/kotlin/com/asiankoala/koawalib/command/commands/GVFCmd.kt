@@ -40,7 +40,7 @@ class GVFCmd(
     }
 
     override fun execute() {
-        drive.powers = controller.update(drive.pose)
+        controller.update()
     }
 
     override fun end() {
