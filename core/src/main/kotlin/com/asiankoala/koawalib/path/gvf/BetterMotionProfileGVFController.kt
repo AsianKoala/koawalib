@@ -38,8 +38,6 @@ class BetterMotionProfileGVFController(
         DispState(path.length, 0.0, 0.0),
         constraints
     )
-    private var normal = Vector()
-    private var trackingError = 0.0
     private var headingError = 0.0
     private val errorMap: (Double) -> Double = { it }
     private val headingController = PIDFController(
@@ -62,9 +60,9 @@ class BetterMotionProfileGVFController(
 
     private fun calcGvf(): GVFComputation {
         val tangent = path[s, 1].vec
-        normal = tangent.rotate(PI / 2.0)
+        val normal = tangent.rotate(PI / 2.0)
         val displacementVec = path[s].vec - drive.pose.vec
-        trackingError = displacementVec.norm * (displacementVec cross tangent).sign
+        val trackingError = displacementVec.norm * (displacementVec cross tangent).sign
         val gvf = tangent - normal * kN * errorMap.invoke(trackingError)
         val unitGvf = gvf.unit
         val xdot = unitGvf * state.v
