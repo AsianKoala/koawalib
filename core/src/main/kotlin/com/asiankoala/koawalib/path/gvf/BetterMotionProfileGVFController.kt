@@ -28,10 +28,10 @@ class BetterMotionProfileGVFController(
     private val kS: Double
 ) : GVFController {
     private data class GVFComputation(
-        val gvf: Vector,
-        val gvfDeriv: Vector,
-        val projDeriv: Vector,
-
+        val transVel: Vector,
+        val transAccel: Vector,
+        val angularVel: Double,
+        val angularAccel: Double
     )
     private val profile = OnlineProfile(
         DispState(),
@@ -60,51 +60,56 @@ class BetterMotionProfileGVFController(
 
     private fun tripleProduct(a: Vector, b: Vector, c: Vector) = b * (a dot c) - c * (a dot b)
 
-    private fun calcGvf(): Pair<Vector, Vector> {
+    private fun calcGvf(): GVFComputation {
         val tangent = path[s, 1].vec
         normal = tangent.rotate(PI / 2.0)
         val displacementVec = path[s].vec - drive.pose.vec
         trackingError = displacementVec.norm * (displacementVec cross tangent).sign
         val gvf = tangent - normal * kN * errorMap.invoke(trackingError)
         val unitGvf = gvf.unit
+        val xdot = unitGvf * state.v
 
         // derived in ryan's paper
         val secondDeriv = path[s, 2].vec
-        val projDeriv = (unitGvf dot tangent) / (1.0 - (displacementVec dot secondDeriv))
+        val projDeriv = (xdot dot tangent) / (1.0 - (displacementVec dot secondDeriv))
         val mapDeriv = 1.0 // TODO change later for non-linear error maps
-        val errorDeriv = mapDeriv * (unitGvf dot normal)
+        val errorDeriv = mapDeriv * (xdot dot normal)
         val gvfDeriv = secondDeriv * projDeriv - (secondDeriv.rotate(-PI / 2.0) * trackingError - normal * errorDeriv) * kN
         val unitGvfDeriv = tripleProduct(gvfDeriv, gvfDeriv, gvfDeriv) / (gvfDeriv dot gvfDeriv).pow(3.0 / 2.0)
-        return Pair(unitGvf, unitGvfDeriv)
-    }
+        val xdot2 = unitGvf * state.a + unitGvfDeriv * state.v
 
-    private fun updateHeadingController() {
-        val targetHeading = path[s, 2].heading
-        headingController.targetPosition = targetHeading
-        headingController.targetVelocity = targetHeading * state.v
-    }
+        val projSecondDenom = 1.0 - (displacementVec dot secondDeriv)
+        val lhsNum = ((xdot * projDeriv) dot secondDeriv) + (xdot2 dot tangent)
+        val rhsNum = (xdot dot tangent) * (xdot dot secondDeriv)
+        val projSecondDeriv = (lhsNum / projSecondDenom) + (rhsNum / projSecondDenom.pow(2))
 
-    private fun vectorControl(): Pair<Vector, Vector> {
-        val gvfResult = calcGvf()
-        val vel = gvfResult.first * state.v
-        val accel = gvfResult.first * state.a + gvfResult.second * state.v
-        return Pair(vel, accel)
+        val headingDeriv = path[s, 2].heading
+        val headingSecondDeriv = path[s, 3].heading
+        val thetadot = headingDeriv * projDeriv
+        val thetadot2 = headingSecondDeriv * projDeriv * projDeriv + thetadot * projSecondDeriv
+
+        return GVFComputation(
+            xdot,
+            xdot2,
+            thetadot,
+            thetadot2
+        )
     }
 
     private fun calcVecFF(vel: Vector, accel: Vector) = vel.unit * kS + vel * kV + accel * kA
 
-    // we use a PV controller on the heading beacuse im lazy
-    private fun setDriveSetpoints(vel: Vector, accel: Vector) {
-        val headingOutput = headingController.update(drive.pose.heading, drive.vel.heading)
-        val ffOutput = Pose(calcVecFF(vel, accel), headingOutput)
-        drive.powers = ffOutput
-    }
-
     override fun update() {
         s = path.project(drive.pose.vec, s)
         state = profile[s]
-        updateHeadingController()
-        val vectorResult = vectorControl()
-        setDriveSetpoints(vectorResult.first, vectorResult.second)
+        val gvfComputation = calcGvf()
+        headingController.apply {
+            targetPosition = path[s, 1].heading
+            targetVelocity = gvfComputation.angularVel
+            targetAcceleration = gvfComputation.angularAccel
+        }
+        val headingOutput = headingController.update(drive.pose.heading, drive.vel.heading)
+        val transOutput = calcVecFF(gvfComputation.transVel, gvfComputation.transAccel)
+        val output = Pose(transOutput, headingOutput)
+        drive.powers = output
     }
 }
