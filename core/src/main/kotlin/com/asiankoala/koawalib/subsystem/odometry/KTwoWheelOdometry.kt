@@ -17,7 +17,6 @@ class KTwoWheelOdometry(
 ) : Odometry(startPose) {
     private val encoders = listOf(leftEncoder, auxEncoder)
     private var accumulatedAuxPrediction = 0.0
-    private var accumRWheel = 0.0
     private var lastAngle = Double.NaN
 
     private fun getHeading(): Double {
@@ -34,31 +33,19 @@ class KTwoWheelOdometry(
         Logger.addTelemetryData("curr pose", pose)
         Logger.addTelemetryData("left encoder", leftEncoder.pos)
         Logger.addTelemetryData("aux encoder", auxEncoder.pos)
-
-        val accumAuxScale = auxEncoder.pos
-        val auxTrackDiff = accumAuxScale - accumulatedAuxPrediction
-        Logger.addTelemetryData("accumulated aux", accumAuxScale)
-        Logger.addTelemetryData("accumulated aux prediction", accumulatedAuxPrediction)
-        Logger.addTelemetryData("accum aux - tracker", auxTrackDiff)
+        Logger.addTelemetryData("delta tracker", auxTrackDiff)
     }
 
     override fun periodic() {
         encoders.forEach(KEncoder::update)
         imu.periodic()
-
         val newAngle = getHeading()
         val angleIncrement = (newAngle - lastAngle).angleWrap
         val auxPrediction = angleIncrement * PERP_TRACKER
         val rX = auxEncoder.delta - auxPrediction
-
         accumulatedAuxPrediction += auxPrediction
-
-        val rWheelDelta = -(angleIncrement * TRACK_WIDTH - leftEncoder.delta)
-        accumRWheel += rWheelDelta
-        val deltaY = (leftEncoder.delta + rWheelDelta) / 2.0
-
+        val deltaY = (2.0 * leftEncoder.delta + -angleIncrement * TRACK_WIDTH) / 2.0
         val pointIncrement = updatePoseWithDeltas(pose, leftEncoder.delta, rWheelDelta, rX, deltaY, angleIncrement)
-
         pose = Pose(pose.vec + pointIncrement, newAngle)
         lastAngle = newAngle
         savePose(pose)

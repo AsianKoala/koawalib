@@ -3,8 +3,7 @@ package com.asiankoala.koawalib.subsystem.odometry
 import com.asiankoala.koawalib.math.*
 import com.asiankoala.koawalib.subsystem.Subsystem
 import com.asiankoala.koawalib.util.Speeds
-import kotlin.math.absoluteValue
-import kotlin.math.max
+import kotlin.math.*
 
 abstract class Odometry(
     protected var startPose: Pose,
@@ -13,61 +12,35 @@ abstract class Odometry(
 
     abstract fun updateTelemetry()
     abstract fun reset(p: Pose)
-    private val prevRobotRelativePositions: ArrayList<TimePose> = ArrayList()
-    private var robotRelativeMovement: Pose = Pose()
+    private val prev: ArrayList<TimePose> = ArrayList()
     var pose = startPose
         protected set
 
     val velocity: Pose
         get() {
-            if (prevRobotRelativePositions.size < 2) {
-                return Pose()
-            }
-
-            val oldIndex = max(0, prevRobotRelativePositions.size - 5 - 1)
-            val old = prevRobotRelativePositions[oldIndex]
-            val curr = prevRobotRelativePositions[prevRobotRelativePositions.size - 1]
-
+            if (prev.size < 2) return Pose()
+            val oldIndex = max(0, prev.size - 5 - 1)
+            val old = prev[oldIndex]
+            val curr = prev[prev.size - 1]
             val scalar = (curr.timestamp - old.timestamp).toDouble() / 1000.0
-
             val dirVel = (curr.pose.vec - old.pose.vec) / scalar
             val angularVel = (curr.pose.heading - old.pose.heading) * (1 / scalar)
-
             return Pose(dirVel, angularVel.angleWrap)
         }
+    private fun rot(v: Vector, s: Double, c: Double) =
+        Vector(s * v.x - c * v.y, c * v.x + s * v.y)
 
-    fun fieldCentricVelocity(heading: Double): Pose {
-        val s = Speeds()
-        s.setRobotCentric(velocity, heading)
-        return s.getFieldCentric()
-    }
-
-    protected fun savePose(p: Pose) {
-        lastPose = p
-    }
-
-    protected fun updatePoseWithDeltas(currPose: Pose, lWheelDelta: Double, rWheelDelta: Double, dx: Double, dy: Double, angleIncrement: Double): Vector {
-        var deltaX = dx
-        var deltaY = dy
-        if (angleIncrement.absoluteValue > 0) {
-            val radiusOfMovement = (lWheelDelta + rWheelDelta) / (2 * angleIncrement)
-            val radiusOfStrafe = deltaX / angleIncrement
-
-            deltaX = (radiusOfMovement * (1 - angleIncrement.cos)) + (radiusOfStrafe * angleIncrement.sin)
-            deltaY = (radiusOfMovement * angleIncrement.sin) + (radiusOfStrafe * (1 - angleIncrement.cos))
-        }
-
-        val robotDeltaRelativeMovement = Pose(deltaX, deltaY, angleIncrement)
-//        robotRelativeMovement = robotRelativeMovement.plusWrap(robotDeltaRelativeMovement)
-        robotRelativeMovement = Pose(
-            robotRelativeMovement.vec + robotDeltaRelativeMovement.vec,
-            (robotRelativeMovement.heading + robotDeltaRelativeMovement.heading).angleWrap
-        )
-        prevRobotRelativePositions.add(TimePose(robotRelativeMovement))
-
-        val incrementX = currPose.heading.cos * deltaY + currPose.heading.sin * deltaX
-        val incrementY = currPose.heading.sin * deltaY - currPose.heading.cos * deltaX
-        return Vector(incrementX, incrementY)
+    protected fun exp(global: Pose, inc: Pose): Pose {
+        val u = inc.heading + inc.heading.sign * EPSILON
+        val s = sin(u) / u
+        val c = (1.0 - cos(u)) / u
+        val trans = rot(inc.vec, s, c)
+        val theta = global.heading + inc.heading
+        val delta = rot(trans, sin(theta), cos(theta))
+        prev.add(prev.lastOrNull()?.let {
+            TimePose(Pose(it.pose.vec + trans, it.pose.heading + inc.heading))
+        } ?: TimePose(global))
+        return Pose(global.vec + delta, theta)
     }
 
     companion object {

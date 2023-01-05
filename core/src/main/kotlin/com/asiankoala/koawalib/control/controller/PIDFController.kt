@@ -15,26 +15,13 @@ class PIDFController constructor(
 ) {
     private var errorSum: Double = 0.0
     private var lastUpdateTimestamp: Double = Double.NaN
-
     private var inputBounded: Boolean = false
     private var minInput: Double = 0.0
     private var maxInput: Double = 0.0
 
-    /**
-     * Target position (that is, the controller setpoint).
-     */
     var targetPosition: Double = 0.0
-
-    /**
-     * Target velocity.
-     */
     var targetVelocity: Double = 0.0
-
-    /**
-     * Target acceleration.
-     */
     var targetAcceleration: Double = 0.0
-
     var lastError: Double = 0.0
         private set
 
