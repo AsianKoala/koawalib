@@ -26,7 +26,7 @@ class KMotor internal constructor(name: String) : KDevice<DcMotorEx>(name) {
     internal lateinit var controller: MotorController
     internal var mode = MotorControlModes.OPEN_LOOP
     internal var encoderCreated = false
-//    internal var isVoltageCorrected = false
+    internal var isVoltageCorrected = false
     internal val rawMotorPosition get() = device.currentPosition.d
     internal val rawMotorVelocity get() = device.velocity
     internal var priority = Priority.HIGH
@@ -132,8 +132,8 @@ class KMotor internal constructor(name: String) : KDevice<DcMotorEx>(name) {
 
     companion object {
         private var iter = 0
-//        private const val VOLTAGE_CONSTANT = 12.0
-//        internal var lastVoltageRead = Double.NaN
+        private const val VOLTAGE_CONSTANT = 12.0
+        internal var lastVoltageRead = Double.NaN
 
         internal fun updatePriorityIter() {
             iter++

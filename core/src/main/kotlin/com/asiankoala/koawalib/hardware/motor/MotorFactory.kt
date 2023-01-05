@@ -49,13 +49,13 @@ class MotorFactory(name: String) {
         }
 
     /**
-//     * Enable voltage correction
-//     */
-//    val voltageCorrected: MotorFactory
-//        get() {
-//            instance.isVoltageCorrected = true
-//            return this
-//        }
+     * Enable voltage correction
+     */
+    val voltageCorrected: MotorFactory
+        get() {
+            instance.isVoltageCorrected = true
+            return this
+        }
 
     val lowPriority: MotorFactory
         get() {
