@@ -2,7 +2,7 @@ package com.asiankoala.koawalib.gamepad.functionality
 
 import com.asiankoala.koawalib.util.Periodic
 
-abstract class ButtonProcessing : ButtonFunc, () -> Boolean, Periodic {
+abstract class ButtonProcessing : ButtonScheduling, () -> Boolean, Periodic {
     private var _isPressed = false
     private var _isToggled = false
     private var _hasChanged = false

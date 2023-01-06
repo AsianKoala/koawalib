@@ -9,7 +9,7 @@ import com.asiankoala.koawalib.gamepad.functionality.ButtonProcessing
  * @property isJustReleased was button just released (state changed this loop)
  * @property isReleased is button not pressed
  */
-open class KButton(
+class KButton(
     private val buttonState: () -> Boolean
 ) : ButtonProcessing() {
     override fun invoke() = buttonState.invoke()

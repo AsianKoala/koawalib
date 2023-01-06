@@ -1,13 +1,15 @@
 package com.asiankoala.koawalib.util.internal.statemachine
 
-internal class TimedTransition(val time: Double) : () -> Boolean {
-    private var startTime = 0L
+import com.qualcomm.robotcore.util.ElapsedTime
 
-    fun startTimer() {
-        startTime = System.nanoTime()
+internal class TimedTransition(private val ms: Double) : () -> Boolean {
+    private val timer = ElapsedTime()
+
+    fun resetTimer() {
+        timer.reset()
     }
 
     override fun invoke(): Boolean {
-        return (System.nanoTime() - startTime) / 1e9 > time
+        return timer.seconds() > ms
     }
 }

@@ -7,7 +7,7 @@ import com.asiankoala.koawalib.logger.Logger
 // todo log button -> cmd somehow
 // e.g. in logcat it should look like this
 // added watchdog to RumbleGamepad mapped to A.onPress
-interface ButtonFunc {
+interface ButtonScheduling {
     val isJustPressed: Boolean
     val isJustReleased: Boolean
     val isPressed: Boolean
