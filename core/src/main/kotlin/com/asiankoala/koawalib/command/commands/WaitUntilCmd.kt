@@ -5,8 +5,6 @@ package com.asiankoala.koawalib.command.commands
  * @param condition finish condition
  */
 open class WaitUntilCmd(private val condition: () -> Boolean) : Cmd() {
-    override fun execute() {
-    }
-
+    override fun execute() {}
     override val isFinished: Boolean get() = condition.invoke()
 }

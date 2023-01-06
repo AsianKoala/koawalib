@@ -13,8 +13,7 @@ open class WaitCmd(private val seconds: Double) : Cmd() {
         timer.reset()
     }
 
-    override fun execute() {
-    }
+    override fun execute() {}
 
     override fun end() {
         timer.reset()

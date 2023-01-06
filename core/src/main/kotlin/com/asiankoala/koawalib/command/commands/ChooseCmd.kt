@@ -7,7 +7,11 @@ package com.asiankoala.koawalib.command.commands
  * @param condition the condition to determine which command to run
  */
 @Suppress("unused")
-open class ChooseCmd(private val onTrue: Cmd, private val onFalse: Cmd, private val condition: () -> Boolean) : Cmd() {
+open class ChooseCmd(
+    private val onTrue: Cmd,
+    private val onFalse: Cmd,
+    private val condition: () -> Boolean
+) : Cmd() {
     private val selected by lazy { if (condition.invoke()) onTrue else onFalse }
 
     override fun initialize() {

@@ -55,9 +55,9 @@ class MecanumCmd(
     }
 
     private fun processPowers(): Pose {
-        val xRaw = leftStick.xSupplier.invoke()
-        val yRaw = -leftStick.ySupplier.invoke()
-        val rRaw = -rightStick.xSupplier.invoke()
+        val xRaw = leftStick.xAxis
+        val yRaw = -leftStick.yAxis
+        val rRaw = -rightStick.xAxis
 
         val xOutput = joystickFunction(xScalar, xCubic, xRaw)
         val yOutput = joystickFunction(yScalar, yCubic, yRaw)
@@ -73,7 +73,7 @@ class MecanumCmd(
             )
 
             val turn = if (isHeadingFieldCentric && !headingInvoked.isNaN()) {
-                val stickAtan = rightStick.angle
+                val stickAtan = rightStick.vector.angle
                 val deltaAngle = (headingInvoked - stickAtan).angleWrap
                 val rLockScaled = deltaAngle / fieldCentricHeadingScalar
                 rLockScaled

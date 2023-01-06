@@ -1,7 +1,9 @@
 package com.asiankoala.koawalib.math
 
 import kotlin.math.atan2
+import kotlin.math.cos
 import kotlin.math.hypot
+import kotlin.math.sin
 
 /**
  * Represents 2D Vectors
@@ -15,15 +17,14 @@ data class Vector(
     val norm get() = hypot(x, y)
     val angle get() = atan2(y, x)
     val unit get() = this / norm
-    val asNVector get() = NVector(x, y)
 
     infix fun dot(other: Vector): Double = other.x * this.x + other.y * this.y
     infix fun cross(other: Vector): Double = x * other.y - y * other.x
     infix fun dist(other: Vector): Double = (this - other).norm
 
     fun rotate(angle: Double) = Vector(
-        x * angle.cos - y * angle.sin,
-        x * angle.sin + y * angle.cos
+        x * cos(angle) - y * sin(angle),
+        x * sin(angle) + y * cos(angle)
     )
 
     operator fun plus(vector: Vector) = Vector(x + vector.x, y + vector.y)

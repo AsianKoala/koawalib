@@ -2,6 +2,7 @@ package com.asiankoala.koawalib.control.motor
 
 import com.asiankoala.koawalib.math.cos
 import com.asiankoala.koawalib.math.radians
+import kotlin.math.cos
 
 data class FFGains(
     val kS: Double = 0.0,
@@ -11,7 +12,7 @@ data class FFGains(
     val kCos: Double? = null,
 ) {
     fun calc(targetX: Double): Double {
-        val armFF = kCos?.times(targetX.radians.cos) ?: 0.0
+        val armFF = kCos?.times(cos(targetX.radians)) ?: 0.0
         return kG + armFF
     }
 }
