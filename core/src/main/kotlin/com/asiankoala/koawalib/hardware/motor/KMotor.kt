@@ -54,7 +54,7 @@ class KMotor internal constructor(name: String) : KDevice<DcMotorEx>(name) {
 
     var power: Double = 0.0
         set(value) {
-            val clamped = clamp(value, -1.0, 1.0) * powerMultiplier
+            val clamped = clamp(value * VOLTAGE_CONSTANT / lastVoltageRead, -1.0, 1.0) * powerMultiplier
             if (clamped epsilonNotEqual field &&
                 (clamped == 0.0 || clamped.absoluteValue == 1.0 || (clamped - field).absoluteValue > 0.005) &&
                 (priority == Priority.HIGH || iter - lastUpdateIter > 3)
@@ -132,11 +132,15 @@ class KMotor internal constructor(name: String) : KDevice<DcMotorEx>(name) {
 
     companion object {
         private var iter = 0
-        private const val VOLTAGE_CONSTANT = 12.0
+        private var VOLTAGE_CONSTANT = 12.0
         internal var lastVoltageRead = Double.NaN
 
         internal fun updatePriorityIter() {
             iter++
+        }
+
+        fun setVoltageConstant(x: Double) {
+            VOLTAGE_CONSTANT = x
         }
     }
 }

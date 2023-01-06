@@ -15,8 +15,7 @@ import com.qualcomm.robotcore.hardware.VoltageSensor
 import com.qualcomm.robotcore.util.ElapsedTime
 
 /**
- * The template opmode for utilizing koawalib. Iterative OpMode's init, init loop, start, and loop functions have been
- * implemented with mInit(), mInitLoop(), mStart(), mLoop(), mStop()
+ * The template opmode for utilizing koawalib
  */
 abstract class KOpMode(
     private val photonEnabled: Boolean = false,
@@ -52,6 +51,7 @@ abstract class KOpMode(
             hubs.forEach { it.bulkCachingMode = LynxModule.BulkCachingMode.MANUAL }
         }
         voltageSensor = hardwareMap.voltageSensor.iterator().next()
+        KMotor.lastVoltageRead = voltageSensor.voltage
     }
 
     private fun setup() {
@@ -66,7 +66,6 @@ abstract class KOpMode(
         + LoopCmd(gunner::periodic).withName("gunner gamepad periodic")
         + LoopCmd(::handleBulkCaching).withName("clear bulk data periodic")
         + LoopCmd(::handleLoopMsTelemetry).withName("loop ms telemetry periodic")
-//        + LoopCmd({ KMotor.lastVoltageRead = voltageSensor.voltage }).withName("voltage sensor periodic")
         + LoopCmd(KMotor::updatePriorityIter).withName("motor priority periodic")
         Logger.logInfo("periodics scheduled")
     }
