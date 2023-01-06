@@ -6,6 +6,7 @@ import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.util.Periodic
 
 abstract class Subsystem : Periodic {
+    val name: String get() = this.javaClass.simpleName
     /**
      * Set the default command of a subsystem. Default commands run when no other command requires the specified subsystem
      * Note: default commands must not end
@@ -20,8 +21,6 @@ abstract class Subsystem : Periodic {
             field = value
         }
 
-    override fun periodic() {}
-
     fun register() {
         KScheduler.registerSubsystem(this)
     }
@@ -30,7 +29,7 @@ abstract class Subsystem : Periodic {
         KScheduler.unregisterSubsystem(this)
     }
 
-    val name: String get() = this.javaClass.simpleName
+    override fun periodic() {}
 
     init {
         register()
