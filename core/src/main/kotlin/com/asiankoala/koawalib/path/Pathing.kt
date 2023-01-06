@@ -147,6 +147,7 @@ class Arc(
 // r'(s) = r'(t(s)) * t'(s)
 // r''(s) = r''(t(s)) * t'(s) * t'(s) + r'(t(s)) * t''(s)
 // r''(s) = r''(t(s)) * t'(s)^2 + r'(t(s)) * t''(s)
+// r'''(s) = r'''(t(s)) * t'(s)^3 + 3 * t'(s) * t''(s) * r''(t(s)) + t'''(s) * r'(t(s))
 // s(t) = 0 -> t int |r'(u)| du
 // s' = ||r'||
 // now to find s'', we know d/dt ||v|| = (v dot v') / |v|
@@ -183,6 +184,13 @@ interface SmoothCurve {
         return when (n) {
             1 -> rt(t, 1).norm
             2 -> (rt(t, 1) dot rt(t, 2)) / rt(t, 1).norm
+            3 -> {
+                val num = rt(t, 1) dot rt(t, 2)
+                val numDeriv = rt(t, 2).norm.pow(2) + (rt(t, 1) dot rt(t, 2))
+                val denom = rt(t, 1).norm
+                val denomDeriv = dsdt(t, 2)
+                (numDeriv * denom - num * denomDeriv) / denomDeriv.pow(3)
+            }
             else -> throw Exception("im not implementing any more derivatives")
         }
     }
@@ -191,25 +199,18 @@ interface SmoothCurve {
         return when (n) {
             1 -> 1.0 / dsdt(t)
             2 -> -dsdt(t, 2) / dsdt(t).pow(3)
-            else -> throw Exception("im not implementing any more derivatives")
-        }
-    }
-
-    private fun rs(s: Double, n: Int = 0): Vector {
-        val t = invArc(s)
-        return when (n) {
-            0 -> rt(t)
-            1 -> rt(t, 1).unit
-            2 -> rt(t, 2) * dtds(t).pow(2) + rt(t, 1) * dtds(t, 2)
+            3 -> (3 * dsdt(t, 2).pow(2) - dsdt(t, 3) * dsdt(t)) / dsdt(t).pow(4)
             else -> throw Exception("im not implementing any more derivatives")
         }
     }
 
     operator fun get(s: Double, n: Int = 0): Vector {
+        val t = invArc(s)
         return when (n) {
-            0 -> rs(s)
-            1 -> rs(s, 1)
-            2 -> rs(s, 2)
+            0 -> rt(t)
+            1 -> rt(t, 1).unit
+            2 -> rt(t, 2) * dtds(t).pow(2) + rt(t, 1) * dtds(t, 2)
+            3 -> rt(t, 1) * dtds(t, 3) + (rt(t, 3) * dtds(t).pow(2) + rt(t, 2) * 3.0 * dtds(t, 2))
             else -> throw Exception("im not implementing any more derivatives")
         }
     }
