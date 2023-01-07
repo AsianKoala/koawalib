@@ -20,16 +20,14 @@ import com.qualcomm.robotcore.util.ElapsedTime
 abstract class KOpMode(
     private val photonEnabled: Boolean = false,
 ) : LinearOpMode() {
-    var opModeState = OpModeState.INIT
-        private set
-
-    protected val driver: KGamepad by lazy { KGamepad(gamepad1) }
-    protected val gunner: KGamepad by lazy { KGamepad(gamepad2) }
-
     private var opModeTimer = ElapsedTime()
     private var loopTimer = ElapsedTime()
     private lateinit var hubs: List<LynxModule>
     private lateinit var voltageSensor: VoltageSensor
+    var opModeState = OpModeState.INIT
+        private set
+    protected val driver: KGamepad by lazy { KGamepad(gamepad1) }
+    protected val gunner: KGamepad by lazy { KGamepad(gamepad2) }
 
     private fun setupLib() {
         KScheduler.stateReceiver = { opModeState }
@@ -37,6 +35,7 @@ abstract class KOpMode(
         Logger.telemetry = telemetry
         KScheduler.resetScheduler()
         Logger.addWarningCountCommand()
+        if(!Logger.config.isTelemetryEnabled) Logger.logInfo("Telemetry disabled")
     }
 
     private fun setupHardware() {
@@ -92,15 +91,6 @@ abstract class KOpMode(
         }
     }
 
-    private fun checkIfTelemetryNeeded() {
-        if (!Logger.config.isTelemetryEnabled) {
-            telemetry.msTransmissionInterval = 100000
-            Logger.logInfo("Telemetry disabled")
-        } else {
-            telemetry.msTransmissionInterval = 500
-        }
-    }
-
     private val mainStateMachine: StateMachine<OpModeState> = StateMachineBuilder<OpModeState>()
         .universal(KScheduler::update)
         .universal(Logger::update)
@@ -112,7 +102,6 @@ abstract class KOpMode(
         .onEnter { Logger.logInfo("fully initialized, entering init loop") }
         .transition { true }
         .state(OpModeState.INIT_LOOP)
-        .onEnter(::checkIfTelemetryNeeded)
         .loop(::mInitLoop)
         .transition(::isStarted)
         .state(OpModeState.START)
