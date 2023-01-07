@@ -3,6 +3,7 @@ package com.asiankoala.koawalib.hardware.sensor
 import com.asiankoala.koawalib.hardware.KDevice
 import com.asiankoala.koawalib.hardware.sensor.IMUUtil.remapAxes
 import com.asiankoala.koawalib.logger.Logger
+import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.angleWrap
 import com.asiankoala.koawalib.math.d
 import com.asiankoala.koawalib.util.Clock
@@ -13,75 +14,41 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation
 
 /**
- * koawalib's IMU implementation with init offset and velocity calc for all 3 axis
+ * IMU wrapper with offset functionality
  * Must call periodic() to poll the imu
  */
 @Suppress("unused")
-class KIMU(name: String, axesOrder: AxesOrder, axesSigns: AxesSigns) : KDevice<BNO055IMUImpl>(name), Periodic {
+class KIMU(
+    name: String,
+    zOffset: Double,
+    axesOrder: AxesOrder,
+    axesSigns: AxesSigns
+) : KDevice<BNO055IMUImpl>(name), Periodic {
     private val headingOffset: Double
     private val rollOffset: Double
     private val pitchOffset: Double
 
-    private var isReadFresh = false
-    private var lastUpdateTime = Clock.seconds
     private var lastHeading = 0.0
     private var lastPitch = 0.0
     private var lastRoll = 0.0
-    private var _heading = 0.0
-    private var _pitch = 0.0
-    private var _roll = 0.0
-    var headingDelta = 0.0
-        private set
-    var pitchDelta = 0.0
-        private set
-    var rollDelta = 0.0
-        private set
-    var _headingVel = 0.0
-        private set
-    var _pitchVel = 0.0
-        private set
-    var _rollVel = 0.0
-        private set
 
-    val heading get() = (_heading - headingOffset).angleWrap
-    val pitch get() = (_pitch - pitchOffset).angleWrap
-    val roll get() = (_roll - rollOffset).angleWrap
+    val heading get() = (lastHeading - headingOffset).angleWrap
+    val pitch get() = (lastPitch - pitchOffset).angleWrap
+    val roll get() = (lastRoll - rollOffset).angleWrap
 
-    private var lastAngularOrientation: Orientation = device.angularOrientation
-        private set(value) {
-            _heading = value.firstAngle.d
-            _pitch = value.secondAngle.d
-            _roll = value.thirdAngle.d
-
-            headingDelta = (_heading - lastHeading).angleWrap
-            pitchDelta = (_pitch - lastPitch).angleWrap
-            rollDelta = (_roll - lastRoll).angleWrap
-
-            val currTime = Clock.seconds
-            val dt = currTime - lastUpdateTime
-            _headingVel = (_heading - lastHeading) / dt
-            _pitchVel = (_pitch - lastPitch) / dt
-            _rollVel = (_roll - lastRoll) / dt
-
-            lastUpdateTime = currTime
-            lastHeading = _heading
-            lastPitch = _pitch
-            lastRoll = _roll
-
-            field = value
-        }
-
-        get() {
-            if (!isReadFresh) {
-                Logger.logWarning("IMU not reading fresh updates")
-            }
-            isReadFresh = false
-            return field
-        }
+    var headingVel = 0.0; private set
+    var pitchVel = 0.0; private set
+    var rollVel = 0.0; private set
 
     override fun periodic() {
-        isReadFresh = true
-        lastAngularOrientation = device.angularOrientation
+        val angles = device.angularOrientation
+        val vels = device.angularVelocity
+        lastHeading = angles.firstAngle.d
+        lastPitch = angles.secondAngle.d
+        lastRoll = angles.thirdAngle.d
+        headingVel = vels.zRotationRate.d
+        pitchVel = vels.xRotationRate.d
+        rollVel = vels.yRotationRate.d
     }
 
     init {
@@ -92,7 +59,7 @@ class KIMU(name: String, axesOrder: AxesOrder, axesSigns: AxesSigns) : KDevice<B
         remapAxes(device, axesOrder, axesSigns)
 
         val orientation = device.angularOrientation
-        headingOffset = orientation.firstAngle.d
+        headingOffset = orientation.firstAngle.d + zOffset
         rollOffset = orientation.secondAngle.d
         pitchOffset = orientation.thirdAngle.d
     }

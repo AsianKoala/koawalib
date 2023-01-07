@@ -57,12 +57,18 @@ class MotorFactory(name: String) {
             return this
         }
 
+    /**
+     * Lower the priority of the motor, updating it 3x slower than the control loop
+     */
     val lowPriority: MotorFactory
         get() {
             instance.priority = KMotor.Priority.LOW
             return this
         }
 
+    /**
+     * Incrase the priority of the motor, updating it at normal speed
+     */
     val highPriority: MotorFactory
         get() {
             instance.priority = KMotor.Priority.HIGH
@@ -88,6 +94,17 @@ class MotorFactory(name: String) {
     fun createEncoder(
         encoderFactory: EncoderFactory
     ) = pairEncoder(instance, encoderFactory)
+
+
+    /**
+     * Add a static feedforward term to the motor. This is included in motor power calculatiosn
+     * regardless of motor mode (e.g. a motor with [MotorControlModes.OPEN_LOOP] with still
+     * calculate static feedforward). Used to deal with motor problems.
+     */
+    fun withStaticFeedforward(ks: Double): MotorFactory {
+        instance.ks = ks
+        return this
+    }
 
     /**
      * Enable position PID control in the motor
@@ -141,11 +158,6 @@ class MotorFactory(name: String) {
             allowedPositionError,
             DisabledPosition(disabledPosition)
         )
-        return this
-    }
-
-    fun withStaticFeedforward(ks: Double): MotorFactory {
-        instance.ks = ks
         return this
     }
 

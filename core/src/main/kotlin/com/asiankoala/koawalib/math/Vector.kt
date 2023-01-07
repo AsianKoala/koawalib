@@ -7,8 +7,8 @@ import kotlin.math.sin
 
 /**
  * Represents 2D Vectors
- * @param[x] x value. Default to 0
- * @param[y] y value. Default to 0
+ * @param[x] x value
+ * @param[y] y value
  */
 data class Vector(
     val x: Double = 0.0,

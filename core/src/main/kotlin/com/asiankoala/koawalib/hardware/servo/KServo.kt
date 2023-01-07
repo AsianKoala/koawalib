@@ -23,14 +23,13 @@ class KServo(name: String) : KDevice<Servo>(name) {
         }
 
     /**
-     * Reverses the servo
-     * Returns a reversed servo for easy builder functionality
+     * Builder function to reverse the servo
+     * TODO: might remove this since you can just .apply {} instead?
      */
-    val reverse: KServo
-        get() {
-            direction = Servo.Direction.REVERSE
-            return this
-        }
+    fun reverse(): KServo {
+        direction = Servo.Direction.REVERSE
+        return this
+    }
 
     /**
      * Builder function to set the initialize position of the servo
