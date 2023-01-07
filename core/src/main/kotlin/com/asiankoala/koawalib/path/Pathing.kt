@@ -5,22 +5,18 @@ import org.ejml.simple.SimpleMatrix
 import kotlin.math.*
 
 /*
-sources i used to create my path generation system:
--------------------------------------------------
-
 *************************THE GOAT PAPERS ****************************
 https://people.cs.clemson.edu/~dhouse/courses/405/notes/splines.pdf
-http://www2.informatik.uni-freiburg.de/~lau/students/Sprunk2008.pdf
-basically wrote the entirety of my path generation system
 ********************************************************************
 
-other great resources:
+other resources i used:
 https://pomax.github.io/bezierinfo/#arclength (amazing primer on bezier curves)
 https://www.youtube.com/watch?v=unWguclP-Ds&list=PLC8FC40C714F5E60F&index=2
 https://github.com/GrappleRobotics/Pathfinder/tree/master/Pathfinder/src/include/grpl/pf/path
 https://math.stackexchange.com/questions/93496/point-projection-on-curve
 https://www.youtube.com/watch?v=W7S94pq5Xuo
 https://math.stackexchange.com/questions/2983445/unit-vector-differentiation
+http://www2.informatik.uni-freiburg.de/~lau/students/Sprunk2008.pdf
 of course, credit given to rr for the original inspiration to make my own path generation system
  */
 

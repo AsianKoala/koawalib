@@ -5,7 +5,14 @@ import com.asiankoala.koawalib.hardware.sensor.KIMU
 import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.math.Pose
 
-// TODO: find what was causing so much drift
+/**
+ * Standard three wheel localizer
+ * Offets are assuming the robot is placed at (0,0) facing 0 degrees.
+ * @param[parEnc] Parallel encoder
+ * @param[perpEnc] Perp encoder
+ * @param[PARALLEL_OFFSET] Y offset of the parallel odo pod from (0,0)
+ * @param[PERP_OFFSET] X offset of the perp odo pod from (0,0)
+ */
 class KTwoWheelOdometry(
     private val parEnc: KEncoder,
     private val perpEnc: KEncoder,

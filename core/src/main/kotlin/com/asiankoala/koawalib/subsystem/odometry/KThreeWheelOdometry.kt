@@ -5,6 +5,16 @@ import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.math.Pose
 import kotlin.math.absoluteValue
 
+/**
+ * Standard three wheel localizer
+ * Offets are assuming the robot is placed at (0,0) facing 0 degrees.
+ * @param[leftEnc] Left encoder
+ * @param[rightEnc] Right encoder
+ * @param[perpEnc] Perp encoder
+ * @param[LEFT_OFFSET] Y offset of the left odo pod from (0,0)
+ * @param[RIGHT_OFFSET] Y offset of the right odo pod from (0,0)
+ * @param[PERP_OFFSET] X offset of the perp odo pod from (0,0)
+ */
 class KThreeWheelOdometry(
     private val leftEnc: KEncoder,
     private val rightEnc: KEncoder,
@@ -14,6 +24,11 @@ class KThreeWheelOdometry(
     private val PERP_OFFSET: Double,
     startPose: Pose
 ) : Odometry(startPose) {
+    /**
+     * Optional constructor. Uses [TRACK_WIDTH] to calculate [LEFT_OFFSET] and [RIGHT_OFFSET].
+     * Assumes that the parallel pods are dispersed evenly.
+     * @param[TRACK_WIDTH] Distance betwee the parallel odo pods.
+     */
     constructor(
         leftEnc: KEncoder,
         rightEnc: KEncoder,

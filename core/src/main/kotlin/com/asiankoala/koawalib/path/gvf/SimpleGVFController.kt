@@ -48,7 +48,7 @@ class SimpleGVFController(
         val normal = tangent.rotate(PI / 2.0)
         val displacementVec = path[s].vec - pose.vec
         val error = displacementVec.norm * (displacementVec cross tangent).sign
-        return tangent - normal * kN * errorMap.invoke(error)
+        return (tangent - normal * kN * errorMap.invoke(error)).unit
     }
 
     private fun headingControl(): Pair<Double, Double> {
