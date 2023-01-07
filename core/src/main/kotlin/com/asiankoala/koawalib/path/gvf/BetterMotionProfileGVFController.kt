@@ -53,8 +53,8 @@ class BetterMotionProfileGVFController(
     override var s: Double = 0.0
     override val isFinished: Boolean
         get() = path.length - s < epsilon &&
-                drive.pose.vec.dist(path.end.vec) < epsilon &&
-                headingError.absoluteValue < thetaEpsilon
+            drive.pose.vec.dist(path.end.vec) < epsilon &&
+            headingError.absoluteValue < thetaEpsilon
 
     private fun tripleProduct(a: Vector, b: Vector, c: Vector) = b * (a dot c) - c * (a dot b)
 

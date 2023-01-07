@@ -29,4 +29,4 @@ val Double.angleWrap: Double
         return wrapped
     }
 
-fun nonZeroSign(x: Double) = if(x >= 0.0) 1.0 else -1.0
+fun nonZeroSign(x: Double) = if (x >= 0.0) 1.0 else -1.0

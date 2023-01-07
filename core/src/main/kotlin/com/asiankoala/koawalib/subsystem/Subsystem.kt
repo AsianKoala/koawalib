@@ -13,10 +13,7 @@ abstract class Subsystem : Periodic {
      */
     var defaultCommand: Cmd? = null
         set(value) {
-            if (value == null) return
-            if (value.requirements.size != 1 || this !in value.requirements) {
-                throw Exception("command $name: default commands must require only subsystem $name")
-            }
+            require(value != null && value.requirements.size == 1 && this in value.requirements)
             Logger.logInfo("set default command of $name to $value")
             field = value
         }

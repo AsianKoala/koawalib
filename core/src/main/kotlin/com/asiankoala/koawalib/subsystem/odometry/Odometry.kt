@@ -31,15 +31,17 @@ abstract class Odometry(
         Vector(s * v.x - c * v.y, c * v.x + s * v.y)
 
     protected fun exp(global: Pose, inc: Pose): Pose {
-        val u = inc.heading + nonZeroSign( inc.heading.sign) * EPSILON
+        val u = inc.heading + nonZeroSign(inc.heading.sign) * EPSILON
         val s = sin(u) / u
         val c = (1.0 - cos(u)) / u
         val trans = rot(inc.vec, s, c)
         val theta = global.heading + inc.heading
         val delta = trans.rotate(theta)
-        prev.add(prev.lastOrNull()?.let {
-            TimePose(Pose(it.pose.vec + trans, it.pose.heading + inc.heading))
-        } ?: TimePose(global))
+        prev.add(
+            prev.lastOrNull()?.let {
+                TimePose(Pose(it.pose.vec + trans, it.pose.heading + inc.heading))
+            } ?: TimePose(global)
+        )
         return Pose(global.vec + delta, theta)
     }
 }

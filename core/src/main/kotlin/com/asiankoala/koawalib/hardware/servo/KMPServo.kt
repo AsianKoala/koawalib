@@ -27,8 +27,8 @@ class KMPServo(
             }
         }
 
-    val isAtTarget get() = (target - setpoint).absoluteValue < epsilon
-            && timer.seconds() > (profile?.duration ?: -1.0)
+    val isAtTarget get() = (target - setpoint).absoluteValue < epsilon &&
+        timer.seconds() > (profile?.duration ?: -1.0)
 
     fun startAt(startPos: Double): KMPServo {
         setpoint = startPos
@@ -53,7 +53,7 @@ class KMPServo(
     }
 
     override fun periodic() {
-        if(!isAtTarget) {
+        if (!isAtTarget) {
             profile?.let {
                 setpoint = it[timer.seconds()].x
             }
