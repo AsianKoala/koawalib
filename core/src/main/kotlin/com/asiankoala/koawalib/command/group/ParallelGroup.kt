@@ -4,44 +4,36 @@ import com.asiankoala.koawalib.command.commands.Cmd
 import com.asiankoala.koawalib.util.internal.disjoint
 
 // todo: rework this class its too convoluted
-open class ParallelGroup(private val endCond: (Map<Cmd, Boolean>) -> Boolean = { !it.containsValue(true) }, vararg cmds: Cmd) : Cmd(), Group {
+open class ParallelGroup(
+    private val endCond: (Map<Cmd, Boolean>) -> Boolean = { !it.containsValue(true) },
+    vararg cmds: Cmd
+) : Cmd(), Group {
     constructor(vararg commands: Cmd) : this(cmds = commands)
-
     private val cmdMap = HashMap<Cmd, Boolean>()
 
     final override fun addCommands(vararg cmds: Cmd) {
-        if (cmdMap.containsValue(true)) {
-            throw IllegalStateException("Commands cannot be added to a CommandGroup while the group is running")
-        }
-
         cmds.forEach {
-            if (!(it.requirements disjoint requirements)) {
-                throw IllegalStateException("Multiple commands in a parallel group cannot require the same subsystems")
-            }
-
+            require(it.requirements disjoint requirements)
             cmdMap[it] = false
             requirements.addAll(it.requirements)
         }
     }
 
-    override val currentCmdNames: List<String>
-        get() = cmdMap.keys.map { it.name }
-
     override fun initialize() {
-        for (entry in cmdMap.entries) {
-            entry.key.initialize()
-            entry.setValue(true)
+        cmdMap.entries.forEach {
+            it.key.initialize()
+            it.setValue(true)
         }
     }
 
     override fun execute() {
-        for (entry in cmdMap.entries) {
-            if (!entry.value) continue
-            val cmd = entry.key
+        cmdMap.entries.forEach {
+            if (!it.value) return@forEach
+            val cmd = it.key
             cmd.execute()
             if (cmd.isFinished) {
                 cmd.end()
-                entry.setValue(false)
+                it.setValue(false)
             }
         }
     }

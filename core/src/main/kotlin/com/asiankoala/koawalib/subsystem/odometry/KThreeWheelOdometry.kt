@@ -14,6 +14,23 @@ class KThreeWheelOdometry(
     private val PERP_OFFSET: Double,
     startPose: Pose
 ) : Odometry(startPose) {
+    constructor(
+        leftEnc: KEncoder,
+        rightEnc: KEncoder,
+        perpEnc: KEncoder,
+        TRACK_WIDTH: Double,
+        PERP_OFFSET: Double,
+        startPose: Pose
+    ) : this(
+        leftEnc,
+        rightEnc,
+        perpEnc,
+        TRACK_WIDTH / 2.0,
+        -TRACK_WIDTH / 2.0,
+        PERP_OFFSET,
+        startPose
+    )
+
     private var encoders = listOf(leftEnc, rightEnc, perpEnc)
     private val radius2 = LEFT_OFFSET - RIGHT_OFFSET
     private var accumulatedLeftTheta = 0.0

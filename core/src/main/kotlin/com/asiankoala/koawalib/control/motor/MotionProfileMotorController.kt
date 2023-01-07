@@ -43,7 +43,6 @@ internal class MotionProfileMotorController(
         }
 
         output = controller.update(currentState.x, currentState.v) + ff.calc(currentState.x)
-
         if (disabledPosition.shouldDisable(targetState.x, currentState.x, allowedPositionError)) {
             output = 0.0
             Logger.addTelemetryLine("controller disabled")

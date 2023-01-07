@@ -6,7 +6,6 @@ import com.asiankoala.koawalib.math.angleWrap
 import com.asiankoala.koawalib.math.degrees
 import com.asiankoala.koawalib.path.Path
 import com.asiankoala.koawalib.subsystem.drive.KMecanumOdoDrive
-import com.asiankoala.koawalib.util.Speeds
 import kotlin.math.PI
 import kotlin.math.absoluteValue
 import kotlin.math.min
@@ -67,9 +66,7 @@ class SimpleGVFController(
         s = path.project(pose.vec, s)
         val headingResult = headingControl()
         val vectorResult = vectorControl(calcGVF())
-        val res = Speeds()
-        res.setFieldCentric(Pose(vectorResult, headingResult.first))
-        drive.powers = res.getRobotCentric(pose.heading)
+        drive.powers = Pose(vectorResult.rotate(-pose.heading), headingResult.first)
     }
 
     init {

@@ -1,6 +1,5 @@
 package com.asiankoala.koawalib.control.motor
 
-import com.asiankoala.koawalib.math.cos
 import com.asiankoala.koawalib.math.radians
 import kotlin.math.cos
 

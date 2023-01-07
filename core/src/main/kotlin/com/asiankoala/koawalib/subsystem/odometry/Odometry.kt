@@ -2,7 +2,6 @@ package com.asiankoala.koawalib.subsystem.odometry
 
 import com.asiankoala.koawalib.math.*
 import com.asiankoala.koawalib.subsystem.Subsystem
-import com.asiankoala.koawalib.util.Speeds
 import kotlin.math.*
 
 abstract class Odometry(
@@ -27,24 +26,20 @@ abstract class Odometry(
             val angularVel = (curr.pose.heading - old.pose.heading) * (1 / scalar)
             return Pose(dirVel, angularVel.angleWrap)
         }
+
     private fun rot(v: Vector, s: Double, c: Double) =
         Vector(s * v.x - c * v.y, c * v.x + s * v.y)
 
     protected fun exp(global: Pose, inc: Pose): Pose {
-        val u = inc.heading + inc.heading.sign * EPSILON
+        val u = inc.heading + nonZeroSign( inc.heading.sign) * EPSILON
         val s = sin(u) / u
         val c = (1.0 - cos(u)) / u
         val trans = rot(inc.vec, s, c)
         val theta = global.heading + inc.heading
-        val delta = rot(trans, sin(theta), cos(theta))
+        val delta = trans.rotate(theta)
         prev.add(prev.lastOrNull()?.let {
             TimePose(Pose(it.pose.vec + trans, it.pose.heading + inc.heading))
         } ?: TimePose(global))
         return Pose(global.vec + delta, theta)
-    }
-
-    companion object {
-        var lastPose = Pose()
-            private set
     }
 }

@@ -28,3 +28,5 @@ val Double.angleWrap: Double
         wrapped = (wrapped + TAU) % TAU
         return wrapped
     }
+
+fun nonZeroSign(x: Double) = if(x >= 0.0) 1.0 else -1.0

@@ -6,7 +6,7 @@ import kotlin.math.absoluteValue
 
 internal class VelocityMotorController(
     pid: PIDGains,
-    var kF: Double,
+    private var kF: Double,
     private val allowedVelocityError: Double,
 ) : MotorController(pid, FFGains()) {
     override fun setTarget(requestedState: MotionState) {

@@ -12,15 +12,9 @@ open class SequentialGroup(vararg cmds: Cmd) : Cmd(), Group {
     private var idx = -1
 
     final override fun addCommands(vararg cmds: Cmd) {
-        assert(idx == -1) { "Commands cannot be added to a CommandGroup while the group is running" }
+        require(idx == -1)
         this.cmds.addAll(cmds)
     }
-
-    override val currentCmdNames: List<String>
-        get() {
-            if (idx !in cmds.indices) return listOf("none")
-            return listOf(cmds[idx].name)
-        }
 
     override fun initialize() {
         idx = 0
@@ -30,7 +24,6 @@ open class SequentialGroup(vararg cmds: Cmd) : Cmd(), Group {
     override fun execute() {
         var cmd = cmds[idx]
         cmd.execute()
-        Logger.logDebug("command ${cmd.name} of group $name executed")
         if (cmd.isFinished) {
             cmd.end()
             idx++
@@ -53,6 +46,6 @@ open class SequentialGroup(vararg cmds: Cmd) : Cmd(), Group {
 
     init {
         addCommands(*cmds)
-        if (this.cmds.isEmpty()) Logger.logWarning("sequential group $name is empty")
+        if (cmds.isEmpty()) Logger.logWarning("sequential group $name is empty")
     }
 }

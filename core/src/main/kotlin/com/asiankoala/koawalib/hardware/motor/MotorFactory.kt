@@ -104,7 +104,7 @@ class MotorFactory(name: String) {
             pidGains,
             ffGains,
             allowedPositionError,
-            disabledPosition?.let { DisabledPosition(it) } ?: DisabledPosition.NONE,
+            DisabledPosition(disabledPosition),
             bounds
         )
         return this
@@ -139,7 +139,7 @@ class MotorFactory(name: String) {
             ffGains,
             constraints,
             allowedPositionError,
-            disabledPosition?.let { DisabledPosition(it) } ?: DisabledPosition.NONE,
+            DisabledPosition(disabledPosition)
         )
         return this
     }
