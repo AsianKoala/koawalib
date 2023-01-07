@@ -95,7 +95,6 @@ class MotorFactory(name: String) {
         encoderFactory: EncoderFactory
     ) = pairEncoder(instance, encoderFactory)
 
-
     /**
      * Add a static feedforward term to the motor. This is included in motor power calculatiosn
      * regardless of motor mode (e.g. a motor with [MotorControlModes.OPEN_LOOP] with still

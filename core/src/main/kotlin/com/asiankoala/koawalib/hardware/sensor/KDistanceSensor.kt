@@ -1,7 +1,6 @@
 package com.asiankoala.koawalib.hardware.sensor
 
 import com.asiankoala.koawalib.hardware.KDevice
-import com.asiankoala.koawalib.util.Clock
 import com.asiankoala.koawalib.util.Periodic
 import com.qualcomm.robotcore.hardware.DistanceSensor
 import com.qualcomm.robotcore.util.ElapsedTime
@@ -22,7 +21,7 @@ class KDistanceSensor(
         private set
 
     override fun periodic() {
-        if(timer.milliseconds() > dtms) {
+        if (timer.milliseconds() > dtms) {
             lastRead = device.getDistance(DistanceUnit.MM)
             timer.reset()
         }

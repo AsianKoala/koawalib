@@ -2,16 +2,12 @@ package com.asiankoala.koawalib.hardware.sensor
 
 import com.asiankoala.koawalib.hardware.KDevice
 import com.asiankoala.koawalib.hardware.sensor.IMUUtil.remapAxes
-import com.asiankoala.koawalib.logger.Logger
-import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.angleWrap
 import com.asiankoala.koawalib.math.d
-import com.asiankoala.koawalib.util.Clock
 import com.asiankoala.koawalib.util.Periodic
 import com.qualcomm.hardware.bosch.BNO055IMU
 import com.qualcomm.hardware.bosch.BNO055IMUImpl
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation
 
 /**
  * IMU wrapper with offset functionality
