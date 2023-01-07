@@ -4,8 +4,8 @@ import com.qualcomm.robotcore.hardware.HardwareDevice
 import com.qualcomm.robotcore.hardware.HardwareMap
 
 /**
- * Hardware device that utilizes the hardware map
- * @param deviceName config name of device
+ * Generic wrapper for hardware devices
+ * @param[deviceName] hardware configuration name of device
  */
 @Suppress("UNCHECKED_CAST")
 abstract class KDevice<T : HardwareDevice>(val deviceName: String) {

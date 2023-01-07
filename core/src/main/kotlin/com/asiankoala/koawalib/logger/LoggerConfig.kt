@@ -1,7 +1,7 @@
 package com.asiankoala.koawalib.logger
 
 /**
- * Configures the logger
+ * Configuration for the Logger. Includes
  * @param isLogging logging any messages
  * @param isDebugging show debug logs
  * @param isDashboardEnabled send data packets to FTCDashboard
@@ -14,7 +14,9 @@ data class LoggerConfig(
     var isTelemetryEnabled: Boolean,
 ) {
     companion object {
-        // when debugging
+        /**
+         * For debagging. Enables every option in the config.
+         */
         val DEBUG_CONFIG = LoggerConfig(
             isLogging = true,
             isDebugging = true,
@@ -22,7 +24,9 @@ data class LoggerConfig(
             isTelemetryEnabled = true
         )
 
-        // in comp
+        /**
+         * For competition. Disabled all logging/telemetry.
+         */
         val COMP_CONFIG = LoggerConfig(
             isLogging = false,
             isDebugging = false,
@@ -30,7 +34,9 @@ data class LoggerConfig(
             isTelemetryEnabled = false,
         )
 
-        // for FTCDashboard
+        /**
+         * For FTCDashboard usage.
+         */
         val DASHBOARD_CONFIG = LoggerConfig(
             isLogging = true,
             isDebugging = false,
@@ -38,7 +44,9 @@ data class LoggerConfig(
             isTelemetryEnabled = true
         )
 
-        // default config
+        /**
+         * Simple config. This is the default configuration.
+         */
         val SIMPLE_CONFIG = LoggerConfig(
             isLogging = true,
             isDebugging = false,

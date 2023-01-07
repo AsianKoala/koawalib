@@ -67,7 +67,6 @@ object Logger {
 
     /**
      * Add telemetry line to phone. If config.isLoggingTelemetry, it will log the message as a debug
-     * ******NOTE***** that this ignores isLogging
      * @param message string to add
      */
     fun addTelemetryLine(message: String) {
@@ -78,8 +77,8 @@ object Logger {
 
     /**
      * Syntax sugar for [addTelemetryLine]
-     * @param message caption of data
-     * @param data data to add
+     * @param[message] caption of data
+     * @param[data] data to add
      */
     fun addTelemetryData(message: String, data: Any?) {
         addTelemetryLine("$message : $data")
@@ -87,7 +86,7 @@ object Logger {
 
     /**
      * Send a debug message to logger
-     * @param message logger message to send
+     * @param[message] logger message to send
      */
     fun logDebug(message: String) {
         if (!config.isLogging) return
@@ -97,18 +96,16 @@ object Logger {
 
     /**
      * Syntax sugar for [logDebug]
-     * @param message caption of data
-     * @param data data to add
+     * @param[message] caption of data
+     * @param[data] data to add
      */
     fun logDebug(message: String, data: Any?) {
         logDebug(getDataString(message, data))
     }
 
-    // note to neil: use logInfo on init stuff since that runs only once (obviously)
-    // logInfo shouldn't be used on repeated stuff e.g. anything that is in main loop
     /**
      * Sends an info message to logger
-     * @param message logger message to send
+     * @param[message] logger message to send
      */
     fun logInfo(message: String) {
         if (!config.isLogging) return
@@ -117,8 +114,8 @@ object Logger {
 
     /**
      * Syntax sugar for [logInfo]
-     * @param message caption of data
-     * @param data data to add
+     * @param[message] caption of data
+     * @param[data] data to add
      */
     fun logInfo(message: String, data: Any?) {
         logInfo(getDataString(message, data))
@@ -126,7 +123,7 @@ object Logger {
 
     /**
      * Sends a warning message to logger
-     * @param message logger message to send
+     * @param[message] logger message to send
      */
     fun logWarning(message: String) {
         if (!config.isLogging) return
@@ -136,8 +133,8 @@ object Logger {
 
     /**
      * Syntax sugar for [logWarning]
-     * @param message caption of data
-     * @param data data to add
+     * @param[message] caption of data
+     * @param[data] data to add
      */
     fun logWarning(message: String, data: Any?) {
         logWarning(getDataString(message, data))

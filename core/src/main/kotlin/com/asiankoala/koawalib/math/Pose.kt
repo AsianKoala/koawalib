@@ -2,17 +2,25 @@ package com.asiankoala.koawalib.math
 
 /**
  * Represents robot's position and heading
- * @param x x position
- * @param y y position
- * @param heading heading, in radians
- * @property vec vector made from [x] and [y]
+ * @param[x] x position
+ * @param[y] y position
+ * @param[heading] heading, in radians
  */
 data class Pose(
     val x: Double = 0.0,
     val y: Double = 0.0,
     val heading: Double = 0.0
 ) {
-    constructor(p: Vector, h: Double) : this(p.x, p.y, h)
+    /**
+     * Secondary constructor that takes a vector and heading
+     * @param[v] vector
+     * @param[h] heading
+     */
+    constructor(v: Vector, h: Double) : this(v.x, v.y, h)
+
+    /**
+     * This pose's position vector
+     */
     val vec get() = Vector(x, y)
 
     /**

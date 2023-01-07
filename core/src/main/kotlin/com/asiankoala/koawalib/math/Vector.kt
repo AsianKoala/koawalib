@@ -7,15 +7,26 @@ import kotlin.math.sin
 
 /**
  * Represents 2D Vectors
- * @property norm norm (magnitude) of the vector
- * @property angle angle vector makes with the x axis
+ * @param[x] x value. Default to 0
+ * @param[y] y value. Default to 0
  */
 data class Vector(
     val x: Double = 0.0,
     val y: Double = 0.0
 ) {
+    /**
+     * Magnitude of this vector
+     */
     val norm get() = hypot(x, y)
+
+    /**
+     * Angle the vector makes with the x axis
+     */
     val angle get() = atan2(y, x)
+
+    /**
+     * Unit vector
+     */
     val unit get() = this / norm
 
     infix fun dot(other: Vector): Double = other.x * this.x + other.y * this.y
@@ -36,6 +47,11 @@ data class Vector(
     override fun toString() = String.format("%.2f, %.2f", x, y)
 
     companion object {
+        /**
+         * Create a vector from polar coordinates
+         * @param[mag] Magnitude of the vector
+         * @param[angle] Angle of the vector
+         */
         fun fromPolar(mag: Double, angle: Double) = Vector(mag).rotate(angle)
     }
 }

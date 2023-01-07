@@ -5,13 +5,15 @@ import com.asiankoala.koawalib.math.epsilonNotEqual
 import com.qualcomm.robotcore.hardware.Servo
 
 /**
- * koawalib servo device
- * @property position set/get position of servo
- * @property direction direction of servo
- * @property reverse builder to reverse servo
+ * Standard Servo wrapper
+ * @param[name] hardware config name
  */
 @Suppress("unused")
 class KServo(name: String) : KDevice<Servo>(name) {
+    private var direction: Servo.Direction = Servo.Direction.FORWARD
+    /**
+     * Servo's position
+     */
     var position: Double = -1.0
         set(value) {
             if (value epsilonNotEqual field) {
@@ -19,8 +21,11 @@ class KServo(name: String) : KDevice<Servo>(name) {
                 field = value
             }
         }
-    private var direction: Servo.Direction = Servo.Direction.FORWARD
 
+    /**
+     * Reverses the servo
+     * Returns a reversed servo for easy builder functionality
+     */
     val reverse: KServo
         get() {
             direction = Servo.Direction.REVERSE
@@ -29,6 +34,7 @@ class KServo(name: String) : KDevice<Servo>(name) {
 
     /**
      * Builder function to set the initialize position of the servo
+     * TODO: might remove this since you can just .apply {} instead?
      */
     fun startAt(startPos: Double): KServo {
         position = startPos

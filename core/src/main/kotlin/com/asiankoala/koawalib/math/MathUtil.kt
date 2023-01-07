@@ -11,6 +11,12 @@ infix fun Double.epsilonNotEqual(other: Double) = (this - other).absoluteValue >
 val Double.radians get() = Math.toRadians(this)
 val Double.degrees get() = Math.toDegrees(this)
 
+/**
+ * Clamps an input value within [a,b]
+ * @param[x] input value
+ * @param[a] lower bound
+ * @param[b] upper bound
+ */
 fun clamp(x: Double, a: Double, b: Double): Double {
     return when {
         x < a -> a
@@ -22,6 +28,9 @@ fun clamp(x: Double, a: Double, b: Double): Double {
 val Int.d get() = this.toDouble()
 val Float.d get() = this.toDouble()
 
+/**
+ * Wrap an angle within [-pi,pi]
+ */
 val Double.angleWrap: Double
     get() {
         var wrapped = this % TAU
