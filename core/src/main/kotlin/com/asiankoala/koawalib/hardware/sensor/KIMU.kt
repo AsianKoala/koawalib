@@ -27,6 +27,9 @@ class KIMU(
     private var lastHeading = 0.0
     private var lastPitch = 0.0
     private var lastRoll = 0.0
+    var headingDelta = 0.0; private set
+    var pitchDelta = 0.0; private set
+    var rollDelta = 0.0; private set
 
     val heading get() = (lastHeading - headingOffset).angleWrap
     val pitch get() = (lastPitch - pitchOffset).angleWrap
@@ -39,6 +42,9 @@ class KIMU(
     override fun periodic() {
         val angles = device.angularOrientation
         val vels = device.angularVelocity
+        headingDelta = angles.firstAngle.d - lastHeading
+        lastPitch = angles.secondAngle.d - lastPitch
+        lastRoll = angles.thirdAngle.d - lastRoll
         lastHeading = angles.firstAngle.d
         lastPitch = angles.secondAngle.d
         lastRoll = angles.thirdAngle.d
