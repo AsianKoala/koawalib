@@ -12,9 +12,9 @@ import kotlin.math.sqrt
  * @param constraints constraints the profile must obey
  */
 class MotionProfile(vararg _periods: MotionPeriod, reversed: Boolean) {
-    val periods: List<MotionPeriod>
-    val startState: MotionState
-    val endState: MotionState
+    private val periods: List<MotionPeriod>
+    private val startState: MotionState
+    private val endState: MotionState
     val duration: Double
 
     operator fun get(t: Double): MotionState {

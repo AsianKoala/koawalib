@@ -18,9 +18,9 @@ import org.openftc.easyopencv.OpenCvPipeline
 class KWebcam(
     deviceName: String,
     pipeline: OpenCvPipeline,
-    private val width: Int = 800,
-    private val height: Int = 448,
-    private val orientation: OpenCvCameraRotation = OpenCvCameraRotation.UPRIGHT
+    private val width: Int,
+    private val height: Int,
+    private val orientation: OpenCvCameraRotation
 ) : KDevice<WebcamName>(deviceName) {
     private val camera: OpenCvCamera
 

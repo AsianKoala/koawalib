@@ -1,6 +1,6 @@
 package com.asiankoala.koawalib.control.controller
 
-data class Bounds(
+data class Bounds @JvmOverloads constructor(
     val lowerBound: Double? = null,
     val upperBound: Double? = null
 ) {

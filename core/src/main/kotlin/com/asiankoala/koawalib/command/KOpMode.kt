@@ -118,7 +118,7 @@ abstract class KOpMode(
         .transition { true }
         .build()
 
-    override fun runOpMode() {
+    final override fun runOpMode() {
         mainStateMachine.start()
         while (mainStateMachine.running) {
             mainStateMachine.update()

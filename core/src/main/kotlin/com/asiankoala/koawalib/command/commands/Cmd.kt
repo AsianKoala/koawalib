@@ -5,7 +5,7 @@ import com.asiankoala.koawalib.command.group.DeadlineGroup
 import com.asiankoala.koawalib.command.group.ParallelGroup
 import com.asiankoala.koawalib.command.group.RaceGroup
 import com.asiankoala.koawalib.command.group.SequentialGroup
-import com.asiankoala.koawalib.subsystem.Subsystem
+import com.asiankoala.koawalib.subsystem.KSubsystem
 
 /**
  * Commands are the basis of how koawalib interacts with the robot.
@@ -16,7 +16,7 @@ import com.asiankoala.koawalib.subsystem.Subsystem
  */
 abstract class Cmd {
     private var _name: String? = null
-    internal val requirements: MutableSet<Subsystem> = HashSet()
+    internal val requirements: MutableSet<KSubsystem> = HashSet()
 
     /**
      * Finish state of command
@@ -28,7 +28,7 @@ abstract class Cmd {
      */
     val name: String get() = _name ?: this.javaClass.simpleName
 
-    protected fun addRequirements(vararg subsystems: Subsystem) {
+    protected fun addRequirements(vararg subsystems: KSubsystem) {
         requirements.addAll(subsystems)
     }
 

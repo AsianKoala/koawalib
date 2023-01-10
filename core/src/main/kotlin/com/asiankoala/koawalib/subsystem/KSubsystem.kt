@@ -9,7 +9,7 @@ import com.asiankoala.koawalib.util.Periodic
  * Subsystems are used to interface hardware with koawalib's command-based model.
  * [KScheduler] uses subsystems to ensure that commands respect requirements
  */
-abstract class Subsystem : Periodic {
+abstract class KSubsystem : Periodic {
     val name: String get() = this.javaClass.simpleName
     /**
      * Set the default command of a subsystem.

@@ -2,7 +2,7 @@ package com.asiankoala.koawalib.command
 
 import com.asiankoala.koawalib.command.commands.*
 import com.asiankoala.koawalib.logger.Logger
-import com.asiankoala.koawalib.subsystem.Subsystem
+import com.asiankoala.koawalib.subsystem.KSubsystem
 import com.asiankoala.koawalib.util.OpModeState
 import com.asiankoala.koawalib.util.internal.disjoint
 import kotlin.collections.set
@@ -13,8 +13,8 @@ import kotlin.collections.set
  * is to schedule commands, mainly using [KScheduler.schedule]
  */
 object KScheduler {
-    private val cmds: MutableMap<Cmd, Set<Subsystem>> = LinkedHashMap()
-    private val subsystems: MutableList<Subsystem> = ArrayDeque()
+    private val cmds: MutableMap<Cmd, Set<KSubsystem>> = LinkedHashMap()
+    private val subsystems: MutableList<KSubsystem> = ArrayDeque()
     private val toSchedule: MutableList<Cmd> = ArrayDeque()
     private val toCancel: MutableList<Cmd> = ArrayDeque()
     private val allLists = listOf<MutableList<*>>(subsystems, toSchedule, toCancel)
@@ -55,7 +55,7 @@ object KScheduler {
         toSchedule.clear()
         toCancel.clear()
 
-        subsystems.forEach(Subsystem::periodic)
+        subsystems.forEach(KSubsystem::periodic)
         val toRemove = LinkedHashSet<Cmd>()
         cmds.forEach {
             val command = it.key
@@ -89,7 +89,7 @@ object KScheduler {
      * Register n subsystems
      * @param requestedSubsystems subsystems to register
      */
-    fun registerSubsystem(vararg requestedSubsystems: Subsystem) {
+    fun registerSubsystem(vararg requestedSubsystems: KSubsystem) {
         requestedSubsystems.forEach { Logger.logInfo("registered subsystem ${it.name}") }
         subsystems.addAll(requestedSubsystems.toSet())
     }
@@ -98,7 +98,7 @@ object KScheduler {
      * Unregister subsystems
      * @param requestedSubsystems subsystems to unregister
      */
-    fun unregisterSubsystem(vararg requestedSubsystems: Subsystem) {
+    fun unregisterSubsystem(vararg requestedSubsystems: KSubsystem) {
         requestedSubsystems.forEach { Logger.logInfo("unregistered subsystem ${it.name}") }
         subsystems.removeAll(requestedSubsystems.toSet())
     }

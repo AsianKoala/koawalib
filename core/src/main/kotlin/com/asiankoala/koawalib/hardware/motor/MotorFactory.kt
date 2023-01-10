@@ -108,6 +108,7 @@ class MotorFactory(name: String) {
     /**
      * Enable position PID control in the motor
      */
+    @JvmOverloads
     fun withPositionControl(
         pidGains: PIDGains,
         ffGains: FFGains,
@@ -142,6 +143,7 @@ class MotorFactory(name: String) {
     /**
      * Enable motion profile control in the motor
      */
+    @JvmOverloads
     fun withMotionProfileControl(
         pidGains: PIDGains,
         ffGains: FFGains,

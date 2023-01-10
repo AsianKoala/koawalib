@@ -1,6 +1,6 @@
 package com.asiankoala.koawalib.command.commands
 
-import com.asiankoala.koawalib.subsystem.Subsystem
+import com.asiankoala.koawalib.subsystem.KSubsystem
 
 /**
  * Command that runs once and stops
@@ -9,7 +9,7 @@ import com.asiankoala.koawalib.subsystem.Subsystem
  */
 open class InstantCmd(
     private val action: () -> Unit,
-    vararg requirements: Subsystem
+    vararg requirements: KSubsystem
 ) : Cmd() {
 
     override fun execute() {

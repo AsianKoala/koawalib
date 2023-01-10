@@ -1,18 +1,18 @@
 package com.asiankoala.koawalib.command.commands
 
-import com.asiankoala.koawalib.subsystem.Subsystem
+import com.asiankoala.koawalib.subsystem.KSubsystem
 
 @Suppress("unused")
 open class LoopUntilCmd(
     private val action: () -> Unit,
     private val endCondition: () -> Boolean,
-    vararg requirements: Subsystem
+    vararg requirements: KSubsystem
 ) : Cmd() {
-    override fun execute() {
+    final override fun execute() {
         action.invoke()
     }
 
-    override val isFinished: Boolean
+    final override val isFinished: Boolean
         get() = endCondition.invoke()
 
     init {

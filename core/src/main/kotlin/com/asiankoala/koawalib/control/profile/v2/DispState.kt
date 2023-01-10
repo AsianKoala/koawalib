@@ -3,7 +3,7 @@ package com.asiankoala.koawalib.control.profile.v2
 import kotlin.math.sqrt
 
 // monotonically increasing, starting at 0
-data class DispState(
+data class DispState @JvmOverloads constructor(
     val x: Double = 0.0,
     val v: Double = 0.0,
     val a: Double = 0.0

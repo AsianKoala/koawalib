@@ -2,7 +2,7 @@ package com.asiankoala.koawalib.subsystem.drive
 
 import com.asiankoala.koawalib.hardware.motor.KMotor
 import com.asiankoala.koawalib.math.Pose
-import com.asiankoala.koawalib.subsystem.Subsystem
+import com.asiankoala.koawalib.subsystem.KSubsystem
 import kotlin.math.absoluteValue
 
 open class KMecanumDrive(
@@ -10,7 +10,7 @@ open class KMecanumDrive(
     bl: KMotor,
     br: KMotor,
     fr: KMotor
-) : Subsystem() {
+) : KSubsystem() {
     val motors = listOf(fl, bl, br, fr)
 
     var powers = Pose()

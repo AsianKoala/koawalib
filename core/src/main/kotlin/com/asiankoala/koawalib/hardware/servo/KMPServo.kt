@@ -17,7 +17,7 @@ import kotlin.math.absoluteValue
  * @param[constraints] motion constraints that generate the profile
  * @param[epsilon] allowed error when the servo will stop moving
  */
-class KMPServo(
+class KMPServo @JvmOverloads constructor(
     name: String,
     private val constraints: MotionConstraints,
     private val epsilon: Double = 0.01
@@ -26,8 +26,8 @@ class KMPServo(
     private var target = -1.0
     private var profile: MotionProfile? = null
     private val timer = ElapsedTime()
-    private var setpoint: Double = -1.0
-        set(value) {
+    var setpoint: Double = -1.0
+        private set(value) {
             if (value epsilonNotEqual field) {
                 device.position = value
                 field = value

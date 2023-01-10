@@ -9,7 +9,7 @@ import kotlin.math.pow
  * @param v velocity of system
  * @param a acceleration of system
  */
-data class MotionState(
+data class MotionState @JvmOverloads constructor(
     val x: Double = 0.0,
     val v: Double = 0.0,
     val a: Double = 0.0

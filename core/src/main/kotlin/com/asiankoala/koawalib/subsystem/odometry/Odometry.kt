@@ -1,12 +1,12 @@
 package com.asiankoala.koawalib.subsystem.odometry
 
 import com.asiankoala.koawalib.math.*
-import com.asiankoala.koawalib.subsystem.Subsystem
+import com.asiankoala.koawalib.subsystem.KSubsystem
 import kotlin.math.*
 
 abstract class Odometry(
     protected var startPose: Pose,
-) : Subsystem() {
+) : KSubsystem() {
     internal data class TimePose(val pose: Pose, val timestamp: Long = System.currentTimeMillis())
 
     abstract fun updateTelemetry()

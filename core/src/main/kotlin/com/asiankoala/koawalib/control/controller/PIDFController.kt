@@ -6,7 +6,7 @@ import kotlin.math.abs
 import kotlin.math.sign
 
 // this is the old rr PIDFController that got removed in RR2
-class PIDFController constructor(
+class PIDFController @JvmOverloads constructor(
     private val pid: PIDGains,
     private val kV: Double = 0.0,
     private val kA: Double = 0.0,

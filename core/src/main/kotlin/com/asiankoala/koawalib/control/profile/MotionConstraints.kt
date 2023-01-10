@@ -12,9 +12,5 @@ data class MotionConstraints(
     val accel: Double,
     private val rawDeccel: Double = accel
 ) {
-    val deccel: Double
-
-    init {
-        deccel = -rawDeccel
-    }
+    val deccel: Double = -rawDeccel
 }

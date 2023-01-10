@@ -1,5 +1,6 @@
 package com.asiankoala.koawalib.path
 
+import com.asiankoala.koawalib.command.commands.Cmd
 import com.asiankoala.koawalib.math.*
 import org.ejml.simple.SimpleMatrix
 import kotlin.math.*
@@ -405,4 +406,4 @@ class HermitePath(
     }
 }
 
-data class ProjQuery(val v: Vector, val t: Double? = null)
+data class ProjQuery @JvmOverloads constructor(val cmd: Cmd, val v: Vector, val t: Double? = null)

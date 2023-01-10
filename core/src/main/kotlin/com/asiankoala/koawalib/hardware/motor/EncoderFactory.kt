@@ -21,6 +21,7 @@ class EncoderFactory(
             return this
         }
 
+    @JvmOverloads
     fun zero(x: Double = 0.0): EncoderFactory {
         zeroPos = x
         return this

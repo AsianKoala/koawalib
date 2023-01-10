@@ -1,6 +1,6 @@
 package com.asiankoala.koawalib.command.commands
 
-import com.asiankoala.koawalib.subsystem.Subsystem
+import com.asiankoala.koawalib.subsystem.KSubsystem
 
 /**
  * Command that runs infinitely
@@ -10,5 +10,5 @@ import com.asiankoala.koawalib.subsystem.Subsystem
  */
 class LoopCmd(
     private val action: () -> Unit,
-    vararg requirements: Subsystem
+    vararg requirements: KSubsystem
 ) : LoopUntilCmd(action, { false }, *requirements)

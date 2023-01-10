@@ -7,7 +7,6 @@ class WatchdogCmd(
     private val toSchedule: Cmd,
     private val condition: () -> Boolean,
 ) : Cmd() {
-
     override fun execute() {
         if (condition.invoke() && KScheduler.stateReceiver.invoke() == OpModeState.LOOP) {
             toSchedule.schedule()

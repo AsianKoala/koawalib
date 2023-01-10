@@ -6,7 +6,7 @@ package com.asiankoala.koawalib.math
  * @param[y] y position
  * @param[heading] heading, in radians
  */
-data class Pose(
+data class Pose @JvmOverloads constructor(
     val x: Double = 0.0,
     val y: Double = 0.0,
     val heading: Double = 0.0

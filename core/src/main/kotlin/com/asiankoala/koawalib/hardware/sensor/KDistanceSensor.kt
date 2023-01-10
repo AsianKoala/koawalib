@@ -11,7 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
  * @param[dtms] time between reads
  */
 @Suppress("unused")
-class KDistanceSensor(
+class KDistanceSensor @JvmOverloads constructor(
     name: String,
     private val dtms: Double = 50.0
 ) : KDevice<DistanceSensor>(name), Periodic {

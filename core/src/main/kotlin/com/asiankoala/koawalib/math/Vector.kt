@@ -10,7 +10,7 @@ import kotlin.math.sin
  * @param[x] x value
  * @param[y] y value
  */
-data class Vector(
+data class Vector @JvmOverloads constructor(
     val x: Double = 0.0,
     val y: Double = 0.0
 ) {

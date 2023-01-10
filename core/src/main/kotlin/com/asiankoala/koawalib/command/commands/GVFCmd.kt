@@ -9,7 +9,7 @@ import com.asiankoala.koawalib.subsystem.drive.KMecanumOdoDrive
 class GVFCmd(
     private val drive: KMecanumOdoDrive,
     private val controller: GVFController,
-    vararg cmds: Pair<Cmd, ProjQuery>,
+    vararg cmds: ProjQuery,
 ) : Cmd() {
     private val projCmd: Cmd? = if (cmds.isNotEmpty()) {
         val l = controller.path.length
@@ -17,10 +17,10 @@ class GVFCmd(
             *cmds
                 .map {
                     Pair(
-                        it.first,
+                        it.cmd,
                         controller.path.project(
-                            it.second.v,
-                            it.second.t?.times(l) ?: (l / 2.0)
+                            it.v,
+                            it.t?.times(l) ?: (l / 2.0)
                         )
                     )
                 }

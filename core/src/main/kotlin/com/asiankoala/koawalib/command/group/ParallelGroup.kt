@@ -3,7 +3,6 @@ package com.asiankoala.koawalib.command.group
 import com.asiankoala.koawalib.command.commands.Cmd
 import com.asiankoala.koawalib.util.internal.disjoint
 
-// todo: rework this class its too convoluted
 open class ParallelGroup(
     private val endCond: (Map<Cmd, Boolean>) -> Boolean = { !it.containsValue(true) },
     vararg cmds: Cmd

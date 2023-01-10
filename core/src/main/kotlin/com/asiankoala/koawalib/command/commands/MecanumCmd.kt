@@ -19,7 +19,7 @@ import kotlin.math.pow
  * @param leftStick left gamepad joystick
  * @param rightStick right gamepad joystick
  */
-class MecanumCmd(
+class MecanumCmd @JvmOverloads constructor(
     private val drive: KMecanumDrive,
     private val leftStick: KStick,
     private val rightStick: KStick,
