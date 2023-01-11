@@ -377,7 +377,7 @@ class HermiteSplineInterpolator(
     }
 }
 
-open class Path(val interpolator: PiecewiseSplineInterpolator) {
+open class Path(private val interpolator: PiecewiseSplineInterpolator) {
     val start get() = this[0.0]
     val end get() = this[length]
     val length get() = interpolator.length
@@ -395,15 +395,13 @@ open class Path(val interpolator: PiecewiseSplineInterpolator) {
 }
 
 class HermitePath(
-    val headingController: HeadingController,
+    private val headingController: HeadingController,
     private vararg val controlPoses: Pose
 ) : Path(HermiteSplineInterpolator(headingController, *controlPoses)) {
-    fun map(hc: HeadingController, flipFunc: (Pose) -> Pose): HermitePath {
-        return HermitePath(
-            hc,
-            *controlPoses.map(flipFunc).toTypedArray()
-        )
-    }
+    fun flip() = HermitePath(
+        headingController.flip(),
+        *controlPoses.reversed().toTypedArray()
+    )
 }
 
-data class ProjQuery @JvmOverloads constructor(val cmd: Cmd, val v: Vector, val t: Double? = null)
+data class ProjQuery(val cmd: Cmd, val t: Double)

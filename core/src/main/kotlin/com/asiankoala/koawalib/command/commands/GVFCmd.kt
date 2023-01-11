@@ -15,20 +15,11 @@ class GVFCmd(
         val l = controller.path.length
         SequentialGroup(
             *cmds
-                .map {
-                    Pair(
-                        it.cmd,
-                        controller.path.project(
-                            it.v,
-                            it.t?.times(l) ?: (l / 2.0)
-                        )
-                    )
-                }
-                .sortedBy { it.second }
+                .sortedBy { it.t }
                 .flatMap {
                     listOf(
-                        WaitUntilCmd { controller.s > it.second },
-                        it.first
+                        WaitUntilCmd { controller.s / controller.path.length > it.t },
+                        it.cmd
                     )
                 }
                 .toTypedArray()
