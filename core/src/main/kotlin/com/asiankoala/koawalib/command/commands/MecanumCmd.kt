@@ -19,8 +19,8 @@ import kotlin.math.pow
  * @param leftStick left gamepad joystick
  * @param rightStick right gamepad joystick
  */
-class MecanumCmd @JvmOverloads constructor(
-    private val drive: KMecanumDrive,
+open class MecanumCmd @JvmOverloads constructor(
+    protected val drive: KMecanumDrive,
     private val leftStick: KStick,
     private val rightStick: KStick,
     private val scalars: Pose = Pose(1.0, 1.0, 1.0),
@@ -31,7 +31,7 @@ class MecanumCmd @JvmOverloads constructor(
         return s * x * (k * abs(x).pow(3) - k + 1)
     }
 
-    private fun processPowers() = Pose(
+    protected fun processPowers() = Pose(
         joystickFunction(scalars.x, cubics.x, constants.x, leftStick.xAxis),
         joystickFunction(scalars.y, cubics.y, constants.y, -leftStick.yAxis),
         joystickFunction(scalars.heading, cubics.heading, constants.heading, -rightStick.xAxis),
