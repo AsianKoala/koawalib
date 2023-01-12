@@ -3,6 +3,7 @@ package com.asiankoala.koawalib.hardware.servo
 import com.asiankoala.koawalib.hardware.KDevice
 import com.asiankoala.koawalib.math.epsilonNotEqual
 import com.qualcomm.robotcore.hardware.CRServo
+import com.qualcomm.robotcore.hardware.DcMotorSimple
 
 /**
  * Standard CRServo wrapper
@@ -19,4 +20,8 @@ class KCRServo(name: String) : KDevice<CRServo>(name) {
                 field = value
             }
         }
+
+    fun reverse() {
+        device.direction = DcMotorSimple.Direction.REVERSE
+    }
 }
