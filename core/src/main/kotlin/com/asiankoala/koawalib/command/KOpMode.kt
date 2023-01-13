@@ -15,10 +15,11 @@ import com.qualcomm.robotcore.hardware.VoltageSensor
 import com.qualcomm.robotcore.util.ElapsedTime
 
 /**
- * The template opmode for utilizing koawalib
+ * The base opmode for utilizing koawalib
  */
-abstract class KOpMode(
+abstract class KOpMode @JvmOverloads constructor(
     private val photonEnabled: Boolean = false,
+    private val maxParallelCommands: Int = 6
 ) : LinearOpMode() {
     private var opModeTimer = ElapsedTime()
     private var loopTimer = ElapsedTime()
@@ -41,7 +42,7 @@ abstract class KOpMode(
     private fun setupHardware() {
         KDevice.hardwareMap = hardwareMap
         if (photonEnabled) {
-            PhotonCore.experimental.setMaximumParallelCommands(8)
+            PhotonCore.experimental.setMaximumParallelCommands(maxParallelCommands)
             PhotonCore.CONTROL_HUB.bulkCachingMode = LynxModule.BulkCachingMode.MANUAL
             PhotonCore.EXPANSION_HUB.bulkCachingMode = LynxModule.BulkCachingMode.MANUAL
             PhotonCore.enable()
