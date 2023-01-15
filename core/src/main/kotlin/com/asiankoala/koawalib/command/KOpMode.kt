@@ -43,8 +43,8 @@ abstract class KOpMode @JvmOverloads constructor(
         KDevice.hardwareMap = hardwareMap
         if (photonEnabled) {
             PhotonCore.experimental.setMaximumParallelCommands(maxParallelCommands)
-            PhotonCore.CONTROL_HUB.bulkCachingMode = LynxModule.BulkCachingMode.MANUAL
-            PhotonCore.EXPANSION_HUB.bulkCachingMode = LynxModule.BulkCachingMode.MANUAL
+            PhotonCore.CONTROL_HUB?.bulkCachingMode = LynxModule.BulkCachingMode.MANUAL
+            PhotonCore.EXPANSION_HUB?.bulkCachingMode = LynxModule.BulkCachingMode.MANUAL
             PhotonCore.enable()
         } else {
             hubs = hardwareMap.getAll(LynxModule::class.java)
@@ -72,8 +72,8 @@ abstract class KOpMode @JvmOverloads constructor(
 
     private fun handleBulkCaching() {
         if (photonEnabled) {
-            PhotonCore.CONTROL_HUB.clearBulkCache()
-            PhotonCore.EXPANSION_HUB.clearBulkCache()
+            PhotonCore.CONTROL_HUB?.clearBulkCache()
+            PhotonCore.EXPANSION_HUB?.clearBulkCache()
         } else {
             hubs.forEach(LynxModule::clearBulkCache)
         }
