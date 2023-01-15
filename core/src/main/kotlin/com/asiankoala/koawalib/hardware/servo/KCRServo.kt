@@ -23,5 +23,6 @@ class KCRServo(name: String) : KDevice<CRServo>(name) {
 
     fun reverse(): KCRServo {
         device.direction = DcMotorSimple.Direction.REVERSE
+        return this
     }
 }
