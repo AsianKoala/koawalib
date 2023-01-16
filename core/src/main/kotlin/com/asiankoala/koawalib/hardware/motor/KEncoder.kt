@@ -21,7 +21,6 @@ class KEncoder internal constructor(
     private val prevPos = ArrayList<Pair<Double, Double>>()
     private val prevVel = ArrayList<Pair<Double, Double>>()
     private val velStats = MovingStatistics(LOOK_BEHIND)
-    private var disabled = false
 
     val pos get() = (_pos + offset) / ticksPerUnit
     val vel get() = velStats.mean / ticksPerUnit
@@ -70,30 +69,17 @@ class KEncoder internal constructor(
     }
 
     fun update() {
-        if (!disabled) {
-            val seconds = Clock.seconds
-            _pos = motor.rawMotorPosition * multiplier
-            prevPos.add(Pair(seconds, _pos))
-            attemptVelUpdate()
-            prevVel.add(Pair(seconds, _vel))
-        } else {
-            Logger.logWarning("encoder queried when disabled")
-        }
+        val seconds = Clock.seconds
+        _pos = motor.rawMotorPosition * multiplier
+        prevPos.add(Pair(seconds, _pos))
+        attemptVelUpdate()
+        prevVel.add(Pair(seconds, _vel))
     }
 
     fun zero(newPosition: Double = 0.0): KEncoder {
         internalReset()
         offset = newPosition * ticksPerUnit - _pos
         return this
-    }
-
-    fun disable() {
-        disabled = true
-    }
-
-    fun enable() {
-        disabled = false
-        internalReset()
     }
 
     companion object {

@@ -16,25 +16,24 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple
 import kotlin.math.absoluteValue
 import kotlin.math.sign
 
-@Suppress("unused")
+//@Suppress("unused")
 class KMotor internal constructor(name: String) : KDevice<DcMotorEx>(name) {
     enum class Priority { HIGH, LOW }
     private val cmd = LoopCmd(this::update).withName("$name motor")
     private var powerMultiplier = 1.0
-    private var disabled = false
     private var lastUpdateIter = 0
     internal var controller: MotorController? = null
+    internal var encoder: KEncoder? = null
     internal var mode = MotorControlModes.OPEN_LOOP
     internal var encoderCreated = false
     internal var isVoltageCorrected = false
     internal val rawMotorPosition get() = device.currentPosition.d
     internal val rawMotorVelocity get() = device.velocity
     internal var priority = Priority.HIGH
-    lateinit var encoder: KEncoder internal set
     internal var ks = 0.0
 
-    val pos: Double get() = encoder.pos
-    val vel: Double get() = encoder.vel
+    val pos: Double get() = encoder?.pos ?: throw Exception("queried motor $deviceName's pos without paired encoder")
+    val vel: Double get() = encoder?.vel ?: throw Exception("queried motor $deviceName's vel without paired encoder")
 
     internal var zeroPowerBehavior: DcMotor.ZeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
         set(value) {
@@ -73,12 +72,13 @@ class KMotor internal constructor(name: String) : KDevice<DcMotorEx>(name) {
     val currState: MotionState get() = controller?.currentState ?: throw Exception("fuck")
 
     private fun update() {
-        if (encoderCreated) encoder.update()
-        controller?.let {
-            it.currentState = MotionState(encoder.pos, encoder.vel)
-            it.update()
-            power = it.output
-            Logger.addTelemetryLine("updating motor controller for $deviceName")
+        encoder?.let { enc ->
+            controller?.let {
+                it.currentState = MotionState(enc.pos, enc.vel)
+                it.update()
+                power = it.output
+                Logger.addTelemetryLine("updating motor controller for $deviceName")
+            }
         }
     }
 
@@ -96,20 +96,6 @@ class KMotor internal constructor(name: String) : KDevice<DcMotorEx>(name) {
     }
 
     fun isAtTarget() = controller?.isAtTarget() ?: throw Exception("motor must not be open loop")
-
-    fun enable() {
-        disabled = false
-        power = 0.0
-        if (encoderCreated) encoder.enable()
-        cmd.schedule()
-    }
-
-    fun disable() {
-        disabled = true
-        power = 0.0
-        if (encoderCreated) encoder.disable()
-        cmd.cancel()
-    }
 
     init {
         device.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
