@@ -6,6 +6,6 @@ package com.asiankoala.koawalib.util
  * @property milliseconds System time in milliseconds
  */
 object Clock {
-    val seconds get() = System.nanoTime() / 1e9
-    val milliseconds get() = System.nanoTime() / 1e6
+    @JvmStatic val seconds get() = System.nanoTime() / 1e9
+    @JvmStatic val milliseconds get() = System.nanoTime() / 1e6
 }

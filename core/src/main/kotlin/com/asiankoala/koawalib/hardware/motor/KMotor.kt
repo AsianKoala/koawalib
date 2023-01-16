@@ -121,6 +121,7 @@ class KMotor internal constructor(name: String) : KDevice<DcMotorEx>(name) {
             iter++
         }
 
+        @JvmStatic
         fun setVoltageConstant(x: Double) {
             VOLTAGE_CONSTANT = x
         }

@@ -73,6 +73,7 @@ object KScheduler {
      * Schedule commands
      * @param cmds commands to schedule
      */
+    @JvmStatic
     fun schedule(vararg cmds: Cmd) {
         toSchedule.addAll(cmds)
     }
@@ -81,6 +82,7 @@ object KScheduler {
      * Cancel commands, removing them from the scheduler and ending them
      * @param cmds commands to cancel
      */
+    @JvmStatic
     fun cancel(vararg cmds: Cmd) {
         toCancel.addAll(cmds)
     }
@@ -89,6 +91,7 @@ object KScheduler {
      * Register n subsystems
      * @param requestedSubsystems subsystems to register
      */
+    @JvmStatic
     fun registerSubsystem(vararg requestedSubsystems: KSubsystem) {
         requestedSubsystems.forEach { Logger.logInfo("registered subsystem ${it.name}") }
         subsystems.addAll(requestedSubsystems.toSet())
@@ -98,6 +101,7 @@ object KScheduler {
      * Unregister subsystems
      * @param requestedSubsystems subsystems to unregister
      */
+    @JvmStatic
     fun unregisterSubsystem(vararg requestedSubsystems: KSubsystem) {
         requestedSubsystems.forEach { Logger.logInfo("unregistered subsystem ${it.name}") }
         subsystems.removeAll(requestedSubsystems.toSet())

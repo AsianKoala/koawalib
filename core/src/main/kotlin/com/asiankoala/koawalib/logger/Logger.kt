@@ -16,7 +16,7 @@ import java.util.*
  */
 @Suppress("unused")
 object Logger {
-    var config = LoggerConfig.SIMPLE_CONFIG
+    @JvmStatic var config = LoggerConfig.SIMPLE_CONFIG
 
     internal var telemetry: Telemetry? = null
     internal var logCount = 0; private set
@@ -60,6 +60,7 @@ object Logger {
         + LoopCmd({ addTelemetryData("warning count", warnings) }).withName("warning counter")
     }
 
+    @JvmStatic
     fun addVar(name: String, data: Any?) {
         if (!config.isDashboardEnabled) return
         packet.put(name, data)
@@ -69,6 +70,7 @@ object Logger {
      * Add telemetry line to phone. If config.isLoggingTelemetry, it will log the message as a debug
      * @param message string to add
      */
+    @JvmStatic
     fun addTelemetryLine(message: String) {
         if (!config.isTelemetryEnabled) return
         if (telemetry == null) return
@@ -80,6 +82,7 @@ object Logger {
      * @param[message] caption of data
      * @param[data] data to add
      */
+    @JvmStatic
     fun addTelemetryData(message: String, data: Any?) {
         addTelemetryLine("$message : $data")
     }
@@ -88,6 +91,7 @@ object Logger {
      * Send a debug message to logger
      * @param[message] logger message to send
      */
+    @JvmStatic
     fun logDebug(message: String) {
         if (!config.isLogging) return
         if (!config.isDebugging) return
@@ -99,6 +103,7 @@ object Logger {
      * @param[message] caption of data
      * @param[data] data to add
      */
+    @JvmStatic
     fun logDebug(message: String, data: Any?) {
         logDebug(getDataString(message, data))
     }
@@ -107,6 +112,7 @@ object Logger {
      * Sends an info message to logger
      * @param[message] logger message to send
      */
+    @JvmStatic
     fun logInfo(message: String) {
         if (!config.isLogging) return
         log(message, Log.INFO)
@@ -117,6 +123,7 @@ object Logger {
      * @param[message] caption of data
      * @param[data] data to add
      */
+    @JvmStatic
     fun logInfo(message: String, data: Any?) {
         logInfo(getDataString(message, data))
     }
@@ -125,6 +132,7 @@ object Logger {
      * Sends a warning message to logger
      * @param[message] logger message to send
      */
+    @JvmStatic
     fun logWarning(message: String) {
         if (!config.isLogging) return
         warnings++
@@ -136,6 +144,7 @@ object Logger {
      * @param[message] caption of data
      * @param[data] data to add
      */
+    @JvmStatic
     fun logWarning(message: String, data: Any?) {
         logWarning(getDataString(message, data))
     }
