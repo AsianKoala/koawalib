@@ -16,7 +16,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple
 import kotlin.math.absoluteValue
 import kotlin.math.sign
 
-//@Suppress("unused")
+// @Suppress("unused")
 class KMotor internal constructor(name: String) : KDevice<DcMotorEx>(name) {
     enum class Priority { HIGH, LOW }
     private val cmd = LoopCmd(this::update).withName("$name motor")
@@ -65,7 +65,7 @@ class KMotor internal constructor(name: String) : KDevice<DcMotorEx>(name) {
         }
 
     val setpoint: MotionState get() {
-        if(controller !is MotionProfileMotorController) throw Exception("controller not motion profile controller")
+        if (controller !is MotionProfileMotorController) throw Exception("controller not motion profile controller")
         return (controller as MotionProfileMotorController).setpoint
     }
 
