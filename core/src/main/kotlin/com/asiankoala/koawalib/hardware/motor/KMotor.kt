@@ -23,7 +23,7 @@ class KMotor internal constructor(name: String) : KDevice<DcMotorEx>(name) {
     private var powerMultiplier = 1.0
     private var disabled = false
     private var lastUpdateIter = 0
-    internal lateinit var controller: MotorController
+    internal var controller: MotorController? = null
     internal var mode = MotorControlModes.OPEN_LOOP
     internal var encoderCreated = false
     internal var isVoltageCorrected = false
@@ -66,50 +66,36 @@ class KMotor internal constructor(name: String) : KDevice<DcMotorEx>(name) {
         }
 
     val setpoint: MotionState get() {
-        if (mode != MotorControlModes.MOTION_PROFILE) {
-            throw Exception("controller not motion profile controller")
-        } else {
-            return (controller as MotionProfileMotorController).setpoint
-        }
+        if(controller !is MotionProfileMotorController) throw Exception("controller not motion profile controller")
+        return (controller as MotionProfileMotorController).setpoint
     }
 
-    val currState: MotionState get() {
-        if (mode == MotorControlModes.OPEN_LOOP) {
-            throw Exception("controller not closed loop")
-        } else {
-            return controller.currentState
-        }
-    }
+    val currState: MotionState get() = controller?.currentState ?: throw Exception("fuck")
 
     private fun update() {
         if (encoderCreated) encoder.update()
-        if (mode == MotorControlModes.OPEN_LOOP) return
-        controller.currentState = MotionState(encoder.pos, encoder.vel)
-        controller.update()
-        this.power = controller.output
-        Logger.addTelemetryLine("updating motor controller for $deviceName")
+        controller?.let {
+            it.currentState = MotionState(encoder.pos, encoder.vel)
+            it.update()
+            power = it.output
+            Logger.addTelemetryLine("updating motor controller for $deviceName")
+        }
     }
 
     fun setPositionTarget(x: Double) {
-        if (mode != MotorControlModes.POSITION) throw Exception("motor must be position controlled")
-        controller.setTargetPosition(x)
+        controller?.setTargetPosition(x) ?: throw Exception("motor must be position controlled")
         Logger.logInfo("set motor $deviceName's position target to $x")
     }
 
     fun setVelocityTarget(v: Double) {
-        if (mode != MotorControlModes.VELOCITY) throw Exception("motor must be velocity controlled")
-        controller.setTargetVelocity(v)
+        controller?.setTargetVelocity(v) ?: throw Exception("motor must be velocity controlled")
     }
 
     fun setProfileTarget(x: Double) {
-        if (mode != MotorControlModes.MOTION_PROFILE) throw Exception("motor must be motion profiled")
-        controller.setProfileTarget(x)
+        controller?.setProfileTarget(x) ?: throw Exception("motor must be motion profiled")
     }
 
-    fun isAtTarget(): Boolean {
-        if (mode == MotorControlModes.OPEN_LOOP) throw Exception("motor must not be open loop")
-        return controller.isAtTarget()
-    }
+    fun isAtTarget() = controller?.isAtTarget() ?: throw Exception("motor must not be open loop")
 
     fun enable() {
         disabled = false
