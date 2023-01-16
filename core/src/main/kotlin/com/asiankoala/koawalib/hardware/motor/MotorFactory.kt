@@ -178,11 +178,14 @@ class MotorFactory(name: String) {
 
         Logger.logInfo("scheduled motor with information: $information")
 
-        if (instance.mode != MotorControlModes.OPEN_LOOP) {
-            instance.encoder.update()
-            instance.controller.currentState = MotionState(instance.encoder.pos, instance.encoder.vel)
-            Logger.logInfo("set controller state to", instance.controller.currentState)
+        instance.encoder?.let { enc ->
+            instance.controller?.let {
+                enc.update()
+                it.currentState = MotionState(enc.pos, enc.vel)
+                Logger.logInfo("set controller state to", it.currentState)
+            }
         }
+
         return instance
     }
 }

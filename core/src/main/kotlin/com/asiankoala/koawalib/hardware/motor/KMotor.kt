@@ -97,6 +97,16 @@ class KMotor internal constructor(name: String) : KDevice<DcMotorEx>(name) {
 
     fun isAtTarget() = controller?.isAtTarget() ?: throw Exception("motor must not be open loop")
 
+    fun enable() {
+        power = 0.0
+        cmd.schedule()
+    }
+
+    fun disable() {
+        power = 0.0
+        cmd.cancel()
+    }
+
     init {
         device.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         device.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
