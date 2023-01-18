@@ -19,7 +19,6 @@ class KStick(
                 .cond(deadzone != null && x in -deadzone!!..deadzone!!) { 0.0 }
                 .cond(xRateLimiter != null) { xRateLimiter!!.calculate(it) }
         }
-
     override val yAxis: Double
         get() {
             val y = stickYAxis.invoke()
@@ -52,12 +51,12 @@ class KStick(
         stickButton.periodic()
     }
 
-    fun setXRateLimiter(rateLimiter: SlewRateLimiter) {
-        xRateLimiter = rateLimiter
+    fun setXRateLimiter(rateLimit: Double) {
+        xRateLimiter = SlewRateLimiter(rateLimit)
     }
 
-    fun setYRateLimiter(rateLimiter: SlewRateLimiter) {
-        yRateLimiter = rateLimiter
+    fun setYRateLimiter(rateLimit: Double) {
+        yRateLimiter = SlewRateLimiter(rateLimit)
     }
 
     fun setDeadzone(threshold: Double) {
