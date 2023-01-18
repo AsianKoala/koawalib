@@ -4,6 +4,7 @@ import com.asiankoala.koawalib.command.commands.LoopCmd
 import com.asiankoala.koawalib.control.motor.MotionProfileMotorController
 import com.asiankoala.koawalib.control.motor.MotorControlModes
 import com.asiankoala.koawalib.control.motor.MotorController
+import com.asiankoala.koawalib.control.motor.PositionMotorController
 import com.asiankoala.koawalib.control.profile.MotionState
 import com.asiankoala.koawalib.hardware.KDevice
 import com.asiankoala.koawalib.logger.Logger
@@ -67,6 +68,11 @@ class KMotor internal constructor(name: String) : KDevice<DcMotorEx>(name) {
     val setpoint: MotionState get() {
         if (controller !is MotionProfileMotorController) throw Exception("controller not motion profile controller")
         return (controller as MotionProfileMotorController).setpoint
+    }
+
+    val targetState: MotionState get() {
+        if(controller !is PositionMotorController) throw Exception("not position controller")
+        return (controller as PositionMotorController).targetState
     }
 
     val currState: MotionState get() = controller?.currentState ?: throw Exception("fuck")
