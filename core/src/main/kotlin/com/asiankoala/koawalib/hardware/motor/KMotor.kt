@@ -82,6 +82,7 @@ class KMotor internal constructor(name: String) : KDevice<DcMotorEx>(name) {
             controller?.let {
                 it.currentState = MotionState(enc.pos, enc.vel)
                 it.update()
+                enc.update()
                 power = it.output
                 Logger.addTelemetryLine("updating motor controller for $deviceName")
             }
