@@ -2,7 +2,7 @@
 koawalib is a general purpose FTC library written in Kotlin
 
 ## Installation
-### Template (Easy Way)
+### Template
 - Go to [the template repo](https://github.com/AsianKoala/koawalib-template) and clone it.
 
 ### Adding to your existing project
