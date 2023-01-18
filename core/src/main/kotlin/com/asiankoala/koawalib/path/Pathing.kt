@@ -314,10 +314,9 @@ fun interface HeadingController {
     fun update(spline: Spline, s: Double): Double
 }
 
-val DEFAULT_HEADING_CONTROLLER = HeadingController { spline, s -> spline[s, 1].angle }
-val FLIPPED_HEADING_CONTROLLER = DEFAULT_HEADING_CONTROLLER.flip()
+fun defaultHeadingController() = HeadingController { spline, s -> spline[s, 1].angle }
+fun constantHeadingController(angle: Double) = HeadingController { _, _ -> angle }
 
-// headingFunction inputs are (spline, s (into spline), n)
 class HermiteSplineInterpolator(
     private val headingController: HeadingController,
     private vararg val controlPoses: Pose,
@@ -372,7 +371,6 @@ class HermiteSplineInterpolator(
                 return Pose(v, h)
             }
         }
-
         throw Exception("we fucked up")
     }
 }
