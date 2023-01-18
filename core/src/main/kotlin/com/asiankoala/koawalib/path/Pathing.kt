@@ -22,7 +22,7 @@ of course, credit given to rr for the original inspiration to make my own path g
  */
 
 class Polynomial(coeffVec: SimpleMatrix) {
-    val coeffs = MutableList(coeffVec.numElements, init = { index -> coeffVec[index] })
+    private val coeffs = MutableList(coeffVec.numElements, init = { index -> coeffVec[index] })
     private val degree by lazy { coeffs.size - 1 }
 
     /**
@@ -66,15 +66,17 @@ class Arc(
     mid: Vector,
     private val end: Vector
 ) {
-    val ref: Vector
-    val length: Double
-    val angleOffset: Double
-    var curvature: Double; private set
-    var dt = 0.0; private set
-    var tStart = 0.0; private set
+    private val ref: Vector
+    private val angleOffset: Double
     private var curvatureSet = false
     private var dkds = 0.0
     private var tEnd = 0.0
+    private var curvature: Double
+    val length: Double
+    var dt = 0.0; private set
+    var tStart = 0.0; private set
+
+    private fun linearlyInterpolate(s: Double) = ref + (end - start) * (s / length)
 
     fun setCurvature(startK: Double, endK: Double) {
         curvature = startK
@@ -88,8 +90,6 @@ class Arc(
         dt = tEnd - tStart
     }
 
-    fun getCorrectCurvature(s: Double): Double = curvature + s * dkds
-    fun linearlyInterpolate(s: Double) = ref + (end - start) * (s / length)
     fun interpolateSAlongT(s: Double) = tStart + dt * (s / length)
 
     fun get(s: Double): Vector {
@@ -310,12 +310,11 @@ val CUBIC_HERMITE_MATRIX = SimpleMatrix(
 )
 
 fun interface HeadingController {
-    fun flip() = HeadingController { spline, s -> (update(spline, s) + 180.0.radians).angleWrap }
-    fun update(spline: Spline, s: Double): Double
+    fun flip() = HeadingController { (update(it) + 180.0.radians).angleWrap }
+    fun update(t: Vector): Double
 }
 
-fun defaultHeadingController() = HeadingController { spline, s -> spline[s, 1].angle }
-fun constantHeadingController(angle: Double) = HeadingController { _, _ -> angle }
+val DEFAULT_HEADING_CONTROLLER = HeadingController { it.angle }
 
 class HermiteSplineInterpolator(
     private val headingController: HeadingController,
@@ -367,7 +366,7 @@ class HermiteSplineInterpolator(
         arcLengthSteps.forEachIndexed { i, x ->
             if (x + piecewiseCurve[i].length > cs) {
                 val v = piecewiseCurve[i][cs - x, n]
-                val h = headingController.update(piecewiseCurve[i], cs - x)
+                val h = headingController.update(piecewiseCurve[i][cs - x, 1])
                 return Pose(v, h)
             }
         }
