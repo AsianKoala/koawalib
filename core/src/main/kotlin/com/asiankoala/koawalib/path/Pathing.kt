@@ -397,7 +397,10 @@ class HermitePath(
 ) : Path(HermiteSplineInterpolator(headingController, *controlPoses)) {
     fun flip() = HermitePath(
         headingController.flip(),
-        *controlPoses.reversed().toTypedArray()
+        *controlPoses
+            .reversed()
+            .map { it.copy(heading = (it.heading + 180.0.radians).angleWrap) }
+            .toTypedArray()
     )
 }
 
