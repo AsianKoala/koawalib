@@ -12,9 +12,9 @@ repositories {
   maven { url = 'https://www.jitpack.io' }
 }
 ```
-- Then add this line to your ```dependencies``` block, where "1.5.6" is the newest release
+- Then add this line to your ```dependencies``` block, where "1.5.5" is the newest release
 ```
-implementation 'com.github.AsianKoala:koawalib:1.5.6'
+implementation 'com.github.AsianKoala:koawalib:1.5.5'
 ```
 ## Example Usage
 [koawalib docs](https://asiankoala.github.io/koawalib/)  
