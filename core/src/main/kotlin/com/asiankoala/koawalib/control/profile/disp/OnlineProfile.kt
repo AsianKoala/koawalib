@@ -1,4 +1,4 @@
-package com.asiankoala.koawalib.control.profile.v2
+package com.asiankoala.koawalib.control.profile.disp
 
 import com.asiankoala.koawalib.util.Clock
 import kotlin.math.min

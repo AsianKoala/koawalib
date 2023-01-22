@@ -1,8 +1,8 @@
 package com.asiankoala.koawalib.path.gvf
 
-import com.asiankoala.koawalib.control.profile.v2.Constraints
-import com.asiankoala.koawalib.control.profile.v2.DispState
-import com.asiankoala.koawalib.control.profile.v2.OnlineProfile
+import com.asiankoala.koawalib.control.profile.disp.Constraints
+import com.asiankoala.koawalib.control.profile.disp.DispState
+import com.asiankoala.koawalib.control.profile.disp.OnlineProfile
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.Vector
 import com.asiankoala.koawalib.path.Path

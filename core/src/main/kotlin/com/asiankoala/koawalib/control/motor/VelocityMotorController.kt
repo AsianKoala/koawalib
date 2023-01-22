@@ -18,6 +18,6 @@ internal class VelocityMotorController(
     override fun isAtTarget(): Boolean = (currentState.v - targetState.v).absoluteValue < allowedVelocityError
 
     override fun update() {
-        output = controller.update(currentState.v) + kF * currentState.v
+        output = controller.update(currentState.v) + kF * targetState.v
     }
 }

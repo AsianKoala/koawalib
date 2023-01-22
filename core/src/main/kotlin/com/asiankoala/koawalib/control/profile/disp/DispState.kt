@@ -1,4 +1,4 @@
-package com.asiankoala.koawalib.control.profile.v2
+package com.asiankoala.koawalib.control.profile.disp
 
 import kotlin.math.sqrt
 
