@@ -79,8 +79,8 @@ class KMotor internal constructor(name: String) : KDevice<DcMotorEx>(name) {
 
     private fun update() {
         encoder?.let { enc ->
+            enc.update()
             controller?.let {
-                enc.update()
                 it.currentState = MotionState(enc.pos, enc.vel)
                 it.update()
                 power = it.output
