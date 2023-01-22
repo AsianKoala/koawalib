@@ -5,6 +5,7 @@ import com.asiankoala.koawalib.control.controller.PIDFController
 import com.asiankoala.koawalib.control.controller.PIDGains
 import com.asiankoala.koawalib.control.profile.MotionState
 import com.asiankoala.koawalib.logger.Logger
+import kotlin.math.cos
 
 internal abstract class MotorController(
     pidGains: PIDGains,
@@ -19,7 +20,8 @@ internal abstract class MotorController(
         pidGains,
         ffGains.kV,
         ffGains.kA,
-        ffGains.kS
+        ffGains.kS,
+        kF = { pos, _ -> ffGains.kG + (ffGains.kCos?.let { it * cos(pos) } ?: 0.0) }
     ).apply {
         if (bounds.isBounded) {
             this.setInputBounds(bounds.lowerBound!!, bounds.upperBound!!)

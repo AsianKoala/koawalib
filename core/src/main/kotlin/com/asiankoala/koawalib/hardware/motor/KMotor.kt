@@ -71,7 +71,7 @@ class KMotor internal constructor(name: String) : KDevice<DcMotorEx>(name) {
     }
 
     val targetState: MotionState get() {
-        if(controller !is PositionMotorController) throw Exception("not position controller")
+        if (controller !is PositionMotorController) throw Exception("not position controller")
         return (controller as PositionMotorController).targetState
     }
 

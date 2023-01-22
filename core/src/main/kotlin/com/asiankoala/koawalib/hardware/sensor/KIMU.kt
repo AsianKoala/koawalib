@@ -16,17 +16,17 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder
 @Suppress("unused")
 class KIMU(
     name: String,
-    zOffset: Double,
+    initHeading: Double,
     axesOrder: AxesOrder,
-    axesSigns: AxesSigns
+    axesSigns: AxesSigns,
 ) : KDevice<BNO055IMUImpl>(name), Periodic {
     private val headingOffset: Double
     private val rollOffset: Double
     private val pitchOffset: Double
-
     private var lastHeading = 0.0
     private var lastPitch = 0.0
     private var lastRoll = 0.0
+
     var headingDelta = 0.0; private set
     var pitchDelta = 0.0; private set
     var rollDelta = 0.0; private set
@@ -61,7 +61,7 @@ class KIMU(
         remapAxes(device, axesOrder, axesSigns)
 
         val orientation = device.angularOrientation
-        headingOffset = orientation.firstAngle.d + zOffset
+        headingOffset = orientation.firstAngle.d - initHeading
         rollOffset = orientation.secondAngle.d
         pitchOffset = orientation.thirdAngle.d
     }
