@@ -2,13 +2,11 @@
 koawalib is a general purpose FTC library written in Kotlin
 
 ## Installation
-- Add the following lines before the ```dependencies``` block in ```/TeamCode/build.gradle```
+1. Add the following line to the ```repositories``` block in ```build.dependencies.gradle```
 ```
-repositories {
-  maven { url = 'https://www.jitpack.io' }
-}
+ maven { url = 'https://www.jitpack.io' }
 ```
-- Then add this line to your ```dependencies``` block
+2. Then add this line to your ```dependencies``` block in ```TeamCode/build.gradle```
 ```
 implementation 'com.github.AsianKoala:koawalib:1.5.7'
 ```
