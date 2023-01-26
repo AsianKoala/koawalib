@@ -35,7 +35,7 @@ abstract class Odometry(
         val s = sin(u) / u
         val c = (1.0 - cos(u)) / u
         val trans = rot(inc.vec, s, c)
-        val theta = global.heading + inc.heading
+        val theta = (global.heading + inc.heading).angleWrap
         val delta = trans.rotate(theta)
         prev.add(
             prev.lastOrNull()?.let {

@@ -20,8 +20,8 @@ class KTrigger(
         return debouncer?.let { debouncerState } ?: isTriggerPressed
     }
 
-    fun setDebouncer(d: Debouncer) {
-        debouncer = d
+    fun setDebouncer(dt: Double) {
+        debouncer = Debouncer(dt)
     }
 
     fun setThreshold(t: Double) {

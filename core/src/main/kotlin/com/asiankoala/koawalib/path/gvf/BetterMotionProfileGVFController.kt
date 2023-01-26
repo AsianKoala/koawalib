@@ -23,9 +23,11 @@ class BetterMotionProfileGVFController(
     private val epsilon: Double,
     private val thetaEpsilon: Double,
     constraints: Constraints,
+    private val kS: Double,
     private val kV: Double,
     private val kA: Double,
-    private val kS: Double
+    private val errorMap: (Double) -> Double = { it },
+    private val errorMapDeriv: (Double) -> Double = { 1.0 }
 ) : GVFController {
     private data class GVFComputation(
         val transVel: Vector,
@@ -39,7 +41,6 @@ class BetterMotionProfileGVFController(
         constraints
     )
     private var headingError = 0.0
-    private val errorMap: (Double) -> Double = { it }
     private val headingController = PIDFController(
         PIDGains(kP = kTheta, kD = kOmega),
         kV,
@@ -70,7 +71,7 @@ class BetterMotionProfileGVFController(
         // derived in ryan's paper
         val secondDeriv = path[s, 2].vec
         val projDeriv = (xdot dot tangent) / (1.0 - (displacementVec dot secondDeriv))
-        val mapDeriv = 1.0 // TODO change later for non-linear error maps
+        val mapDeriv = errorMapDeriv.invoke(trackingError)
         val errorDeriv = mapDeriv * (xdot dot normal)
         val gvfDeriv = secondDeriv * projDeriv - (secondDeriv.rotate(-PI / 2.0) * trackingError - normal * errorDeriv) * kN
         val unitGvfDeriv = tripleProduct(gvfDeriv, gvfDeriv, gvfDeriv) / (gvfDeriv dot gvfDeriv).pow(3.0 / 2.0)

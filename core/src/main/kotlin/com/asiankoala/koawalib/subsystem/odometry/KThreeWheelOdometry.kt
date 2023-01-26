@@ -27,7 +27,7 @@ class KThreeWheelOdometry(
     /**
      * Secondary constructor. Uses [TRACK_WIDTH] to calculate [LEFT_OFFSET] and [RIGHT_OFFSET].
      * Assumes that the parallel pods are dispersed evenly.
-     * @param[TRACK_WIDTH] Distance betwee the parallel odo pods.
+     * @param[TRACK_WIDTH] Distance between the parallel odo pods.
      */
     constructor(
         leftEnc: KEncoder,
