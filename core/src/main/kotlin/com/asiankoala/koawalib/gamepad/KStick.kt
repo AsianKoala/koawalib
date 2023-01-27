@@ -2,7 +2,7 @@ package com.asiankoala.koawalib.gamepad
 
 import com.asiankoala.koawalib.control.filter.SlewRateLimiter
 import com.asiankoala.koawalib.gamepad.functionality.Stick
-import com.asiankoala.koawalib.util.internal.cond
+import com.asiankoala.koawalib.util.cond
 
 class KStick(
     private val stickXAxis: KAxis,

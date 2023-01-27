@@ -6,8 +6,6 @@ import com.asiankoala.koawalib.hardware.KDevice
 import com.asiankoala.koawalib.hardware.motor.KMotor
 import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.util.OpModeState
-import com.asiankoala.koawalib.util.internal.statemachine.StateMachine
-import com.asiankoala.koawalib.util.internal.statemachine.StateMachineBuilder
 import com.outoftheboxrobotics.photoncore.PhotonCore
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
@@ -86,63 +84,43 @@ abstract class KOpMode @JvmOverloads constructor(
         telemetry.addData("loop time", dt)
     }
 
-    private fun updateTelemetryIfEnabled() {
-        if (Logger.config.isTelemetryEnabled) {
-            telemetry.update()
-        }
-    }
-
-    private val universalActions = listOf(
-        KScheduler::update,
-        Logger::update,
-        ::updateTelemetryIfEnabled
-    )
-
-    private val initActions = listOf(
-        ::setup,
-        ::schedulePeriodics,
-        ::mInit,
-        { Logger.logInfo("Fully initialized") }
-    )
-
-    private val startActions = listOf(
-        ::mStart,
-        opModeTimer::reset,
-        { Logger.logInfo("OpMode started") }
-    )
-
-    private val mainStateMachine: StateMachine<OpModeState> = StateMachineBuilder<OpModeState>()
-        .universal(KScheduler::update)
-        .universal(Logger::update)
-        .universal(::updateTelemetryIfEnabled)
-        .state(OpModeState.INIT)
-        .onEnter(::setup)
-        .onEnter(::schedulePeriodics)
-        .onEnter(::mInit)
-        .onEnter { Logger.logInfo("fully initialized, entering init loop") }
-        .transition { true }
-        .state(OpModeState.INIT_LOOP)
-        .loop(::mInitLoop)
-        .transition(::isStarted)
-        .state(OpModeState.START)
-        .onEnter(::mStart)
-        .onEnter(opModeTimer::reset)
-        .onEnter { Logger.logInfo("OpMode started") }
-        .transition { true }
-        .state(OpModeState.LOOP)
-        .loop(::mLoop)
-        .transition(::isStopRequested)
-        .state(OpModeState.STOP)
-        .onEnter(::mStop)
-        .onEnter(opModeTimer::reset)
-        .transition { true }
-        .build()
-
     final override fun runOpMode() {
-        mainStateMachine.start()
-        while (mainStateMachine.running) {
-            mainStateMachine.update()
-            opModeState = mainStateMachine.state
+        isStarted // holy fucking jank LMFAO
+        loop@ while(opModeIsActive()) {
+            KScheduler.update()
+            Logger.update()
+            if (Logger.config.isTelemetryEnabled) telemetry.update()
+
+            when(opModeState) {
+                OpModeState.INIT -> {
+                    setup()
+                    schedulePeriodics()
+                    mInit()
+                    Logger.logInfo("Fully initialized")
+                    opModeState = OpModeState.INIT_LOOP
+                }
+
+                OpModeState.INIT_LOOP -> {
+                    mInitLoop()
+                    if(isStarted) opModeState = OpModeState.START
+                }
+
+                OpModeState.START -> {
+                    mStart()
+                    opModeTimer.reset()
+                    Logger.logInfo("OpMode started!")
+                    opModeState = OpModeState.LOOP
+                }
+
+                OpModeState.LOOP -> {
+                    mLoop()
+                }
+
+                OpModeState.STOP -> {
+                    mStop()
+                    break@loop
+                }
+            }
         }
     }
 

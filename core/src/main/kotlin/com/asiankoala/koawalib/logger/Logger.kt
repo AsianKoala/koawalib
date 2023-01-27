@@ -5,7 +5,7 @@ import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.asiankoala.koawalib.command.commands.LoopCmd
 import com.asiankoala.koawalib.logger.Logger.config
-import com.asiankoala.koawalib.util.internal.Colors
+import com.asiankoala.koawalib.util.Colors
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import java.text.SimpleDateFormat
 import java.util.*

@@ -1,4 +1,4 @@
-package com.asiankoala.koawalib.util.internal
+package com.asiankoala.koawalib.util
 
 internal object Colors {
     const val ANSI_RESET = "\u001B[0m"

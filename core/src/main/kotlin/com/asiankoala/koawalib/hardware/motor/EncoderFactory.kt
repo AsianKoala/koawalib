@@ -1,6 +1,6 @@
 package com.asiankoala.koawalib.hardware.motor
 
-import com.asiankoala.koawalib.util.internal.cond
+import com.asiankoala.koawalib.util.cond
 
 class EncoderFactory(
     private val ticksPerUnit: Double
