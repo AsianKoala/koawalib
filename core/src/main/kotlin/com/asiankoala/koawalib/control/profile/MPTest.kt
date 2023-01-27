@@ -9,16 +9,16 @@ import jetbrains.letsPlot.theme
 internal object MPTest {
     @JvmStatic
     fun main(args: Array<String>) {
-        val end = MotionState(-66.0)
-        val start = MotionState(130.0)
-        val constraints = MotionConstraints(180.0, 180.0)
+        val end = MotionState(1000.0)
+        val start = MotionState(-0.06)
+        val constraints = MotionConstraints(100.0, 100.0)
         val profile = MotionProfile.generateTrapezoidal(start, end, constraints)
 
         val st = ArrayList<Double>()
         val sx = ArrayList<Double>()
         val sv = ArrayList<Double>()
         val sa = ArrayList<Double>()
-        val resolution = 0.01
+        val resolution = 0.001
         var t = 0.0
 
         while (t < profile.duration) {
@@ -63,8 +63,8 @@ internal object MPTest {
         val fig = ggplot(data) +
             geomPoint(color = "blue", size = 1.0) { x = "t"; y = "x" } +
             geomPoint(color = "green", size = 1.0) { x = "t"; y = "v" } +
-            geomPoint(color = "red", size = 1.0) { x = "t"; y = "a" } +
-            theme(plotBackground = elementRect(fill = "black"))
+            geomPoint(color = "red", size = 1.0) { x = "t"; y = "a" }
+//            theme(plotBackground = elementRect(fill = "black"))
         ggsave(fig, "plot.png")
     }
 
