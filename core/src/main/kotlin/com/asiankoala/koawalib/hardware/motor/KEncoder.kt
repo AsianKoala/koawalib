@@ -15,7 +15,7 @@ class KEncoder internal constructor(
     private val isRevEncoder: Boolean
 ) {
     private var offset = 0.0
-    private var multiplier = 1.0
+    var multiplier = 1.0
     private var _pos = 0.0
     private var _vel = 0.0
     private val prevPos = ArrayList<Pair<Double, Double>>()

@@ -11,7 +11,7 @@ https://people.cs.clemson.edu/~dhouse/courses/405/notes/splines.pdf
 ********************************************************************
 
 other resources i used:
-https://pomax.github.io/bezierinfo/#arclength (amazing primer on bezier curves)
+https://pomax.github.io/bezierinfo/#arclength
 https://www.youtube.com/watch?v=unWguclP-Ds&list=PLC8FC40C714F5E60F&index=2
 https://github.com/GrappleRobotics/Pathfinder/tree/master/Pathfinder/src/include/grpl/pf/path
 https://math.stackexchange.com/questions/93496/point-projection-on-curve

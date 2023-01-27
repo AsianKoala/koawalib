@@ -1,9 +1,9 @@
 package com.asiankoala.koawalib.hardware.sensor
 
 import com.asiankoala.koawalib.hardware.KDevice
+import com.asiankoala.koawalib.util.Clock
 import com.asiankoala.koawalib.util.Periodic
 import com.qualcomm.robotcore.hardware.DistanceSensor
-import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 
 /**
@@ -15,15 +15,13 @@ class KDistanceSensor @JvmOverloads constructor(
     name: String,
     private val dtms: Double = 50.0
 ) : KDevice<DistanceSensor>(name), Periodic {
-    private val timer = ElapsedTime()
-
-    var lastRead = Double.NaN
-        private set
+    private var lastReadTime = Clock.milliseconds
+    var lastRead = Double.NaN; private set
 
     override fun periodic() {
-        if (timer.milliseconds() > dtms) {
+        if (Clock.milliseconds - lastReadTime > dtms) {
             lastRead = device.getDistance(DistanceUnit.MM)
-            timer.reset()
+            lastReadTime = Clock.milliseconds
         }
     }
 }

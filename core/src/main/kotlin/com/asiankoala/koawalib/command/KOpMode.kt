@@ -92,6 +92,25 @@ abstract class KOpMode @JvmOverloads constructor(
         }
     }
 
+    private val universalActions = listOf(
+        KScheduler::update,
+        Logger::update,
+        ::updateTelemetryIfEnabled
+    )
+
+    private val initActions = listOf(
+        ::setup,
+        ::schedulePeriodics,
+        ::mInit,
+        { Logger.logInfo("Fully initialized") }
+    )
+
+    private val startActions = listOf(
+        ::mStart,
+        opModeTimer::reset,
+        { Logger.logInfo("OpMode started") }
+    )
+
     private val mainStateMachine: StateMachine<OpModeState> = StateMachineBuilder<OpModeState>()
         .universal(KScheduler::update)
         .universal(Logger::update)
