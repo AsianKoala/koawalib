@@ -54,7 +54,7 @@ class KMotor internal constructor(name: String) : KDevice<DcMotorEx>(name) {
 
     var power: Double = 0.0
         set(value) {
-            val clamped = clamp(value, -1.0, 1.0) * powerMultiplier
+            val clamped = clamp(value * (if(isVoltageCorrected) VOLTAGE_CONSTANT / lastVoltageRead else 1.0), -1.0, 1.0) * powerMultiplier
             if (clamped epsilonNotEqual field &&
                 (clamped == 0.0 || clamped.absoluteValue == 1.0 || (clamped - field).absoluteValue > 0.005) &&
                 (priority == Priority.HIGH || iter - lastUpdateIter > 3)

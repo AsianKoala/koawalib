@@ -48,8 +48,6 @@ class KThreeWheelOdometry(
 
     private var encoders = listOf(leftEnc, rightEnc, perpEnc)
     private val radius2 = LEFT_OFFSET - RIGHT_OFFSET
-    private var accumulatedLeftTheta = 0.0
-    private var accumulatedRightTheta = 0.0
     private var accumulatedAuxDelta = 0.0
 
     override fun updateTelemetry() {
@@ -59,8 +57,6 @@ class KThreeWheelOdometry(
         Logger.addTelemetryData("right encoder", rightEnc.pos)
         Logger.addTelemetryData("perp encoder", perpEnc.pos)
         Logger.addTelemetryData("delta tracker", accumulatedAuxDelta)
-        Logger.addTelemetryData("accumulated left theta", accumulatedLeftTheta)
-        Logger.addTelemetryData("accumulated right theta", accumulatedRightTheta)
     }
 
     override fun reset(p: Pose) {
@@ -77,9 +73,6 @@ class KThreeWheelOdometry(
         val dy = (LEFT_OFFSET * rdt - RIGHT_OFFSET * ldt) / radius2
         val dx = perpEnc.delta - dtheta * PERP_OFFSET
         pose = exp(pose, Pose(dx, dy, dtheta))
-
-        accumulatedLeftTheta += ldt
-        accumulatedRightTheta += rdt
-        accumulatedAuxDelta += dx.absoluteValue
+        accumulatedAuxDelta += dx
     }
 }
