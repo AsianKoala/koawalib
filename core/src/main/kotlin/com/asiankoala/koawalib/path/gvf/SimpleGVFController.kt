@@ -1,5 +1,6 @@
 package com.asiankoala.koawalib.path.gvf
 
+import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.Vector
 import com.asiankoala.koawalib.math.angleWrap
@@ -69,7 +70,6 @@ class SimpleGVFController(
         val res = Speeds()
         res.setFieldCentric(Pose(vectorResult, headingResult.first))
         drive.powers = res.getRobotCentric(pose.heading)
-//        drive.powers = Pose(vectorResult.rotate(PI / 2.0 - pose.heading), headingResult.first)
     }
 
     init {

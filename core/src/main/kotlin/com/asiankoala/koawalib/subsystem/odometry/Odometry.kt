@@ -49,7 +49,7 @@ abstract class Odometry(
     }
 
     protected fun updatePoseWithDeltas(currPose: Pose, lWheelDelta: Double, rWheelDelta: Double, dx: Double, dy: Double, angleIncrement: Double): Vector {
-        var deltaX = dx
+        var deltaX = -dx
         var deltaY = dy
         if (angleIncrement.absoluteValue > 0) {
             val radiusOfMovement = (lWheelDelta + rWheelDelta) / (2 * angleIncrement)
