@@ -2,13 +2,20 @@ package com.asiankoala.koawalib.logger
 
 import android.util.Log
 import com.acmerobotics.dashboard.FtcDashboard
+import com.acmerobotics.dashboard.canvas.Canvas
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.asiankoala.koawalib.command.commands.LoopCmd
 import com.asiankoala.koawalib.logger.Logger.config
+import com.asiankoala.koawalib.math.Pose
+import com.asiankoala.koawalib.math.Vector
+import com.asiankoala.koawalib.math.angleWrap
+import com.asiankoala.koawalib.math.radians
 import com.asiankoala.koawalib.util.internal.Colors
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.cos
+import kotlin.math.sin
 
 /**
  * Logger sends log reports to logcat detailing details of a running opmode. Also serves to format driver station telemetry
@@ -64,6 +71,19 @@ object Logger {
     fun addVar(name: String, data: Any?) {
         if (!config.isDashboardEnabled) return
         packet.put(name, data)
+    }
+
+    @JvmStatic
+    fun drawRobot(p: Pose) {
+        val robotRadius = 13.5 / 2.0
+        val pose = Pose(p.y, -p.x, (p.heading - 90.0.radians).angleWrap)
+        packet.fieldOverlay().strokeCircle(pose.x, pose.y, robotRadius)
+        val (x, y) = Vector(cos(pose.heading), sin(pose.heading)).times(robotRadius)
+        val x1 = pose.x + x / 2
+        val y1 = pose.y + y / 2
+        val x2 = pose.x + x
+        val y2 = pose.y + y
+        packet.fieldOverlay().strokeLine(x1, y1, x2, y2)
     }
 
     /**

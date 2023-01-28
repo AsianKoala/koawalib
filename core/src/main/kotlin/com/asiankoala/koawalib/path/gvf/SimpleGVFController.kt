@@ -1,5 +1,7 @@
 package com.asiankoala.koawalib.path.gvf
 
+import com.asiankoala.koawalib.control.controller.PIDFController
+import com.asiankoala.koawalib.control.controller.PIDGains
 import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.Vector
@@ -34,6 +36,7 @@ class SimpleGVFController(
     private val epsilon: Double,
     private val thetaEpsilon: Double,
     private val errorMap: (Double) -> Double = { it },
+    private val epsilonToUsePID: Double = 8.0
 ) : GVFController {
     private var pose: Pose = Pose()
     private var headingError = 0.0
@@ -45,6 +48,7 @@ class SimpleGVFController(
             headingError.absoluteValue < thetaEpsilon
 
     private fun calcGVF(): Vector {
+        Logger.addTelemetryLine("length - s: ${path.length - s}, dist: ${pose.vec.dist(path.end.vec)}, headingError: ${headingError.absoluteValue}")
         val tangent = path[s, 1].vec
         val normal = tangent.rotate(PI / 2.0)
         val displacementVec = path[s].vec - pose.vec
@@ -62,11 +66,25 @@ class SimpleGVFController(
         return v * kS * min(1.0, (path.length - s) / kF)
     }
 
+    private val xController = PIDFController(PIDGains(4.0, 0.0, 0.0))
+    private val yController = PIDFController(PIDGains(4.0, 0.0, 0.0))
+
     override fun update() {
         pose = drive.pose
         s = path.project(pose.vec, s)
         val headingResult = headingControl()
-        val vectorResult = vectorControl(calcGVF())
+        val vectorResult = if(pose.vec.dist(path.end.vec) < epsilonToUsePID) {
+            val errorVec = path.end.vec - pose.vec
+            val xError = errorVec.x
+            val yError = errorVec.y
+            xController.targetPosition = path.end.vec.x
+            yController.targetPosition = path.end.vec.y
+            val xOutput = xController.update(xError)
+            val yOutput = yController.update(yError)
+            Vector(xOutput, yOutput)
+        } else {
+            vectorControl(calcGVF())
+        }
         val res = Speeds()
         res.setFieldCentric(Pose(vectorResult, headingResult.first))
         drive.powers = res.getRobotCentric(pose.heading)

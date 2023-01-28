@@ -1,6 +1,7 @@
 package com.asiankoala.koawalib.command.commands
 
 import com.asiankoala.koawalib.command.group.SequentialGroup
+import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.path.ProjQuery
 import com.asiankoala.koawalib.path.gvf.GVFController
@@ -35,6 +36,7 @@ class GVFCmd(
     }
 
     override fun end() {
+        Logger.logInfo("finished path")
         drive.powers = Pose()
     }
 

@@ -313,11 +313,11 @@ val CUBIC_HERMITE_MATRIX = SimpleMatrix(
 )
 
 fun interface HeadingController {
-    fun flip() = HeadingController { (update(it) + 180.0.radians).angleWrap }
-    fun update(t: Vector): Double
+    fun flip() = HeadingController { v, t -> (update(v, t) + 180.0.radians).angleWrap }
+    fun update(v: Vector, t: Double): Double
 }
 
-val DEFAULT_HEADING_CONTROLLER = HeadingController { it.angle }
+val DEFAULT_HEADING_CONTROLLER = HeadingController { t, s -> t.angle }
 val FLIPPED_HEADING_CONTROLLER = DEFAULT_HEADING_CONTROLLER.flip()
 
 // headingFunction inputs are (spline, s (into spline), n)
@@ -371,7 +371,7 @@ class HermiteSplineInterpolator(
         arcLengthSteps.forEachIndexed { i, x ->
             if (x + piecewiseCurve[i].length > cs) {
                 val v = piecewiseCurve[i][cs - x, n]
-                val h = headingController.update(piecewiseCurve[i][cs - x, 1])
+                val h = headingController.update(piecewiseCurve[i][cs - x, 1], cs / length)
                 return Pose(v, h)
             }
         }
