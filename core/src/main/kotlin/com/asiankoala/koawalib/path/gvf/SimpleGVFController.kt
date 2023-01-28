@@ -66,10 +66,31 @@ class SimpleGVFController(
         s = path.project(pose.vec, s)
         val headingResult = headingControl()
         val vectorResult = vectorControl(calcGVF())
-        drive.powers = Pose(vectorResult.rotate(-pose.heading), headingResult.first)
+        val res = Speeds()
+        res.setFieldCentric(Pose(vectorResult, headingResult.first))
+        drive.powers = res.getRobotCentric(pose.heading)
+//        drive.powers = Pose(vectorResult.rotate(PI / 2.0 - pose.heading), headingResult.first)
     }
 
     init {
         require(kS <= 1.0)
+    }
+}
+
+class Speeds {
+    private var internalSpeed = Pose()
+
+    private fun Pose.convert(h: Double) = Pose(this.vec.rotate(PI / 2.0 - h), this.heading)
+
+    fun getFieldCentric(): Pose = internalSpeed
+
+    fun setFieldCentric(speeds: Pose) {
+        internalSpeed = speeds
+    }
+
+    fun getRobotCentric(heading: Double) = internalSpeed.convert(heading)
+
+    fun setRobotCentric(speeds: Pose, heading: Double) {
+        internalSpeed = speeds.convert(heading)
     }
 }

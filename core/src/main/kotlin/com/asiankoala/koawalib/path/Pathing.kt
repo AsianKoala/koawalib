@@ -6,23 +6,27 @@ import org.ejml.simple.SimpleMatrix
 import kotlin.math.*
 
 /*
+sources i used to create my path generation system:
+-------------------------------------------------
+
 *************************THE GOAT PAPERS ****************************
 https://people.cs.clemson.edu/~dhouse/courses/405/notes/splines.pdf
+http://www2.informatik.uni-freiburg.de/~lau/students/Sprunk2008.pdf
+basically wrote the entirety of my path generation system
 ********************************************************************
 
-other resources i used:
-https://pomax.github.io/bezierinfo/#arclength
+other great resources:
+https://pomax.github.io/bezierinfo/#arclength (amazing primer on bezier curves)
 https://www.youtube.com/watch?v=unWguclP-Ds&list=PLC8FC40C714F5E60F&index=2
 https://github.com/GrappleRobotics/Pathfinder/tree/master/Pathfinder/src/include/grpl/pf/path
 https://math.stackexchange.com/questions/93496/point-projection-on-curve
 https://www.youtube.com/watch?v=W7S94pq5Xuo
 https://math.stackexchange.com/questions/2983445/unit-vector-differentiation
-http://www2.informatik.uni-freiburg.de/~lau/students/Sprunk2008.pdf
 of course, credit given to rr for the original inspiration to make my own path generation system
  */
 
 class Polynomial(coeffVec: SimpleMatrix) {
-    private val coeffs = MutableList(coeffVec.numElements, init = { index -> coeffVec[index] })
+    val coeffs = MutableList(coeffVec.numElements, init = { index -> coeffVec[index] })
     private val degree by lazy { coeffs.size - 1 }
 
     /**
@@ -66,17 +70,15 @@ class Arc(
     mid: Vector,
     private val end: Vector
 ) {
-    private val ref: Vector
-    private val angleOffset: Double
+    val ref: Vector
+    val length: Double
+    val angleOffset: Double
+    var curvature: Double; private set
+    var dt = 0.0; private set
+    var tStart = 0.0; private set
     private var curvatureSet = false
     private var dkds = 0.0
     private var tEnd = 0.0
-    private var curvature: Double
-    val length: Double
-    var dt = 0.0; private set
-    var tStart = 0.0; private set
-
-    private fun linearlyInterpolate(s: Double) = ref + (end - start) * (s / length)
 
     fun setCurvature(startK: Double, endK: Double) {
         curvature = startK
@@ -90,6 +92,8 @@ class Arc(
         dt = tEnd - tStart
     }
 
+    fun getCorrectCurvature(s: Double): Double = curvature + s * dkds
+    fun linearlyInterpolate(s: Double) = ref + (end - start) * (s / length)
     fun interpolateSAlongT(s: Double) = tStart + dt * (s / length)
 
     fun get(s: Double): Vector {
@@ -144,7 +148,6 @@ class Arc(
 // r'(s) = r'(t(s)) * t'(s)
 // r''(s) = r''(t(s)) * t'(s) * t'(s) + r'(t(s)) * t''(s)
 // r''(s) = r''(t(s)) * t'(s)^2 + r'(t(s)) * t''(s)
-// r'''(s) = r'''(t(s)) * t'(s)^3 + 3 * t'(s) * t''(s) * r''(t(s)) + t'''(s) * r'(t(s))
 // s(t) = 0 -> t int |r'(u)| du
 // s' = ||r'||
 // now to find s'', we know d/dt ||v|| = (v dot v') / |v|
@@ -181,13 +184,6 @@ interface SmoothCurve {
         return when (n) {
             1 -> rt(t, 1).norm
             2 -> (rt(t, 1) dot rt(t, 2)) / rt(t, 1).norm
-            3 -> {
-                val num = rt(t, 1) dot rt(t, 2)
-                val numDeriv = rt(t, 2).norm.pow(2) + (rt(t, 1) dot rt(t, 2))
-                val denom = rt(t, 1).norm
-                val denomDeriv = dsdt(t, 2)
-                (numDeriv * denom - num * denomDeriv) / denomDeriv.pow(3)
-            }
             else -> throw Exception("im not implementing any more derivatives")
         }
     }
@@ -196,18 +192,25 @@ interface SmoothCurve {
         return when (n) {
             1 -> 1.0 / dsdt(t)
             2 -> -dsdt(t, 2) / dsdt(t).pow(3)
-            3 -> (3 * dsdt(t, 2).pow(2) - dsdt(t, 3) * dsdt(t)) / dsdt(t).pow(4)
             else -> throw Exception("im not implementing any more derivatives")
         }
     }
 
-    operator fun get(s: Double, n: Int = 0): Vector {
+    private fun rs(s: Double, n: Int = 0): Vector {
         val t = invArc(s)
         return when (n) {
             0 -> rt(t)
             1 -> rt(t, 1).unit
             2 -> rt(t, 2) * dtds(t).pow(2) + rt(t, 1) * dtds(t, 2)
-            3 -> rt(t, 1) * dtds(t, 3) + (rt(t, 3) * dtds(t).pow(2) + rt(t, 2) * 3.0 * dtds(t, 2))
+            else -> throw Exception("im not implementing any more derivatives")
+        }
+    }
+
+    operator fun get(s: Double, n: Int = 0): Vector {
+        return when (n) {
+            0 -> rs(s)
+            1 -> rs(s, 1)
+            2 -> rs(s, 2)
             else -> throw Exception("im not implementing any more derivatives")
         }
     }
@@ -315,7 +318,9 @@ fun interface HeadingController {
 }
 
 val DEFAULT_HEADING_CONTROLLER = HeadingController { it.angle }
+val FLIPPED_HEADING_CONTROLLER = DEFAULT_HEADING_CONTROLLER.flip()
 
+// headingFunction inputs are (spline, s (into spline), n)
 class HermiteSplineInterpolator(
     private val headingController: HeadingController,
     private vararg val controlPoses: Pose,
@@ -370,6 +375,7 @@ class HermiteSplineInterpolator(
                 return Pose(v, h)
             }
         }
+
         throw Exception("we fucked up")
     }
 }
@@ -403,5 +409,6 @@ class HermitePath(
             .toTypedArray()
     )
 }
+
 
 data class ProjQuery(val cmd: Cmd, val t: Double)
