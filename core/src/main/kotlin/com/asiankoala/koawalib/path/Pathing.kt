@@ -404,12 +404,9 @@ class HermitePath(
     private val headingController: HeadingController,
     private vararg val controlPoses: Pose
 ) : Path(HermiteSplineInterpolator(headingController, *controlPoses)) {
-    fun flip() = HermitePath(
+    fun map(poses: (Pose) -> Pose) = HermitePath(
         headingController.flip(),
-        *controlPoses
-            .reversed()
-            .map { it.copy(heading = (it.heading + 180.0.radians).angleWrap) }
-            .toTypedArray()
+        *controlPoses.map(poses).toTypedArray()
     )
 }
 
