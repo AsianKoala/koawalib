@@ -319,6 +319,9 @@ fun interface HeadingController {
 
 val DEFAULT_HEADING_CONTROLLER = HeadingController { t, s -> t.angle }
 val FLIPPED_HEADING_CONTROLLER = DEFAULT_HEADING_CONTROLLER.flip()
+class ConstantHeadingController(val heading: Double) : HeadingController {
+    override fun update(v: Vector, t: Double) = heading
+}
 
 // headingFunction inputs are (spline, s (into spline), n)
 class HermiteSplineInterpolator(
