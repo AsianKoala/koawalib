@@ -5,7 +5,7 @@ import com.asiankoala.koawalib.util.Clock
 import kotlin.math.abs
 import kotlin.math.sign
 
-// this is the old rr PIDFController that got removed in RR2
+// edited version of the PIDFController that got removed in rr 1.0.0
 class PIDFController @JvmOverloads constructor(
     private val pid: PIDGains,
     private val kV: Double = 0.0,
@@ -69,12 +69,11 @@ class PIDFController @JvmOverloads constructor(
             lastError = error
             lastUpdateTimestamp = currentTimestamp
 
-            val baseOutput = pid.kP * error + pid.kI * errorSum +
-                pid.kD * (measuredVelocity?.let { targetVelocity - it } ?: errorDeriv) +
-                kV * targetVelocity + kA * targetAcceleration + kF(measuredPosition, measuredVelocity)
-            val output = if (baseOutput epsilonEquals 0.0) 0.0 else baseOutput + sign(baseOutput) * kStatic
-
-            output
+            val closed = pid.kP * error + pid.kI * errorSum +
+                    pid.kD * (measuredVelocity?.let { targetVelocity - it } ?: errorDeriv)
+            val open = kV * targetVelocity + kA * targetAcceleration +
+                    kF(measuredPosition, measuredVelocity) + kStatic * sign(targetVelocity)
+            closed + open
         }
     }
 

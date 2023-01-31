@@ -25,7 +25,6 @@ internal abstract class MotorController(
     ).apply {
         if (bounds.isBounded) {
             this.setInputBounds(bounds.lowerBound!!, bounds.upperBound!!)
-            Logger.logInfo("set bounds")
         }
     }
 
