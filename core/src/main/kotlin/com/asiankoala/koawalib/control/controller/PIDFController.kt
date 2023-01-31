@@ -1,6 +1,5 @@
 package com.asiankoala.koawalib.control.controller
 
-import com.asiankoala.koawalib.math.epsilonEquals
 import com.asiankoala.koawalib.util.Clock
 import kotlin.math.abs
 import kotlin.math.sign
@@ -70,9 +69,9 @@ class PIDFController @JvmOverloads constructor(
             lastUpdateTimestamp = currentTimestamp
 
             val closed = pid.kP * error + pid.kI * errorSum +
-                    pid.kD * (measuredVelocity?.let { targetVelocity - it } ?: errorDeriv)
+                pid.kD * (measuredVelocity?.let { targetVelocity - it } ?: errorDeriv)
             val open = kV * targetVelocity + kA * targetAcceleration +
-                    kF(measuredPosition, measuredVelocity) + kStatic * sign(targetVelocity)
+                kF(measuredPosition, measuredVelocity) + kStatic * sign(targetVelocity)
             closed + open
         }
     }

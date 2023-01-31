@@ -387,5 +387,4 @@ class HermitePath(
     )
 }
 
-
 data class ProjQuery(val cmd: Cmd, val t: Double)

@@ -75,7 +75,7 @@ class SimpleGVFController(
     override fun update() {
         s = path.project(drive.pose.vec, s)
         val headingResult = headingControl()
-        val vectorResult = if(drive.pose.vec.dist(path.end.vec) < epsilonToPID) {
+        val vectorResult = if (drive.pose.vec.dist(path.end.vec) < epsilonToPID) {
             xController.targetPosition = path.end.vec.x
             yController.targetPosition = path.end.vec.y
             val xOutput = xController.update(drive.pose.x, drive.vel.x)

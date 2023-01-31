@@ -2,7 +2,6 @@ package com.asiankoala.koawalib.subsystem.odometry
 
 import com.asiankoala.koawalib.math.*
 import com.asiankoala.koawalib.subsystem.KSubsystem
-import kotlin.math.absoluteValue
 import kotlin.math.cos
 import kotlin.math.max
 import kotlin.math.sin

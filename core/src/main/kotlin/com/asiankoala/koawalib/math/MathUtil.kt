@@ -31,8 +31,8 @@ val Float.d get() = this.toDouble()
 val Double.angleWrap: Double
     get() {
         var field = this
-        while(field < -PI) field += TAU
-        while(field > PI) field -= TAU
+        while (field < -PI) field += TAU
+        while (field > PI) field -= TAU
         return field
     }
 

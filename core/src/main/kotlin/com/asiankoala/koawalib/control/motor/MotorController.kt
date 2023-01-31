@@ -4,7 +4,6 @@ import com.asiankoala.koawalib.control.controller.Bounds
 import com.asiankoala.koawalib.control.controller.PIDFController
 import com.asiankoala.koawalib.control.controller.PIDGains
 import com.asiankoala.koawalib.control.profile.MotionState
-import com.asiankoala.koawalib.logger.Logger
 import kotlin.math.cos
 
 internal abstract class MotorController(
