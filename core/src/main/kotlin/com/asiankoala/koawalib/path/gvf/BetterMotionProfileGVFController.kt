@@ -7,7 +7,7 @@ import com.asiankoala.koawalib.control.profile.disp.DispState
 import com.asiankoala.koawalib.control.profile.disp.OnlineProfile
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.Vector
-import com.asiankoala.koawalib.path.Path
+import com.asiankoala.koawalib.path.TangentPath
 import com.asiankoala.koawalib.subsystem.drive.KMecanumOdoDrive
 import kotlin.math.PI
 import kotlin.math.absoluteValue
@@ -15,7 +15,7 @@ import kotlin.math.pow
 import kotlin.math.sign
 
 class BetterMotionProfileGVFController(
-    override val path: Path,
+    override val path: TangentPath,
     override val drive: KMecanumOdoDrive,
     private val kN: Double,
     kTheta: Double,

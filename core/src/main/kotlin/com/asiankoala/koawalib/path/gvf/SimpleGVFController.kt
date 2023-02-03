@@ -7,7 +7,7 @@ import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.Vector
 import com.asiankoala.koawalib.math.angleWrap
 import com.asiankoala.koawalib.math.degrees
-import com.asiankoala.koawalib.path.Path
+import com.asiankoala.koawalib.path.TangentPath
 import com.asiankoala.koawalib.subsystem.drive.KMecanumOdoDrive
 import kotlin.math.PI
 import kotlin.math.absoluteValue
@@ -27,7 +27,7 @@ import kotlin.math.sign
  *  @property isFinished path finish state
  */
 class SimpleGVFController(
-    override val path: Path,
+    override val path: TangentPath,
     override val drive: KMecanumOdoDrive,
     private val kN: Double,
     private val kF: Double,

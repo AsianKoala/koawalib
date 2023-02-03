@@ -196,6 +196,9 @@ interface SmoothCurve {
     }
 }
 
+interface InterpolatorSegment {
+}
+
 class Spline(
     override val x: Polynomial,
     override val y: Polynomial
@@ -262,53 +265,27 @@ class Spline(
     }
 }
 
-interface PiecewiseSplineInterpolator {
+interface PathInterpolator {
     fun interpolate()
-    val piecewiseCurve: MutableList<Spline>
-    val length: Double
-    operator fun get(s: Double, n: Int): Pose
 }
-
-data class HermiteControlVector1d(
-    val zero: Double = 0.0,
-    val first: Double = 0.0,
-) {
-    private val derivatives = listOf(zero, first)
-    operator fun get(n: Int) = derivatives[n]
-}
-
-class HermiteControlVector2d(zero: Vector, first: Vector) {
-    val x = HermiteControlVector1d(zero.x, first.x)
-    val y = HermiteControlVector1d(zero.y, first.y)
-}
-
-val CUBIC_HERMITE_MATRIX = SimpleMatrix(
-    4, 4, true,
-    doubleArrayOf(
-        0.0, 0.0, 0.0, 1.0,
-        0.0, 0.0, 1.0, 0.0,
-        1.0, 1.0, 1.0, 1.0,
-        3.0, 2.0, 1.0, 0.0
-    )
-)
-
-fun interface HeadingController {
-    fun flip() = HeadingController { v, t -> (update(v, t) + 180.0.radians).angleWrap }
-    fun update(v: Vector, t: Double): Double
-}
-
-val DEFAULT_HEADING_CONTROLLER = HeadingController { t, _ -> t.angle }
-val FLIPPED_HEADING_CONTROLLER = DEFAULT_HEADING_CONTROLLER.flip()
 
 // headingFunction inputs are (spline, s (into spline), n)
-class HermiteSplineInterpolator(
-    private val headingController: HeadingController,
-    private vararg val controlPoses: Pose,
-) : PiecewiseSplineInterpolator {
+class HermiteSplineInterpolator(private val controlPoses: Array<out Pose>) : PathInterpolator {
+    class HermiteControlVector2d(zero: Vector, first: Vector) {
+        data class HermiteControlVector1d(
+            val zero: Double = 0.0,
+            val first: Double = 0.0,
+        ) {
+            private val derivatives = listOf(zero, first)
+            operator fun get(n: Int) = derivatives[n]
+        }
+        val x = HermiteControlVector1d(zero.x, first.x)
+        val y = HermiteControlVector1d(zero.y, first.y)
+    }
     private var _length = 0.0
     private val arcLengthSteps = mutableListOf<Double>()
-    override val piecewiseCurve = mutableListOf<Spline>()
-    override val length: Double get() = _length
+    private val piecewiseCurve = mutableListOf<Spline>()
+    val length: Double get() = _length
 
     private fun fitSplineToControlVectors(
         start: HermiteControlVector2d,
@@ -346,45 +323,86 @@ class HermiteSplineInterpolator(
         }
     }
 
-    override operator fun get(s: Double, n: Int): Pose {
+    operator fun get(s: Double): Vector {
         val cs = clamp(s, 0.0 + EPSILON, length - EPSILON)
         arcLengthSteps.forEachIndexed { i, x ->
             if (x + piecewiseCurve[i].length > cs) {
-                val v = piecewiseCurve[i][cs - x, n]
-                val h = headingController.update(piecewiseCurve[i][cs - x, 1], cs / length)
-                return Pose(v, h)
+                return piecewiseCurve[i][cs - x]
             }
         }
 
         throw Exception("we fucked up")
     }
+
+    init {
+        interpolate()
+    }
+
+    companion object {
+        private val CUBIC_HERMITE_MATRIX = SimpleMatrix(
+            4, 4, true,
+            doubleArrayOf(
+                0.0, 0.0, 0.0, 1.0,
+                0.0, 0.0, 1.0, 0.0,
+                1.0, 1.0, 1.0, 1.0,
+                3.0, 2.0, 1.0, 0.0
+            )
+        )
+    }
 }
 
-open class Path(private val interpolator: PiecewiseSplineInterpolator) {
+class PPInterpolator(private val controlVecs: Array<out Vector>) : PathInterpolator {
+    data class LinearSegment(
+        private val start: Vector,
+        private val end: Vector
+    ) {
+        val r = end - start
+        val length = r.norm
+        operator fun get(s: Double) = start + r * clamp(s, 0.0, length)
+    }
+    private val segments = mutableListOf<LinearSegment>()
+
+    override fun interpolate() {
+        controlVecs.forEachIndexed { i, v -> segments.add(LinearSegment(v, controlVecs[i + 1])) }
+    }
+
+    operator fun get(v: Vector): Vector {
+    }
+
+    init {
+        interpolate()
+    }
+}
+
+fun interface HeadingController {
+    fun flip() = HeadingController { v, t -> (update(v, t) + 180.0.radians).angleWrap }
+    fun update(v: Vector, t: Double): Double
+}
+
+val DEFAULT_HEADING_CONTROLLER = HeadingController { t, _ -> t.angle }
+
+open class TangentPath(controlPoses: Array<out Pose>) {
+    protected val interpolator = HermiteSplineInterpolator(controlPoses)
     val start get() = this[0.0]
     val end get() = this[length]
     val length get() = interpolator.length
 
-    operator fun get(s: Double, n: Int = 0) = interpolator[s, n]
+    open operator fun get(s: Double, n: Int = 0): Pose {
+        val v = interpolator[s]
+        val h = v.angle
+        return Pose(v, h)
+    }
 
     // yoinked this from rr
     fun project(p: Vector, pGuess: Double = length / 2.0) = (1..10).fold(pGuess) { s, _ ->
         clamp(s + ((p - this[s].vec) dot this[s, 1].vec), 0.0, length)
     }
-
-    init {
-        interpolator.interpolate()
-    }
 }
 
-class HermitePath(
-    private val headingController: HeadingController,
-    private vararg val controlPoses: Pose
-) : Path(HermiteSplineInterpolator(headingController, *controlPoses)) {
-    fun map(poses: (Pose) -> Pose) = HermitePath(
-        headingController.flip(),
-        *controlPoses.map(poses).toTypedArray()
-    )
+class ConstantHeadingPath(private val heading: Double, controlPoses: Array<out Pose>) : TangentPath(controlPoses) {
+    override fun get(s: Double, n: Int) = Pose(interpolator[s], heading)
 }
+
+class
 
 data class ProjQuery(val cmd: Cmd, val t: Double)
