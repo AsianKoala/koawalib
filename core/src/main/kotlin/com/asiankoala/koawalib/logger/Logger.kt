@@ -2,7 +2,6 @@ package com.asiankoala.koawalib.logger
 
 import android.util.Log
 import com.acmerobotics.dashboard.FtcDashboard
-import com.acmerobotics.dashboard.canvas.Canvas
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.asiankoala.koawalib.command.commands.LoopCmd
 import com.asiankoala.koawalib.logger.Logger.config

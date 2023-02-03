@@ -26,8 +26,7 @@ internal class MotionProfileMotorController(
         timer.reset()
         targetState = requestedState
         profile = MotionProfile.generateTrapezoidal(currentState.copy(v = 0.0, a = 0.0), targetState.copy(v = 0.0, a = 0.0), constraints)
-        Logger.logInfo("created profile with startState", currentState)
-        Logger.logInfo("created profile with endState", targetState)
+        Logger.logInfo("created profile with startState: $currentState and endstate: $targetState")
     }
 
     override fun isAtTarget() = profile?.let { timer.seconds() > it.duration && super.isAtTarget() } ?: false

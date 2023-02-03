@@ -5,28 +5,8 @@ import com.asiankoala.koawalib.math.*
 import org.ejml.simple.SimpleMatrix
 import kotlin.math.*
 
-/*
-sources i used to create my path generation system:
--------------------------------------------------
-
-*************************THE GOAT PAPERS ****************************
-https://people.cs.clemson.edu/~dhouse/courses/405/notes/splines.pdf
-http://www2.informatik.uni-freiburg.de/~lau/students/Sprunk2008.pdf
-basically wrote the entirety of my path generation system
-********************************************************************
-
-other great resources:
-https://pomax.github.io/bezierinfo/#arclength (amazing primer on bezier curves)
-https://www.youtube.com/watch?v=unWguclP-Ds&list=PLC8FC40C714F5E60F&index=2
-https://github.com/GrappleRobotics/Pathfinder/tree/master/Pathfinder/src/include/grpl/pf/path
-https://math.stackexchange.com/questions/93496/point-projection-on-curve
-https://www.youtube.com/watch?v=W7S94pq5Xuo
-https://math.stackexchange.com/questions/2983445/unit-vector-differentiation
-of course, credit given to rr for the original inspiration to make my own path generation system
- */
-
 class Polynomial(coeffVec: SimpleMatrix) {
-    val coeffs = MutableList(coeffVec.numElements, init = { index -> coeffVec[index] })
+    private val coeffs = MutableList(coeffVec.numElements, init = { index -> coeffVec[index] })
     private val degree by lazy { coeffs.size - 1 }
 
     /**
@@ -70,15 +50,17 @@ class Arc(
     mid: Vector,
     private val end: Vector
 ) {
-    val ref: Vector
-    val length: Double
-    val angleOffset: Double
-    var curvature: Double; private set
-    var dt = 0.0; private set
-    var tStart = 0.0; private set
+    private val ref: Vector
+    private val angleOffset: Double
     private var curvatureSet = false
     private var dkds = 0.0
     private var tEnd = 0.0
+    val length: Double
+    var curvature: Double; private set
+    var dt = 0.0; private set
+    var tStart = 0.0; private set
+
+    private fun linearlyInterpolate(s: Double) = ref + (end - start) * (s / length)
 
     fun setCurvature(startK: Double, endK: Double) {
         curvature = startK
@@ -92,8 +74,6 @@ class Arc(
         dt = tEnd - tStart
     }
 
-    fun getCorrectCurvature(s: Double): Double = curvature + s * dkds
-    fun linearlyInterpolate(s: Double) = ref + (end - start) * (s / length)
     fun interpolateSAlongT(s: Double) = tStart + dt * (s / length)
 
     fun get(s: Double): Vector {
@@ -317,11 +297,8 @@ fun interface HeadingController {
     fun update(v: Vector, t: Double): Double
 }
 
-val DEFAULT_HEADING_CONTROLLER = HeadingController { t, s -> t.angle }
+val DEFAULT_HEADING_CONTROLLER = HeadingController { t, _ -> t.angle }
 val FLIPPED_HEADING_CONTROLLER = DEFAULT_HEADING_CONTROLLER.flip()
-class ConstantHeadingController(val heading: Double) : HeadingController {
-    override fun update(v: Vector, t: Double) = heading
-}
 
 // headingFunction inputs are (spline, s (into spline), n)
 class HermiteSplineInterpolator(
@@ -409,6 +386,5 @@ class HermitePath(
         *controlPoses.map(poses).toTypedArray()
     )
 }
-
 
 data class ProjQuery(val cmd: Cmd, val t: Double)

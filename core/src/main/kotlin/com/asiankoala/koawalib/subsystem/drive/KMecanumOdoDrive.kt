@@ -12,7 +12,7 @@ open class KMecanumOdoDrive(
     private val shouldTelemetryOdo: Boolean
 ) : KMecanumDrive(fl, bl, br, fr) {
     val pose get() = odometry.pose
-    val vel get() = odometry.velocity
+    val vel get() = odometry.vel
 
     protected fun updateOdo() {
         if (shouldTelemetryOdo) {

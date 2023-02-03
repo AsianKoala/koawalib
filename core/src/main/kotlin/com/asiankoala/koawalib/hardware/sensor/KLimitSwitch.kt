@@ -1,7 +1,6 @@
 package com.asiankoala.koawalib.hardware.sensor
 
 import com.asiankoala.koawalib.command.commands.Cmd
-import com.asiankoala.koawalib.command.commands.LoopCmd
 import com.asiankoala.koawalib.command.commands.WatchdogCmd
 import com.asiankoala.koawalib.hardware.KDevice
 import com.qualcomm.robotcore.hardware.DigitalChannel

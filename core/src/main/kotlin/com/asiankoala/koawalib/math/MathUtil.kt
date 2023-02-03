@@ -28,14 +28,11 @@ fun clamp(x: Double, a: Double, b: Double): Double {
 val Int.d get() = this.toDouble()
 val Float.d get() = this.toDouble()
 
-/**
- * Wrap an angle within [-pi,pi]
- */
 val Double.angleWrap: Double
     get() {
         var field = this
-        while(field < -PI) field += TAU
-        while(field > PI) field -= TAU
+        while (field < -PI) field += TAU
+        while (field > PI) field -= TAU
         return field
     }
 
