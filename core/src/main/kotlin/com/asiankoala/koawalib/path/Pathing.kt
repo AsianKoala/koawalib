@@ -1,5 +1,6 @@
 package com.asiankoala.koawalib.path
 
+import com.acmerobotics.dashboard.canvas.Canvas
 import com.asiankoala.koawalib.command.commands.Cmd
 import com.asiankoala.koawalib.math.*
 import org.ejml.simple.SimpleMatrix
@@ -358,11 +359,16 @@ fun interface HeadingController {
 
 val DEFAULT_HEADING_CONTROLLER = HeadingController { t, _ -> t.angle }
 
+interface Drawable {
+    fun draw(t: Canvas): Canvas
+}
+
 open class TangentPath(controlPoses: Array<out Pose>) {
     protected val interpolator = HermiteSplineInterpolator(controlPoses)
     val start get() = this[0.0]
     val end get() = this[length]
     val length get() = interpolator.length
+    val sampled by lazy { PathDrawer(this) }
 
     open operator fun get(s: Double, n: Int = 0): Pose {
         val v = interpolator[s]
@@ -373,6 +379,24 @@ open class TangentPath(controlPoses: Array<out Pose>) {
     // yoinked this from rr
     fun project(p: Vector, pGuess: Double = length / 2.0) = (1..10).fold(pGuess) { s, _ ->
         clamp(s + ((p - this[s].vec) dot this[s, 1].vec), 0.0, length)
+    }
+}
+
+class PathDrawer(path: TangentPath): Drawable {
+    private val steps = 50
+    private val xPoints = DoubleArray(50)
+    private val yPoints = DoubleArray(50)
+
+    override fun draw(t: Canvas): Canvas {
+        return t.setStroke("red").setStrokeWidth(1).strokePolyline(xPoints, yPoints)
+    }
+
+    init {
+        for(i in 0 until steps) {
+            val vec = path[i * path.length].vec
+            xPoints[i] = vec.x
+            yPoints[i] = vec.y
+        }
     }
 }
 

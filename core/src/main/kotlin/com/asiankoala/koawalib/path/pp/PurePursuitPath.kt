@@ -29,10 +29,13 @@ class PurePursuitPath(
     private val rController = PIDFController(rotGains).apply {
         setInputBounds(-PI, PI)
     }
+    val isFinished get() = index >= waypoints.size - 1
+
     private fun setTarget(controller: PIDFController, curr: Double, target: Double): Double {
         controller.targetPosition = target
         return controller.update(curr)
     }
+
     private fun zoom(tx: Double, ty: Double, th: Double): Pose {
         val trans = Vector(
             setTarget(xController, drive.pose.x, tx),
@@ -44,6 +47,7 @@ class PurePursuitPath(
             rot
         )
     }
+
     private fun goToPosition(target: Waypoint, end: StopWaypoint?) {
         val delta = drive.pose.vec.dist(target.vec)
         drive.powers = if(end == null || delta < switchDistance) {
@@ -115,7 +119,7 @@ class PurePursuitPath(
             target.cmd?.schedule()
         }
 
-        if(finished()) return
+        if(isFinished) return
 
         if (target is StopWaypoint && drive.pose.vec.dist(target.vec) < target.follow) {
             goToPosition(target, target)
@@ -124,10 +128,7 @@ class PurePursuitPath(
         }
     }
 
-
-    fun finished() = index >= waypoints.size - 1
-
-    fun draw(t: Canvas): Canvas? {
+    fun draw(t: Canvas): Canvas {
         val xPoints = DoubleArray(waypoints.size)
         val yPoints = DoubleArray(waypoints.size)
         for (i in waypoints.indices) {
