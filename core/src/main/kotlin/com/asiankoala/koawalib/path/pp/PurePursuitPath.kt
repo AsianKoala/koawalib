@@ -9,6 +9,7 @@ import com.asiankoala.koawalib.math.angleWrap
 import com.asiankoala.koawalib.math.lineCircleIntersection
 import com.asiankoala.koawalib.path.*
 import com.asiankoala.koawalib.subsystem.drive.KMecanumOdoDrive
+import com.qualcomm.robotcore.util.ElapsedTime
 import kotlin.math.*
 
 class PurePursuitPath(
@@ -21,6 +22,8 @@ class PurePursuitPath(
     private val switchDistance: Double = 18.0
 ) {
     private var index = 0
+    private val deadmanTimer = ElapsedTime()
+    private val deadManSwitch = 2000.0
     private val xController = PIDFController(transGains)
     private val yController = PIDFController(transGains)
     private val rController = PIDFController(rotGains).apply {
@@ -77,7 +80,7 @@ class PurePursuitPath(
 
     private fun trackToLine(start: Waypoint, end: Waypoint) {
         val proj = project(drive.pose.vec, end.vec - start.vec)
-        val inter = lineCircleIntersection(proj, start.vec, end.vec, end.rad)
+        val inter = lineCircleIntersection(proj, start.vec, end.vec, end.follow)
         end.vec = inter
         goToPosition(end, if(end is StopWaypoint) end else null)
     }
@@ -87,8 +90,42 @@ class PurePursuitPath(
     }
 
     fun update() {
+        var skip = false
+        var target = waypoints[index + 1]
 
+        // Stop waypoint deadman switch
+        if (target is StopWaypoint && deadmanTimer.milliseconds() > deadManSwitch) {
+            skip = true
+        } else if (target !is StopWaypoint || drive.vel.vec.norm > 1.0) {
+            deadmanTimer.reset()
+        }
+        if (target is StopWaypoint) {
+            if (drive.pose.vec.dist(target.vec) < target.epsilon) {
+                skip = true
+            }
+        } else {
+            if (drive.pose.vec.dist(target.vec) < target.follow) {
+                skip = true
+            }
+        }
+
+        if (skip) {
+            index++
+            target = waypoints[index + 1]
+            target.cmd?.schedule()
+        }
+
+        if(finished()) return
+
+        if (target is StopWaypoint && drive.pose.vec.dist(target.vec) < target.follow) {
+            goToPosition(target, target)
+        } else {
+            trackToLine(waypoints[index], target)
+        }
     }
+
+
+    fun finished() = index >= waypoints.size - 1
 
     fun draw(t: Canvas): Canvas? {
         val xPoints = DoubleArray(waypoints.size)

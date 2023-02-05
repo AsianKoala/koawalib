@@ -382,12 +382,12 @@ class ConstantHeadingPath(private val heading: Double, controlPoses: Array<out P
 
 open class Waypoint(
     var vec: Vector,
-    val rad: Double,
+    val follow: Double,
     val cmd: Cmd? = null
 ) {
     val x = vec.x
     val y = vec.y
-    open fun flip() = Waypoint(vec.copy(y = -vec.y), rad, cmd)
+    open fun flip() = Waypoint(vec.copy(y = -vec.y), follow, cmd)
 }
 
 open class HeadingControlledWaypoint(
@@ -396,7 +396,7 @@ open class HeadingControlledWaypoint(
     val h: Double,
     cmd: Cmd? = null
 ) : Waypoint(vec, rad, cmd) {
-    override fun flip() = HeadingControlledWaypoint(vec.copy(y = -vec.y), rad, (h + PI).angleWrap, cmd)
+    override fun flip() = HeadingControlledWaypoint(vec.copy(y = -vec.y), follow, (h + PI).angleWrap, cmd)
 }
 
 class StopWaypoint(
@@ -407,7 +407,7 @@ class StopWaypoint(
     val thetaEpsilon: Double,
     cmd: Cmd?
 ) : HeadingControlledWaypoint(vec, rad, h, cmd) {
-    override fun flip() = StopWaypoint(vec.copy(y = -vec.y), rad, (h + PI).angleWrap, epsilon, thetaEpsilon, cmd)
+    override fun flip() = StopWaypoint(vec.copy(y = -vec.y), follow, (h + PI).angleWrap, epsilon, thetaEpsilon, cmd)
 }
 
 data class ProjQuery(val cmd: Cmd, val t: Double)
