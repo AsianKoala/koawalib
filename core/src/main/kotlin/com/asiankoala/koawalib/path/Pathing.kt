@@ -351,29 +351,6 @@ class HermiteSplineInterpolator(private val controlPoses: Array<out Pose>) : Pat
     }
 }
 
-class PPInterpolator(private val controlVecs: Array<out Vector>) : PathInterpolator {
-    data class LinearSegment(
-        private val start: Vector,
-        private val end: Vector
-    ) {
-        val r = end - start
-        val length = r.norm
-        operator fun get(s: Double) = start + r * clamp(s, 0.0, length)
-    }
-    private val segments = mutableListOf<LinearSegment>()
-
-    override fun interpolate() {
-        controlVecs.forEachIndexed { i, v -> segments.add(LinearSegment(v, controlVecs[i + 1])) }
-    }
-
-    operator fun get(v: Vector): Vector {
-    }
-
-    init {
-        interpolate()
-    }
-}
-
 fun interface HeadingController {
     fun flip() = HeadingController { v, t -> (update(v, t) + 180.0.radians).angleWrap }
     fun update(v: Vector, t: Double): Double
@@ -403,6 +380,34 @@ class ConstantHeadingPath(private val heading: Double, controlPoses: Array<out P
     override fun get(s: Double, n: Int) = Pose(interpolator[s], heading)
 }
 
-class
+open class Waypoint(
+    var vec: Vector,
+    val rad: Double,
+    val cmd: Cmd? = null
+) {
+    val x = vec.x
+    val y = vec.y
+    open fun flip() = Waypoint(vec.copy(y = -vec.y), rad, cmd)
+}
+
+open class HeadingControlledWaypoint(
+    vec: Vector,
+    rad: Double,
+    val h: Double,
+    cmd: Cmd? = null
+) : Waypoint(vec, rad, cmd) {
+    override fun flip() = HeadingControlledWaypoint(vec.copy(y = -vec.y), rad, (h + PI).angleWrap, cmd)
+}
+
+class StopWaypoint(
+    vec: Vector,
+    rad: Double,
+    h: Double,
+    val epsilon: Double,
+    val thetaEpsilon: Double,
+    cmd: Cmd?
+) : HeadingControlledWaypoint(vec, rad, h, cmd) {
+    override fun flip() = StopWaypoint(vec.copy(y = -vec.y), rad, (h + PI).angleWrap, epsilon, thetaEpsilon, cmd)
+}
 
 data class ProjQuery(val cmd: Cmd, val t: Double)

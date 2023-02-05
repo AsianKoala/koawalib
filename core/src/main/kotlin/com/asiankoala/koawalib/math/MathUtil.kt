@@ -37,3 +37,33 @@ val Double.angleWrap: Double
     }
 
 fun nonZeroSign(x: Double) = if (x >= 0.0) 1.0 else -1.0
+
+fun lineCircleIntersection(
+    center: Vector,
+    startVector: Vector,
+    endVector: Vector,
+    r: Double
+): Vector {
+    val start = startVector - center
+    val end = endVector - center
+    val deltas = end - start
+    val dr = deltas.norm
+    val D = start cross end
+    val discriminant = r * r * dr * dr - D * D
+
+    // discriminant = 0 for 1 intersection, >0 for 2
+    val intersections = ArrayList<Vector>()
+    val div = deltas.norm.pow(2)
+    val left = Vector(D * deltas.y, -D * deltas.x) / div
+    val right = Vector(
+        nonZeroSign(deltas.y) * deltas.x * sqrt(discriminant),
+        deltas.y.absoluteValue * sqrt(discriminant)
+    ) / div
+    if (discriminant == 0.0) {
+        intersections.add(left)
+    } else {
+        intersections.add(left + right)
+        intersections.add(left - right)
+    }
+    return intersections.map { it + center }.minByOrNull { it.dist(endVector) }!!
+}
