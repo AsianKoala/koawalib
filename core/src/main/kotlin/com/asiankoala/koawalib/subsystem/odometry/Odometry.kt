@@ -1,5 +1,6 @@
 package com.asiankoala.koawalib.subsystem.odometry
 
+import com.acmerobotics.roadrunner.geometry.Vector2d
 import com.asiankoala.koawalib.math.*
 import com.asiankoala.koawalib.subsystem.KSubsystem
 import kotlin.math.cos
@@ -30,14 +31,14 @@ abstract class Odometry(
         }
 
     private fun rot(v: Vector, s: Double, c: Double) =
-        Vector(c * v.y - s * v.x, s * v.y + c * v.x)
+        Vector(s * v.x - c * v.y, c * v.x + s * v.y)
 
     protected fun exp(global: Pose, inc: Pose): Pose {
         val u = inc.heading + nonZeroSign(inc.heading) * EPSILON
         val s = sin(u) / u
         val c = (1.0 - cos(u)) / u
         val trans = rot(inc.vec, s, c)
-        val theta = global.heading + inc.heading
+        val theta = (global.heading + inc.heading).angleWrap
         val delta = trans.rotate(theta)
         prev.add(
             prev.lastOrNull()?.let {

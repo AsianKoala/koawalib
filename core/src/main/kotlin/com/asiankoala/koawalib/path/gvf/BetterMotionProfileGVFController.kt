@@ -1,8 +1,10 @@
 package com.asiankoala.koawalib.path.gvf
 
+import com.acmerobotics.roadrunner.util.DoubleProgression
 import com.asiankoala.koawalib.control.controller.PIDFController
 import com.asiankoala.koawalib.control.controller.PIDGains
 import com.asiankoala.koawalib.control.profile.disp.*
+import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.Vector
 import com.asiankoala.koawalib.path.HermitePath
@@ -33,12 +35,14 @@ class BetterMotionProfileGVFController(
         val angularVel: Double,
         val angularAccel: Double
     )
-    private val profile = generateSimpleOnlineMotionProfile(
+    private val profile = OnlineMotionProfile(
         DisplacementState(0.0),
         DisplacementState(0.0),
         path.length,
-        constraints.vel,
-        constraints.accel
+        object : MotionConstraints() {
+            override fun get(s: Double) = SimpleMotionConstraints(constraints.vel, constraints.accel)
+            override fun get(s: DoubleProgression) = s.map { get(it) }
+        },
     )
     private var headingError = 0.0
     private val headingController = PIDFController(
@@ -55,6 +59,36 @@ class BetterMotionProfileGVFController(
             headingError.absoluteValue < thetaEpsilon
 
     private fun tripleProduct(a: Vector, b: Vector, c: Vector) = b * (a dot c) - c * (a dot b)
+
+    private data class HenoResult(
+        val vec: Vector,
+        val deriv: Vector,
+        val projDeriv: Double,
+        val error: Double
+    )
+    private fun henoCalcGVF(): HenoResult {
+        val pathPoint = path[s].vec
+        val pathDeriv = path[s, 1].vec
+        val pathSecondDeriv = path[s, 2].vec
+
+        val normal = pathDeriv.rotate(PI / 2.0)
+        val pathToPoint = drive.pose.vec - pathPoint
+        val error = pathToPoint dot normal
+        val vector = pathDeriv - normal * kN * errorMap.invoke(error)
+        val unitVector = vector.unit
+        val projDeriv = (unitVector dot pathDeriv) / (1.0 - (pathToPoint dot pathSecondDeriv))
+        val errorDeriv = errorMapDeriv.invoke(error) * (unitVector dot normal)
+        val tangentDeriv = pathSecondDeriv * projDeriv
+        val normalDeriv = tangentDeriv.rotate(-PI / 2.0)
+        val vectorDeriv = (tangentDeriv - (normalDeriv * kN * errorMapDeriv.invoke(error))) - (normal * kN * errorDeriv)
+        val unitVectorDeriv = (vectorDeriv * (vector dot vector) - vector * (vectorDeriv dot vector)) / (vector.norm * vector.norm * vector.norm)
+        return HenoResult(
+            unitVector,
+            unitVectorDeriv,
+            projDeriv,
+            error
+        )
+    }
 
     private fun calcGvf(): GVFComputation {
         val tangent = path[s, 1].vec
@@ -99,15 +133,22 @@ class BetterMotionProfileGVFController(
     override fun update() {
         s = path.project(drive.pose.vec, s)
         state = profile[s]
-        val gvfComputation = calcGvf()
+        profile.update(state.v)
+//        val gvfComputation = calcGvf()
+        val gvfRes = henoCalcGVF()
+        val gvfVector = if(isFinished) (path[s].vec - drive.pose.vec).unit else gvfRes.vec
+        val gvfDeriv = if(isFinished) Vector() else gvfRes.deriv
+        val xdot = gvfVector * state.v
+        val xdot2 = gvfVector * state.a + gvfDeriv * state.v
         headingController.apply {
             targetPosition = path[s, 1].heading
 //            targetVelocity = gvfComputation.angularVel
 //            targetAcceleration = gvfComputation.angularAccel
         }
         val headingOutput = headingController.update(drive.pose.heading, drive.vel.heading)
-        val transOutput = calcVecFF(gvfComputation.transVel, gvfComputation.transAccel).rotate(PI / 2.0 - drive.pose.heading)
+        val transOutput = calcVecFF(xdot, xdot2).rotate(PI / 2.0 - drive.pose.heading)
         val output = Pose(transOutput, headingOutput)
+        Logger.logInfo("pos: ${drive.pose.vec}, gvf: $gvfVector, disp: $s, v: ${state.v}, a: ${state.a}, trans: ${state.v}")
         drive.powers = output
     }
 }
