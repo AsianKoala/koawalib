@@ -274,6 +274,7 @@ class Spline(
 
 fun interface HeadingController {
     operator fun get(spline: Spline, s: Double, n: Int): Double
+    fun flip() = HeadingController { spline, s, n -> (this[spline, s, n] + PI).angleWrap }
 }
 
 class TangentHeadingController : HeadingController {

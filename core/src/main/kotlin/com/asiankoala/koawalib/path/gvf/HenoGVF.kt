@@ -1,6 +1,5 @@
 package com.asiankoala.koawalib.path.gvf
 
-import com.acmerobotics.roadrunner.kinematics.Kinematics
 import com.asiankoala.koawalib.control.controller.PIDFController
 import com.asiankoala.koawalib.control.controller.PIDGains
 import com.asiankoala.koawalib.control.profile.disp.*
@@ -9,6 +8,7 @@ import com.asiankoala.koawalib.math.Vector
 import com.asiankoala.koawalib.math.epsilonEquals
 import com.asiankoala.koawalib.path.HermitePath
 import com.asiankoala.koawalib.subsystem.drive.KMecanumOdoDrive
+import com.asiankoala.koawalib.util.Clock
 import kotlin.math.PI
 import kotlin.math.sign
 
@@ -21,6 +21,7 @@ class HenoGVF(
     private val kA: Double,
     private val constraints: DriveConstraints,
     headingCoeffs: PIDGains,
+    private val timeoutSeconds: Double,
     errorMap: GuidingVectorField.ErrorMap = GuidingVectorField.ErrorMap.Linear()
 ) : GVFController {
     private val gvf = GuidingVectorField(path, kN, errorMap)
@@ -33,7 +34,10 @@ class HenoGVF(
     private val headingController = PIDFController(headingCoeffs).apply { setInputBounds(-PI, PI) }
     private var lastVel: Double = 0.0
     private var lastError = Pose()
-    override var isFinished = false
+    private var isErrorAdmissible = false
+    private var endTime = 0.0
+    private var isTimedOut = false
+    override val isFinished get() = isErrorAdmissible && isTimedOut
     override var disp: Double = 0.0
 
     override fun update() {
@@ -52,9 +56,15 @@ class HenoGVF(
 
         val headingCorrection = headingController.update(0.0, drive.vel.heading)
 
-        isFinished = isFinished || disp epsilonEquals path.length
-        val gvfVector = if(isFinished) fieldError.unit else gvfResult.vector
-        val gvfDeriv = if(isFinished) Vector() else gvfResult.deriv
+        if(isErrorAdmissible) {
+            isTimedOut = Clock.seconds - endTime > timeoutSeconds
+        } else if(disp epsilonEquals path.length) {
+            isErrorAdmissible = true
+            endTime = Clock.seconds
+        }
+
+        val gvfVector = if(isErrorAdmissible) fieldError.unit else gvfResult.vector
+        val gvfDeriv = if(isErrorAdmissible) Vector() else gvfResult.deriv
 
         var targetVel: Vector
         var targetAccel: Vector
@@ -77,8 +87,8 @@ class HenoGVF(
             val displacementSecondDeriv = numerator1 / denominator + numerator2 / (denominator * denominator)
             val pathAlpha = pathSecondDeriv.heading * displacementDeriv * displacementDeriv + pathDeriv.heading * displacementSecondDeriv
 
-            omega = (if (!isFinished) pathOmega else 0.0) + headingCorrection
-            alpha = if (!isFinished) pathAlpha else 0.0
+            omega = (if (!isErrorAdmissible) pathOmega else 0.0) + headingCorrection
+            alpha = if (!isErrorAdmissible) pathAlpha else 0.0
 
             val headingVelNormalized = if (omega epsilonEquals 0.0) 0.0 else omega / profileState.v
             val dynamicDeriv = Pose(gvfResult.vector, headingVelNormalized)

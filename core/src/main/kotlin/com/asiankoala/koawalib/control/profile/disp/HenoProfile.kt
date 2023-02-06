@@ -454,10 +454,7 @@ interface TrajectoryConstraints {
 open class DriveConstraints(
     @JvmField var maxVel: Double,
     @JvmField var maxAccel: Double,
-    @JvmField var maxJerk: Double,
     @JvmField var maxAngVel: Double,
-    @JvmField var maxAngAccel: Double,
-    @JvmField var maxAngJerk: Double
 ) : TrajectoryConstraints {
     override fun get(s: Double, pose: Pose, deriv: Pose, secondDeriv: Pose): SimpleMotionConstraints {
         val maxVels = mutableListOf(maxVel)
