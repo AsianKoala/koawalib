@@ -6,6 +6,10 @@ import kotlin.math.*
 
 import com.acmerobotics.roadrunner.util.DoubleProgression
 import com.acmerobotics.roadrunner.util.NanoClock
+import com.asiankoala.koawalib.math.Pose
+import com.asiankoala.koawalib.math.Vector
+import com.asiankoala.koawalib.math.angleWrap
+import com.asiankoala.koawalib.path.HermitePath
 import kotlin.math.max
 import kotlin.math.min
 
@@ -434,3 +438,92 @@ private fun forwardPass(
 private fun intersection(state1: DisplacementState, state2: DisplacementState): Double {
     return (state1.v * state1.v - state2.v * state2.v) / (2 * state2.a - 2 * state1.a)
 }
+interface TrajectoryConstraints {
+
+    /**
+     * Returns the maximum velocity and acceleration for the given path displacement and pose derivatives.
+     *
+     * @param s path displacement
+     * @param pose pose
+     * @param deriv pose derivative
+     * @param secondDeriv pose second derivative
+     */
+    operator fun get(s: Double, pose: Pose, deriv: Pose, secondDeriv: Pose): SimpleMotionConstraints
+}
+
+open class DriveConstraints(
+    @JvmField var maxVel: Double,
+    @JvmField var maxAccel: Double,
+    @JvmField var maxJerk: Double,
+    @JvmField var maxAngVel: Double,
+    @JvmField var maxAngAccel: Double,
+    @JvmField var maxAngJerk: Double
+) : TrajectoryConstraints {
+    override fun get(s: Double, pose: Pose, deriv: Pose, secondDeriv: Pose): SimpleMotionConstraints {
+        val maxVels = mutableListOf(maxVel)
+
+        if (!(deriv.heading epsilonEquals 0.0)) {
+            maxVels.add(maxAngVel / abs(deriv.heading))
+        }
+
+        return SimpleMotionConstraints(maxVels.min() ?: 0.0, maxAccel)
+    }
+}
+fun generateConstraints(path: HermitePath, constraints: TrajectoryConstraints) =
+    object : MotionConstraints() {
+        override fun get(s: Double): SimpleMotionConstraints {
+            return constraints[
+                    s,
+                    path[s],
+                    path[s, 1],
+                    path[s, 2]
+            ]
+        }
+    }
+
+fun generateOnlineMotionProfile(
+    start: DisplacementState,
+    goal: DisplacementState,
+    length: Double,
+    constraints: MotionConstraints,
+    clock: NanoClock = NanoClock.system(),
+    resolution: Double = 0.25
+): OnlineMotionProfile {
+    // ds is an adjusted resolution that fits nicely within length
+    val samples = ceil(length / resolution).toInt()
+    val s = DoubleProgression.fromClosedInterval(0.0, length, samples)
+
+    val constraintsList = constraints[s]
+    val lastState = DisplacementState(constraintsList.last().maxVel)
+
+    // we start with last constraint rather than goal because the end ramp is already handled in the online profile
+    val backwardProfile = forwardPass(
+        lastState,
+        s,
+        constraintsList.reversed()
+    ).reversed()
+
+    return OnlineMotionProfile(start, goal, length, constraints, clock, backwardProfile)
+}
+
+fun calculatePoseError(targetFieldPose: Pose, currentFieldPose: Pose) =
+    Pose(
+        (targetFieldPose.vec - currentFieldPose.vec).rotate(-currentFieldPose.heading),
+        (targetFieldPose.heading - currentFieldPose.heading).angleWrap
+    )
+
+fun fieldToRobotVelocity(fieldPose: Pose, fieldVel: Pose) =
+    Pose(fieldVel.vec.rotate(-fieldPose.heading), fieldVel.heading)
+
+/**
+ * Returns the robot pose acceleration corresponding to [fieldPose], [fieldVel], and [fieldAccel].
+ */
+fun fieldToRobotAcceleration(fieldPose: Pose, fieldVel: Pose, fieldAccel: Pose) =
+    Pose(
+        fieldAccel.vec.rotate(-fieldPose.heading) + (
+                Vector(
+                    -fieldVel.x * sin(fieldPose.heading) + fieldVel.y * cos(fieldPose.heading),
+                    -fieldVel.x * cos(fieldPose.heading) - fieldVel.y * sin(fieldPose.heading)
+                ) * fieldVel.heading),
+        fieldAccel.heading
+    )

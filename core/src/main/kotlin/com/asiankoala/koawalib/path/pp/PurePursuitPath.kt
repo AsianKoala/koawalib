@@ -104,7 +104,7 @@ class PurePursuitPath(
             deadmanTimer.reset()
         }
         if (target is StopWaypoint) {
-            if (drive.pose.vec.dist(target.vec) < target.epsilon) {
+            if (drive.pose.vec.dist(target.vec) < target.epsilon && (drive.pose.heading - target.h).angleWrap < target.thetaEpsilon) {
                 skip = true
             }
         } else {

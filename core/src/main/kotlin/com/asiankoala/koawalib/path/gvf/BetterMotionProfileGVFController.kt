@@ -52,9 +52,9 @@ class BetterMotionProfileGVFController(
     var state = DisplacementState(0.0) // keep this public for tuning
         private set
 
-    override var s: Double = 0.0
+    override var disp: Double = 0.0
     override val isFinished: Boolean
-        get() = path.length - s < epsilon &&
+        get() = path.length - disp < epsilon &&
             drive.pose.vec.dist(path.end.vec) < epsilon &&
             headingError.absoluteValue < thetaEpsilon
 
@@ -67,9 +67,9 @@ class BetterMotionProfileGVFController(
         val error: Double
     )
     private fun henoCalcGVF(): HenoResult {
-        val pathPoint = path[s].vec
-        val pathDeriv = path[s, 1].vec
-        val pathSecondDeriv = path[s, 2].vec
+        val pathPoint = path[disp].vec
+        val pathDeriv = path[disp, 1].vec
+        val pathSecondDeriv = path[disp, 2].vec
 
         val normal = pathDeriv.rotate(PI / 2.0)
         val pathToPoint = drive.pose.vec - pathPoint
@@ -91,16 +91,16 @@ class BetterMotionProfileGVFController(
     }
 
     private fun calcGvf(): GVFComputation {
-        val tangent = path[s, 1].vec
+        val tangent = path[disp, 1].vec
         val normal = tangent.rotate(PI / 2.0)
-        val displacementVec = path[s].vec - drive.pose.vec
+        val displacementVec = path[disp].vec - drive.pose.vec
         val trackingError = displacementVec.norm * (displacementVec cross tangent).sign
         val gvf = tangent - normal * kN * errorMap.invoke(trackingError)
         val unitGvf = gvf.unit
         val xdot = unitGvf * state.v
 
         // derived in ryan's paper
-        val secondDeriv = path[s, 2].vec
+        val secondDeriv = path[disp, 2].vec
         val projDeriv = (xdot dot tangent) / (1.0 - (displacementVec dot secondDeriv))
         val mapDeriv = errorMapDeriv.invoke(trackingError)
         val errorDeriv = mapDeriv * (xdot dot normal)
@@ -131,24 +131,24 @@ class BetterMotionProfileGVFController(
     private fun calcVecFF(vel: Vector, accel: Vector) = vel.unit * kS + vel * kV + accel * kA
 
     override fun update() {
-        s = path.project(drive.pose.vec, s)
-        state = profile[s]
+        disp = path.project(drive.pose.vec, disp)
+        state = profile[disp]
         profile.update(state.v)
 //        val gvfComputation = calcGvf()
         val gvfRes = henoCalcGVF()
-        val gvfVector = if(isFinished) (path[s].vec - drive.pose.vec).unit else gvfRes.vec
+        val gvfVector = if(isFinished) (path[disp].vec - drive.pose.vec).unit else gvfRes.vec
         val gvfDeriv = if(isFinished) Vector() else gvfRes.deriv
         val xdot = gvfVector * state.v
         val xdot2 = gvfVector * state.a + gvfDeriv * state.v
         headingController.apply {
-            targetPosition = path[s, 1].heading
+            targetPosition = path[disp, 1].heading
 //            targetVelocity = gvfComputation.angularVel
 //            targetAcceleration = gvfComputation.angularAccel
         }
         val headingOutput = headingController.update(drive.pose.heading, drive.vel.heading)
         val transOutput = calcVecFF(xdot, xdot2).rotate(PI / 2.0 - drive.pose.heading)
         val output = Pose(transOutput, headingOutput)
-        Logger.logInfo("pos: ${drive.pose.vec}, gvf: $gvfVector, disp: $s, v: ${state.v}, a: ${state.a}, trans: ${state.v}")
+        Logger.logInfo("pos: ${drive.pose.vec}, gvf: $gvfVector, disp: $disp, v: ${state.v}, a: ${state.a}, trans: ${state.v}")
         drive.powers = output
     }
 }

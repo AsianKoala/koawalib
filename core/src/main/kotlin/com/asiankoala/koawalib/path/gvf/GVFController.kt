@@ -7,6 +7,6 @@ interface GVFController {
     val drive: KMecanumOdoDrive
     val path: HermitePath
     val isFinished: Boolean
-    val s: Double
+    val disp: Double
     fun update()
 }

@@ -165,6 +165,13 @@ interface SmoothCurve {
         return when (n) {
             1 -> rt(t, 1).norm
             2 -> (rt(t, 1) dot rt(t, 2)) / rt(t, 1).norm
+            3 -> {
+                val num = rt(t, 1) dot rt(t, 2)
+                val numDeriv = rt(t, 2).norm.pow(2) + (rt(t, 1) dot rt(t, 2))
+                val denom = rt(t, 1).norm
+                val denomDeriv = dsdt(t, 2)
+                (numDeriv * denom - num * denomDeriv) / denomDeriv.pow(3)
+            }
             else -> throw Exception("im not implementing any more derivatives")
         }
     }
@@ -173,6 +180,7 @@ interface SmoothCurve {
         return when (n) {
             1 -> 1.0 / dsdt(t)
             2 -> -dsdt(t, 2) / dsdt(t).pow(3)
+            3 -> (3 * dsdt(t, 2).pow(2) - dsdt(t, 3) * dsdt(t)) / dsdt(t).pow(4)
             else -> throw Exception("im not implementing any more derivatives")
         }
     }
@@ -183,6 +191,7 @@ interface SmoothCurve {
             0 -> rt(t)
             1 -> rt(t, 1).unit
             2 -> rt(t, 2) * dtds(t).pow(2) + rt(t, 1) * dtds(t, 2)
+            3 -> rt(t, 1) * dtds(t, 3) + (rt(t, 3) * dtds(t).pow(2) + rt(t, 2) * 3.0 * dtds(t, 2))
             else -> throw Exception("im not implementing any more derivatives")
         }
     }
@@ -195,9 +204,6 @@ interface SmoothCurve {
             else -> throw Exception("im not implementing any more derivatives")
         }
     }
-}
-
-interface InterpolatorSegment {
 }
 
 class Spline(
@@ -266,6 +272,26 @@ class Spline(
     }
 }
 
+fun interface HeadingController {
+    operator fun get(spline: Spline, s: Double, n: Int): Double
+}
+
+class TangentHeadingController : HeadingController {
+    override fun get(spline: Spline, s: Double, n: Int) = when(n) {
+        0 -> spline[s].angle
+        1 -> spline[s, 1] cross spline[s, 2]
+        2 -> spline[s, 1] cross spline[s, 3]
+        else -> 0.0
+    }
+}
+
+class ConstantHeadingController(private val heading: Double) : HeadingController {
+    override fun get(spline: Spline, s: Double, n: Int) = when (n) {
+        0 -> heading
+        else -> 0.0
+    }
+}
+
 interface PathInterpolator {
     fun interpolate()
 }
@@ -331,8 +357,11 @@ class HermiteSplineInterpolator(
         val cs = clamp(s, 0.0 + EPSILON, length - EPSILON)
         arcLengthSteps.forEachIndexed { i, x ->
             if (x + piecewiseCurve[i].length > cs) {
-                val h = headingController.update(piecewiseCurve[i][cs - x, 1], cs / length)
-                return Pose(piecewiseCurve[i][cs - x, n], h)
+                val arcl = cs - x
+                val spline = piecewiseCurve[i]
+                val vec = spline[arcl, n]
+                val h = headingController[spline, arcl, n]
+                return Pose(vec, h)
             }
         }
 
@@ -356,18 +385,11 @@ class HermiteSplineInterpolator(
     }
 }
 
-fun interface HeadingController {
-    fun flip() = HeadingController { v, t -> (update(v, t) + 180.0.radians).angleWrap }
-    fun update(v: Vector, t: Double): Double
-}
-
-val DEFAULT_HEADING_CONTROLLER = HeadingController { t, _ -> t.angle }
-
 interface Drawable {
     fun draw(t: Canvas): Canvas
 }
 
-open class HermitePath(private val headingController: HeadingController, vararg controlPoses: Pose) {
+open class HermitePath(headingController: HeadingController, vararg controlPoses: Pose) {
     private val interpolator = HermiteSplineInterpolator(headingController, controlPoses)
     val start get() = this[0.0]
     val end get() = this[length]
@@ -400,7 +422,9 @@ class PathDrawer(path: HermitePath): Drawable {
     }
 }
 
-class ConstantHeadingPath(private val heading: Double, vararg controlPoses: Pose) : HermitePath({ _, _ -> heading }, *controlPoses)
+class TangentPath(vararg controlPoses: Pose) : HermitePath(TangentHeadingController())
+class ConstantHeadingPath(private val heading: Double, vararg controlPoses: Pose) : HermitePath(
+    ConstantHeadingController(heading), *controlPoses)
 
 open class Waypoint(
     var vec: Vector,

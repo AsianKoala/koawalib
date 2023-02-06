@@ -46,34 +46,34 @@ class SimpleGVFController(
         setInputBounds(-PI, PI)
     }
 
-    override var s: Double = 0.0
+    override var disp: Double = 0.0
     override val isFinished
-        get() = path.length - s < epsilon &&
+        get() = path.length - disp < epsilon &&
             drive.pose.vec.dist(path.end.vec) < epsilon &&
             headingError.absoluteValue < thetaEpsilon
 
     private fun calcGVF(): Vector {
-        Logger.addTelemetryLine("length - s: ${path.length - s}, dist: ${drive.pose.vec.dist(path.end.vec)}, headingError: ${headingError.absoluteValue}")
-        val tangent = path[s, 1].vec
+        Logger.addTelemetryLine("length - s: ${path.length - disp}, dist: ${drive.pose.vec.dist(path.end.vec)}, headingError: ${headingError.absoluteValue}")
+        val tangent = path[disp, 1].vec
         val normal = tangent.rotate(PI / 2.0)
-        val displacementVec = path[s].vec - drive.pose.vec
+        val displacementVec = path[disp].vec - drive.pose.vec
         val error = displacementVec.norm * (displacementVec cross tangent).sign
         return (tangent - normal * kN * errorMap.invoke(error)).unit
     }
 
     private fun headingControl(): Pair<Double, Double> {
-        thetaController.targetPosition = path[s].heading
+        thetaController.targetPosition = path[disp].heading
         val output = thetaController.update(drive.pose.heading, drive.vel.heading)
-        headingError = (path[s].heading - drive.pose.heading).angleWrap.degrees
+        headingError = (path[disp].heading - drive.pose.heading).angleWrap.degrees
         return Pair(output, headingError)
     }
 
     private fun vectorControl(v: Vector): Vector {
-        return v * kS * min(1.0, (path.length - s) / kF)
+        return v * kS * min(1.0, (path.length - disp) / kF)
     }
 
     override fun update() {
-        s = path.project(drive.pose.vec, s)
+        disp = path.project(drive.pose.vec, disp)
         val headingResult = headingControl()
         val vectorResult = if (drive.pose.vec.dist(path.end.vec) < epsilonToPID) {
             xController.targetPosition = path.end.vec.x

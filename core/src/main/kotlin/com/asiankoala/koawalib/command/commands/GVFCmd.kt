@@ -19,7 +19,7 @@ class GVFCmd(
                 .sortedBy { it.t }
                 .flatMap {
                     listOf(
-                        WaitUntilCmd { controller.s / controller.path.length > it.t },
+                        WaitUntilCmd { controller.disp / controller.path.length > it.t },
                         it.cmd
                     )
                 }
