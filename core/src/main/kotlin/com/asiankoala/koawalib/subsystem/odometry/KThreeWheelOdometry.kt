@@ -40,7 +40,7 @@ class KThreeWheelOdometry(
         val ldt = leftEncoder.delta
         val rdt = rightEncoder.delta
         val dtheta = (rightEncoder.delta - leftEncoder.delta) / radius2
-        val dy = (LEFT_OFFSET * rdt + RIGHT_OFFSET * ldt) / radius2
+        val dy = (LEFT_OFFSET * rdt - RIGHT_OFFSET * ldt) / radius2
         val predict = dtheta * PERP_TRACKER
         val dx = auxEncoder.delta - dtheta * PERP_TRACKER
         pose = exp(pose, Pose(dx, dy, dtheta))

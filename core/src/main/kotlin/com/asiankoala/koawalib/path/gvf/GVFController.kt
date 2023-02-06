@@ -1,11 +1,11 @@
 package com.asiankoala.koawalib.path.gvf
 
-import com.asiankoala.koawalib.path.TangentPath
+import com.asiankoala.koawalib.path.HermitePath
 import com.asiankoala.koawalib.subsystem.drive.KMecanumOdoDrive
 
 interface GVFController {
     val drive: KMecanumOdoDrive
-    val path: TangentPath
+    val path: HermitePath
     val isFinished: Boolean
     val s: Double
     fun update()

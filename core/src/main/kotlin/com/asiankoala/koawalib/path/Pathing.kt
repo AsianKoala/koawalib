@@ -271,7 +271,10 @@ interface PathInterpolator {
 }
 
 // headingFunction inputs are (spline, s (into spline), n)
-class HermiteSplineInterpolator(private val controlPoses: Array<out Pose>) : PathInterpolator {
+class HermiteSplineInterpolator(
+    private val headingController: HeadingController,
+    private val controlPoses: Array<out Pose>
+) : PathInterpolator {
     class HermiteControlVector2d(zero: Vector, first: Vector) {
         data class HermiteControlVector1d(
             val zero: Double = 0.0,
@@ -324,11 +327,12 @@ class HermiteSplineInterpolator(private val controlPoses: Array<out Pose>) : Pat
         }
     }
 
-    operator fun get(s: Double): Vector {
+    operator fun get(s: Double, n: Int = 0): Pose {
         val cs = clamp(s, 0.0 + EPSILON, length - EPSILON)
         arcLengthSteps.forEachIndexed { i, x ->
             if (x + piecewiseCurve[i].length > cs) {
-                return piecewiseCurve[i][cs - x]
+                val h = headingController.update(piecewiseCurve[i][cs - x, 1], cs / length)
+                return Pose(piecewiseCurve[i][cs - x, n], h)
             }
         }
 
@@ -363,18 +367,14 @@ interface Drawable {
     fun draw(t: Canvas): Canvas
 }
 
-open class TangentPath(controlPoses: Array<out Pose>) {
-    protected val interpolator = HermiteSplineInterpolator(controlPoses)
+open class HermitePath(private val headingController: HeadingController, vararg controlPoses: Pose) {
+    private val interpolator = HermiteSplineInterpolator(headingController, controlPoses)
     val start get() = this[0.0]
     val end get() = this[length]
     val length get() = interpolator.length
     val sampled by lazy { PathDrawer(this) }
 
-    open operator fun get(s: Double, n: Int = 0): Pose {
-        val v = interpolator[s]
-        val h = v.angle
-        return Pose(v, h)
-    }
+    open operator fun get(s: Double, n: Int = 0) = interpolator[s, n]
 
     // yoinked this from rr
     fun project(p: Vector, pGuess: Double = length / 2.0) = (1..10).fold(pGuess) { s, _ ->
@@ -382,7 +382,7 @@ open class TangentPath(controlPoses: Array<out Pose>) {
     }
 }
 
-class PathDrawer(path: TangentPath): Drawable {
+class PathDrawer(path: HermitePath): Drawable {
     private val steps = 50
     private val xPoints = DoubleArray(50)
     private val yPoints = DoubleArray(50)
@@ -400,9 +400,7 @@ class PathDrawer(path: TangentPath): Drawable {
     }
 }
 
-class ConstantHeadingPath(private val heading: Double, controlPoses: Array<out Pose>) : TangentPath(controlPoses) {
-    override fun get(s: Double, n: Int) = Pose(interpolator[s], heading)
-}
+class ConstantHeadingPath(private val heading: Double, vararg controlPoses: Pose) : HermitePath({ _, _ -> heading }, *controlPoses)
 
 open class Waypoint(
     var vec: Vector,

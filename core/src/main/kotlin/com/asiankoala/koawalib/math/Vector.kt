@@ -55,3 +55,4 @@ data class Vector @JvmOverloads constructor(
         fun fromPolar(mag: Double, angle: Double) = Vector(mag).rotate(angle)
     }
 }
+

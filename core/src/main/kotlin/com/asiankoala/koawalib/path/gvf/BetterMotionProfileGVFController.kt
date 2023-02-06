@@ -2,12 +2,10 @@ package com.asiankoala.koawalib.path.gvf
 
 import com.asiankoala.koawalib.control.controller.PIDFController
 import com.asiankoala.koawalib.control.controller.PIDGains
-import com.asiankoala.koawalib.control.profile.disp.Constraints
-import com.asiankoala.koawalib.control.profile.disp.DispState
-import com.asiankoala.koawalib.control.profile.disp.OnlineProfile
+import com.asiankoala.koawalib.control.profile.disp.*
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.Vector
-import com.asiankoala.koawalib.path.TangentPath
+import com.asiankoala.koawalib.path.HermitePath
 import com.asiankoala.koawalib.subsystem.drive.KMecanumOdoDrive
 import kotlin.math.PI
 import kotlin.math.absoluteValue
@@ -15,7 +13,7 @@ import kotlin.math.pow
 import kotlin.math.sign
 
 class BetterMotionProfileGVFController(
-    override val path: TangentPath,
+    override val path: HermitePath,
     override val drive: KMecanumOdoDrive,
     private val kN: Double,
     kTheta: Double,
@@ -35,20 +33,19 @@ class BetterMotionProfileGVFController(
         val angularVel: Double,
         val angularAccel: Double
     )
-    private val profile = OnlineProfile(
-        DispState(),
-        DispState(path.length, 0.0, 0.0),
-        constraints
+    private val profile = generateSimpleOnlineMotionProfile(
+        DisplacementState(0.0),
+        DisplacementState(0.0),
+        path.length,
+        constraints.vel,
+        constraints.accel
     )
     private var headingError = 0.0
     private val headingController = PIDFController(
         PIDGains(kP = kTheta, kD = kOmega),
-        kV,
-        kA,
-        kS
     )
 
-    var state = DispState() // keep this public for tuning
+    var state = DisplacementState(0.0) // keep this public for tuning
         private set
 
     override var s: Double = 0.0
@@ -82,10 +79,12 @@ class BetterMotionProfileGVFController(
         val rhsNum = (xdot dot tangent) * (xdot dot secondDeriv)
         val projSecondDeriv = (lhsNum / projSecondDenom) + (rhsNum / projSecondDenom.pow(2))
 
-        val headingDeriv = path[s, 2].heading
-        val headingSecondDeriv = path[s, 3].heading
-        val thetadot = headingDeriv * projDeriv
-        val thetadot2 = headingSecondDeriv * projDeriv * projDeriv + thetadot * projSecondDeriv
+//        val headingDeriv = path[s, 2].heading
+//        val headingSecondDeriv = path[s, 3].heading
+//        val thetadot = headingDeriv * projDeriv
+//        val thetadot2 = headingSecondDeriv * projDeriv * projDeriv + thetadot * projSecondDeriv
+        val thetadot = 0.0
+        val thetadot2 = 0.0
 
         return GVFComputation(
             xdot,
@@ -103,11 +102,11 @@ class BetterMotionProfileGVFController(
         val gvfComputation = calcGvf()
         headingController.apply {
             targetPosition = path[s, 1].heading
-            targetVelocity = gvfComputation.angularVel
-            targetAcceleration = gvfComputation.angularAccel
+//            targetVelocity = gvfComputation.angularVel
+//            targetAcceleration = gvfComputation.angularAccel
         }
         val headingOutput = headingController.update(drive.pose.heading, drive.vel.heading)
-        val transOutput = calcVecFF(gvfComputation.transVel, gvfComputation.transAccel)
+        val transOutput = calcVecFF(gvfComputation.transVel, gvfComputation.transAccel).rotate(PI / 2.0 - drive.pose.heading)
         val output = Pose(transOutput, headingOutput)
         drive.powers = output
     }
