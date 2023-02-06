@@ -423,7 +423,7 @@ class PathDrawer(path: HermitePath): Drawable {
     }
 }
 
-class TangentPath(vararg controlPoses: Pose) : HermitePath(TangentHeadingController())
+class TangentPath(vararg controlPoses: Pose) : HermitePath(TangentHeadingController(), *controlPoses)
 class ConstantHeadingPath(private val heading: Double, vararg controlPoses: Pose) : HermitePath(
     ConstantHeadingController(heading), *controlPoses)
 

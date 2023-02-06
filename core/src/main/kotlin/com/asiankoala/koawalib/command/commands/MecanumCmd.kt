@@ -28,7 +28,7 @@ open class MecanumCmd @JvmOverloads constructor(
     private val constants: Pose = Pose(1.0, 1.0, 1.0),
 ) : Cmd() {
     private fun joystickFunction(s: Double, k: Double, c: Double, x: Double): Double {
-        return s * x * (k * abs(x).pow(3) - k + 1)
+        return s * x * (k * abs(x).pow(3) - k + 1) + c
     }
 
     protected fun processPowers() = Pose(

@@ -94,7 +94,7 @@ abstract class Cmd {
      * @param parallel commands to run in parallel with this command
      * @return ParallelCommandGroup with this command and n parallel commands
      */
-    fun alongWith(vararg parallel: Cmd) = ParallelGroup(this)
+    fun alongWith(vararg parallel: Cmd) = ParallelGroup(this, *parallel)
 
     /**
      * Run n commands in parallel with this command, ending when any of the commands has ended

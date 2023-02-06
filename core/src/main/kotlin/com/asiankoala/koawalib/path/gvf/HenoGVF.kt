@@ -3,6 +3,7 @@ package com.asiankoala.koawalib.path.gvf
 import com.asiankoala.koawalib.control.controller.PIDFController
 import com.asiankoala.koawalib.control.controller.PIDGains
 import com.asiankoala.koawalib.control.profile.disp.*
+import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.Vector
 import com.asiankoala.koawalib.math.epsilonEquals
@@ -115,6 +116,8 @@ class HenoGVF(
 
         lastError = error
         lastVel = profileState.v
+
+        Logger.logInfo("pos: ${drive.pose.vec}, gvf: $gvfVector, disp: $disp, error: $error, v: ${lastVel}, a: ${profileState.a}, transV: $fieldVel")
 
         drive.powers = Pose(
             robotVel.vec.unit * kStatic + robotVel.vec * kV + robotAccel.vec * kA,
