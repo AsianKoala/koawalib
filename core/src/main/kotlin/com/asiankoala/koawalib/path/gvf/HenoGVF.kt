@@ -72,13 +72,10 @@ class HenoGVF(
             val pathOmega = pathDeriv.heading * displacementDeriv
 
             val denominator = 1.0 - ((drive.pose.vec - pathPose.vec) dot pathSecondDeriv.vec)
-            val numerator1 =
-                displacementDeriv * (targetVel dot pathSecondDeriv.vec) + (targetAccel dot pathDeriv.vec)
+            val numerator1 = displacementDeriv * (targetVel dot pathSecondDeriv.vec) + (targetAccel dot pathDeriv.vec)
             val numerator2 = (targetVel dot pathDeriv.vec) * (targetVel dot pathSecondDeriv.vec)
-            val displacementSecondDeriv =
-                numerator1 / denominator + numerator2 / (denominator * denominator)
-            val pathAlpha = pathSecondDeriv.heading * displacementDeriv * displacementDeriv
-            +pathDeriv.heading * displacementSecondDeriv
+            val displacementSecondDeriv = numerator1 / denominator + numerator2 / (denominator * denominator)
+            val pathAlpha = pathSecondDeriv.heading * displacementDeriv * displacementDeriv + pathDeriv.heading * displacementSecondDeriv
 
             omega = (if (!isFinished) pathOmega else 0.0) + headingCorrection
             alpha = if (!isFinished) pathAlpha else 0.0
