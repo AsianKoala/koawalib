@@ -463,7 +463,7 @@ open class DriveConstraints(
             maxVels.add(maxAngVel / abs(deriv.heading))
         }
 
-        return SimpleMotionConstraints(maxVels.min() ?: 0.0, maxAccel)
+        return SimpleMotionConstraints(maxVels.min(), maxAccel)
     }
 }
 fun generateConstraints(path: HermitePath, constraints: TrajectoryConstraints) =
