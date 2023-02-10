@@ -79,8 +79,8 @@ dependencies {
     compileOnly 'org.firstinspires.ftc:RobotCore:8.0.0'
     implementation 'org.ejml:ejml-all:0.41'
     compileOnly 'com.acmerobotics.dashboard:dashboard:0.4.7'
+    compileOnly 'org.openftc:easyopencv:1.6.0'
     implementation 'com.github.Eeshwar-Krishnan:PhotonFTC:v2.0.1'
-    compileOnly 'org.openftc:easyopencv:1.5.3'
     compileOnly 'org.apache.commons:commons-math3:3.6.1'
     compileOnly 'com.acmerobotics.roadrunner:core:0.5.6'
 
