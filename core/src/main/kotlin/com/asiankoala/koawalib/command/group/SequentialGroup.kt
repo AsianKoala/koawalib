@@ -30,8 +30,8 @@ open class SequentialGroup(vararg cmds: Cmd) : Cmd(), Group {
             if (idx < cmds.size) {
                 cmd = cmds[idx]
                 cmd.initialize()
-                requirements.clear()
-                requirements.addAll(cmd.requirements)
+//                requirements.clear()
+//                requirements.addAll(cmd.requirements)
             }
         }
     }
