@@ -11,15 +11,21 @@ open class KMecanumDrive(
     br: KMotor,
     fr: KMotor
 ) : KSubsystem() {
-    val motors = listOf(fl, bl, br, fr)
+    private val motors = listOf(fl, bl, br, fr)
+    private val wheels = MutableList(4) { 0.0 }
 
-    var powers = Pose()
+    fun setPowers(powers: List<Double>) {
+        val absMax = powers.maxOf { it.absoluteValue }
+        val scalar = if(absMax > 1.0) absMax else 1.0
+        powers.mapTo(wheels) { it / scalar }
+    }
+
+    fun setPowers(powers: Pose) {
+        setPowers(mecKinematics(powers))
+    }
 
     override fun periodic() {
-        val wheels = mecKinematics(powers)
-        val absMax = wheels.maxOf { it.absoluteValue }
-        val scalar = if (absMax > 1.0) absMax else 1.0
-        motors.forEachIndexed { i, it -> it.power = wheels[i] / scalar }
+        motors.zip(wheels).forEach { it.first.power = it.second }
     }
 
     companion object {
