@@ -84,7 +84,7 @@ class SimpleGVFController(
         } else {
             vectorControl(calcGVF())
         }
-        drive.powers = Pose(vectorResult.rotate(PI / 2.0 - drive.pose.heading), headingResult.first)
+        drive.setPowers(Pose(vectorResult.rotate(PI / 2.0 - drive.pose.heading), headingResult.first))
     }
 
     init {

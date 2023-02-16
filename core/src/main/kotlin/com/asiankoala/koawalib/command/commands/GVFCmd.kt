@@ -37,7 +37,7 @@ class GVFCmd(
 
     override fun end() {
         Logger.logInfo("finished path")
-        drive.powers = Pose()
+        drive.setPowers(Pose())
     }
 
     override val isFinished: Boolean

@@ -16,7 +16,7 @@ open class KMecanumDrive(
 
     fun setPowers(powers: List<Double>) {
         val absMax = powers.maxOf { it.absoluteValue }
-        val scalar = if(absMax > 1.0) absMax else 1.0
+        val scalar = if (absMax > 1.0) absMax else 1.0
         powers.mapTo(wheels) { it / scalar }
     }
 

@@ -1,6 +1,5 @@
 package com.asiankoala.koawalib.subsystem.odometry
 
-import com.acmerobotics.roadrunner.geometry.Vector2d
 import com.asiankoala.koawalib.math.*
 import com.asiankoala.koawalib.subsystem.KSubsystem
 import kotlin.math.cos

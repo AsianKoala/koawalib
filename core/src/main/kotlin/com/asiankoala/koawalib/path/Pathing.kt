@@ -2,7 +2,11 @@ package com.asiankoala.koawalib.path
 
 import com.acmerobotics.dashboard.canvas.Canvas
 import com.asiankoala.koawalib.command.commands.Cmd
+import com.asiankoala.koawalib.control.controller.PIDFController
+import com.asiankoala.koawalib.control.controller.PIDGains
 import com.asiankoala.koawalib.math.*
+import com.asiankoala.koawalib.subsystem.drive.KMecanumOdoDrive
+import com.qualcomm.robotcore.util.ElapsedTime
 import org.ejml.simple.SimpleMatrix
 import kotlin.math.*
 
@@ -278,7 +282,7 @@ fun interface HeadingController {
 }
 
 class TangentHeadingController : HeadingController {
-    override fun get(spline: Spline, s: Double, n: Int) = when(n) {
+    override fun get(spline: Spline, s: Double, n: Int) = when (n) {
         0 -> spline[s].angle
         1 -> spline[s, 1] cross spline[s, 2]
         2 -> spline[s, 1] cross spline[s, 3]
@@ -405,7 +409,7 @@ open class HermitePath(headingController: HeadingController, vararg controlPoses
     }
 }
 
-class PathDrawer(path: HermitePath): Drawable {
+class PathDrawer(path: HermitePath) : Drawable {
     private val steps = 50
     private val xPoints = DoubleArray(50)
     private val yPoints = DoubleArray(50)
@@ -415,7 +419,7 @@ class PathDrawer(path: HermitePath): Drawable {
     }
 
     init {
-        for(i in 0 until steps) {
+        for (i in 0 until steps) {
             val vec = path[i * path.length].vec
             xPoints[i] = vec.x
             yPoints[i] = vec.y
@@ -425,7 +429,10 @@ class PathDrawer(path: HermitePath): Drawable {
 
 class TangentPath(vararg controlPoses: Pose) : HermitePath(TangentHeadingController(), *controlPoses)
 class ConstantHeadingPath(private val heading: Double, vararg controlPoses: Pose) : HermitePath(
-    ConstantHeadingController(heading), *controlPoses)
+    ConstantHeadingController(heading), *controlPoses
+)
+
+data class ProjQuery(val cmd: Cmd, val t: Double)
 
 open class Waypoint(
     var vec: Vector,
@@ -457,4 +464,120 @@ class StopWaypoint(
     override fun flip() = StopWaypoint(vec.copy(y = -vec.y), follow, (h + PI).angleWrap, epsilon, thetaEpsilon, cmd)
 }
 
-data class ProjQuery(val cmd: Cmd, val t: Double)
+// 8802's pp impl
+class PurePursuitPath(
+    private val drive: KMecanumOdoDrive,
+    private var waypoints: List<Waypoint>,
+    transGains: PIDGains,
+    rotGains: PIDGains,
+    private val closeExponent: Double = 1.0 / 6.0,
+    private val undershootDistance: Double = 6.0,
+    private val switchDistance: Double = 18.0
+) {
+    private var index = 0
+    private val timer = ElapsedTime()
+    private val timeout = 2000.0
+    private val xController = PIDFController(transGains)
+    private val yController = PIDFController(transGains)
+    private val rController = PIDFController(rotGains).apply {
+        setInputBounds(-PI, PI)
+    }
+    val isFinished get() = index >= waypoints.size - 1
+
+    private fun setTarget(controller: PIDFController, curr: Double, target: Double): Double {
+        controller.targetPosition = target
+        return controller.update(curr)
+    }
+
+    private fun zoom(tx: Double, ty: Double, th: Double): Pose {
+        val trans = Vector(
+            setTarget(xController, drive.pose.x, tx),
+            setTarget(yController, drive.pose.y, ty),
+        )
+        val rot = setTarget(rController, drive.pose.heading, th)
+        return Pose(
+            trans.rotate(PI / 2.0 - drive.pose.heading),
+            rot
+        )
+    }
+
+    private fun goToPosition(target: Waypoint, end: StopWaypoint?) {
+        val delta = drive.pose.vec.dist(target.vec)
+        drive.setPowers(
+            if (end == null || delta < switchDistance) {
+                zoom(
+                    target.vec.x,
+                    target.vec.y,
+                    if (target is HeadingControlledWaypoint) target.h else (target.vec - drive.pose.vec).angle
+                )
+            } else if (delta > undershootDistance) { // need to incporporate robot velocity later.
+                val t = lineCircleIntersection(end.vec, drive.pose.vec, end.vec, undershootDistance)
+                zoom(t.x, t.y, end.h)
+            } else {
+                listOf(
+                    target.vec.x - drive.pose.x,
+                    target.vec.y - drive.pose.y,
+                    (end.h - drive.pose.heading).angleWrap
+                ).map {
+                    abs(it).pow(closeExponent) * sign(it)
+                }.let {
+                    Pose(Vector(it[0], it[1]).rotate(PI / 2.0 - drive.pose.heading), it[2])
+                }
+            }
+        )
+    }
+
+    private fun project(v: Vector, onto: Vector): Vector {
+        return onto * ((v dot onto) / (onto dot onto))
+    }
+
+    private fun curveToSegment(start: Waypoint, end: Waypoint) {
+        val proj = project(drive.pose.vec, end.vec - start.vec)
+        val inter = lineCircleIntersection(proj, start.vec, end.vec, end.follow)
+        end.vec = inter
+        goToPosition(end, if (end is StopWaypoint) end else null)
+    }
+
+    fun flip() {
+        waypoints = waypoints.map(Waypoint::flip)
+    }
+
+    fun update() {
+        var target = waypoints[index + 1]
+
+        val skip = when {
+            target is StopWaypoint && timer.milliseconds() > timeout -> true
+            target is StopWaypoint && drive.pose.vec.dist(target.vec) < target.epsilon &&
+                (drive.pose.heading - target.h).angleWrap < target.thetaEpsilon -> true
+            drive.pose.vec.dist(target.vec) < target.follow -> true
+            else -> {
+                if (drive.vel.vec.norm > 1.0) timer.reset()
+                false
+            }
+        }
+
+        if (skip) {
+            index++
+            target.cmd?.schedule()
+            target = waypoints[index + 1]
+        }
+
+        if (isFinished) return
+
+        if (target is StopWaypoint && drive.pose.vec.dist(target.vec) < target.follow) {
+            goToPosition(target, target)
+        } else {
+            curveToSegment(waypoints[index], target)
+        }
+    }
+
+    fun draw(t: Canvas): Canvas {
+        val xPoints = DoubleArray(waypoints.size)
+        val yPoints = DoubleArray(waypoints.size)
+        for (i in waypoints.indices) {
+            xPoints[i] = waypoints[i].vec.x
+            yPoints[i] = waypoints[i].vec.y
+        }
+        return t.setStroke("red").setStrokeWidth(1).strokePolyline(xPoints, yPoints)
+    }
+}

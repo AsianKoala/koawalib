@@ -27,7 +27,6 @@ class EncoderFactory(
         return this
     }
 
-
     fun build(motor: KMotor): KEncoder {
         return KEncoder(
             motor,
@@ -36,4 +35,3 @@ class EncoderFactory(
         ).cond(isReversed) { it.reverse }.zero(zeroPos)
     }
 }
-

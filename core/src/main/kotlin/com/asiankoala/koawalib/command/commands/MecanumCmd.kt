@@ -38,7 +38,7 @@ open class MecanumCmd @JvmOverloads constructor(
     )
 
     override fun execute() {
-        drive.powers = processPowers()
+        drive.setPowers(processPowers())
     }
 
     override val isFinished = false
