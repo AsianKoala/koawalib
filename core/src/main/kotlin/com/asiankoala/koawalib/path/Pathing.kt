@@ -474,7 +474,8 @@ class PurePursuitPath(
     private val undershootDistance: Double = 6.0,
     private val switchDistance: Double = 18.0
 ) {
-    private var index = 0
+    private var index = -1
+    private var skip = true
     private val timer = ElapsedTime()
     private val timeout = 2000.0
     private val xController = PIDFController(transGains)
@@ -543,9 +544,14 @@ class PurePursuitPath(
     }
 
     fun update() {
-        var target = waypoints[index + 1]
+        if (skip) {
+            index++
+            waypoints[0].cmd?.schedule()
+        }
 
-        val skip = when {
+        val target = waypoints[index + 1]
+
+        skip = when {
             target is StopWaypoint && timer.milliseconds() > timeout -> true
             target is StopWaypoint && drive.pose.vec.dist(target.vec) < target.epsilon &&
                 (drive.pose.heading - target.h).angleWrap < target.thetaEpsilon -> true
@@ -556,11 +562,6 @@ class PurePursuitPath(
             }
         }
 
-        if (skip) {
-            index++
-            target.cmd?.schedule()
-            target = waypoints[index + 1]
-        }
 
         if (isFinished) return
 
