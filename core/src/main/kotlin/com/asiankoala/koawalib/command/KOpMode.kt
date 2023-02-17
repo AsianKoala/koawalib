@@ -38,7 +38,6 @@ abstract class KOpMode @JvmOverloads constructor(
         Logger.telemetry = telemetry
         KScheduler.resetScheduler()
         Logger.addWarningCountCommand()
-        if (!Logger.config.isTelemetryEnabled) Logger.logInfo("Telemetry disabled")
     }
 
     private fun setupHardware() {
