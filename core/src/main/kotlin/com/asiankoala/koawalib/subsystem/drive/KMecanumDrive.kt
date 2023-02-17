@@ -13,6 +13,7 @@ open class KMecanumDrive(
 ) : KSubsystem() {
     private val motors = listOf(fl, bl, br, fr)
     private val wheels = MutableList(4) { 0.0 }
+    var power = Pose(); private set
 
     fun setPowers(powers: List<Double>) {
         val absMax = powers.maxOf { it.absoluteValue }
@@ -21,6 +22,7 @@ open class KMecanumDrive(
     }
 
     fun setPowers(powers: Pose) {
+        this.power = powers
         setPowers(mecKinematics(powers))
     }
 
