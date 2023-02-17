@@ -25,7 +25,7 @@ internal open class PositionMotorController(
         output = controller.update(currentState.x, currentState.v)
         if (disabledPosition.shouldDisable(targetState.x, currentState.x, allowedPositionError)) {
             output = 0.0
-            Logger.addTelemetryLine("controller disabled")
+            Logger.put("controller disabled")
         }
     }
 }

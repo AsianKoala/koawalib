@@ -9,6 +9,7 @@ import com.asiankoala.koawalib.math.Pose
 import com.asiankoala.koawalib.math.Vector
 import com.asiankoala.koawalib.math.angleWrap
 import com.asiankoala.koawalib.math.radians
+import com.asiankoala.koawalib.path.Waypoint
 import com.asiankoala.koawalib.util.internal.Colors
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import java.text.SimpleDateFormat
@@ -24,7 +25,7 @@ import kotlin.math.sin
 object Logger {
     @JvmStatic var config = LoggerConfig.SIMPLE_CONFIG
 
-    internal var telemetry: Telemetry? = null
+    internal lateinit var telemetry: Telemetry
     internal var logCount = 0; private set
     internal val priorityList = listOf("NONE", "NONE", "VERBOSE", "DEBUG", "INFO", "WARN", "ERROR", "WTF")
 
@@ -56,20 +57,17 @@ object Logger {
 
         toLog.clear()
 
-        if (config.isDashboardEnabled) {
-            dashboard.sendTelemetryPacket(packet)
-            packet = TelemetryPacket()
+        if (config.isTelemetryEnabled) {
+            telemetry.update()
+            if (config.isDashboardEnabled) {
+                dashboard.sendTelemetryPacket(packet)
+                packet = TelemetryPacket()
+            }
         }
     }
 
     internal fun addWarningCountCommand() {
-        + LoopCmd({ addTelemetryData("warning count", warnings) }).withName("warning counter")
-    }
-
-    @JvmStatic
-    fun addVar(name: String, data: Any?) {
-        if (!config.isDashboardEnabled) return
-        packet.put(name, data)
+        + LoopCmd({ put("warning count", warnings) }).withName("warning counter")
     }
 
     @JvmStatic
@@ -85,25 +83,41 @@ object Logger {
         packet.fieldOverlay().strokeLine(x1, y1, x2, y2)
     }
 
+    @JvmStatic
+    fun drawPath(waypoints: List<Waypoint>) {
+        val xPoints = DoubleArray(waypoints.size)
+        val yPoints = DoubleArray(waypoints.size)
+        for (i in waypoints.indices) {
+            xPoints[i] = waypoints[i].vec.x
+            yPoints[i] = waypoints[i].vec.y
+        }
+        packet.fieldOverlay().setStroke("red").setStrokeWidth(1).strokePolyline(xPoints, yPoints)
+    }
+
+
     /**
      * Add telemetry line to phone. If config.isLoggingTelemetry, it will log the message as a debug
      * @param message string to add
      */
     @JvmStatic
-    fun addTelemetryLine(message: String) {
-        if (!config.isTelemetryEnabled) return
-        if (telemetry == null) return
-        telemetry!!.addLine(message)
+    fun put(message: String = "") {
+        if (!config.isTelemetryEnabled) {
+            telemetry.addLine(message)
+            if (config.isDashboardEnabled) packet.addLine(message)
+        }
     }
 
     /**
-     * Syntax sugar for [addTelemetryLine]
+     * Syntax sugar for [put]
      * @param[message] caption of data
      * @param[data] data to add
      */
     @JvmStatic
-    fun addTelemetryData(message: String, data: Any?) {
-        addTelemetryLine("$message : $data")
+    fun put(message: String, data: Any?) {
+        if (!config.isTelemetryEnabled) {
+            telemetry.addLine(getDataString(message, data))
+            if (config.isDashboardEnabled) packet.put(message, data)
+        }
     }
 
     /**
@@ -112,9 +126,7 @@ object Logger {
      */
     @JvmStatic
     fun logDebug(message: String) {
-        if (!config.isLogging) return
-        if (!config.isDebugging) return
-        log(message, Log.DEBUG)
+        if (config.isLogging && config.isDebugging) log(message, Log.DEBUG)
     }
 
     /**
@@ -133,8 +145,7 @@ object Logger {
      */
     @JvmStatic
     fun logInfo(message: String) {
-        if (!config.isLogging) return
-        log(message, Log.INFO)
+        if (config.isLogging) log(message, Log.INFO)
     }
 
     /**
@@ -153,9 +164,10 @@ object Logger {
      */
     @JvmStatic
     fun logWarning(message: String) {
-        if (!config.isLogging) return
-        warnings++
-        log("WARNING: $message", Log.WARN)
+        if (config.isLogging) {
+            warnings++
+            log("WARNING: $message", Log.WARN)
+        }
     }
 
     /**

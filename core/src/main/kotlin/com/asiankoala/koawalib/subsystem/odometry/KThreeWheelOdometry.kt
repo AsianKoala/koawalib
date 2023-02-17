@@ -20,13 +20,14 @@ class KThreeWheelOdometry(
     private val radius2 = LEFT_OFFSET - RIGHT_OFFSET
 
     override fun updateTelemetry() {
-        Logger.addTelemetryData("start pose", startPose)
-        Logger.addTelemetryData("curr pose", pose)
-        Logger.addTelemetryData("left encoder", leftEncoder.pos)
-        Logger.addTelemetryData("right encoder", rightEncoder.pos)
-        Logger.addTelemetryData("aux encoder", auxEncoder.pos)
-        Logger.addTelemetryData("delta tracker", accumulatedAux - accumulatedAuxPrediction)
-        Logger.addTelemetryData("radius", radius2)
+        Logger.put("------ODO------")
+        Logger.put("start pose", startPose)
+        Logger.put("curr pose", pose)
+        Logger.put("left encoder", leftEncoder.pos)
+        Logger.put("right encoder", rightEncoder.pos)
+        Logger.put("aux encoder", auxEncoder.pos)
+        Logger.put("delta tracker", accumulatedAux - accumulatedAuxPrediction)
+        Logger.put("radius", radius2)
     }
 
     override fun reset(p: Pose) {

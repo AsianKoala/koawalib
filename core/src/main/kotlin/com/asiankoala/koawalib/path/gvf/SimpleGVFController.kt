@@ -53,7 +53,7 @@ class SimpleGVFController(
             headingError.absoluteValue < thetaEpsilon
 
     private fun calcGVF(): Vector {
-        Logger.addTelemetryLine("length - s: ${path.length - disp}, dist: ${drive.pose.vec.dist(path.end.vec)}, headingError: ${headingError.absoluteValue}")
+        Logger.put("length - s: ${path.length - disp}, dist: ${drive.pose.vec.dist(path.end.vec)}, headingError: ${headingError.absoluteValue}")
         val tangent = path[disp, 1].vec
         val normal = tangent.rotate(PI / 2.0)
         val displacementVec = path[disp].vec - drive.pose.vec

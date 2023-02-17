@@ -571,14 +571,4 @@ class PurePursuitPath(
             curveToSegment(waypoints[index], target)
         }
     }
-
-    fun draw(t: Canvas): Canvas {
-        val xPoints = DoubleArray(waypoints.size)
-        val yPoints = DoubleArray(waypoints.size)
-        for (i in waypoints.indices) {
-            xPoints[i] = waypoints[i].vec.x
-            yPoints[i] = waypoints[i].vec.y
-        }
-        return t.setStroke("red").setStrokeWidth(1).strokePolyline(xPoints, yPoints)
-    }
 }

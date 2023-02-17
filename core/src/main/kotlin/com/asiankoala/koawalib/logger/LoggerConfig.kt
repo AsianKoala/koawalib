@@ -31,7 +31,7 @@ data class LoggerConfig(
             isLogging = false,
             isDebugging = false,
             isDashboardEnabled = false,
-            isTelemetryEnabled = false,
+            isTelemetryEnabled = true,
         )
 
         /**

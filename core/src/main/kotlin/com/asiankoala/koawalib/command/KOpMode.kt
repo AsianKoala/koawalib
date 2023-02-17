@@ -1,13 +1,10 @@
 package com.asiankoala.koawalib.command
 
-import com.asiankoala.koawalib.command.commands.LoopCmd
 import com.asiankoala.koawalib.gamepad.KGamepad
 import com.asiankoala.koawalib.hardware.KDevice
 import com.asiankoala.koawalib.hardware.motor.KMotor
 import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.util.OpModeState
-import com.asiankoala.koawalib.util.internal.statemachine.StateMachine
-import com.asiankoala.koawalib.util.internal.statemachine.StateMachineBuilder
 import com.outoftheboxrobotics.photoncore.PhotonCore
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
@@ -18,15 +15,20 @@ import com.qualcomm.robotcore.util.ElapsedTime
  * The base opmode for utilizing koawalib
  */
 abstract class KOpMode @JvmOverloads constructor(
-    private val photonEnabled: Boolean = false,
+    private val photonEnabled: Boolean = true,
     private val maxParallelCommands: Int = 6
 ) : LinearOpMode() {
-    private var opModeTimer = ElapsedTime()
+    var opModeState = OpModeState.INIT; private set
+    private enum class InternalState { INIT, LOOP, STOP }
+    private val internalState get() = when {
+        isStopRequested -> InternalState.STOP
+        isStarted -> InternalState.LOOP
+        else -> InternalState.INIT
+    }
+    private var hasStarted = false
     private var loopTimer = ElapsedTime()
     private lateinit var hubs: List<LynxModule>
     private lateinit var voltageSensor: VoltageSensor
-    var opModeState = OpModeState.INIT
-        private set
     protected val driver: KGamepad by lazy { KGamepad(gamepad1) }
     protected val gunner: KGamepad by lazy { KGamepad(gamepad2) }
 
@@ -57,17 +59,7 @@ abstract class KOpMode @JvmOverloads constructor(
     private fun setup() {
         setupLib()
         setupHardware()
-        opModeTimer.reset()
         Logger.logInfo("OpMode set up")
-    }
-
-    private fun schedulePeriodics() {
-        + LoopCmd(driver::periodic).withName("driver gamepad periodic")
-        + LoopCmd(gunner::periodic).withName("gunner gamepad periodic")
-        + LoopCmd(::handleBulkCaching).withName("clear bulk data periodic")
-        + LoopCmd(::handleLoopMsTelemetry).withName("loop ms telemetry periodic")
-        + LoopCmd(KMotor::updatePriorityIter).withName("motor priority periodic")
-        Logger.logInfo("periodics scheduled")
     }
 
     private fun handleBulkCaching() {
@@ -86,64 +78,41 @@ abstract class KOpMode @JvmOverloads constructor(
         telemetry.addData("loop time", dt)
     }
 
-    private fun updateTelemetryIfEnabled() {
-        if (Logger.config.isTelemetryEnabled) {
-            telemetry.update()
-        }
-    }
-
     private val universalActions = listOf(
+        driver::periodic,
+        gunner::periodic,
+        ::handleBulkCaching,
+        ::handleLoopMsTelemetry,
+        KMotor::updatePriorityIter,
         KScheduler::update,
         Logger::update,
-        ::updateTelemetryIfEnabled
     )
 
     private val initActions = listOf(
         ::setup,
-        ::schedulePeriodics,
         ::mInit,
         { Logger.logInfo("Fully initialized") }
     )
 
     private val startActions = listOf(
         ::mStart,
-        opModeTimer::reset,
-        { Logger.logInfo("OpMode started") }
+        { Logger.logInfo("OpMode started") },
+        { hasStarted = true }
     )
 
-    private val mainStateMachine: StateMachine<OpModeState> = StateMachineBuilder<OpModeState>()
-        .universal(KScheduler::update)
-        .universal(Logger::update)
-        .universal(::updateTelemetryIfEnabled)
-        .state(OpModeState.INIT)
-        .onEnter(::setup)
-        .onEnter(::schedulePeriodics)
-        .onEnter(::mInit)
-        .onEnter { Logger.logInfo("fully initialized, entering init loop") }
-        .transition { true }
-        .state(OpModeState.INIT_LOOP)
-        .loop(::mInitLoop)
-        .transition(::isStarted)
-        .state(OpModeState.START)
-        .onEnter(::mStart)
-        .onEnter(opModeTimer::reset)
-        .onEnter { Logger.logInfo("OpMode started") }
-        .transition { true }
-        .state(OpModeState.LOOP)
-        .loop(::mLoop)
-        .transition(::isStopRequested)
-        .state(OpModeState.STOP)
-        .onEnter(::mStop)
-        .onEnter(opModeTimer::reset)
-        .transition { true }
-        .build()
-
     final override fun runOpMode() {
-        mainStateMachine.start()
-        while (mainStateMachine.running) {
-            mainStateMachine.update()
-            opModeState = mainStateMachine.state
+        initActions.forEach { it.invoke() }
+        eventLoop@ while(true) {
+            universalActions.forEach { it.invoke() }
+            when(internalState) {
+                InternalState.INIT -> mInitLoop()
+                InternalState.LOOP -> {
+                    if(hasStarted) mLoop() else startActions.forEach { it.invoke() }
+                }
+                InternalState.STOP -> break@eventLoop
+            }
         }
+        mStop()
     }
 
     abstract fun mInit()

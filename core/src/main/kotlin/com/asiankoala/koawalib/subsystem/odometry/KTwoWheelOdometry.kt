@@ -23,10 +23,10 @@ class KTwoWheelOdometry(
 ) : Odometry(startPose) {
     private val encoders = listOf(parEnc, perpEnc)
     override fun updateTelemetry() {
-        Logger.addTelemetryData("start pose", startPose)
-        Logger.addTelemetryData("curr pose", pose)
-        Logger.addTelemetryData("parallel encoder", parEnc.pos)
-        Logger.addTelemetryData("perp encoder", perpEnc.pos)
+        Logger.put("start pose", startPose)
+        Logger.put("curr pose", pose)
+        Logger.put("parallel encoder", parEnc.pos)
+        Logger.put("perp encoder", perpEnc.pos)
     }
 
     override fun reset(p: Pose) {
