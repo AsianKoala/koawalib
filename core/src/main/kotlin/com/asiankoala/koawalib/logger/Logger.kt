@@ -57,12 +57,9 @@ object Logger {
 
         toLog.clear()
 
-        if (config.isTelemetryEnabled) {
-            telemetry.update()
-            if (config.isDashboardEnabled) {
-                dashboard.sendTelemetryPacket(packet)
-                packet = TelemetryPacket()
-            }
+        if (config.isDashboardEnabled) {
+            dashboard.sendTelemetryPacket(packet)
+            packet = TelemetryPacket()
         }
     }
 
@@ -101,7 +98,7 @@ object Logger {
      */
     @JvmStatic
     fun put(message: String = "") {
-        if (!config.isTelemetryEnabled) {
+        if (config.isTelemetryEnabled) {
             telemetry.addLine(message)
             if (config.isDashboardEnabled) packet.addLine(message)
         }
@@ -114,7 +111,7 @@ object Logger {
      */
     @JvmStatic
     fun put(message: String, data: Any?) {
-        if (!config.isTelemetryEnabled) {
+        if (config.isTelemetryEnabled) {
             telemetry.addLine(getDataString(message, data))
             if (config.isDashboardEnabled) packet.put(message, data)
         }

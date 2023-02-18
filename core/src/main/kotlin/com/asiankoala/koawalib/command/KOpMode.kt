@@ -71,8 +71,8 @@ abstract class KOpMode @JvmOverloads constructor(
     private fun handleLoopMsTelemetry() {
         val dt = loopTimer.milliseconds()
         loopTimer.reset()
-        telemetry.addData("hz", 1000.0 / dt)
-        telemetry.addData("loop time", dt)
+        Logger.put("hz", 1000.0 / dt)
+        Logger.put("loop time", dt)
     }
 
     private val universalActions by lazy {
@@ -84,6 +84,7 @@ abstract class KOpMode @JvmOverloads constructor(
             KMotor::updatePriorityIter,
             KScheduler::update,
             Logger::update,
+            telemetry::update
         )
     }
 
