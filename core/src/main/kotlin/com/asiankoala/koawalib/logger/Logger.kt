@@ -91,7 +91,6 @@ object Logger {
         packet.fieldOverlay().setStroke("red").setStrokeWidth(1).strokePolyline(xPoints, yPoints)
     }
 
-
     /**
      * Add telemetry line to phone. If config.isLoggingTelemetry, it will log the message as a debug
      * @param message string to add
