@@ -10,7 +10,7 @@ import com.asiankoala.koawalib.math.Vector
 import com.asiankoala.koawalib.math.angleWrap
 import com.asiankoala.koawalib.math.radians
 import com.asiankoala.koawalib.path.Waypoint
-import com.asiankoala.koawalib.util.internal.Colors
+import com.asiankoala.koawalib.util.Colors
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import java.text.SimpleDateFormat
 import java.util.*

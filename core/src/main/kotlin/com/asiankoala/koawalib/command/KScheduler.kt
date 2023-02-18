@@ -4,7 +4,7 @@ import com.asiankoala.koawalib.command.commands.*
 import com.asiankoala.koawalib.logger.Logger
 import com.asiankoala.koawalib.subsystem.KSubsystem
 import com.asiankoala.koawalib.util.OpModeState
-import com.asiankoala.koawalib.util.internal.disjoint
+import com.asiankoala.koawalib.util.disjoint
 import kotlin.collections.set
 
 /**

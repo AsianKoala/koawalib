@@ -18,12 +18,10 @@ abstract class KOpMode @JvmOverloads constructor(
     private val photonEnabled: Boolean = true,
     private val maxParallelCommands: Int = 6
 ) : LinearOpMode() {
-    var opModeState = OpModeState.INIT; private set
-    private enum class InternalState { INIT, LOOP, STOP }
-    private val internalState get() = when {
-        isStopRequested -> InternalState.STOP
-        isStarted -> InternalState.LOOP
-        else -> InternalState.INIT
+    val opModeState get() = when {
+        isStopRequested -> OpModeState.STOP
+        isStarted -> OpModeState.PLAY
+        else -> OpModeState.INIT
     }
     private var hasStarted = false
     private var loopTimer = ElapsedTime()
@@ -77,38 +75,44 @@ abstract class KOpMode @JvmOverloads constructor(
         telemetry.addData("loop time", dt)
     }
 
-    private val universalActions = listOf(
-        driver::periodic,
-        gunner::periodic,
-        ::handleBulkCaching,
-        ::handleLoopMsTelemetry,
-        KMotor::updatePriorityIter,
-        KScheduler::update,
-        Logger::update,
-    )
+    private val universalActions by lazy {
+        listOf(
+            driver::periodic,
+            gunner::periodic,
+            ::handleBulkCaching,
+            ::handleLoopMsTelemetry,
+            KMotor::updatePriorityIter,
+            KScheduler::update,
+            Logger::update,
+        )
+    }
 
-    private val initActions = listOf(
-        ::setup,
-        ::mInit,
-        { Logger.logInfo("Fully initialized") }
-    )
+    private val initActions by lazy {
+        listOf(
+            ::setup,
+            ::mInit,
+            { Logger.logInfo("Fully initialized") }
+        )
+    }
 
-    private val startActions = listOf(
-        ::mStart,
-        { Logger.logInfo("OpMode started") },
-        { hasStarted = true }
-    )
+    private val startActions by lazy {
+        listOf(
+            ::mStart,
+            { Logger.logInfo("OpMode started") },
+            { hasStarted = true }
+        )
+    }
 
     final override fun runOpMode() {
         initActions.forEach { it.invoke() }
         eventLoop@ while(true) {
             universalActions.forEach { it.invoke() }
-            when(internalState) {
-                InternalState.INIT -> mInitLoop()
-                InternalState.LOOP -> {
+            when(opModeState) {
+                OpModeState.INIT -> mInitLoop()
+                OpModeState.PLAY -> {
                     if(hasStarted) mLoop() else startActions.forEach { it.invoke() }
                 }
-                InternalState.STOP -> break@eventLoop
+                OpModeState.STOP -> break@eventLoop
             }
         }
         mStop()
