@@ -105,12 +105,12 @@ abstract class KOpMode @JvmOverloads constructor(
 
     final override fun runOpMode() {
         initActions.forEach { it.invoke() }
-        eventLoop@ while(true) {
+        eventLoop@ while (true) {
             universalActions.forEach { it.invoke() }
-            when(opModeState) {
+            when (opModeState) {
                 OpModeState.INIT -> mInitLoop()
                 OpModeState.PLAY -> {
-                    if(hasStarted) mLoop() else startActions.forEach { it.invoke() }
+                    if (hasStarted) mLoop() else startActions.forEach { it.invoke() }
                 }
                 OpModeState.STOP -> break@eventLoop
             }

@@ -562,7 +562,6 @@ class PurePursuitPath(
             }
         }
 
-
         if (isFinished) return
 
         if (target is StopWaypoint && drive.pose.vec.dist(target.vec) < target.follow) {
