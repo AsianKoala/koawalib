@@ -33,7 +33,6 @@ object Logger {
     private val dashboard = FtcDashboard.getInstance()
     private val toLog = ArrayList<LogData>()
     private var packet = TelemetryPacket()
-    private var warnings = 0
 
     private fun log(message: String, priority: Int) {
         if (!config.isLogging) return
@@ -42,7 +41,6 @@ object Logger {
 
     internal fun reset() {
         logCount = 0
-        warnings = 0
         toLog.clear()
         packet = TelemetryPacket()
         config = LoggerConfig.SIMPLE_CONFIG
@@ -61,10 +59,6 @@ object Logger {
             dashboard.sendTelemetryPacket(packet)
             packet = TelemetryPacket()
         }
-    }
-
-    internal fun addWarningCountCommand() {
-        + LoopCmd({ put("warning count", warnings) }).withName("warning counter")
     }
 
     @JvmStatic
@@ -161,10 +155,7 @@ object Logger {
      */
     @JvmStatic
     fun logWarning(message: String) {
-        if (config.isLogging) {
-            warnings++
-            log("WARNING: $message", Log.WARN)
-        }
+        if (config.isLogging) log("WARNING: $message", Log.WARN)
     }
 
     /**

@@ -35,7 +35,6 @@ abstract class KOpMode @JvmOverloads constructor(
         Logger.reset()
         Logger.telemetry = telemetry
         KScheduler.resetScheduler()
-        Logger.addWarningCountCommand()
     }
 
     private fun setupHardware() {

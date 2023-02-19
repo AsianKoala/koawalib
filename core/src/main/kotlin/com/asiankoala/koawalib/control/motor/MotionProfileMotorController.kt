@@ -38,7 +38,6 @@ internal class MotionProfileMotorController(
             targetVelocity = setpoint.v
             targetAcceleration = setpoint.a
         }
-
         super.update()
     }
 }
